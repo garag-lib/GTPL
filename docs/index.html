@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTPL</title>
+    <link href="reset.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        pre {
+            background-color: #2d2d2d;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        .rendered-block {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+
+        .rendered-block {
+            padding: 1em;
+            margin: .5em 0;
+        }
+
+        h2 {
+            font-size: 2em;
+            margin: 1em 0 1em 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <a href="https://github.com/garag-lib/GTPL">GTPL github</a>
+    <!-- ##################################################### -->
+    <h2>Variables, constants, and functions on them</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div class="preload">load default data: <b>{{
+                    this.value = Math.random();
+                    this.translate = function(word){ return 'translate ' + word; }
+                    this.loaded = true;
+                    this.numA = Math.random();
+                    this.numB = Math.random();
+                    return 'OK';
+                    }}</b></div>
+            <div g-if="loaded">
+                <div>constant: <b>{{ 'constant' }}</b></div>
+                <div>constant translate: <b>{{ 'constant':translate }}</b></div>
+                <div>constant translate translate: <b>{{ 'constant':translate:translate }}</b></div>
+                <div>value: <b>{{ value }}</b></div>
+                <div>value translate: <b>{{ value:translate }}</b></div>
+                <div>value translate translate: <b>{{ value:translate:translate }}</b></div>
+                <div>sum: <b>{{ return ( numA + numB ) }}</b></div>
+            </div>
+            <button onclick="{{ this.value = Math.random(); this.numA++; this.numB++; }}">
+                Click Me
+            </button>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>Bidirectional variables</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>constant1: {{ 'foo' }}</div>
+            <div>constant2: {{ return 1 + 1 }}</div>
+            <div>value foo: {{ foo }}</div>
+            <div>value num: {{ num }}</div>
+            <div>value num + 1: {{ return ( num ? num : 0 ) + 1 }}</div>
+            <!-- one direction -->
+            <input type="text" value="{{ foo }}" />
+            <!-- two directions -->
+            <input type="text" [value]="{{ foo }}" />
+            <button onclick="{{ this.num = ( this.num ? this.num : 0 ) + 1; this.foo = 'Hello world'; }}">
+                Click Me
+            </button>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>Attributes</h2>
+    <style>
+        .cls {
+            color: #00f;
+        }
+
+        .weight {
+            font-weight: bold
+        }
+
+        div[custom='value'] {
+            background-color: #ff0;
+        }
+    </style>
+    <div class="code-block">
+        <pre><code class="language-css">.cls { color: #00f; } 
+.weight { font-weight: bold } 
+div[custom='value'] { background-color: #ff0; }</code></pre>
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div g-attr="attr">Any Attribute</div>
+            <div class="{{attr.class}}">class Attribute</div>
+            <div class="{{weight}}">class Attribute</div>
+            <button onclick="{{ 
+                this.attr = { class: 'cls', custom: 'value' };
+                this.weight = 'weight cls';
+            }}"> Click Me </button>
+            <button onclick="{{ 
+                this.attr = null;
+                this.weight = null;
+            }}"> Reset </button>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>Styles</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div style="color:{{color}};font-weight:bold">color style</div>
+            <div style="{{csstext}}">all styles</div>
+            <button onclick="{{ this.color = '#f00'; this.csstext = 'color:#080;font-weight:bold;'; }}">
+                Click Me
+            </button>
+            <button onclick="{{ this.color = ''; this.csstext = ''; }}">
+                Reset
+            </button>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>If, not If</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div g-if="visible">Hello world true</div>
+            <div g-notif="visible">Hello world false</div>
+            <button onclick="{{ this.visible = this.visible === undefined ? 1 : !this.visible; }}">
+                Click Me
+            </button>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>Switch</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <button onclick="{{ 
+                this.five = 5;
+                if( this.switch === undefined )
+                    this.switch = 0;
+                else {
+                    if( this.switch >= 5 )
+                        this.switch = 0;
+                    else this.switch++;
+                }
+            }}"> Click Me </button>
+            <div g-switch="switch">
+                <div>case 0???</div>
+                <div g-case="'0'">CASE 0</div>
+                <div>case 1???</div>
+                <div g-case="'1'">CASE 1</div>
+                <div>case 2???</div>
+                <div g-case="'2'">CASE 2</div>
+                <div>case 3???</div>
+                <div g-case="'3'">CASE 3</div>
+                <div>case 4???</div>
+                <div g-case="'4'">CASE 4</div>
+                <div>case 5???</div>
+                <div g-case="five">CASE 5</div>
+            </div>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>For</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <button onclick="{{
+                this.arr1 = [ 'a', 'b', 'c' ,'d' ];
+                this.arr2 = [
+                    { 'des': 'a' },
+                    { 'des': 'b' },
+                    { 'des': 'c' },
+                    { 'des': 'd' }
+                ];
+            }}"> Click Me </button>
+            <button onclick="{{
+                if( this.arr1 !== undefined )
+                    this.arr1[2] = 'ccc';
+                if( this.arr2 !== undefined )
+                    this.arr2[2] = { 'des': 'ddd' };
+            }}"> Change index 2 </button>
+            <button onclick="{{
+                if( this.arr1 !== undefined )
+                    this.arr1.pop();
+                if( this.arr2 !== undefined )
+                    this.arr2.pop();
+            }}"> Pop </button>
+            <button onclick="{{
+                if( this.arr1 !== undefined )
+                    this.arr1.push(Math.random(0,100));
+                if( this.arr2 !== undefined )
+                    this.arr2.push({ des: Math.random(0,100) });
+            }}"> Push </button>
+            <button onclick="{{
+                if( this.arr1 !== undefined )
+                    this.arr1 = [];
+                if( this.arr2 !== undefined )
+                    this.arr2 = [];
+            }}"> Reset </button>
+            <div>Arr1:</div>
+            <div g-for="arr1;key;value">arr1[{{ key }}] = {{ value }}</div>
+            <div>Arr2:</div>
+            <div g-for="arr2;key;value">arr1[{{ key }}] = {{ value.des }}</div>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2>Templates</h2>
+    <template id="form">
+        <div>{{ index }} - {{ value }}</div>
+    </template>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <template id="form">
+                <div>{{ index }} - {{ value }}</div>
+            </template>
+            <button onclick="{{ this.arr = [ 'a', 'b', 'c', 'd', 'e' ]  }}">
+                Click Me
+            </button>
+            <template g-tpl="form" g-for="arr;index;value"></template>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <script src="gtpl.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-markup.min.js"></script>
+    <script>
+        const GCode = gtpl.jit.GCode;
+        const GGenerator = gtpl.GGenerator;
+        const GCompile = gtpl.jit.GCompile;
+        const GAddToo = gtpl.GAddToo;
+        const GTpl = gtpl.GTpl;
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.code-block > template').forEach((template) => {
+                //---
+                const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
+                const aot = GCode(template.innerHTML);
+                const gtpl = new GTpl({ root: {}, generator: GCompile(aot) });
+                gtpl.addTo(renderedContent);
+                //---
+                const codeBlock = template.previousElementSibling.querySelector('code');
+                let content = template.innerHTML;
+                content = content.replace(/^\n+/, '');
+                content = content.replace(/\n\s+$/, '');
+                const lines = content.split('\n');
+                const minIndent = Math.min(...lines.filter(line => line.trim()).map(line => line.match(/^[ \t]*/)[0].length));
+                content = lines.map(line => line.slice(minIndent)).join('\n');
+                codeBlock.textContent = content;
+                Prism.highlightElement(codeBlock);
+                //---
+            });
+        });
+    </script>
+</body>
+
+</html>
