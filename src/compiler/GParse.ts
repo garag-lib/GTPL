@@ -10,7 +10,8 @@ const palabrasReservadas = [
     "in", "instanceof", "int", "interface", "let", "long", "native", "new",
     "null", "package", "private", "protected", "public", "return", "short",
     "static", "super", "switch", "synchronized", "this", "throw", "throws",
-    "transient", "true", "try", "typeof", "var", "void", "volatile", "while", "with", "yield"
+    "transient", "true", "try", "typeof", "var", "void", "volatile", "while",
+    "with", "yield", "arguments", "await", "async", "eval"
 ];
 
 export class GParse {
@@ -434,7 +435,9 @@ export class GParse {
             ret = this.getVOrC();
             if (ret && ret.va) {
                 const va = ret.va;
-                if (palabrasReservadas.indexOf(va[0]) >= 0) {
+                if (palabrasReservadas.indexOf(va[0]) >= 0 ||
+                    va[0] in Array.prototype ||
+                    va[0] in Object.prototype) {
                     if (ret.va[0] == 'function') {
                         ignore.push([]);
                         cstop = '(';
@@ -453,7 +456,7 @@ export class GParse {
                     if (!arr.some(list => list[0] == va[0]))
                         arr.push(va);
                 }
-            } else if (!this.next() && this.isArrowFunction() ) {
+            } else if (!this.next() /*&& this.isArrowFunction()*/) {
                 break;
             }
         }
@@ -465,7 +468,7 @@ export class GParse {
 
     isArrowFunction(): boolean {
 
-        console.log(this.s[this.i]);
+        console.error(this.s[this.i]);
 
         return true;
         /*

@@ -41,6 +41,9 @@
             margin: 1em 0 1em 0;
         }
 
+        .rendered-content {
+            overflow: auto;
+        }
     </style>
 </head>
 
@@ -270,6 +273,21 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
+    <h2>INNER HTML</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{ content }}</div>
+            <div g-inner="content"></div>
+            <button onclick="{{ this.content = '<b>HOLA</b>';  }}">
+                Click Me
+            </button>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
     <script src="gtpl.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-markup.min.js"></script>
@@ -280,10 +298,10 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         const GAddToo = gtpl.GAddToo;
         const GTpl = gtpl.GTpl;
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.querySelectorAll('.code-block > template').forEach((template) => {
+            document.querySelectorAll('.code-block > template').forEach(async (template) => {
                 //---
                 const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
-                const aot = GCode(template.innerHTML);
+                const aot = await GCode(template.innerHTML);
                 const gtpl = new GTpl({ root: {}, generator: GCompile(aot) });
                 gtpl.addTo(renderedContent);
                 //---

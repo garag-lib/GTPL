@@ -496,10 +496,8 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
             result.apply(obj.gtpl.Root, [event]);
           }
         } else {
-          if (result === false) {
             if (event.preventDefault)
               event.preventDefault();
-          }
         }
       },
       passiveSupported ? options : false
@@ -615,13 +613,17 @@ function checkBind(gtpl: IGtplObject, bind: IBindObject): boolean {
 
 //---
 
-function removeElements(elements: Node | Node[]) {
+function removeElements(elements: any) {
   if (Array.isArray(elements)) {
     elements.forEach((element) => {
-      removeElements(element);
+      if (element.destroy)
+        element.destroy(true);
+      else removeElements(element);
     });
   } else {
-    elements.parentNode?.removeChild(elements);
+    if (elements.destroy)
+      elements.destroy(true);
+    else elements.parentNode?.removeChild(elements);
   }
 }
 
@@ -886,6 +888,18 @@ async function updateATTRbind(
       }
     }
   }
+  return gtpl;
+}
+
+async function updateINNERbind(type: TypeEventProxyHandler,
+  gtpl: IGtplObject,
+  bind: IBindObject,
+  result?: any,
+  path?: string[]
+) {
+  gtpl = getContext(gtpl, bind);
+  if (result !== undefined && bind.ele.innerHTML != result)
+    bind.ele.innerHTML = result;
   return gtpl;
 }
 
@@ -1269,7 +1283,7 @@ export class GTpl implements IGtplObject {
   Elements!: Node[];
 
   /**
-   * Array de array de elementos html que forman la plantilla
+   * Objeto indexado a los elementos dinamicos de ka plantillas, for, switch etc...
    */
   RenderElements!: any;
 
@@ -1380,6 +1394,8 @@ export class GTpl implements IGtplObject {
 
   destroy(elements = true) {
     //---
+    const num = Array.isArray(this.Elements) ? this.Elements.length : 1;
+    //---
     this.GtplChilds.forEach((gtpl) => {
       gtpl.destroy(false);
     });
@@ -1393,7 +1409,16 @@ export class GTpl implements IGtplObject {
     if (elements) {
       removeElements(this.Elements);
       if (this.RenderElements) {
-        removeElements(this.RenderElements);
+        for (let index = 0; index < num; index++) {
+          if (this.RenderElements[index]) {
+            const bind: IBindObject = this.RenderElements[index];
+            if (bind.ele) {
+              removeElements(bind.ele);
+            } else if (bind.eles) {
+              removeElements(bind.eles);
+            }
+          }
+        }
         delete this.RenderElements;
       }
     }
@@ -1471,6 +1496,9 @@ export class GTpl implements IGtplObject {
         break;
       case BindTypes.ATTR:
         gtpl = await updateATTRbind(type, this, bind, result, path);
+        break;
+      case BindTypes.INNER:
+        gtpl = await updateINNERbind(type, this, bind, result, path);
         break;
       case BindTypes.STYLE:
         gtpl = await updateSTYLEbind(type, this, bind, result, path);

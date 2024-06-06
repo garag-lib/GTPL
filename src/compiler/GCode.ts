@@ -1,7 +1,7 @@
 import { NodeTypes, BindTypes } from '../GEnums';
 import { GParse } from './GParse';
 import { IBindObject, IFormula, IObjParsed } from '../GGenerator';
-import { STACK, css2obj, log, style2css } from '../GUtils';
+import { css2obj, log, style2css } from '../GUtils';
 import { AttrType, ProGen } from '../GGenerator';
 
 let gparse!: GParse;
@@ -240,7 +240,7 @@ function Attributes2JSON(atributos: AttrType[], onlyone: boolean = false): strin
                                 if (code != undefined) {
                                     const fncParams = vars?.map(v => v[0]).join(',') || '';
                                     const isAsync = code.match(/[\s;]await[\W]/gm) ? ' async ' : '';
-                                    const fncBody =  `{${code}}`;
+                                    const fncBody = `{${code}}`;
                                     return `"${subKey}":{"vars":${JSON.stringify(vars)},"fnc":${isAsync}function(${fncParams})${fncBody}}`;
                                 } else {
                                     log('formula without code');
@@ -278,7 +278,7 @@ function getId() {
     return obtenerPrefijoChar(gcontchar) + String(gcont).padStart(4, '0');
 }
 
-function NodeList2Function(nodes: NodeListOf<ChildNode>, parent?: any, headers?: boolean, bindSwitch?: null | IBindObject): string {
+async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, headers?: boolean, bindSwitch?: null | IBindObject): Promise<string> {
     //---
     if (gparse == null)
         gparse = new GParse();
@@ -379,14 +379,18 @@ function NodeList2Function(nodes: NodeListOf<ChildNode>, parent?: any, headers?:
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
-                            childsnodes = NodeList2Function(childs, real, true, bind_switch);
+                            childsnodes = await NodeList2Function(childs, real, true, bind_switch);
                         } else {
-                            /** @TODO fetch **/
+                            /** @TODO better fetch **/
+                            const tpl = await (await fetch(ct)).text();
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(tpl.trim(), "text/html");
+                            childsnodes = await NodeList2Function(doc.body.childNodes, real, true, bind_switch);
                         }
                     } else {
                         real = (ele.nodeName.toLowerCase() == 'template') ? (<any>ele).content : ele;
                         childs = (<any>real).childNodes;
-                        childsnodes = NodeList2Function(childs, real, true, bind_switch);
+                        childsnodes = await NodeList2Function(childs, real, true, bind_switch);
                     }
                     //---
                     if (bind_is || bind_if || bind_case || bind_for || bind_switch) {
@@ -582,12 +586,12 @@ function NodeList2Function(nodes: NodeListOf<ChildNode>, parent?: any, headers?:
     return parse;
 }
 
-export function GCode(html: any): string {
+export async function GCode(html: string | Node | NodeListOf<ChildNode>): Promise<string> {
     if (typeof html == 'string') {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html.trim(), "text/html");
         return NodeList2Function(doc.body.childNodes);
     } else {
-        return NodeList2Function(html.nodeType ? [html] : html);
+        return NodeList2Function(html instanceof Node ? [html] : html);
     }
 }
