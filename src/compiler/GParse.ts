@@ -21,6 +21,7 @@ export class GParse {
     private l!: number;
     private r!: (string | IObjParsed)[];
     private arr_acepted!: number[];
+    private ln!: string | null;
 
     constructor() {
         this.setAceptedAN();
@@ -81,18 +82,24 @@ export class GParse {
 
     nop(all: boolean = false, cstop: string | null = null): boolean {
         let cnow = null;
+        this.ln = null;
         while (true) {
             cnow = this.s[this.i];
             if (cstop === cnow)
                 return true;
             let ok = (cnow == ' ' || cnow == '\t' || cnow == '\r' || cnow == '\n');
-            if (!ok && all)
+            if (!ok && all) {
                 ok = (cnow != '"' && cnow != "'" && !this.isAN(cnow));
+                if (ok) {
+                    this.ln = cnow;
+                }
+            }
             if (ok) {
                 if (!this.next())
                     return false;
                 continue;
             }
+
             return true;
         }
     }
@@ -131,7 +138,7 @@ export class GParse {
             return null;
         let str = this.s[this.i];
         if (str == into) {
-            str == '';
+            str = '';
             if (!this.next())
                 return null;
             return str;
@@ -404,54 +411,73 @@ export class GParse {
         let arr: TplVar[] = [], ret: null | IVarOrConst = null;
         let ignoreall: boolean = false;
         let cstop: string | null = null;
-        let ignore: any = [];
+        let ignore: any = [[]];
+        let declares = ['const', 'var', 'let'];
         while (true) {
             if (!this.nop(true, cstop))
                 break;
-            const current = this.s[this.i];
-            if (current == '(') {
-                ignoreall = true;
-                cstop = ')';
-                if (!this.nop(true, cstop))
-                    break;
-            }
-            if (current == ')') {
-                ignoreall = false;
-                cstop = '{';
-                if (!this.nop(true, cstop))
-                    break;
-            }
-            if (current == '{') {
-                cstop = '}';
-                if (!this.nop(true, cstop))
-                    break;
-            }
-            if (current == '}') {
-                ignore.pop();
-                cstop = null;
-                if (!this.nop(true, cstop))
-                    break;
+            if (cstop !== null) {
+                const current = this.s[this.i];
+                if (current == '(') {
+                    ignoreall = true;
+                    cstop = ')';
+                    if (!this.nop(true, cstop))
+                        break;
+                }
+                if (current == ')') {
+                    ignoreall = false;
+                    cstop = '{';
+                    if (!this.nop(true, cstop))
+                        break;
+                }
+                if (current == '{') {
+                    cstop = '}';
+                    if (!this.nop(true, cstop))
+                        break;
+                }
+                if (current == '}') {
+                    ignore.pop();
+                    cstop = null;
+                    if (!this.nop(true, cstop))
+                        break;
+                }
             }
             ret = this.getVOrC();
             if (ret && ret.va) {
                 const va = ret.va;
-                if (palabrasReservadas.indexOf(va[0]) >= 0 ||
-                    va[0] in Array.prototype ||
-                    va[0] in Object.prototype) {
+                if (palabrasReservadas.indexOf(va[0]) >= 0) {
                     if (ret.va[0] == 'function') {
                         ignore.push([]);
                         cstop = '(';
                     }
+                    if (declares.includes(va[0])) {
+                        if (!this.nop(true))
+                            break;
+                        ret = this.getVOrC();
+                        if (ret && ret.va) {
+                            ignore[ignore.length - 1].push(ret.va[0]);
+                        }
+                    }
+                    if (!this.next())
+                        break;
                     continue;
                 }
                 if (globalObject.hasOwnProperty(va[0]))
                     continue;
+                if (this.ln == '.') {
+                    if (!this.next())
+                        break;
+                    continue;
+                }
                 if (ignoreall) {
                     ignore[ignore.length - 1].push(va[0]);
                 } else {
                     if (ignore.length) {
-                        if (ignore.some((list: any) => list.includes(va[0])))
+                        if (ignore.some((list: any) => list.includes(va[0]))) {
+                            if (!this.next())
+                                break;
                             continue;
+                        }
                     }
                     if (!arr.some(list => list[0] == va[0]))
                         arr.push(va);

@@ -72,10 +72,14 @@
         <pre><code class="language-html"></code></pre>
         <template>
             <div class="preload">load default data: <b>{{
-                    this.style = ['color:#800','float:right'].join(';');
+                    this.style = [1,2,3].join(';');
+                    const var1 = 'aaa';
+                    let var2 = 'bbb';
+                    var var3 = 'ccc';
+                    this.fn = function() { console.log(arguments); let var4; var4 = 'ddd'; return ''; }.bind(this);
                     return 'OK';
                     }}</b></div>
-            <div style="{{ style }}">HI</div>
+            <div>{{ '':fn }}</div>
         </template>
     </div>
     <div class="rendered-block">
@@ -98,7 +102,7 @@
                 const aot = await GCode(template.innerHTML);
                 const objRoot = {};
                 const gtpl = new GTpl({ root: objRoot, generator: GCompile(aot) });
-                console.log(gtpl);
+                console.log(gtpl.Root);
                 objRoot.gtpl = gtpl;
                 gtpl.addTo(renderedContent);
                 //---
