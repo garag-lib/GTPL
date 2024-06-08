@@ -7,8 +7,6 @@
     "build": "npx tsc",
     "bundle_dev_www": "webpack --mode development --config webpack.config.js",
     "bundle_www": "webpack --mode production --config webpack.config.js",
-    "bundle_dev_node": "webpack --mode development --config webpack.node.config.js",
-    "bundle_node": "webpack --mode production --config webpack.node.config.js",
     "server": "php -S localhost:8080"
   },
   "author": "Manuel Peliz",
