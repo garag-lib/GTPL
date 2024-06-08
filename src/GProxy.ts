@@ -1,4 +1,4 @@
-import { TypeEventProxyHandler } from 'GEnums';
+import { TypeEventProxyHandler } from './GEnums';
 import { isStaticType } from './GUtils';
 
 export type PathProxyHandler = any;
