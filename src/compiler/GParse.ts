@@ -99,7 +99,6 @@ export class GParse {
                     return false;
                 continue;
             }
-
             return true;
         }
     }
@@ -410,36 +409,61 @@ export class GParse {
         this.i = 0;
         let arr: TplVar[] = [], ret: null | IVarOrConst = null;
         let ignoreall: boolean = false;
-        let cstop: string | null = null;
+        let cstop: string[] = [];
         let ignore: any = [[]];
         let declares = ['const', 'var', 'let'];
+        let arrowIndex = null;
         while (true) {
-            if (!this.nop(true, cstop))
+            let cs = cstop.length ? cstop[cstop.length - 1] : null;
+            if (arrowIndex !== null) {
+                if (cs == '}' || cs === null) {
+                    cs = '>';
+                } else {
+                    arrowIndex = null;
+                }
+            }
+            if (!this.nop(true, cs))
                 break;
-            if (cstop !== null) {
-                const current = this.s[this.i];
+            if (cs !== null) {
+                let current = this.s[this.i];
+                if (current == '>') {
+                    if (!this.next())
+                        break;
+                    if (this.ln == '=' && arrowIndex !== null) {
+                        ignore.push(arr.splice(arrowIndex).map(v => v[0]));
+                        if (!this.nop(true, '{'))
+                            break;
+                        current = this.s[this.i];
+                        if (current == '{') {
+                            cstop.push('}');
+                        } else {
+                            ignore.pop();
+                        }
+                    }
+                    arrowIndex = null;
+                    continue;
+                }
                 if (current == '(') {
                     ignoreall = true;
-                    cstop = ')';
-                    if (!this.nop(true, cstop))
-                        break;
+                    cstop.pop();
+                    cstop.push(')');
+                    continue;
                 }
                 if (current == ')') {
                     ignoreall = false;
-                    cstop = '{';
-                    if (!this.nop(true, cstop))
-                        break;
+                    cstop.pop();
+                    cstop.push('{');
+                    continue;
                 }
                 if (current == '{') {
-                    cstop = '}';
-                    if (!this.nop(true, cstop))
-                        break;
+                    cstop.pop();
+                    cstop.push('}');
+                    continue;
                 }
                 if (current == '}') {
+                    cstop.pop();
                     ignore.pop();
-                    cstop = null;
-                    if (!this.nop(true, cstop))
-                        break;
+                    continue;
                 }
             }
             ret = this.getVOrC();
@@ -448,9 +472,8 @@ export class GParse {
                 if (palabrasReservadas.indexOf(va[0]) >= 0) {
                     if (ret.va[0] == 'function') {
                         ignore.push([]);
-                        cstop = '(';
-                    }
-                    if (declares.includes(va[0])) {
+                        cstop.push('(');
+                    } else if (declares.includes(va[0])) {
                         if (!this.nop(true))
                             break;
                         ret = this.getVOrC();
@@ -458,15 +481,11 @@ export class GParse {
                             ignore[ignore.length - 1].push(ret.va[0]);
                         }
                     }
-                    if (!this.next())
-                        break;
                     continue;
                 }
                 if (globalObject.hasOwnProperty(va[0]))
                     continue;
                 if (this.ln == '.') {
-                    if (!this.next())
-                        break;
                     continue;
                 }
                 if (ignoreall) {
@@ -474,15 +493,19 @@ export class GParse {
                 } else {
                     if (ignore.length) {
                         if (ignore.some((list: any) => list.includes(va[0]))) {
-                            if (!this.next())
-                                break;
                             continue;
                         }
                     }
-                    if (!arr.some(list => list[0] == va[0]))
+                    if (!arr.some(list => list[0] == va[0])) {
+                        if (this.ln == '(') {
+                            arrowIndex = arr.length;
+                        } else if (this.ln != ',' && arrowIndex !== null) {
+                            arrowIndex = null;
+                        }
                         arr.push(va);
+                    }
                 }
-            } else if (!this.next() /*&& this.isArrowFunction()*/) {
+            } else if (!this.next()) {
                 break;
             }
         }
@@ -490,29 +513,6 @@ export class GParse {
         this.i = i;
         this.l = l;
         return arr;
-    }
-
-    isArrowFunction(): boolean {
-
-        console.error(this.s[this.i]);
-
-        return true;
-        /*
-        // Save current index
-        const savedIndex = this.i;
-        // Move backwards to check for "=>" indicating an arrow function
-        while (this.i > 0 && (this.s[this.i] === ' ' || this.s[this.i] === '\t' || this.s[this.i] === '\n')) {
-            this.i--;
-        }
-        // Check for arrow function "=>"
-        if (this.s[this.i] === '>' && this.i > 0 && this.s[this.i - 1] === '=') {
-            this.i = savedIndex;
-            return true;
-        }
-        // Restore original index and return false
-        this.i = savedIndex;
-        return false;
-        */
     }
 
 }

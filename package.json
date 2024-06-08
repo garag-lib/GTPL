@@ -1,6 +1,6 @@
 {
   "name": "gtpl",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "repository": "https://github.com/garag-lib/GTPL",
   "description": "GTPL is a TypeScript library designed for creating reactive template systems with a unique approach that incorporates Direct DOM and Proxy. Inspired by technologies like Vue.js, angular aot or jsx, GTPL offers an efficient and powerful way to build reactive applications with optimized performance and all of this in a compact 9 KB javascript package.",
   "main": "gtpl.js",

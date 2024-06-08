@@ -50,7 +50,7 @@
 <body>
     <a href="https://github.com/garag-lib/GTPL">GTPL github</a>
     <!-- ##################################################### -->
-    <div class="code-block">
+    <!-- <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
             <div class="preload">load default data: <b>{{
@@ -66,7 +66,7 @@
     </div>
     <div class="rendered-block">
         <div class="rendered-content"></div>
-    </div>
+    </div> -->
     <!-- ##################################################### -->
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
@@ -76,10 +76,16 @@
                     const var1 = 'aaa';
                     let var2 = 'bbb';
                     var var3 = 'ccc';
-                    this.fn = function() { console.log(arguments); let var4; var4 = 'ddd'; return ''; }.bind(this);
+                    const fn1 = function(ee,ff) { console.log(arguments, ee, ff); const fn1 = function(gg,hh) { let var4
+                    = 123; } }.bind(this);
+                    const fn2 = function (eee,fff) { console.log(arguments); const fn1 = function (ggg,hhh) { let var4 =
+                    123; } }.bind(this);
+                    const reault = ( 123 + 345 );
+                    const fn3 = (aa,bb) => { console.log(aa,bb); const fn3 = (cc,dd) => { console.log(cc,dd); let var5 = 123; }; };
+                    const fn4 = (aaa,bbb) => 111;
+                    const fn5 = function () { return estasi };
                     return 'OK';
                     }}</b></div>
-            <div>{{ '':fn }}</div>
         </template>
     </div>
     <div class="rendered-block">
@@ -95,11 +101,18 @@
         const GCompile = gtpl.jit.GCompile;
         const GAddToo = gtpl.GAddToo;
         const GTpl = gtpl.GTpl;
+        function decodeHTMLEntities(text) {
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = text;
+            return textarea.value;
+        }
         document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.code-block > template').forEach(async (template) => {
                 //---
+                let content = decodeHTMLEntities(template.innerHTML);
+                //---
                 const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
-                const aot = await GCode(template.innerHTML);
+                const aot = await GCode(content);
                 const objRoot = {};
                 const gtpl = new GTpl({ root: objRoot, generator: GCompile(aot) });
                 console.log(gtpl.Root);
@@ -107,7 +120,6 @@
                 gtpl.addTo(renderedContent);
                 //---
                 const codeBlock = template.previousElementSibling.querySelector('code');
-                let content = template.innerHTML;
                 content = content.replace(/^\n+/, '');
                 content = content.replace(/\n\s+$/, '');
                 const lines = content.split('\n');
