@@ -225,7 +225,7 @@ async function reduceFnc(
   try {
     initval = await fnc.apply(ctx.Root, arrval);
   } catch (ex: any) {
-    STACK(ex.message);
+    STACK(ex.message, fnc);
     initval = undefined;
   }
   if (index >= functions.length) return initval;
@@ -253,7 +253,7 @@ async function calculateBind(me: IGtplObject, bind: IBindObject, value?: any, ex
       //console.log(fnc, gtpl.Root, arrval);
       result = await fnc.apply(gtpl.Root, arrval);
     } catch (ex: any) {
-      STACK(ex.message);
+      STACK(ex.message, fnc);
       result = undefined;
     }
   } else {
@@ -344,7 +344,7 @@ function createGetterAndSetter(
       },
     });
   } catch (ex) {
-    STACK((<any>ex).message, gtpl.Root, key);
+    STACK((<any>ex).message, key, gtpl.Root);
   }
 }
 
@@ -496,8 +496,8 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
             result.apply(obj.gtpl.Root, [event]);
           }
         } else {
-            if (event.preventDefault)
-              event.preventDefault();
+          if (event.preventDefault)
+            event.preventDefault();
         }
       },
       passiveSupported ? options : false

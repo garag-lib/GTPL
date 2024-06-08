@@ -25,10 +25,9 @@ export function isStaticType(val: any) {
 
 export function log(...args: any): void {
     //const functionName = log.caller?.name || arguments.callee.caller?.name;
-    args.forEach((arg:any)=>{
-        console.log(arg);
-    });  
-    console.log('----------');
+    console.log('%c----------', 'font-weight:bold');
+    console.log(...args);
+    console.log('%c----------', 'font-weight:bold');
 }
 
 export function STACK(...args: any) {
