@@ -81,7 +81,7 @@ export class GParse {
     }
 
     nop(all: boolean = false, cstop: string | null = null): boolean {
-        let cnow = null;
+        let cnow: null | string = null;
         this.ln = null;
         while (true) {
             cnow = this.s[this.i];
@@ -114,7 +114,7 @@ export class GParse {
     }
 
     getVar(point: boolean = true): null | string[] {
-        let str = this.s[this.i], cnow = null, acepted: boolean;
+        let str = this.s[this.i], cnow: null | string = null, acepted: boolean;
         while (true) {
             if (!this.next())
                 return str != '' ? str.split('.') : null;
@@ -142,7 +142,7 @@ export class GParse {
                 return null;
             return str;
         }
-        let cnow = null, clast = null;
+        let cnow: null | string = null, clast: null | string = null;
         while (true) {
             if (!this.next())
                 return null;
@@ -412,7 +412,7 @@ export class GParse {
         let cstop: string[] = [];
         let ignore: any = [[]];
         let declares = ['const', 'var', 'let'];
-        let arrowIndex = null;
+        let arrowIndex: null | number = null;
         while (true) {
             let cs = cstop.length ? cstop[cstop.length - 1] : null;
             if (arrowIndex !== null) {
@@ -444,25 +444,38 @@ export class GParse {
                     continue;
                 }
                 if (current == '(') {
+                    //console.log('current', current, cstop.join());
                     ignoreall = true;
                     cstop.pop();
                     cstop.push(')');
+                    if (!this.next())
+                        break;
                     continue;
                 }
                 if (current == ')') {
+                    //console.log('current', current, cstop.join());
                     ignoreall = false;
                     cstop.pop();
                     cstop.push('{');
+                    if (!this.next())
+                        break;
                     continue;
                 }
                 if (current == '{') {
+                    //console.log('current', current, cstop.join());
                     cstop.pop();
                     cstop.push('}');
+                    if (!this.next())
+                        break;
                     continue;
                 }
                 if (current == '}') {
+                    //console.log('current', current, cstop.join());
                     cstop.pop();
                     ignore.pop();
+                    //console.log('ignore pop', ignore[ignore.length - 1].join());
+                    if (!this.next())
+                        break;
                     continue;
                 }
             }
@@ -471,6 +484,7 @@ export class GParse {
                 const va = ret.va;
                 if (palabrasReservadas.indexOf(va[0]) >= 0) {
                     if (ret.va[0] == 'function') {
+                        //console.log('function');
                         ignore.push([]);
                         cstop.push('(');
                     } else if (declares.includes(va[0])) {
@@ -479,6 +493,7 @@ export class GParse {
                         ret = this.getVOrC();
                         if (ret && ret.va) {
                             ignore[ignore.length - 1].push(ret.va[0]);
+                            //console.log('declare', va[0], ignore[ignore.length - 1].join());
                         }
                     }
                     continue;
@@ -502,6 +517,7 @@ export class GParse {
                         } else if (this.ln != ',' && arrowIndex !== null) {
                             arrowIndex = null;
                         }
+                        //console.log('valid', va);
                         arr.push(va);
                     }
                 }

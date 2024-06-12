@@ -400,7 +400,7 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                         jsonAttr = '';
                         jsonAttr2 = '';
 
-                        const common = [];
+                        const common: any = [];
 
                         attrs = Attributes2JSON(atributos);
 

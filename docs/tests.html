@@ -66,7 +66,8 @@
     </div>
     <div class="rendered-block">
         <div class="rendered-content"></div>
-    </div> -->
+    </div> 
+    -->
     <!-- ##################################################### -->
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
@@ -76,12 +77,29 @@
                     const var1 = 'aaa';
                     let var2 = 'bbb';
                     var var3 = 'ccc';
-                    const fn1 = function(ee,ff) { console.log(arguments, ee, ff); const fn1 = function(gg,hh) { let var4
-                    = 123; } }.bind(this);
-                    const fn2 = function (eee,fff) { console.log(arguments); const fn1 = function (ggg,hhh) { let var4 =
-                    123; } }.bind(this);
+                    const fn1 = function(ee,ff) { 
+                        let a1 = null;
+                        console.log(arguments, ee, ff); 
+                        const fn1 = function(gg,hh) { 
+                            let var4 = 123; 
+                        }
+                        var a2 = ee + a1;
+                        a2 = ee + a1 + 111;
+                    }.bind(this);
+                    const fn2 = function (eee,fff) { 
+                        console.log(arguments); 
+                        const fn1 = function (ggg,hhh) { 
+                            let var4 = 123; 
+                        } 
+                    }.bind(this);
                     const reault = ( 123 + 345 );
-                    const fn3 = (aa,bb) => { console.log(aa,bb); const fn3 = (cc,dd) => { console.log(cc,dd); let var5 = 123; }; };
+                    const fn3 = (aa,bb) => { 
+                        console.log(aa,bb); 
+                        const fn3 = (cc,dd) => { 
+                            console.log(cc,dd); 
+                            let var5 = 123; 
+                        }; 
+                    };
                     const fn4 = (aaa,bbb) => 111;
                     const fn5 = function () { return estasi };
                     return 'OK';
