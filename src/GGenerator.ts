@@ -1,4 +1,5 @@
 import { BindTypes, TypeEventProxyHandler } from './GEnums';
+import { globalObject } from './global';
 export interface IVarOrConst {
     va?: null | TplVar,
     ct?: null | string
@@ -119,12 +120,12 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
     switch (nodeName) {
         case '#text':
             if (tempvar == null)
-                tempvar = document.createTextNode('');
+                tempvar = globalObject.document.createTextNode('');
             if (typeof attributes == 'string')
                 tempvar.textContent = attributes;
         case '#comment':
             if (tempvar == null)
-                tempvar = document.createComment('');
+                tempvar = globalObject.document.createComment('');
             if (typeof attributes == 'string') {
                 tempvar.textContent = attributes;
             } else {
@@ -144,7 +145,7 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
             }
             return tempvar;
         default:
-            const ele = document.createElement(nodeName);
+            const ele = globalObject.document.createElement(nodeName);
             appendChildsFromFnc(ele, fncChilds, objRoot);
             if (Array.isArray(attributes)) {
                 attributes.forEach((attr) => {

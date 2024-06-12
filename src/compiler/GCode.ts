@@ -3,6 +3,7 @@ import { GParse } from './GParse';
 import { IBindObject, IFormula, IObjParsed } from '../GGenerator';
 import { css2obj, log, style2css } from '../GUtils';
 import { AttrType, ProGen } from '../GGenerator';
+import { globalObject } from '../global';
 
 let gparse!: GParse;
 let gcont: number = 0;
@@ -375,7 +376,7 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                     //---
                     if (bind_tpl) {
                         const ct: any = (<any>bind_tpl).link.vorc.ct;
-                        const tpl = document.getElementById(ct);
+                        const tpl = globalObject.document.getElementById(ct);
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
