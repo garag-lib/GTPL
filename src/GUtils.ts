@@ -61,7 +61,7 @@ function logObject(obj: any, level: number = 0): void {
 
 export function log(...args: any): void {
     console.log('%c----------', 'font-weight:bold');
-    args.forEach(arg => {
+    args.forEach((arg: any) => {
         if (Array.isArray(arg)) {
             logArray(arg);
         } else if (typeof arg === 'object' && arg !== null) {

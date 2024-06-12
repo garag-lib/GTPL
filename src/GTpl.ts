@@ -473,11 +473,7 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
     const ctx: IGtplObject = getContext(gtpl, bind);
     const obj = { gtpl: ctx, bind: bind };
     const options: any = { passive: false };
-    if (
-      ["wheel", "mousewheel", "touchstart", "touchmove"].indexOf(
-        bind.prop.toLowerCase()
-      ) >= 0
-    )
+    if (["wheel", "mousewheel", "touchstart", "touchmove"].includes(bind.prop.toLowerCase()))
       options.passive = true;
     bind.ele.addEventListener(
       bind.prop,
