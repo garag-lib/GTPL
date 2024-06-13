@@ -80,12 +80,12 @@ export class GParse {
         return true;
     }
 
-    nop(all: boolean = false, cstop: string | null = null): boolean {
+    nop(all: boolean = false, cstop: string[] | null = null): boolean {
         let cnow: null | string = null;
         this.ln = null;
         while (true) {
             cnow = this.s[this.i];
-            if (cstop === cnow)
+            if (cstop && cstop.includes(cnow))
                 return true;
             let ok = (cnow == ' ' || cnow == '\t' || cnow == '\r' || cnow == '\n');
             if (!ok && all) {
@@ -422,69 +422,73 @@ export class GParse {
                     arrowIndex = null;
                 }
             }
-            if (!this.nop(true, cs))
+            const csarr = ['{'];
+            if (cs !== null)
+                csarr.push(cs);
+            if (!this.nop(true, csarr))
                 break;
-            if (cs !== null) {
-                let current = this.s[this.i];
-                if (current == '>') {
-                    if (!this.next())
+            let current = this.s[this.i];
+            if (current == '>') {
+                if (!this.next())
+                    break;
+                if (this.ln == '=' && arrowIndex !== null) {
+                    ignore.push(arr.splice(arrowIndex).map(v => v[0]));
+                    if (!this.nop(true, ['{']))
                         break;
-                    if (this.ln == '=' && arrowIndex !== null) {
-                        ignore.push(arr.splice(arrowIndex).map(v => v[0]));
-                        if (!this.nop(true, '{'))
-                            break;
-                        current = this.s[this.i];
-                        if (current == '{') {
-                            cstop.push('}');
-                        } else {
-                            ignore.pop();
-                        }
+                    current = this.s[this.i];
+                    if (current == '{') {
+                        cstop.push('}');
+                    } else {
+                        ignore.pop();
                     }
-                    arrowIndex = null;
-                    continue;
                 }
-                if (current == '(') {
-                    //console.log('current', current, cstop.join());
-                    ignoreall = true;
-                    cstop.pop();
-                    cstop.push(')');
-                    if (!this.next())
-                        break;
-                    continue;
-                }
-                if (current == ')') {
-                    //console.log('current', current, cstop.join());
+                arrowIndex = null;
+                continue;
+            }
+            if (current == '(') {
+                //console.log('current', current, cstop.join());
+                ignoreall = true;
+                cstop.pop();
+                cstop.push(')');
+                if (!this.next())
+                    break;
+                continue;
+            }
+            if (current == ')') {
+                //console.log('current', current, cstop.join());
+                cstop.pop();
+                cstop.push('{');
+                if (!this.next())
+                    break;
+                continue;
+            }
+            if (current == '{') {
+                //console.log('current', current, cstop.join());
+                if (ignoreall) {
                     ignoreall = false;
-                    cstop.pop();
-                    cstop.push('{');
-                    if (!this.next())
-                        break;
-                    continue;
+                } else {
+                    ignore.push([]);
                 }
-                if (current == '{') {
-                    //console.log('current', current, cstop.join());
-                    cstop.pop();
-                    cstop.push('}');
-                    if (!this.next())
-                        break;
-                    continue;
-                }
-                if (current == '}') {
-                    //console.log('current', current, cstop.join());
-                    cstop.pop();
-                    ignore.pop();
-                    //console.log('ignore pop', ignore[ignore.length - 1].join());
-                    if (!this.next())
-                        break;
-                    continue;
-                }
+                cstop.pop();
+                cstop.push('}');
+                if (!this.next())
+                    break;
+                continue;
+            }
+            if (current == '}') {
+                //console.log('current', current, cstop.join());
+                cstop.pop();
+                ignore.pop();
+                //console.log('ignore pop', ignore[ignore.length - 1].join());
+                if (!this.next())
+                    break;
+                continue;
             }
             ret = this.getVOrC();
             if (ret && ret.va) {
                 const va = ret.va;
                 if (palabrasReservadas.indexOf(va[0]) >= 0) {
                     if (ret.va[0] == 'function') {
-                        //console.log('function');
                         ignore.push([]);
                         cstop.push('(');
                     } else if (declares.includes(va[0])) {
@@ -493,7 +497,6 @@ export class GParse {
                         ret = this.getVOrC();
                         if (ret && ret.va) {
                             ignore[ignore.length - 1].push(ret.va[0]);
-                            //console.log('declare', va[0], ignore[ignore.length - 1].join());
                         }
                     }
                     continue;
@@ -517,7 +520,6 @@ export class GParse {
                         } else if (this.ln != ',' && arrowIndex !== null) {
                             arrowIndex = null;
                         }
-                        //console.log('valid', va);
                         arr.push(va);
                     }
                 }
