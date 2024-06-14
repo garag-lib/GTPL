@@ -273,28 +273,39 @@ export class GParse {
 
                             }
 
-                        } else if (cnow == '#') {
+                        } else if (cnow == '{') {
 
-                            if (!this.next())
-                                return false;
+                            while (true) {
 
-                            vorc = this.getVOrC();
+                                if (cnow == '}') {
+                                    if (!this.next())
+                                        return false;
+                                    break;
+                                }
 
-                            if (!vorc)
-                                return false;
+                                if (!this.next())
+                                    return false;
 
-                            if (!obj.params)
-                                obj.params = [];
+                                vorc = this.getVOrC();
 
-                            obj.params.push(vorc);
+                                if (!vorc)
+                                    return false;
 
-                            cnow = this.s[this.i];
+                                if (!obj.params)
+                                    obj.params = [];
+
+                                obj.params.push(vorc);
+
+                                cnow = this.s[this.i];
+
+                            }
 
                         } else {
 
                             break;
 
                         }
+
                     }
 
                     if (cnow == ';') {

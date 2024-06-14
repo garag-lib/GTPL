@@ -479,6 +479,7 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
       bind.prop,
       async function (event: any) {
         const result = await calculateBind(obj.gtpl, obj.bind, undefined, event);
+        //console.error(result, obj.bind, event);
         if (typeof result == "function") {
           if (obj.bind.link.params) {
             const arrval: any = [];
@@ -1484,6 +1485,8 @@ export class GTpl implements IGtplObject {
     value?: any
   ) {
     //log('launchChange' /*, type, bind, path, value*/ );
+    if( BindTypes.EVENT == bind.type )
+      return;
     const result = await calculateBind(this, bind, value);
     let gtpl: IGtplObject = this;
     switch (bind.type) {
