@@ -49,22 +49,6 @@ export class GParse {
         this.arr_acepted = Array.from(acepted).map((c: string) => c.charCodeAt(0));
     }
 
-    isAN(str: string, firstCanNumber: boolean = true) {
-        if (str == undefined)
-            return false;
-        let ok: boolean;
-        for (let i = 0, n = str.length, code = 0; i < n; i++) {
-            code = str.charCodeAt(i);
-            ok = (code > 64 && code < 91) || (code > 96 && code < 123) || this.arr_acepted.indexOf(code) >= 0;
-            if (firstCanNumber)
-                ok = ok || (code > 47 && code < 58);
-            if (ok)
-                continue;
-            return false
-        }
-        return true;
-    }
-
     checkStart(): boolean {
         return this.s[this.i] == '{' && this.s[this.i + 1] == '{';
     }
@@ -103,12 +87,34 @@ export class GParse {
         }
     }
 
+    isAN(str: string, firstCanNumber: boolean = true) {
+        if (str == undefined)
+            return false;
+        let ok: boolean;
+        for (let i = 0, n = str.length, code = 0; i < n; i++) {
+            code = str.charCodeAt(i);
+            ok = (code > 64 && code < 91) || (code > 96 && code < 123) || this.arr_acepted.indexOf(code) >= 0;
+            if (firstCanNumber)
+                ok = ok || (code > 47 && code < 58);
+            if (ok)
+                continue;
+            return false
+        }
+        return true;
+    }
+
     getVOrC(): null | IVarOrConst {
         let cnow = this.s[this.i];
         if (cnow == '"' || cnow == "'") {
             return { ct: this.getConst() };
         } else if (this.isAN(cnow, false)) {
             return { va: this.getVar() };
+        } else if (this.isNumber(cnow)) {
+            const temp = this.i;
+            const num = this.getNumber();
+            if (num !== null)
+                return { ct: num };
+            this.i = temp;
         }
         return null;
     }
@@ -155,6 +161,31 @@ export class GParse {
             str += cnow;
             clast = cnow;
         }
+    }
+
+    isNumber(char: string): boolean {
+        const code = char.charCodeAt(0);
+        return code >= 48 && code <= 57;
+    }
+
+    getNumber(): null | string {
+        let str = this.s[this.i];
+        let cnow: null | string = null;
+        let hasDecimalPoint = false;
+        while (true) {
+            if (!this.next())
+                break;
+            cnow = this.s[this.i];
+            if (cnow == '.') {
+                if (hasDecimalPoint)
+                    return null;
+                hasDecimalPoint = true;
+            } else if (!this.isNumber(cnow)) {
+                break;
+            }
+            str += cnow;
+        }
+        return str;
     }
 
     check(): boolean {
@@ -237,8 +268,11 @@ export class GParse {
                                 if (cnow == undefined)
                                     break;
 
-                                if (cnow == ')')
+                                if (cnow == ')') {
+                                    if (!this.next())
+                                        return false;
                                     continue;
+                                }
 
                                 while (true) {
 
