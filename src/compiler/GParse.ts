@@ -192,16 +192,19 @@ export class GParse {
 
                     obj.vorc = vorc;
 
-                    cnow = this.s[this.i];
-
-                    if (cnow == undefined)
-                        break;
-
                     while (true) {
+
+                        if (!this.nop())
+                            return false;
+
+                        cnow = this.s[this.i];
 
                         if (cnow == ':') {
 
                             if (!this.next())
+                                return false;
+
+                            if (!this.nop())
                                 return false;
 
                             const fnc = this.getVar();
@@ -216,27 +219,26 @@ export class GParse {
 
                             obj.functions.push(func);
 
-                            cnow = this.s[this.i];
+                            if (!this.nop())
+                                return false;
 
-                            if (cnow == undefined)
-                                break;
+                            cnow = this.s[this.i];
 
                             if (cnow == '(') {
 
                                 if (!this.next())
                                     return false;
 
+                                if (!this.nop())
+                                    return false;
+
                                 cnow = this.s[this.i];
 
-                                if (cnow == ')') {
+                                if (cnow == undefined)
+                                    break;
 
-                                    if (!this.next())
-                                        return false;
-
-                                    cnow = this.s[this.i];
-
+                                if (cnow == ')')
                                     continue;
-                                }
 
                                 while (true) {
 
@@ -245,12 +247,15 @@ export class GParse {
                                     if (!vorc)
                                         return false;
 
-                                    cnow = this.s[this.i];
-
                                     if (!func.params)
                                         func.params = [];
 
                                     func.params.push(vorc);
+
+                                    if (!this.nop())
+                                        return false;
+
+                                    cnow = this.s[this.i];
 
                                     if (cnow == undefined)
                                         break;
@@ -258,14 +263,16 @@ export class GParse {
                                     if (cnow == ',') {
                                         if (!this.next())
                                             return false;
-                                        cnow = this.s[this.i];
+                                        if (!this.nop())
+                                            return false;
                                         continue;
                                     }
 
                                     if (cnow == ')') {
                                         if (!this.next())
                                             return false;
-                                        cnow = this.s[this.i];
+                                        if (!this.nop())
+                                            return false;
                                         break;
                                     }
 
@@ -273,44 +280,61 @@ export class GParse {
 
                             }
 
-                        } else if (cnow == '{') {
+                            continue;
 
-                            while (true) {
+                        }
 
-                                if (cnow == '}') {
-                                    if (!this.next())
-                                        return false;
-                                    break;
-                                }
+                        break;
 
+                    }
+
+                    cnow = this.s[this.i];
+
+                    if (cnow == '{') {
+
+                        if (!this.next())
+                            return false;
+
+                        while (true) {
+
+                            if (!this.nop())
+                                return false;
+
+                            cnow = this.s[this.i];
+
+                            if (cnow == undefined)
+                                break;
+
+                            if (cnow == '}') {
                                 if (!this.next())
                                     return false;
-
-                                vorc = this.getVOrC();
-
-                                if (!vorc)
+                                if (!this.nop())
                                     return false;
-
-                                if (!obj.params)
-                                    obj.params = [];
-
-                                obj.params.push(vorc);
-
-                                cnow = this.s[this.i];
-
+                                break;
                             }
 
-                        } else {
+                            vorc = this.getVOrC();
 
-                            break;
+                            if (!vorc)
+                                return false;
+
+                            if (!obj.params)
+                                obj.params = [];
+
+                            obj.params.push(vorc);
 
                         }
 
                     }
 
+                    cnow = this.s[this.i];
+
                     if (cnow == ';') {
 
                         if (!this.next())
+                            return false;
+
+                        if (!this.nop())
                             return false;
 
                         const index = this.getVar(false);
@@ -318,11 +342,17 @@ export class GParse {
                         if (index === null)
                             return false;
 
+                        if (!this.nop())
+                            return false;
+
                         cnow = this.s[this.i];
 
                         if (cnow == ';') {
 
                             if (!this.next())
+                                return false;
+
+                            if (!this.nop())
                                 return false;
 
                             const target = this.getVar(false);
