@@ -210,25 +210,30 @@ async function reduceFnc(
   index?: number,
   initval?: any
 ): Promise<any> {
-  if (index == undefined) index = 0;
-  const func = functions[index++];
+  if (index == undefined)
+    index = 0;
+  const func = functions[index];
   const ctx = gtpl.getContext(func.name[0]);
   const fnc: Function = reduceVar(ctx, func.name);
-  const arrval: any[] = [];
-  if (func.params) {
-    func.params.forEach((param: IVarOrConst) => {
-      if (param.ct != undefined) arrval.push(param.ct);
-      else if (param.va != undefined) arrval.push(reduceVar(gtpl, param.va));
-    });
-  }
-  if (initval != undefined) arrval.push(initval);
-  try {
+  if (fnc) {
+    const arrval: any[] = [];
+    if (func.params) {
+      func.params.forEach((param: IVarOrConst) => {
+        if (param.ct != undefined)
+          arrval.push(param.ct);
+        else if (param.va != undefined)
+          arrval.push(reduceVar(gtpl, param.va));
+      });
+    }
+    if (initval != undefined)
+      arrval.push(initval);
     initval = await fnc.apply(ctx.Root, arrval);
-  } catch (ex: any) {
-    STACK(ex.message, fnc);
-    initval = undefined;
+  } else {
+    STACK('fnc undefined', index, functions);
   }
-  if (index >= functions.length) return initval;
+  index++;
+  if (index >= functions.length)
+    return initval;
   return await reduceFnc(gtpl, functions, index, initval);
 }
 
@@ -249,13 +254,7 @@ async function calculateBind(me: IGtplObject, bind: IBindObject, value?: any, ex
     if (extraarguments) {
       arrval.push(extraarguments);
     }
-    try {
-      //console.log(fnc, gtpl.Root, arrval);
-      result = await fnc.apply(gtpl.Root, arrval);
-    } catch (ex: any) {
-      STACK(ex.message, fnc);
-      result = undefined;
-    }
+    result = await fnc.apply(gtpl.Root, arrval);
   } else {
     if (bind.link.vorc) {
       if (bind.link.vorc.va != undefined)
@@ -915,6 +914,7 @@ async function updateSTYLEbind(
   memValues.set(bind, result);
   //---
   if (bind.prop) {
+    console.log(bind);
     bind.ele.style[bind.prop] = result;
   }
   //---
