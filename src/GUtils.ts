@@ -24,51 +24,10 @@ export function isStaticType(val: any): boolean {
     return typeArray.includes(type);
 }
 
-function logArray(array: any[], level: number = 0): void {
-    const prefix = '  '.repeat(level); // Indentation for nested arrays
-    console.log(`${prefix}Array [`);
-    array.forEach(item => {
-        if (Array.isArray(item)) {
-            logArray(item, level + 1);
-        } else if (typeof item === 'object' && item !== null) {
-            logObject(item, level + 1);
-        } else {
-            console.log(`${prefix}  ${item}`);
-        }
-    });
-    console.log(`${prefix}]`);
-}
-
-function logObject(obj: any, level: number = 0): void {
-    const prefix = '  '.repeat(level); // Indentation for nested objects
-    console.log(`${prefix}{`);
-    for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            const value = obj[key];
-            if (Array.isArray(value)) {
-                console.log(`${prefix}  ${key}: `);
-                logArray(value, level + 1);
-            } else if (typeof value === 'object' && value !== null) {
-                console.log(`${prefix}  ${key}: `);
-                logObject(value, level + 1);
-            } else {
-                console.log(`${prefix}  ${key}: ${value}`);
-            }
-        }
-    }
-    console.log(`${prefix}}`);
-}
-
 export function log(...args: any): void {
     console.log('%c----------', 'font-weight:bold');
     args.forEach((arg: any) => {
-        if (Array.isArray(arg)) {
-            logArray(arg);
-        } else if (typeof arg === 'object' && arg !== null) {
-            logObject(arg);
-        } else {
-            console.log(arg);
-        }
+        console.log(arg);
     });
     console.log('%c----------', 'font-weight:bold');
 }
