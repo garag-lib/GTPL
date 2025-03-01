@@ -1,0 +1,360 @@
+<div style="width:100%;min-height:100%;background-color:#fff">
+
+    <div style="display:none">{{
+        
+        if( this.Origen === undefined ) {
+            this.Origen = 0;
+        }
+        
+        this.changeFecha = function(tipo,sum) {
+            let str = this.parametros.FechaWidget;
+            let cmps = str.split(' ')[0].split('-');
+            let dia = parseInt(cmps[2],10);
+            let mes = parseInt(cmps[1],10);
+            let anio = parseInt(cmps[0],10);
+            switch( tipo ) {
+                case 'dia':
+                    let fecha = new Date( anio, mes - 1, dia );
+                    let unix = fecha.getTime();
+                    unix += ( sum * 24 * 3600 * 1000 );
+                    fecha = new Date(unix);
+                    anio = fecha.getFullYear();
+                    mes = fecha.getMonth() + 1;
+                    dia = fecha.getDate();
+                break;
+                case 'mes':
+                    mes += sum;
+                    if( mes > 12 )
+                        mes = 1;
+                    if( mes <= 0 )
+                        mes = 12;
+                break;
+                case 'anio':
+                    anio += sum;
+                break;
+            }
+            if( dia < 10 ) dia = '0' + dia;
+            if( mes < 10 ) mes = '0' + mes;
+            this.parametros.FechaWidget = anio + '-' + mes + '-' + dia + ' 00:00:00';
+            this.load();
+            
+        }.bind(this);
+
+        this.izquierda = function(event,tipo) {
+            this.changeFecha(tipo,-1);            
+        };
+
+        this.derecha = function(event,tipo) {
+            this.changeFecha(tipo,+1);
+        };
+
+        this.format = function(str) {
+            const cmps = str.split(' ')[0].split('-');
+            let dia = parseInt(cmps[2],10);
+            let mes = parseInt(cmps[1],10);
+            let anio = parseInt(cmps[0],10);
+            if( dia < 10 ) dia = '0' + dia;
+            if( mes < 10 ) mes = '0' + mes;
+            return dia + '/' + mes + '/' + anio;
+        }
+        
+        this.formatt = function(tipo,str) {
+            let ret = '?';
+            let cmps = str.split(' ')[0].split('-');
+            switch( tipo ) {
+                case 'dia':
+                    ret = cmps[2];
+                    break;
+                case 'mes':
+                    ret =  cmps[1];
+                    break;
+                case 'anio':
+                    ret =  cmps[0];
+                    break;
+            }
+            return ret;
+        }
+
+        this.estilo_titulo = [
+            'font-size:2em',
+            'font-weight:bold',
+            'text-align:center'
+        ].join(';');
+
+        this.estilo_anio = [
+            'padding-top:10px',
+            'font-size:1.5em',
+            'font-weight:bold',
+            'text-align:center',
+        ].join(';');
+
+        this.estilo_flechas = [
+            'font-weight:normal',
+            'font-size:0.8em',
+            'line-height:1em',
+            'cursor:pointer',
+            'display:inline-block',
+            'background-color:#48f',
+            'color:#fff',
+            'border-radius:4px',
+            'user-select:none',
+            'padding:0 4px 0 4px'
+        ].join(';');
+
+        this.estilo_linea = [
+            'padding:5px',
+            'font-size:1.2em',
+            'background-color:#fff',
+            'border-bottom:1px solid #000'
+        ].join(';');
+
+        this.estilo_fechas = [
+            'display:flex',
+            'font-family:monospace',
+            'align-items: center',
+            'flex-direction:row',
+            'grid-template-columns: 1fr auto auto',
+            'width:100%',
+            'font-size:0.8em'
+        ].join(';');
+
+        this.estilo_fecha_color = function(color) {
+            return [
+            'display:inline-block',
+            'width:0.8em',
+            'height:0.8em',
+            'background-color:'+color
+            ].join(';');
+        }
+
+        this.fechas_visibles = false;
+
+        this.fechasvisibles = function(event) {
+            if( this.data.vacaciones.fechasAsignadas && this.data.vacaciones.fechasAsignadas.length ) {
+                this.fechas_visibles = !this.fechas_visibles;
+            }
+        }
+        
+        this.saldo_visible_teoricas = false;
+        this.saldo_visible_trabajadas = false;
+        this.saldo_visible_ct = false;
+        this.saldo_visible = false;
+        
+        this.saldovisible = function(event,clave) {
+            if( this.data.horassemana.fechasComprobacion && this.data.horassemana.fechasComprobacion.length ) {
+                this[clave] = !this[clave];
+            }
+        }
+
+        this.estilo_condicional = function(fechas) {
+            const st = [
+                'float:right'
+            ];
+            if( fechas && fechas.length ) {
+                st.push('user-select:none');
+                st.push('color:#00f');
+                st.push('font-weight:bold');
+                st.push('cursor:pointer');
+            } else {
+                st.push('user-select:text');
+                st.push('color:#000');
+                st.push('font-weight:normal');
+                st.push('cursor:auto');
+            }
+            return st.join(';');
+        }
+        
+        this.estilos_pestanias = [
+                'display:flex',
+                'flex-direction:' + ( this.Origen == 1 ? 'column' : 'row' ),
+                'cursor:pointer',
+                'user-select:none',
+                'padding:10px',
+                'justify-content:center',
+                'align-items:stretch',
+            ].join(';');
+
+        this.estilo_pestania = function(seleccion) {
+            const st = [
+                'padding:10px',
+                'align-content:center',
+                'text-align:center'
+            ];
+            if( seleccion == '-' ) {
+                st.push('border-bottom:1px solid #000');
+                st.push('flex-grow:1');
+            } else if( this.pestania == seleccion ) {
+                st.push('border:1px solid #000');
+                if( this.Origen == 0 )
+                    st.push('border-bottom: 1px solid #fff');
+            } else {
+                st.push('border:1px solid #000');
+                st.push('background-color: #eee;');
+            }
+            if( this.Origen == 0 ) {
+                if( seleccion == 'vacaciones' )
+                    st.push('border-top-left-radius:10px');
+                if( seleccion == 'solicitudes' )
+                    st.push('border-top-right-radius:10px');
+            }
+            return st.join(';');
+        }
+        
+        this.dameFechas = function(row) {
+            if( row.fechaDesde == row.fechaHasta )
+                return this.format(row.fechaDesde);
+            return this.format(row.fechaDesde) + ' - ' + this.format(row.fechaHasta);
+        }.bind(this);
+        
+        if( this.parametros.PestaniaWidget && this.parametros.PestaniaWidget != '' ) {
+            this.pestania = this.parametros.PestaniaWidget;
+        } else {
+            this.pestania = 'vacaciones';
+        }
+        
+        this.fncmas = function(horas){
+            return ( horas.substr(0,1) != '-' ? '+' : '' ) + horas;
+        }
+        
+        this.change_pestania = function(event,sel) {
+            console.log(event,sel);
+            if( this.pestania != sel ) {
+                this.pestania = sel;
+                this.parametros.PestaniaWidget = sel;
+                if( this.onChange ) {
+                     this.onChange();
+                }   
+            } else {
+                const rel = event.target.getAttribute('rel');
+                if( rel == 'menos' ) {
+                    this.changeFecha('dia',-7);
+                }
+                if( rel == 'mas' ) {
+                    this.changeFecha('dia',+7);
+                }
+            }
+        }
+
+        }}</div>
+
+    <!-- <div style="{{ estilo_titulo }}">{{ titulo }}</div> -->
+
+    <div style="{{ estilo_anio }}" g-notif="Origen">
+        <span style="{{ estilo_flechas }}" onclick="{{ izquierda{'dia'} }}"><</span>
+        <span>{{ parametros.FechaWidget:formatt('dia') }}</span>
+        <span style="{{ estilo_flechas }}" onclick="{{ derecha{'dia'} }}">></span>
+        <span> / </span>
+        <span style="{{ estilo_flechas }}" onclick="{{ izquierda{'mes'} }}"><</span>
+        <span>{{ parametros.FechaWidget:formatt('mes') }}</span>
+        <span style="{{ estilo_flechas }}" onclick="{{ derecha{'mes'} }}">></span>
+        <span> / </span>
+        <span style="{{ estilo_flechas }}" onclick="{{ izquierda{'anio'} }}"><</span>
+        <span>{{ parametros.FechaWidget:formatt('anio') }}</span>
+        <span style="{{ estilo_flechas }}" onclick="{{ derecha{'anio'} }}">></span>
+    </div>
+
+    <div style="{{ estilos_pestanias }}">
+        <span style="{{ pestania:estilo_pestania('-') }}" g-notif="Origen"></span>
+        <span style="{{ pestania:estilo_pestania('vacaciones') }}" 
+              onclick="{{ this.change_pestania{'vacaciones'} }}">Vacaciones Año {{ data.vacaciones.anio }}</span>
+        <span style="{{ pestania:estilo_pestania('horassemana') }}" 
+              onclick="{{ this.change_pestania{'horassemana'} }}">
+            <span style="white-space: nowrap;">
+                <span style="color:#00f;font-weight:bold;display:inline-block;padding:0 4px 0 4px" rel="menos"><</span>
+                Semana
+                <span style="color:#00f;font-weight:bold;display:inline-block;padding:0 4px 0 4px" rel="mas">></span>
+            </span>
+            {{ data.horassemana.semana:format }}
+        </span>
+        <span style="{{ pestania:estilo_pestania('solicitudes') }}" 
+              onclick="{{ this.change_pestania{'solicitudes'} }}">Solicitudes Año {{ data.vacaciones.anio }}</span>
+        <span style="{{ pestania:estilo_pestania('-') }}" g-notif="Origen"></span>
+    </div>
+
+    <div g-switch="pestania" style="margin:10px">
+
+        <div g-case="'vacaciones'">
+            <div style="{{ estilo_linea }}">Días <span style="float:right">{{ data.vacaciones.numDias }}</span></div>
+            <div style="{{ estilo_linea }}">
+                Días asignados
+                <span style="{{ data.vacaciones.fechasAsignadas:estilo_condicional }}" onclick="{{ fechasvisibles }}">
+                    {{ data.vacaciones.numDiasAsignados }}
+                </span>
+                <div g-if="fechas_visibles">
+                    <div g-for="data.vacaciones.fechasAsignadas;index;row" style="{{ estilo_fechas }}">
+                        <span style="flex-grow:1;padding-right:5px;text-align: right;">{{ row:dameFechas }}</span>
+                        <span style="{{ row.color:estilo_fecha_color }}"></span> 
+                    </div>
+                </div>
+            </div>
+            <div style="{{ estilo_linea }}">Días solicitables <span style="float:right">{{
+                    data.vacaciones.numDiasSolicitables }}</span></div>
+            <div style="{{ estilo_linea }}">Días consumidos <span style="float:right">{{
+                    data.vacaciones.numDiasConsumidos }}</span></div>
+            <div style="{{ estilo_linea }}">Días pendientes <span style="float:right">{{
+                    data.vacaciones.numDiasPendientes }}</span></div>
+        </div>
+
+        <div g-case="'horassemana'">
+            
+            <div style="{{ estilo_linea }}">
+                Teóricas
+                <span style="{{ data.horassemana.fechasComprobacion:estilo_condicional }}" onclick="{{ saldovisible{'saldo_visible_teoricas'} }}">
+                    {{ data.horassemana.teoricas }}
+                </span>
+                <div g-if="saldo_visible_teoricas">
+                    <div g-for="data.horassemana.fechasComprobacion;index;row" style="{{ estilo_fechas }}">
+                        <span style="flex-grow:1;text-align: right;">{{ row.fecha:format }} -> {{ row.teoricas }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="{{ estilo_linea }}">
+                Trabajadas
+                <span style="{{ data.horassemana.fechasComprobacion:estilo_condicional }}" onclick="{{ saldovisible{'saldo_visible_trabajadas'} }}">
+                    {{ data.horassemana.trabajadas }}
+                </span>
+                <div g-if="saldo_visible_trabajadas">
+                    <div g-for="data.horassemana.fechasComprobacion;index;row" style="{{ estilo_fechas }}">
+                        <span style="flex-grow:1;text-align: right;">{{ row.fecha:format }} -> {{ row.trabajadas }}</span> 
+                    </div>
+                </div>
+            </div>
+            
+            <div style="{{ estilo_linea }}">
+                Incidencia retribuidas
+                <span style="{{ data.horassemana.fechasComprobacion:estilo_condicional }}" onclick="{{ saldovisible{'saldo_visible_ct'} }}">
+                    {{ data.horassemana.incidenciaCT }}
+                </span>
+                <div g-if="saldo_visible_ct">
+                    <div g-for="data.horassemana.fechasComprobacion;index;row" style="{{ estilo_fechas }}">
+                        <span style="flex-grow:1;text-align: right;">{{ row.fecha:format }} -> {{ row.incidenciaCT }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="{{ estilo_linea }}">
+                Saldo
+                <span style="{{ data.horassemana.fechasComprobacion:estilo_condicional }}" onclick="{{ saldovisible{'saldo_visible'} }}">
+                    {{ data.horassemana.saldo }}
+                </span>
+                <div g-if="saldo_visible">
+                    <div g-for="data.horassemana.fechasComprobacion;index;row" style="{{ estilo_fechas }}">
+                        <span style="flex-grow:1;padding-right:5px;text-align: right;">{{ row.fecha:format }} {{ row.saldo:fncmas }}</span>
+                        <span style="{{ row.color:estilo_fecha_color }}"></span> 
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+
+        <div g-case="'solicitudes'">
+            <div style="{{ estilo_linea }}">Solicitadas <span style="float:right">{{ data.solicitudes.solicitadas }}</span></div>
+            <div style="{{ estilo_linea }}">Pendientes <span style="float:right">{{ data.solicitudes.pendientes }}</span></div>
+            <div style="{{ estilo_linea }}">Aceptadas <span style="float:right">{{ data.solicitudes.aceptadas }}</span></div>
+            <div style="{{ estilo_linea }}">Rechazadas <span style="float:right">{{ data.solicitudes.rechazadas }}</span></div>
+        </div>
+
+    </div>
+
+</div>

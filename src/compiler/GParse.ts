@@ -1,5 +1,4 @@
-import { IVarOrConst, IFunction, IObjParsed } from '../GGenerator';
-import { TplVar } from '../GGenerator';
+import { IVarOrConst, IFunction, IObjParsed, TplVar } from '../GGenerator';
 import { globalObject } from '../global.js';
 
 const palabrasReservadas = [
@@ -50,11 +49,11 @@ export class GParse {
     }
 
     checkStart(): boolean {
-        return this.s[this.i] == '{' && this.s[this.i + 1] == '{';
+        return (this.i + 1 < this.l) && (this.s[this.i] === '{' && this.s[this.i + 1] === '{');
     }
 
     checkEnd(): boolean {
-        return this.s[this.i] == '}' && this.s[this.i + 1] == '}';
+        return (this.i + 1 < this.l) && (this.s[this.i] === '}' && this.s[this.i + 1] === '}');
     }
 
     next() {
@@ -347,6 +346,13 @@ export class GParse {
                                 break;
                             }
 
+                            // Si se encuentra una coma, se omite y se continúa
+                            if (cnow == ',') {
+                                if (!this.next())
+                                    return false;
+                                continue;
+                            }
+
                             vorc = this.getVOrC();
 
                             if (!vorc)
@@ -356,9 +362,7 @@ export class GParse {
                                 obj.params = [];
 
                             obj.params.push(vorc);
-
                         }
-
                     }
 
                     cnow = this.s[this.i];
@@ -476,136 +480,284 @@ export class GParse {
     }
 
     findVars(str: string): TplVar[] {
-        const s = this.s;
-        const l = this.l;
-        const i = this.i;
-        this.s = str;
-        this.l = str.length;
+
+        let codeToParse = str.trim();
+
+        // Guardar estado original
+        const originalS = this.s;
+        const originalI = this.i;
+        const originalL = this.l;
+
+        // Inicializar con el código a analizar
+        this.s = codeToParse;
+        this.l = codeToParse.length;
         this.i = 0;
-        let arr: TplVar[] = [], ret: null | IVarOrConst = null;
-        let ignoreall: boolean = false;
-        let cstop: string[] = [];
-        let ignore: any = [[]];
-        let declares = ['const', 'var', 'let'];
-        let arrowIndex: null | number = null;
-        while (true) {
-            let cs = cstop.length ? cstop[cstop.length - 1] : null;
-            if (arrowIndex !== null) {
-                if (cs == '}' || cs === null) {
-                    cs = '>';
+        let freeVars: TplVar[] = [];
+        // Pila de ámbitos para registrar variables declaradas localmente
+        let ignoreStack: string[][] = [[]];
+
+        const addToIgnore = (name: string) => {
+            ignoreStack[ignoreStack.length - 1].push(name);
+        };
+
+        const isIgnored = (name: string) => {
+            return ignoreStack.some(ctx => ctx.indexOf(name) >= 0);
+        };
+
+        const skipWhitespace = () => {
+            while (this.i < this.l && /\s/.test(this.s[this.i])) {
+                this.i++;
+            }
+        };
+
+        const skipStringLiteral = (quote: string) => {
+            this.i++; // saltar la apertura
+            while (this.i < this.l) {
+                if (this.s[this.i] === '\\') {
+                    this.i += 2;
+                } else if (this.s[this.i] === quote) {
+                    this.i++;
+                    break;
                 } else {
-                    arrowIndex = null;
+                    this.i++;
                 }
             }
-            const csarr = ['{'];
-            if (cs !== null)
-                csarr.push(cs);
-            if (!this.nop(true, csarr))
-                break;
-            let current = this.s[this.i];
-            if (current == '>') {
-                if (!this.next())
+        };
+
+        const skipTemplateLiteral = () => {
+            this.i++; // saltar el backtick de apertura
+            while (this.i < this.l) {
+                if (this.s[this.i] === '\\') {
+                    this.i += 2;
+                } else if (this.s[this.i] === '$' && this.s[this.i + 1] === '{') {
+                    this.i += 2; // saltar "${"
+                    let braceCount = 1;
+                    const exprStart = this.i;
+                    while (this.i < this.l && braceCount > 0) {
+                        if (this.s[this.i] === '{') {
+                            braceCount++;
+                        } else if (this.s[this.i] === '}') {
+                            braceCount--;
+                        }
+                        this.i++;
+                    }
+                    // Procesar la expresión incrustada de forma recursiva
+                    const expr = this.s.substring(exprStart, this.i - 1);
+                    const subVars = this.findVars(expr);
+                    subVars.forEach(token => {
+                        if (!isIgnored(token[0]) && !freeVars.some(v => v[0] === token[0])) {
+                            freeVars.push(token);
+                        }
+                    });
+                } else if (this.s[this.i] === '`') {
+                    this.i++; // saltar el backtick de cierre
                     break;
-                if (this.ln == '=' && arrowIndex !== null) {
-                    ignore.push(arr.splice(arrowIndex).map(v => v[0]));
-                    if (!this.nop(true, ['{']))
-                        break;
-                    current = this.s[this.i];
-                    if (current == '{') {
-                        cstop.push('}');
-                    } else {
-                        ignore.pop();
+                } else {
+                    this.i++;
+                }
+            }
+        };
+
+        // Utiliza el método getVOrC() existente para extraer tokens (variables o literales)
+        const extractToken = (): TplVar | null => {
+            const token = this.getVOrC();
+            if (token && token.va) {
+                return token.va;
+            }
+            return null;
+        };
+
+        // Intenta procesar parámetros de arrow function: (a, b) =>
+        const tryParseArrowParams = () => {
+            if (this.s[this.i] !== '(') return false;
+            const startParen = this.i;
+            let parenCount = 0;
+            while (this.i < this.l) {
+                const ch = this.s[this.i];
+                if (ch === '(') {
+                    parenCount++;
+                } else if (ch === ')') {
+                    parenCount--;
+                    if (parenCount === 0) break;
+                }
+                this.i++;
+            }
+            const paramsStr = this.s.substring(startParen + 1, this.i);
+            this.i++; // saltar el cierre ')'
+            skipWhitespace();
+            if (this.s.substr(this.i, 2) === '=>') {
+                paramsStr.split(',').forEach(param => {
+                    const trimmed = param.trim();
+                    if (trimmed) addToIgnore(trimmed);
+                });
+                this.i += 2; // saltar "=>"
+                return true;
+            }
+            return false;
+        };
+
+        // Detección especial para la cláusula catch: catch(error)
+        const tryParseCatchClause = () => {
+            if (this.s.substr(this.i, 5) === "catch") {
+                this.i += 5; // saltar "catch"
+                skipWhitespace();
+                if (this.s[this.i] === '(') {
+                    this.i++; // saltar "("
+                    skipWhitespace();
+                    const errorToken = extractToken();
+                    if (errorToken) {
+                        addToIgnore(errorToken[0]);
+                    }
+                    // Saltar hasta el cierre ")"
+                    while (this.i < this.l && this.s[this.i] !== ')') {
+                        this.i++;
+                    }
+                    if (this.s[this.i] === ')') {
+                        this.i++;
                     }
                 }
-                arrowIndex = null;
-                continue;
+                return true;
             }
-            if (current == '(') {
-                //console.log('current', current, cstop.join());
-                ignoreall = true;
-                cstop.pop();
-                cstop.push(')');
-                if (!this.next())
-                    break;
-                continue;
-            }
-            if (current == ')') {
-                //console.log('current', current, cstop.join());
-                cstop.pop();
-                cstop.push('{');
-                if (!this.next())
-                    break;
-                continue;
-            }
-            if (current == '{') {
-                //console.log('current', current, cstop.join());
-                if (ignoreall) {
-                    ignoreall = false;
-                } else {
-                    ignore.push([]);
+            return false;
+        };
+
+        // Manejo especial para declaraciones de funciones
+        const tryParseFunctionDeclaration = () => {
+            // Si se detecta la palabra "function"
+            if (this.s.substr(this.i, 8) === "function") {
+                this.i += 8;
+                // Opcionalmente, se puede extraer el nombre de la función
+                skipWhitespace();
+                const maybeName = extractToken();
+                if (maybeName) {
+                    addToIgnore(maybeName[0]);
                 }
-                cstop.pop();
-                cstop.push('}');
-                if (!this.next())
-                    break;
+                skipWhitespace();
+                // Procesar los parámetros que vienen entre paréntesis
+                if (this.s[this.i] === '(') {
+                    this.i++; // saltar '('
+                    let params = "";
+                    while (this.i < this.l && this.s[this.i] !== ')') {
+                        params += this.s[this.i];
+                        this.i++;
+                    }
+                    if (this.s[this.i] === ')') {
+                        this.i++; // saltar ')'
+                    }
+                    params.split(',').forEach(param => {
+                        const trimmed = param.trim();
+                        if (trimmed) addToIgnore(trimmed);
+                    });
+                }
+                return true;
+            }
+            return false;
+        };
+
+        // Palabras clave para declaraciones (además de las reservadas)
+        const declares = ['const', 'var', 'let', 'function'];
+
+        // Bucle principal de análisis
+        while (this.i < this.l) {
+            skipWhitespace();
+            if (this.i >= this.l) break;
+            const ch = this.s[this.i];
+
+            // Procesar cláusula catch para declarar su variable
+            if (this.s.substr(this.i, 5) === "catch") {
+                tryParseCatchClause();
                 continue;
             }
-            if (current == '}') {
-                //console.log('current', current, cstop.join());
-                cstop.pop();
-                ignore.pop();
-                //console.log('ignore pop', ignore[ignore.length - 1].join());
-                if (!this.next())
-                    break;
+
+            // Procesar declaraciones de función
+            if (this.s.substr(this.i, 8) === "function") {
+                tryParseFunctionDeclaration();
                 continue;
             }
-            ret = this.getVOrC();
-            if (ret && ret.va) {
-                const va = ret.va;
-                if (palabrasReservadas.indexOf(va[0]) >= 0) {
-                    if (ret.va[0] == 'function') {
-                        ignore.push([]);
-                        cstop.push('(');
-                    } else if (declares.includes(va[0])) {
-                        if (!this.nop(true))
-                            break;
-                        ret = this.getVOrC();
-                        if (ret && ret.va) {
-                            ignore[ignore.length - 1].push(ret.va[0]);
-                        }
+
+            // Saltar comentarios de línea y bloque
+            if (ch === '/' && this.s[this.i + 1] === '/') {
+                this.i += 2;
+                while (this.i < this.l && this.s[this.i] !== '\n') this.i++;
+                continue;
+            }
+            if (ch === '/' && this.s[this.i + 1] === '*') {
+                this.i += 2;
+                while (this.i < this.l && !(this.s[this.i] === '*' && this.s[this.i + 1] === '/')) this.i++;
+                this.i += 2;
+                continue;
+            }
+            // Saltar literales de cadena
+            if (ch === '"' || ch === "'") {
+                skipStringLiteral(ch);
+                continue;
+            }
+            // Procesar template literal
+            if (ch === '`') {
+                skipTemplateLiteral();
+                continue;
+            }
+            // Control de ámbito: cuando se abre un bloque, se agrega un nuevo contexto; se elimina al cerrar
+            if (ch === '{') {
+                ignoreStack.push([]);
+                this.i++;
+                continue;
+            }
+            if (ch === '}') {
+                ignoreStack.pop();
+                this.i++;
+                continue;
+            }
+            // Detectar parámetros de arrow function
+            if (ch === '(') {
+                const prevI = this.i;
+                if (tryParseArrowParams()) continue;
+                else this.i = prevI;
+            }
+
+            // Intentar extraer un token (variable o literal numérico)
+            const token = extractToken();
+            if (token) {
+                // Si el token es palabra clave de declaración, se espera el siguiente token (la variable a declarar)
+                if (declares.indexOf(token[0]) >= 0) {
+                    skipWhitespace();
+                    const declared = extractToken();
+                    if (declared) {
+                        addToIgnore(declared[0]);
                     }
                     continue;
                 }
-                if (globalObject.hasOwnProperty(va[0]))
-                    continue;
-                if (this.ln == '.') {
+                // Filtrar variables globales (por ejemplo, Math, etc.) y palabras reservadas
+                if (globalObject[token[0]] !== undefined) {
                     continue;
                 }
-                if (ignoreall) {
-                    ignore[ignore.length - 1].push(va[0]);
-                } else {
-                    if (ignore.length) {
-                        if (ignore.some((list: any) => list.includes(va[0]))) {
-                            continue;
-                        }
-                    }
-                    if (!arr.some(list => list[0] == va[0])) {
-                        if (this.ln == '(') {
-                            arrowIndex = arr.length;
-                        } else if (this.ln != ',' && arrowIndex !== null) {
-                            arrowIndex = null;
-                        }
-                        arr.push(va);
-                    }
+                if (palabrasReservadas.indexOf(token[0]) >= 0) {
+                    continue;
                 }
-            } else if (!this.next()) {
-                break;
+                // Evitar tokens que formen parte de la sintaxis de un objeto (si le sigue ":")
+                let j = this.i;
+                while (j < this.l && /\s/.test(this.s[j])) { j++; }
+                if (this.s[j] === ':') {
+                    continue;
+                }
+                // Si ya se declaró en algún ámbito, se ignora
+                if (isIgnored(token[0])) continue;
+                // Se agrega a freeVars solo si aún no está incluido
+                if (!freeVars.some(v => v[0] === token[0])) {
+                    freeVars.push(token);
+                }
+                continue;
             }
+            // Avanzar un carácter para evitar bucles infinitos
+            this.i++;
         }
-        this.s = s;
-        this.i = i;
-        this.l = l;
-        return arr;
+
+        // Restaurar estado original
+        this.s = originalS;
+        this.i = originalI;
+        this.l = originalL;
+        return freeVars;
     }
+
 
 }

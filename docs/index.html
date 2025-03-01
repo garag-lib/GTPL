@@ -52,21 +52,21 @@
     <!-- ##################################################### -->
     <h2>Variables, constants, and functions on them</h2>
     <div class="code-block">
-        <pre><code class="language-html"></code></pre>>
+        <pre><code class="language-html"></code></pre>
         <template>
             <div class="preload">load default data: <b>{{
-                this.fnc = function(...params) { return 'return: ' + [...params].join(); }
-                this.foo = 'hello';
-                this.loaded = true;
-                return 'OK';
-            }}</b></div>
+                    this.fnc = function(...params) { return 'return: ' + [...params].join(); }
+                    this.foo = 'hello';
+                    this.loaded = true;
+                    return 'OK';
+                    }}</b></div>
             <div g-if="loaded">
                 <div>constant: <b>{{ 'constant' }}</b></div>
                 <div>constant + function: <b>
-                    {{ 'constant':fnc }} 
-                    {{ 'constant':fnc() }} 
-                    {{ 'constant':fnc('123') }}
-                </b></div>
+                        {{ 'constant':fnc }}
+                        {{ 'constant':fnc() }}
+                        {{ 'constant':fnc('123') }}
+                    </b></div>
                 <div>foo: <b>{{ foo }}</b></div>
             </div>
             <button onclick="{{  }}">

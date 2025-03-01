@@ -7,7 +7,8 @@
     "build": "npx tsc",
     "bundle_dev_www": "webpack --mode development --config webpack.config.js",
     "bundle_www": "webpack --mode production --config webpack.config.js",
-    "server": "php -S localhost:8080"
+    "server": "php -S localhost:8080",
+    "test-parser": "ts-node --project tsconfig-webpack.json tests/parser.ts"
   },
   "author": "Manuel Peliz",
   "license": "LGPL-2.1 license",
@@ -18,6 +19,7 @@
     "typescript": "^4.9.5",
     "uglify-js": "^3.17.4",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "ts-node": "^10.9.2"
   }
 }
