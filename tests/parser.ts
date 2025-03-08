@@ -284,6 +284,7 @@ function runTests() {
                           // Declaración de variables locales
                           const c = a + b;
                           let d = c * 2;
+                          "1,2,3,4,5,6".split(',');
                           function pepe(uno, dos, tres) {  console.log(tres); }
                           // Objeto literal con función arrow y objeto anidado
                           const obj = {
@@ -309,6 +310,7 @@ function runTests() {
                           // Declaración de variables locales
                           const c = a + b;
                           let d = c * 2;
+                          "1,2,3,4,5,6".split(',');
                           function pepe(uno, dos, tres) {  console.log(tres); }
                           // Objeto literal con función arrow y objeto anidado
                           const obj = {

@@ -110,6 +110,8 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
                 }
             });
             return true;
+        case 'g-style':
+            value = `{{${value}}}`;
         case 'style':
             let csstext: string = '';
             gparse.setString(value);

@@ -10,7 +10,7 @@ const palabrasReservadas = [
     "null", "package", "private", "protected", "public", "return", "short",
     "static", "super", "switch", "synchronized", "this", "throw", "throws",
     "transient", "true", "try", "typeof", "var", "void", "volatile", "while",
-    "with", "yield", "arguments", "await", "async", "eval"
+    "with", "yield", "arguments", "await", "async", "eval", "undefined"
 ];
 
 export class GParse {
@@ -560,9 +560,20 @@ export class GParse {
 
         // Utiliza el método getVOrC() existente para extraer tokens (variables o literales)
         const extractToken = (): TplVar | null => {
-            const token = this.getVOrC();
-            if (token && token.va) {
-                return token.va;
+            // Capturamos la posición de inicio del token
+            const tokenStart = this.i;
+            const tokenObj = this.getVOrC();
+            if (tokenObj && tokenObj.va) {
+                // Retrocedemos ignorando espacios en blanco
+                let j = tokenStart - 1;
+                while (j >= 0 && /\s/.test(this.s[j])) {
+                    j--;
+                }
+                // Si encontramos un punto antes, descartamos el token
+                if (j >= 0 && this.s[j] === '.') {
+                    return null;
+                }
+                return tokenObj.va;
             }
             return null;
         };
