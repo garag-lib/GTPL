@@ -171,8 +171,8 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
-            <div style="color:{{color}};font-weight:bold">color style</div>
-            <div style="{{csstext}}">all styles</div>
+            <div g-style="color:{{color}};font-weight:bold">color style</div>
+            <div g-style="csstext">all styles</div>
             <button onclick="{{ this.color = '#f00'; this.csstext = 'color:#080;font-weight:bold;'; }}">
                 Click Me
             </button>

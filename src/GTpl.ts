@@ -492,8 +492,12 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
             result.apply(obj.gtpl.Root, [event]);
           }
         } else {
-          if (event.preventDefault)
-            event.preventDefault();
+          if (result === false) {
+            if (event.preventDefault)
+              event.preventDefault();
+            if (event.stopPropagation)
+              event.stopPropagation();
+          }
         }
       },
       passiveSupported ? options : false
@@ -915,7 +919,6 @@ async function updateSTYLEbind(
   memValues.set(bind, result);
   //---
   if (bind.prop) {
-    console.log(bind);
     bind.ele.style[bind.prop] = result;
   }
   //---
@@ -1485,7 +1488,7 @@ export class GTpl implements IGtplObject {
     value?: any
   ) {
     //log('launchChange' /*, type, bind, path, value*/ );
-    if( BindTypes.EVENT == bind.type )
+    if (BindTypes.EVENT == bind.type)
       return;
     const result = await calculateBind(this, bind, value);
     let gtpl: IGtplObject = this;
