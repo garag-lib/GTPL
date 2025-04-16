@@ -2,7 +2,6 @@ import { BindTypes, TypeEventProxyHandler } from "./GEnums";
 import { IGtplObject, IBindObject, IIndex } from "./GGenerator";
 import {
   GProxy,
-  pathToArray,
   PathProxyHandler,
   PROXYTARGET,
   ISPROXY,
@@ -1474,7 +1473,7 @@ export class GTpl implements IGtplObject {
     objRef: any
   ) {
     //log('eventPRoxy', 'event:', type, 'path:', path, 'value:', value, 'objref:', objRef);
-    const pa = pathToArray(path);
+    const pa = path;
     pa?.shift();
     iterBind(this.BindTree[objRef.key], type, pa, value).forEach((args: any) =>
       this.launchChange.apply(this, args)
