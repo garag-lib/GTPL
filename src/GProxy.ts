@@ -2,6 +2,7 @@ import { TypeEventProxyHandler } from './GEnums';
 import { isStaticType } from './GUtils';
 
 export type PathProxyHandler = any;
+
 export type EventFunctionProxyHandler = (
   type: TypeEventProxyHandler,
   path: PathProxyHandler,
@@ -12,75 +13,75 @@ export type EventFunctionProxyHandler = (
 export const ISPROXY = Symbol('is proxy');
 export const PROXYTARGET = Symbol('proxy target');
 
-function getProxyHandler(event: EventFunctionProxyHandler, ojRef: any, parent?: PathProxyHandler) {
+function isProxy(obj: any): obj is { [ISPROXY]: true; [PROXYTARGET]: any } {
+  return obj && typeof obj === 'object' && ISPROXY in obj;
+}
+
+function getProxyHandler(event: EventFunctionProxyHandler, objRef: any, parentPath: PathProxyHandler = []) {
   const ProxyHandler = {
-    get: (target: any, prop: any, receiver: any): any => {
-      if (prop == ISPROXY)
-        return true;
-      if (prop == PROXYTARGET)
-        return target;
+
+    get(target: any, prop: any, receiver: any): any {
+      if (prop === ISPROXY) return true;
+      if (prop === PROXYTARGET) return target;
       const ret = Reflect.get(target, prop, receiver);
-      if (isStaticType(ret)) {
-        return ret;
-      }
-      if (!(<any>ret)[ISPROXY]) {
-        return GProxy(ret, event, ojRef, [parent, prop]);
+      if (isStaticType(ret)) return ret;
+      if (!(ret && ret[ISPROXY])) {
+        return GProxy(ret, event, objRef, [...parentPath, prop]);
       }
       return ret;
     },
-    set: (target: any, prop: any, value: any) => {
-      //const oldvalue: any = Reflect.get(target, prop);
+
+    set(target: any, prop: any, value: any): boolean {
       if (!isStaticType(value))
-        while (value[ISPROXY]) value = value[PROXYTARGET];
-      const ret: any = Reflect.set(target, prop, value);
-      //if (Array.isArray(target)) {
-      //  if (!isNaN(prop))
-      event(TypeEventProxyHandler.SET, [parent, prop], value, ojRef);
-      //} else {
-      //  event(TypeEventProxyHandler.SET, [parent, prop], value, ojRef);
-      //}
-      return ret;
+        while (isProxy(value)) value = value[PROXYTARGET];
+      const result = Reflect.set(target, prop, value);
+      event(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef);
+      return result;
     },
-    deleteProperty: (target: any, prop: any) => {
-      //console.log('deleteProperty');
-      //const oldvalue: any = Reflect.get(target, prop);
-      const ret = Reflect.deleteProperty(target, prop);
-      //const isarray = Array.isArray(target);
-      event(TypeEventProxyHandler.UNSET, [parent, prop], undefined, ojRef);
-      return ret;
+
+    deleteProperty(target: any, prop: any): boolean {
+      const result = Reflect.deleteProperty(target, prop);
+      event(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef);
+      return result;
+    },
+
+    has(target: any, prop: any): boolean {
+      return Reflect.has(target, prop);
+    },
+
+    ownKeys(target: any): (string | symbol)[] {
+      return Reflect.ownKeys(target);
+    },
+
+    getOwnPropertyDescriptor(target: any, prop: any): PropertyDescriptor | undefined {
+      return Reflect.getOwnPropertyDescriptor(target, prop);
     }
-    //ownKeys
-    //has
-    //defineProperty
-    //getOwnPropertyDescriptor
+
   };
   return ProxyHandler;
 }
 
-export function GProxy(target: any, event: EventFunctionProxyHandler, objRef: any, parent?: PathProxyHandler) {
-  return new Proxy(target, getProxyHandler(event, objRef, parent));
+export function GProxy(target: any, event: EventFunctionProxyHandler, objRef: any, parentPath: PathProxyHandler = []): any {
+  return new Proxy(target, getProxyHandler(event, objRef, parentPath));
 }
 
-export function pathToArray(path: PathProxyHandler, arr: any[] = []): any[] {
-  path.forEach(function (p: any) {
-    if (Array.isArray(p)) {
-      pathToArray(p, arr);
-    } else {
-      arr.push(p);
+export function unGProxy<T = any>(obj: T): T {
+  if (isProxy(obj))
+    obj = obj[PROXYTARGET];
+  if (Array.isArray(obj))
+    return obj.map(unGProxy) as any;
+  if (obj && typeof obj === 'object') {
+    const result: any = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        result[key] = unGProxy(obj[key]);
+      }
     }
-  });
-  return arr;
-}
-
-export function pathToString(path: PathProxyHandler, arr: any[] = []): String {
-  return pathToArray(path, arr).join('.');
-}
-
-export function* iterPath(path: PathProxyHandler): any {
-  for (let i = 0, n = path.length; i < n; i++) {
-    const p = path[i];
-    if (Array.isArray(p))
-      yield* iterPath(p);
-    else yield p;
+    return result;
   }
+  return obj;
+}
+
+export function pathToString(path: PathProxyHandler): string {
+  return path.map(String).join('.');
 }
