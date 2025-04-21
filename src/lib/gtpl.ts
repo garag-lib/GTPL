@@ -4,7 +4,7 @@ import { GGenerator, GCompile, GAddToo } from "../GGenerator";
 import { STACK, css2obj, style2css } from "../GUtils";
 import { GCode } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
-import { ISPROXY, PROXYTARGET } from "../GProxy";
+import { isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
 
 export default {
     'GTpl': GTpl,
@@ -20,6 +20,8 @@ export default {
         'style2css': style2css,
         'globalObject': globalObject,
         'passiveSupported': passiveSupported,
+        'isGProxy': isGProxy,
+        'unGProxy': unGProxy,
         'PROXYTARGET': PROXYTARGET,
         'ISPROXY': ISPROXY
     }
