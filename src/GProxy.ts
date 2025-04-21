@@ -13,7 +13,7 @@ export type EventFunctionProxyHandler = (
 export const ISPROXY = Symbol('is proxy');
 export const PROXYTARGET = Symbol('proxy target');
 
-function isProxy(obj: any): obj is { [ISPROXY]: true; [PROXYTARGET]: any } {
+export function isGProxy(obj: any): obj is { [ISPROXY]: true; [PROXYTARGET]: any } {
   return obj && typeof obj === 'object' && ISPROXY in obj;
 }
 
@@ -33,7 +33,7 @@ function getProxyHandler(event: EventFunctionProxyHandler, objRef: any, parentPa
 
     set(target: any, prop: any, value: any): boolean {
       if (!isStaticType(value))
-        while (isProxy(value)) value = value[PROXYTARGET];
+        while (isGProxy(value)) value = value[PROXYTARGET];
       const result = Reflect.set(target, prop, value);
       event(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef);
       return result;
@@ -66,7 +66,7 @@ export function GProxy(target: any, event: EventFunctionProxyHandler, objRef: an
 }
 
 export function unGProxy<T = any>(obj: T): T {
-  if (isProxy(obj))
+  if (isGProxy(obj))
     obj = obj[PROXYTARGET];
   if (Array.isArray(obj))
     return obj.map(unGProxy) as any;
