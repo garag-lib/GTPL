@@ -1387,7 +1387,7 @@ export class GTpl implements IGtplObject {
           if (!checkBind(this, bind))
             this.BindConst.add(bind);
     if (privateProperties.getProperty(this, "GenerationFinish")) {
-      this.launchChange(TypeEventProxyHandler.UKNOW3, bind);
+      this.launchChange(TypeEventProxyHandler.UKNOW4, bind);
     }
   }
 
