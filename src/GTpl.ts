@@ -633,25 +633,41 @@ function iterBind(
   type: TypeEventProxyHandler,
   path: string[],
   value?: any,
-  arr: any = []
-) {
-  if (btree) {
-    if (btree.me)
-      btree.me.forEach((bind: IBindObject) => {
-        arr.push([type, bind, path, !path.length ? value : undefined]);
-      });
-    if (btree.tree) {
-      const base = Array.isArray(path) ? path.shift() : undefined;
-      for (let i in btree.tree) {
-        if (base == undefined || base == i) {
-          iterBind(
-            btree.tree[i],
-            type,
-            path,
-            value != undefined ? (base == undefined ? value[i] : value) : undefined,
-            arr
-          );
-        }
+  arr: any[] = [],
+  depth: number = 0,            //–– posición actual en `path`
+): any[] {
+  if (!btree) return arr;
+  // 1) Procesar los binds en este nodo
+  if (btree.me) {
+    btree.me.forEach((bind: IBindObject) => {
+      // Para los binds en la raíz (depth=0) pasamos el `value`, 
+      // en niveles inferiores sólo pasamos `undefined`
+      const bindValue = (depth === 0 ? value : undefined);
+      // Copiamos sólo el trozo relevante de `path` a partir de `depth`
+      const subPath = path.slice(depth);
+      arr.push([type, bind, subPath, bindValue]);
+    });
+  }
+  // 2) Recorrer subárboles
+  if (btree.tree) {
+    const keyAtDepth = path[depth];
+    for (const key in btree.tree) {
+      // Si no hay path (depth >= path.length) o coincide la clave, continuamos
+      if (keyAtDepth === undefined || keyAtDepth === key) {
+        // Calculamos el nuevo `value` para la rama:
+        const nextValue =
+          value !== undefined
+            ? (keyAtDepth === undefined ? value : (value as any)[key])
+            : undefined;
+        // Llamada recursiva incrementando `depth`
+        iterBind(
+          btree.tree[key],
+          type,
+          path,
+          nextValue,
+          arr,
+          depth + 1
+        );
       }
     }
   }
@@ -1475,7 +1491,7 @@ export class GTpl implements IGtplObject {
     //log('eventPRoxy', 'event:', type, 'path:', path, 'value:', value, 'objref:', objRef);
     const pa = path;
     pa?.shift();
-    iterBind(this.BindTree[objRef.key], type, pa, value).forEach((args: any) =>
+    iterBind(this.BindTree[objRef.key], type, path, value, [], 1).forEach((args: any) =>
       this.launchChange.apply(this, args)
     );
   }
