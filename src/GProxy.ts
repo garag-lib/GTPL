@@ -3,7 +3,6 @@ import { TypeEventProxyHandler } from './GEnums';
 import { isStaticType } from './GUtils';
 
 export type PathProxyHandler = any;
-
 export type EventFunctionProxyHandler = (
   type: TypeEventProxyHandler,
   path: PathProxyHandler,
@@ -13,6 +12,10 @@ export type EventFunctionProxyHandler = (
 
 export const ISPROXY = Symbol('is proxy');
 export const PROXYTARGET = Symbol('proxy target');
+
+// WeakMaps para cachear target ↔ proxy, y proxy → target
+const targetToProxy = new WeakMap<object, any>();
+const proxyToTarget = new WeakMap<any, object>();
 
 export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any } {
   return !!obj && typeof obj === 'object' && ISPROXY in obj;
@@ -32,17 +35,13 @@ function getProxyHandler(
       if (isStaticType(val)) return val;
       if (isGProxy(val)) return val;
 
-      // creamos un nuevo proxy para el valor anidado
-      return new Proxy(
-        val,
-        getProxyHandler(event, objRef, [...parentPath, prop])
-      );
+      // crear (o recuperar) proxy para el valor retornado
+      return createGProxy(val, event, objRef, [...parentPath, prop]);
     },
 
     set(target: any, prop: PropertyKey, value: any, receiver: any): boolean {
-      // desenlazamos cualquier proxy recibido
       if (isGProxy(value)) {
-        value = (value as any)[PROXYTARGET];
+        value = proxyToTarget.get(value);
       }
       const ok = Reflect.set(target, prop, value, receiver);
       event(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef);
@@ -55,42 +54,23 @@ function getProxyHandler(
       return ok;
     },
 
-    defineProperty(
-      target: any,
-      prop: PropertyKey,
-      descriptor: PropertyDescriptor
-    ): boolean {
+    /*
+    defineProperty(target: any, prop: PropertyKey, descriptor: PropertyDescriptor): boolean {
       const ok = Reflect.defineProperty(target, prop, descriptor);
       event(TypeEventProxyHandler.DEFINE, [...parentPath, prop], descriptor, objRef);
       return ok;
     },
-
     apply(target: any, thisArg: any, args: any[]): any {
-      // desenlazamos thisArg y argumentos
-      const rawThis = isGProxy(thisArg) ? (thisArg as any)[PROXYTARGET] : thisArg;
-      const rawArgs = args.map((a: any) =>
-        isGProxy(a) ? (a as any)[PROXYTARGET] : a
-      );
-
+      const rawThis = isGProxy(thisArg) ? proxyToTarget.get(thisArg) : thisArg;
+      const rawArgs = args.map((a: any) => isGProxy(a) ? proxyToTarget.get(a) : a);
       const res = Reflect.apply(target, rawThis, rawArgs);
-      event(
-        TypeEventProxyHandler.CALL,
-        parentPath,
-        { thisArg: rawThis, args: rawArgs },
-        objRef
-      );
-
-      // proxyficamos el resultado si es objeto no estático
-      if (
-        res !== null &&
-        typeof res === 'object' &&
-        !isStaticType(res) &&
-        !isGProxy(res)
-      ) {
-        return new Proxy(res, getProxyHandler(event, objRef, parentPath));
+      event(TypeEventProxyHandler.CALL, parentPath, { thisArg: rawThis, args: rawArgs }, objRef);
+      if (res && typeof res === 'object' && !isStaticType(res) && !isGProxy(res)) {
+        return createGProxy(res, event, objRef, parentPath);
       }
       return res;
     },
+    */
 
     has(target: any, prop: PropertyKey): boolean {
       return Reflect.has(target, prop);
@@ -100,29 +80,39 @@ function getProxyHandler(
       return Reflect.ownKeys(target);
     },
 
-    getOwnPropertyDescriptor(
-      target: any,
-      prop: PropertyKey
-    ): PropertyDescriptor | undefined {
+    getOwnPropertyDescriptor(target: any, prop: PropertyKey): PropertyDescriptor | undefined {
       return Reflect.getOwnPropertyDescriptor(target, prop);
     }
   };
 }
 
 /**
- * Crea un proxy recursivo que dispara eventos en cada operación.
+ * Crea o recupera un Proxy para un objeto dado.
  */
-export function GProxy<T extends object>(
+export function createGProxy<T extends object>(
   target: T,
   event: EventFunctionProxyHandler,
   objRef: any,
   parentPath: PathProxyHandler = []
 ): T {
-  return new Proxy(target, getProxyHandler(event, objRef, parentPath));
+  // Si ya existe proxy para este target, lo devolvemos
+  if (targetToProxy.has(target)) {
+    return targetToProxy.get(target);
+  }
+  const handler = getProxyHandler(event, objRef, parentPath);
+  const proxy = new Proxy(target, handler);
+
+  targetToProxy.set(target, proxy);
+  proxyToTarget.set(proxy, target);
+
+  return proxy;
 }
 
+// Alias para compatibilidad con tu API original
+export const GProxy = createGProxy;
+
 /**
- * Desempaqueta recursivamente cualquier proxy creado con GProxy.
+ * "Desempaqueta" recursivamente cualquier proxy creado con GProxy.
  */
 export function unGProxy<T = any>(obj: T): T {
   if (isGProxy(obj)) {
@@ -141,9 +131,7 @@ export function unGProxy<T = any>(obj: T): T {
   return obj;
 }
 
-/**
- * Convierte un PathProxyHandler en cadena tipo "a.b.0.c".
- */
+/** Convierte un path en un string “a.b.0.c” */
 export function pathToString(path: PathProxyHandler): string {
   return path.map(String).join('.');
 }
