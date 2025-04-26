@@ -1,4 +1,5 @@
 import { BindTypes, TypeEventProxyHandler } from './GEnums';
+import { EventFunctionProxyHandler } from './GProxy';
 import { globalObject } from './global';
 export interface IVarOrConst {
     va?: null | TplVar,
@@ -48,7 +49,8 @@ export interface IGtplObject {
     destroy: Function,
     eventPRoxy: Function,
     addTo: Function,
-    launchChange: Function
+    launchChange: Function,
+    BoundEventProxy: EventFunctionProxyHandler
 }
 
 export interface IBindObject {

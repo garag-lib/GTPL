@@ -2,9 +2,11 @@ import { BindTypes, TypeEventProxyHandler } from "./GEnums";
 import { IGtplObject, IBindObject, IIndex } from "./GGenerator";
 import {
   GProxy,
+  removeEventHandler,
   PathProxyHandler,
   PROXYTARGET,
   ISPROXY,
+  EventFunctionProxyHandler,
 } from "./GProxy";
 import { TplVar, GAddToo, IFunction, IVarOrConst } from "./GGenerator";
 import { globalObject, passiveSupported } from "./global";
@@ -307,7 +309,7 @@ function createGetterAndSetter(
         if (objdef.pro !== undefined) return objdef.pro;
         if (isStaticType(objdef.val)) return objdef.val;
         while (objdef.val[ISPROXY]) objdef.val = objdef.val[PROXYTARGET];
-        objdef.pro = GProxy(objdef.val, gtpl.eventPRoxy.bind(gtpl), objdef, [
+        objdef.pro = GProxy(objdef.val, gtpl.BoundEventProxy, objdef, [
           objdef.key,
         ]);
         return objdef.pro;
@@ -327,7 +329,7 @@ function createGetterAndSetter(
           while (objdef.val[ISPROXY]) objdef.val = objdef.val[PROXYTARGET];
           objdef.pro = GProxy(
             objdef.val,
-            gtpl.eventPRoxy.bind(gtpl),
+            gtpl.BoundEventProxy,
             objdef,
             [objdef.key]
           );
@@ -423,6 +425,21 @@ function delBind(gtpl: IGtplObject, bind: IBindObject) {
     bind.link.formula.vars.forEach((va) => {
       getBind2Object(gtpl, va, bind).delete(bind);
     });
+  }
+  if (bind.simetric && bind.ele) {
+    const setBindings = simetricAttr.get(bind.ele);
+    if (setBindings) {
+      // Filtramos fuera todas las entradas cuyo ctx sea este GTpl
+      const nuevo = new Set(
+        Array.from(setBindings)
+          .filter(item => item.ctx !== gtpl)
+      );
+      if (nuevo.size) {
+        simetricAttr.set(bind.ele, nuevo);
+      } else {
+        simetricAttr.delete(bind.ele);
+      }
+    }
   }
 }
 
@@ -1343,6 +1360,8 @@ export class GTpl implements IGtplObject {
    */
   Root: any;
 
+  BoundEventProxy: EventFunctionProxyHandler;
+
   constructor(options?: any) {
     //log('constructor', this, options);
     this.ID = Math.random().toString(16).slice(2);
@@ -1350,6 +1369,7 @@ export class GTpl implements IGtplObject {
     this.BindConst = new Set();
     this.BindDef = new Set();
     this.GtplChilds = new Set();
+    this.BoundEventProxy = this.eventPRoxy.bind(this);
     this.loadOptions(options);
   }
 
@@ -1408,36 +1428,41 @@ export class GTpl implements IGtplObject {
   }
 
   destroy(elements = true) {
-    //---
-    const num = Array.isArray(this.Elements) ? this.Elements.length : 1;
-    //---
-    this.GtplChilds.forEach((gtpl) => {
-      gtpl.destroy(false);
-    });
-    //---
-    if (this.BindMap) {
-      for (let [bind, gtpl] of this.BindMap) {
-        delBind(gtpl, bind);
+    this.GtplChilds.forEach(child => child.destroy(false));
+    this.GtplChilds.clear();
+    if (this.BindDef) {
+      for (const objdef of this.BindDef) {
+        removeEventHandler(objdef.val, this.BoundEventProxy);
       }
+      this.BindDef.clear();
     }
-    //---
+    if (this.BindMap) {
+      for (const [bind, ctxgtpl] of this.BindMap) {
+        delBind(ctxgtpl, bind);
+      }
+      this.BindMap.clear();
+    }
     if (elements) {
       removeElements(this.Elements);
       if (this.RenderElements) {
-        for (let index = 0; index < num; index++) {
-          if (this.RenderElements[index]) {
-            const bind: IBindObject = this.RenderElements[index];
-            if (bind.ele) {
-              removeElements(bind.ele);
-            } else if (bind.eles) {
-              removeElements(bind.eles);
-            }
+        const entries = Array.isArray(this.Elements) ? this.Elements.length : 1;
+        for (let index = 0; index < entries; index++) {
+          const bind: IBindObject = this.RenderElements[index];
+          if (bind) {
+            if (bind.ele) removeElements(bind.ele);
+            if (bind.eles) removeElements(bind.eles);
           }
         }
-        delete this.RenderElements;
+        this.RenderElements = null;
       }
     }
-    //---
+    // Cleanup total
+    this.Elements = null!;
+    this.Root = null!;
+    this.BindTree = null!;
+    this.BindConst = null!;
+    this.Context = null!;
+    this.Parent = null!;
   }
 
   refresh() {

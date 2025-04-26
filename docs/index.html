@@ -307,7 +307,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <template>
             <div>{{ content }}</div>
             <div g-inner="content"></div>
-            <button onclick="{{ this.content = '<b>HOLA</b>';  }}">
+            <button onclick="{{ this.content = '<b>HOLA</b>'; console.log(`hola parece que funciona: ${this.content}`);  }}">
                 Click Me
             </button>
         </template>
