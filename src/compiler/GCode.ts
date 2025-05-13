@@ -6,8 +6,6 @@ import { AttrType, ProGen } from '../GGenerator';
 import { globalObject } from '../global';
 
 let gparse!: GParse;
-let gcont: number = 0;
-let gcontchar: number = 0;
 const regex_var = /([a-zA-Z\_][\w]+)\s*\=\s*([a-zA-Z][\w\.]+)/gi;
 
 function getGen(nodeName: string, atributos: string | null, nodelist?: string | null): string {
@@ -265,21 +263,20 @@ function Attributes2JSON(atributos: AttrType[], onlyone: boolean = false): strin
     return onlyone ? json.join(',') : `[${json.join(',')}]`;
 }
 
-function obtenerPrefijoChar(n: number) {
-    const letras = 'abcdefghijklmnopqrstuvwxyz';
-    let prefijo = '';
-    prefijo += letras[Math.floor(n / letras.length)];
-    prefijo += letras[n % letras.length];
-    return prefijo;
-}
-
-function getId() {
-    gcont++;
-    if (gcont > 9999) {
-        gcontchar = 1;
-        gcontchar++;
+let letterIndex = 0;
+let counter = 0;
+const maxCounter = 36 ** 5;
+function getId(): string {
+    if (counter >= maxCounter) {
+        counter = 0;
+        letterIndex++;
+        if (letterIndex >= 26)
+            letterIndex = 0;
     }
-    return obtenerPrefijoChar(gcontchar) + String(gcont).padStart(4, '0');
+    const letra = String.fromCharCode(97 + letterIndex); 
+    const sufijo = counter.toString(36).padStart(5, '0');
+    counter++;
+    return letra + sufijo;
 }
 
 async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, headers?: boolean, bindSwitch?: null | IBindObject): Promise<string> {
