@@ -85,6 +85,7 @@
             <div class="preload">load default data: <b>{{
                     this.value = Math.random();
                     this.translate = function(word){ return 'translate ' + word; }
+                    this.foo = function(){ console.log(...arguments); }
                     this.loaded = true;
                     this.numA = Math.random();
                     this.numB = Math.random();
@@ -101,6 +102,12 @@
             </div>
             <button onclick="{{ this.value = Math.random(); this.numA++; this.numB++; }}">
                 Click Me
+            </button>
+            <button onclick="{{foo}}">
+                foo 1
+            </button>
+            <button onclick="{{foo{'a',123,value}}}">
+                foo 2
             </button>
         </template>
     </div>
