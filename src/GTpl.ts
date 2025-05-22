@@ -12,6 +12,8 @@ import { TplVar, GAddToo, IFunction, IVarOrConst } from "./GGenerator";
 import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
 
+const ElementReferenceIndex = Symbol("ElementReferenceIndex");
+
 export interface IBindDef {
   key: string;
   val: any;
@@ -490,34 +492,42 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
     const options: any = { passive: false };
     if (["wheel", "mousewheel", "touchstart", "touchmove"].includes(bind.prop.toLowerCase()))
       options.passive = true;
+    //---
+    const handler = async function (event: any) {
+      const result = await calculateBind(obj.gtpl, obj.bind, undefined, event);
+      //console.error(result, obj.bind, event);
+      if (typeof result == "function") {
+        if (obj.bind.link.params) {
+          const arrval: any = [];
+          obj.bind.link.params.forEach((param) => {
+            if (param.ct != undefined) arrval.push(param.ct);
+            else if (param.va != undefined)
+              arrval.push(reduceVar(gtpl, param.va));
+          });
+          result.apply(obj.gtpl.Root, [event, ...arrval]);
+        } else {
+          result.apply(obj.gtpl.Root, [event]);
+        }
+      } else {
+        if (result === false) {
+          if (event.preventDefault)
+            event.preventDefault();
+          if (event.stopPropagation)
+            event.stopPropagation();
+        }
+      }
+    };
+    //---
     bind.ele.addEventListener(
       bind.prop,
-      async function (event: any) {
-        const result = await calculateBind(obj.gtpl, obj.bind, undefined, event);
-        //console.error(result, obj.bind, event);
-        if (typeof result == "function") {
-          if (obj.bind.link.params) {
-            const arrval: any = [];
-            obj.bind.link.params.forEach((param) => {
-              if (param.ct != undefined) arrval.push(param.ct);
-              else if (param.va != undefined)
-                arrval.push(reduceVar(gtpl, param.va));
-            });
-            result.apply(obj.gtpl.Root, [event, ...arrval]);
-          } else {
-            result.apply(obj.gtpl.Root, [event]);
-          }
-        } else {
-          if (result === false) {
-            if (event.preventDefault)
-              event.preventDefault();
-            if (event.stopPropagation)
-              event.stopPropagation();
-          }
-        }
-      },
+      handler,
       passiveSupported ? options : false
     );
+    //---
+    if (!bind.ele[ElementReferenceIndex])
+      bind.ele[ElementReferenceIndex] = [];
+    bind.ele[ElementReferenceIndex].push(handler);
+    //---
     return true;
   }
   return false;
@@ -632,14 +642,20 @@ function checkBind(gtpl: IGtplObject, bind: IBindObject): boolean {
 function removeElements(elements: any) {
   if (Array.isArray(elements)) {
     elements.forEach((element) => {
-      if (element.destroy)
-        element.destroy(true);
-      else removeElements(element);
+      removeElements(element);
     });
   } else {
-    if (elements.destroy)
+    if (elements[ElementReferenceIndex]) {
+      elements[ElementReferenceIndex].forEach((handler: any) => {
+        globalObject.removeEventListener(elements, handler);
+      });
+      delete elements[ElementReferenceIndex];
+    }
+    if (elements.destroy) {
       elements.destroy(true);
-    else elements.parentNode?.removeChild(elements);
+    } else {
+      elements.parentNode?.removeChild(elements);
+    }
   }
 }
 
@@ -1449,8 +1465,10 @@ export class GTpl implements IGtplObject {
         for (let index = 0; index < entries; index++) {
           const bind: IBindObject = this.RenderElements[index];
           if (bind) {
-            if (bind.ele) removeElements(bind.ele);
-            if (bind.eles) removeElements(bind.eles);
+            if (bind.ele)
+              removeElements(bind.ele);
+            if (bind.eles)
+              removeElements(bind.eles);
           }
         }
         this.RenderElements = null;
