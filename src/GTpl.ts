@@ -66,10 +66,7 @@ const simetricAttr: WeakMap<Node, simetricAttrValueSet> = new WeakMap();
 function initChangeEvents() {
   if (globalCache.binitChangeEvents) return;
   globalCache.binitChangeEvents = true;
-
-  // Mapa para almacenar el último valor procesado por 'input'
   const lastProcessedValue = new WeakMap();
-
   const changeEvent = function (event: any) {
     const ele: any = event.target;
     if (
