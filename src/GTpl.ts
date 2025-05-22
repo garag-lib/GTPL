@@ -64,29 +64,34 @@ type simetricAttrValueSet = Set<IsimetricAttrValue>;
 const simetricAttr: WeakMap<Node, simetricAttrValueSet> = new WeakMap();
 
 function initChangeEvents() {
-  if (globalCache.binitChangeEvents) {
-    return;
-  }
-  try {
-    globalCache.binitChangeEvents = true;
-    const changeEvent = function (event: any) {
-      const ele: any = event.target;
-      if (simetricAttr.has(ele)) {
-        const temp = simetricAttr.get(ele);
-        if (temp) {
-          for (let obj of temp) {
-            //console.log('event', event, obj, ele);
-            updateVar(obj.va, obj.ctx, ele.value);
-          }
-        }
-      }
-    };
-    if (globalObject.addEventListener) {
-      globalObject.addEventListener("input", changeEvent);
-      globalObject.addEventListener("change", changeEvent);
+  if (globalCache.binitChangeEvents) return;
+  globalCache.binitChangeEvents = true;
+
+  // Mapa para almacenar el último valor procesado por 'input'
+  const lastProcessedValue = new WeakMap();
+
+  const changeEvent = function (event: any) {
+    const ele: any = event.target;
+    if (
+      event.type === "change" &&
+      lastProcessedValue.has(ele) &&
+      lastProcessedValue.get(ele) === ele.value
+    ) {
+      return;
     }
-  } catch (ex: any) {
-    STACK(ex.message);
+    if (simetricAttr.has(ele)) {
+      const temp = simetricAttr.get(ele);
+      if (temp) {
+        for (let obj of temp) {
+          updateVar(obj.va, obj.ctx, ele.value);
+        }
+        lastProcessedValue.set(ele, ele.value);
+      }
+    }
+  };
+  if (globalObject.addEventListener) {
+    globalObject.addEventListener("input", changeEvent);
+    globalObject.addEventListener("change", changeEvent);
   }
 }
 
