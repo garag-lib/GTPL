@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Task List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Dynamic Task List</h1>
+
+        <!-- Add Task Form -->
+        <div>
+            <h2>Add Task</h2>
+            <input type="text" v-model="newTask.name" placeholder="Task name">
+            <select v-model="newTask.priority">
+                <option value="Alta">High</option>
+                <option value="Media">Medium</option>
+                <option value="Baja">Low</option>
+            </select>
+            <button @click="addTask">Add Task</button>
+        </div>
+
+        <!-- Filters -->
+        <div>
+            <h2>Filters</h2>
+            <label>Status:</label>
+            <select v-model="filters.status">
+                <option value="All">All</option>
+                <option value="Completed">Completed</option>
+                <option value="Incomplete">Incomplete</option>
+            </select>
+            <label>Priority:</label>
+            <select v-model="filters.priority">
+                <option value="All">All</option>
+                <option value="Alta">High</option>
+                <option value="Media">Medium</option>
+                <option value="Baja">Low</option>
+            </select>
+        </div>
+
+        <!-- Task Counters -->
+        <div>
+            <p>Total Tasks: {{ totalTasks }}</p>
+            <p>Completed Tasks: {{ completedTasksCount }}</p>
+            <p>Incomplete Tasks: {{ incompleteTasksCount }}</p>
+        </div>
+
+        <!-- Task List -->
+        <div>
+            <h2>Tasks</h2>
+            <ul>
+                <li v-for="task in filteredTasks" :key="task.id" :class="{ completed: task.completada }">
+                    <input type="checkbox" v-model="task.completada">
+                    <span>{{ task.nombre }} - {{ task.prioridad }}</span>
+                    <button @click="deleteTask(task.id)">Delete</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>

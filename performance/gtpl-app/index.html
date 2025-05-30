@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Task List - GTPL Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Dynamic Task List - GTPL Simulation</h1>
+
+        <!-- Add Task Form -->
+        <div>
+            <h2>Add Task</h2>
+            <input type="text" id="newTaskName" placeholder="Task name">
+            <select id="newTaskPriority">
+                <option value="Alta">High</option>
+                <option value="Media" selected>Medium</option>
+                <option value="Baja">Low</option>
+            </select>
+            <button id="addTaskBtn">Add Task</button>
+        </div>
+
+        <!-- Filters -->
+        <div>
+            <h2>Filters</h2>
+            <label>Status:</label>
+            <select id="filterStatus">
+                <option value="All">All</option>
+                <option value="Completed">Completed</option>
+                <option value="Incomplete">Incomplete</option>
+            </select>
+            <label>Priority:</label>
+            <select id="filterPriority">
+                <option value="All">All</option>
+                <option value="Alta">High</option>
+                <option value="Media">Medium</option>
+                <option value="Baja">Low</option>
+            </select>
+        </div>
+
+        <!-- Task Counters -->
+        <div>
+            <p>Total Tasks: <span id="totalTasks">0</span></p>
+            <p>Completed Tasks: <span id="completedTasksCount">0</span></p>
+            <p>Incomplete Tasks: <span id="incompleteTasksCount">0</span></p>
+        </div>
+
+        <!-- Task List -->
+        <div>
+            <h2>Tasks</h2>
+            <ul id="taskList">
+                <!-- Tasks will be rendered here by JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // --- GTPL Simulation ---
+        let gtplData = {
+            tasks: [],
+            filters: {
+                status: 'All',
+                priority: 'All'
+            }
+        };
+
+        // Simulate copyFromData (deep copy)
+        function copyFromData(data) {
+            return JSON.parse(JSON.stringify(data));
+        }
+
+        // Simulate receiving initial data (e.g., from a data layer push in GTM)
+        function loadInitialData() {
+            const initialTasks = [];
+            const priorities = ['Alta', 'Media', 'Baja'];
+            for (let i = 1; i <= 50; i++) {
+                initialTasks.push({
+                    id: Date.now() + i,
+                    nombre: `Task ${i}`,
+                    completada: Math.random() < 0.3,
+                    prioridad: priorities[Math.floor(Math.random() * priorities.length)]
+                });
+            }
+            // In a real GTPL, this might come from a data model passed to the template
+            gtplData.tasks = initialTasks; 
+            render(); // Initial render
+        }
+        
+        function getNextId() {
+            // In a real GTPL, ID generation might be server-side or follow a specific client-side pattern
+            return Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        // --- Application Logic ---
+        const taskListEl = document.getElementById('taskList');
+        const newTaskNameEl = document.getElementById('newTaskName');
+        const newTaskPriorityEl = document.getElementById('newTaskPriority');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const filterStatusEl = document.getElementById('filterStatus');
+        const filterPriorityEl = document.getElementById('filterPriority');
+
+        const totalTasksEl = document.getElementById('totalTasks');
+        const completedTasksCountEl = document.getElementById('completedTasksCount');
+        const incompleteTasksCountEl = document.getElementById('incompleteTasksCount');
+
+        function renderTask(task) {
+            const li = document.createElement('li');
+            li.setAttribute('data-id', task.id);
+            if (task.completada) {
+                li.classList.add('completed');
+            }
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completada;
+            checkbox.addEventListener('change', () => {
+                // Simulate callInWindow or similar to update data and re-render
+                const currentTasks = copyFromData(gtplData.tasks);
+                const taskIndex = currentTasks.findIndex(t => t.id === task.id);
+                if (taskIndex > -1) {
+                    currentTasks[taskIndex].completada = checkbox.checked;
+                    gtplData.tasks = currentTasks; // Update the 'global' data
+                    render(); // Re-render
+                }
+            });
+
+            const span = document.createElement('span');
+            span.textContent = `${task.nombre} - ${task.prioridad}`;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', () => {
+                // Simulate callInWindow or similar
+                gtplData.tasks = gtplData.tasks.filter(t => t.id !== task.id);
+                render();
+            });
+
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            return li;
+        }
+
+        function render() {
+            // In GTPL, this would be the template re-rendering with new data
+            const currentGtplData = copyFromData(gtplData); // Work with a copy
+            let filteredTasks = currentGtplData.tasks;
+
+            // Apply filters
+            if (currentGtplData.filters.status === 'Completed') {
+                filteredTasks = filteredTasks.filter(task => task.completada);
+            } else if (currentGtplData.filters.status === 'Incomplete') {
+                filteredTasks = filteredTasks.filter(task => !task.completada);
+            }
+
+            if (currentGtplData.filters.priority !== 'All') {
+                filteredTasks = filteredTasks.filter(task => task.prioridad === currentGtplData.filters.priority);
+            }
+
+            // Clear current list
+            taskListEl.innerHTML = ''; 
+            
+            // Render tasks
+            filteredTasks.forEach(task => {
+                taskListEl.appendChild(renderTask(task));
+            });
+
+            // Update counters
+            totalTasksEl.textContent = currentGtplData.tasks.length;
+            completedTasksCountEl.textContent = currentGtplData.tasks.filter(t => t.completada).length;
+            incompleteTasksCountEl.textContent = currentGtplData.tasks.filter(t => !t.completada).length;
+        }
+
+        // Event Listeners
+        addTaskBtn.addEventListener('click', () => {
+            const name = newTaskNameEl.value.trim();
+            const priority = newTaskPriorityEl.value;
+            if (name === '') return;
+
+            const newTask = {
+                id: getNextId(),
+                nombre: name,
+                completada: false,
+                prioridad: priority
+            };
+            
+            // Simulate updating data and re-rendering
+            const currentTasks = copyFromData(gtplData.tasks);
+            currentTasks.push(newTask);
+            gtplData.tasks = currentTasks;
+
+            newTaskNameEl.value = '';
+            newTaskPriorityEl.value = 'Media';
+            render();
+        });
+
+        filterStatusEl.addEventListener('change', (e) => {
+            gtplData.filters.status = e.target.value;
+            render();
+        });
+
+        filterPriorityEl.addEventListener('change', (e) => {
+            gtplData.filters.priority = e.target.value;
+            render();
+        });
+
+        // Initial Load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInitialData(); // Load initial data when the page is ready
+        });
+    </script>
+</body>
+</html>
