@@ -81,7 +81,7 @@ function initChangeEvents() {
       }
     }
   };
-  if (globalObject.addEventListener) {
+  if (globalObject && typeof globalObject.addEventListener === 'function') {
     globalObject.addEventListener("input", changeEvent);
     globalObject.addEventListener("change", changeEvent);
   }
@@ -523,7 +523,11 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
     //---
     if (!bind.ele[ElementReferenceIndex])
       bind.ele[ElementReferenceIndex] = [];
-    bind.ele[ElementReferenceIndex].push(handler);
+    bind.ele[ElementReferenceIndex].push({
+      type: bind.prop,
+      handler,
+      options: passiveSupported ? options : false
+    });
     //---
     return true;
   }
@@ -638,9 +642,9 @@ function removeElements(elements: any) {
     });
   } else {
     if (elements[ElementReferenceIndex]) {
-      elements[ElementReferenceIndex].forEach((handler: any) => {
-        globalObject.removeEventListener(elements, handler);
-      });
+      for (const { type, handler, options } of elements[ElementReferenceIndex]) {
+        elements.removeEventListener(type, handler, options);
+      }
       delete elements[ElementReferenceIndex];
     }
     if (elements instanceof Element) {

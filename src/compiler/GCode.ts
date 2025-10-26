@@ -6,6 +6,7 @@ import { AttrType, ProGen } from '../GGenerator';
 import { globalObject } from '../global';
 
 let gparse!: GParse;
+
 const regex_var = /([a-zA-Z\_][\w]+)\s*\=\s*([a-zA-Z][\w\.]+)/gi;
 
 function getGen(nodeName: string, atributos: string | null, nodelist?: string | null): string {

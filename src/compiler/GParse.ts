@@ -1,5 +1,5 @@
 import { IVarOrConst, IFunction, IObjParsed, TplVar } from '../GGenerator';
-import { globalObject } from '../global.js';
+import { globalObject } from '../global';
 
 const palabrasReservadas = [
     "abstract", "await", "boolean", "break", "byte", "case", "catch",
@@ -10,7 +10,7 @@ const palabrasReservadas = [
     "null", "package", "private", "protected", "public", "return", "short",
     "static", "super", "switch", "synchronized", "this", "throw", "throws",
     "transient", "true", "try", "typeof", "var", "void", "volatile", "while",
-    "with", "yield", "arguments", "await", "async", "eval", "undefined"
+    "with", "yield", "arguments", "async", "eval", "undefined"
 ];
 
 export class GParse {
