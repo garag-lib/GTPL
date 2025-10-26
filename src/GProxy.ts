@@ -116,22 +116,46 @@ export function pathToString(path: PathProxyHandler): string {
   return path.map(String).join('.');
 }
 
-export function removeEventHandler(target: any, event: EventFunctionProxyHandler) {
+export function removeEventHandler(target: any, event: EventFunctionProxyHandler): void {
+  // Get the real target if it's a proxy
   if (isGProxy(target)) {
     target = (target as any)[PROXYTARGET];
   }
+  // Get handlers for this target
   const handlers = handlersMap.get(target);
-  if (handlers) {
-    handlers.delete(event);
-    if (handlers.size === 0) {
-      // 1) quito también del mapa de handlers
-      handlersMap.delete(target);
-      // 2) revoco el proxy y luego borro la entrada en proxyCache
-      const entry = proxyCache.get(target);
-      if (entry) {
+  if (!handlers) {
+    return; // No handlers registered
+  }
+  // Remove this specific handler
+  handlers.delete(event);
+  // If no more handlers, clean up completely
+  if (handlers.size === 0) {
+    // 1. Remove from handlers map
+    handlersMap.delete(target);
+    // 2. Get the proxy entry
+    const entry = proxyCache.get(target);
+    if (entry) {
+      // 3. Revoke the proxy (makes it throw on access)
+      try {
         entry.revoke();
-        proxyCache.delete(target);
+      } catch (error) {
+        console.error('[GProxy] Error revoking proxy:', error);
       }
+      // 4. Remove from cache
+      proxyCache.delete(target);
+    }
+    // 5. If the target is an object/array, recursively clean up nested proxies
+    if (target && typeof target === 'object') {
+      Object.keys(target).forEach(key => {
+        const value = target[key];
+        if (value && typeof value === 'object') {
+          // Try to clean up nested proxies
+          const nestedHandlers = handlersMap.get(value);
+          if (nestedHandlers && nestedHandlers.size === 0) {
+            removeEventHandler(value, event);
+          }
+        }
+      });
     }
   }
 }
