@@ -593,7 +593,7 @@ function checkSimetricBind(gtpl: IGtplObject, bind: IBindObject) {
                 const ret = original.set.call(this, value);
                 if (original.get.call(this) == value)
                   updateVar(va, ctx, value);
-                else log("select value not valid", value + ' not in options');
+                else console.error("select value not valid", value + ' not in options');
                 return ret;
               } else {
                 updateVar(va, ctx, value);
@@ -602,15 +602,10 @@ function checkSimetricBind(gtpl: IGtplObject, bind: IBindObject) {
             },
           });
         } else {
-          log(
-            "simetric attr error",
-            bind.prop,
-            " not in ",
-            bind.ele.constructor.prototype
-          );
+          console.error("simetric attr error", bind.prop, " not in ", bind.ele.constructor.prototype);
         }
       } else {
-        log("simetric attr error", bind.prop, " in ", bind.ele);
+        console.error("simetric attr error", bind.prop, " in ", bind.ele);
       }
       //---
     }
@@ -1380,6 +1375,10 @@ export class GTpl implements IGtplObject {
 
   BoundEventProxy: EventFunctionProxyHandler;
 
+  cleanupCallbacks!: Set<() => void>;
+
+  isDestroyed: boolean = false;
+
   constructor(options?: any) {
     //log('constructor', this, options);
     this.ID = Math.random().toString(16).slice(2);
@@ -1434,7 +1433,7 @@ export class GTpl implements IGtplObject {
   }
 
   addBind(bind: IBindObject) {
-    //log('addBind', this, bind);
+    if (this.checkDestroyed('addBind')) return;
     if (!checkBindVar(this, bind))
       if (!checkBindEvent(this, bind))
         if (!checkBindFormula(this, bind))
@@ -1445,21 +1444,52 @@ export class GTpl implements IGtplObject {
     }
   }
 
+  private checkDestroyed(operation: string): boolean {
+    if (this.isDestroyed) {
+      console.warn(`[GTPL] Cannot perform ${operation} on destroyed component`, this.ID);
+      return true;
+    }
+    return false;
+  }
+
   destroy(elements = true) {
+
+    if (this.isDestroyed) {
+      console.warn('[GTPL] Component already destroyed', this.ID);
+      return;
+    }
+
+    if (this.cleanupCallbacks && this.cleanupCallbacks.size > 0) {
+      this.cleanupCallbacks.forEach(callback => {
+        try {
+          callback();
+        } catch (error) {
+          console.error('[GTPL] Error in cleanup callback:', error);
+        }
+      });
+      this.cleanupCallbacks.clear();
+    }
+
+    this.isDestroyed = true;
+
     this.GtplChilds.forEach(child => child.destroy(false));
+
     this.GtplChilds.clear();
+
     if (this.BindDef) {
       for (const objdef of this.BindDef) {
         removeEventHandler(objdef.val, this.BoundEventProxy);
       }
       this.BindDef.clear();
     }
+
     if (this.BindMap) {
       for (const [bind, ctxgtpl] of this.BindMap) {
         delBind(ctxgtpl, bind);
       }
       this.BindMap.clear();
     }
+
     if (elements) {
       removeElements(this.Elements);
       if (this.RenderElements) {
@@ -1476,6 +1506,7 @@ export class GTpl implements IGtplObject {
         this.RenderElements = null;
       }
     }
+
     // Cleanup total
     this.Elements = null!;
     this.Root = null!;
@@ -1483,6 +1514,19 @@ export class GTpl implements IGtplObject {
     this.BindConst = null!;
     this.Context = null!;
     this.Parent = null!;
+  }
+
+  onCleanup(callback: () => void): void {
+    if (this.isDestroyed) {
+      return;
+    }
+    if (typeof callback !== 'function') {
+      return;
+    }
+    if (!this.cleanupCallbacks) {
+      this.cleanupCallbacks = new Set();
+    }
+    this.cleanupCallbacks.add(callback);
   }
 
   refresh() {
@@ -1502,6 +1546,7 @@ export class GTpl implements IGtplObject {
   }
 
   addTo(ele: Node | any[]) {
+    if (this.checkDestroyed('addBind')) return;
     //console.log('addTo', ele);
     if (this.RenderElements) {
       const render_arr: any = [];
@@ -1547,7 +1592,7 @@ export class GTpl implements IGtplObject {
     path?: string[],
     value?: any
   ) {
-    //log('launchChange' /*, type, bind, path, value*/ );
+    if (this.checkDestroyed('launchChange')) return;
     if (BindTypes.EVENT == bind.type)
       return;
     const result = await calculateBind(this, bind, value);

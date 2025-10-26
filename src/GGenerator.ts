@@ -51,6 +51,9 @@ export interface IGtplObject {
     addTo: Function,
     launchChange: Function,
     BoundEventProxy: EventFunctionProxyHandler
+    cleanupCallbacks?: Set<() => void>;
+    isDestroyed?: boolean;
+    onCleanup(callback: () => void): void;
 }
 
 export interface IBindObject {
