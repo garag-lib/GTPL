@@ -8,17 +8,11 @@ import {
   ISPROXY,
   EventFunctionProxyHandler,
 } from "./GProxy";
-import { TplVar, GAddToo, IFunction, IVarOrConst } from "./GGenerator";
+import { TplVar, GAddToo, IFunction, IVarOrConst, IBindDef } from "./GGenerator";
 import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
 
 const ElementReferenceIndex = Symbol("ElementReferenceIndex");
-
-export interface IBindDef {
-  key: string;
-  val: any;
-  pro: any;
-}
 
 const globalCache: any = {
   binitChangeEvents: false,
@@ -26,6 +20,7 @@ const globalCache: any = {
 
 //---
 class privateProperties {
+
   private static globalVar = new WeakMap();
 
   static init(gtpl: IGtplObject) {
@@ -647,6 +642,11 @@ function removeElements(elements: any) {
         globalObject.removeEventListener(elements, handler);
       });
       delete elements[ElementReferenceIndex];
+    }
+    if (elements instanceof Element) {
+      while (elements.attributes.length > 0) {
+        elements.removeAttribute(elements.attributes[0].name);
+      }
     }
     if (elements.destroy) {
       elements.destroy(true);

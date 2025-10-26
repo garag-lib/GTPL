@@ -1,6 +1,12 @@
 import { BindTypes, TypeEventProxyHandler } from './GEnums';
 import { EventFunctionProxyHandler } from './GProxy';
 import { globalObject } from './global';
+
+export interface IBindDef {
+    key: string;
+    val: any;
+    pro: any;
+  }
 export interface IVarOrConst {
     va?: null | TplVar,
     ct?: null | string

@@ -165,68 +165,6 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
     return false;
 }
 
-/*
-function Attributes2JSON(atributos: AttrType[], onlyone: boolean = false): string {
-    const json: string[] = [];
-    atributos.forEach((attr: AttrType) => {
-        if (Array.isArray(attr) || typeof attr == 'string') {
-            json.push(JSON.stringify(attr));
-        } else {
-            const bind: IBindObject = <IBindObject>attr;
-            if (bind.link && bind.link.formula) {
-                const obj: string[] = [];
-                for (let i in bind) {
-                    const nivel1: any = (<any>bind)[i];
-                    if (obj.length)
-                        obj.push(',');
-                    if (i == 'link') {
-                        obj.push('"link":{');
-                        for (let ii in nivel1) {
-                            const nivel2 = nivel1[ii];
-                            if (obj[obj.length - 1] != '"link":{')
-                                obj.push(',');
-                            if (ii == 'formula') {
-                                obj.push('"formula":{');
-                                if (nivel2.vars)
-                                    obj.push('"vars":' + JSON.stringify(nivel2.vars) + ',');
-                                let isasync = '';
-                                if (nivel2.code.match(/[\s\;\r\n]await[\W]/gm))
-                                    isasync = ' async ';
-                                if (nivel2.code.match(/[\s\;\r\n]return[\W]/gm)) {
-                                    obj.push('"fnc":' + isasync + 'function(' +
-                                        (nivel2.vars ? (nivel2.vars.map((arr: any) => arr[0]).join(',')) : '') +
-                                        '){' +
-                                        nivel2.code +
-                                        '}');
-                                } else {
-                                    obj.push('"fnc":' + isasync + 'function(' +
-                                        (nivel2.vars ? (nivel2.vars.map((arr: any) => arr[0]).join(',')) : '') +
-                                        '){return(' +
-                                        nivel2.code +
-                                        ')}');
-                                }
-                                obj.push('}');
-                            } else {
-                                obj.push(JSON.stringify(ii) + ':' + JSON.stringify(nivel2));
-                            }
-                        }
-                        obj.push('}');
-                    } else {
-                        obj.push(JSON.stringify(i) + ':' + JSON.stringify(nivel1));
-                    }
-                }
-                json.push('{' + obj.join('') + '}');
-            } else {
-                json.push(JSON.stringify(attr));
-            }
-        }
-    });
-    if (onlyone)
-        return json.join(',');
-    return '[' + json.join(',') + ']';
-}
-*/
-
 function Attributes2JSON(atributos: AttrType[], onlyone: boolean = false): string {
     const json = atributos.map(attr => {
         if (Array.isArray(attr) || typeof attr === 'string') {

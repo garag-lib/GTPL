@@ -37,3 +37,13 @@ export function STACK(...args: any) {
     args.push((new Error(args.shift())).stack);
     log(...args);
 }
+
+export function activateMemoryLeakObserver() {
+    const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+            console.warn('Posible memory leak:', entry);
+        }
+    });
+    observer.observe({ entryTypes: ['measure'] });
+}
+
