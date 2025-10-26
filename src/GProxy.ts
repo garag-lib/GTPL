@@ -5,19 +5,42 @@ import { isStaticType } from './GUtils';
 //---
 
 const localOptions = {
-  scheduled: false
+  useScheduler: false,
+  batchDepth: 0,
+  microtaskQueued: false
 };
 
 const pendingHandlers = new Set<Function>();
 
 export function enableScheduledHandlers(enable: boolean) {
-  localOptions.scheduled = enable;
-  if( !enable ) {
+  console.log('enableScheduledHandlers', enable);
+  if (!enable)
     flushHandlers();
+  localOptions.useScheduler = enable;
+}
+
+/**
+ * Ejecuta un bloque dentro de un batch controlado.
+ * Mientras haya batches anidados, no se hace flush automático.
+ * Ideal para operaciones de alto nivel (por ej. destroy(), renderAll(), etc.)
+ */
+export function runInBatch(fn: () => void) {
+  localOptions.batchDepth++;
+  try {
+    fn();
+  } finally {
+    localOptions.batchDepth--;
+    if (localOptions.batchDepth === 0 && pendingHandlers.size > 0) {
+      flushHandlers();
+    }
   }
 }
 
 export function flushHandlers() {
+  console.log('flushHandlers');
+  if (localOptions.batchDepth > 0) return;
+  if (pendingHandlers.size === 0) return;
+  console.log('flushHandlers', pendingHandlers);
   for (const handler of pendingHandlers) {
     try {
       handler();
@@ -26,11 +49,19 @@ export function flushHandlers() {
     }
   }
   pendingHandlers.clear();
+  localOptions.microtaskQueued = false;
 }
 
 export function enqueueHandler(handler: Function) {
+  console.log('enqueueHandler', handler);
   pendingHandlers.add(handler);
-  queueMicrotask(flushHandlers);
+  if (!localOptions.microtaskQueued && localOptions.batchDepth === 0) {
+    localOptions.microtaskQueued = true;
+    queueMicrotask(() => {
+      localOptions.microtaskQueued = false;
+      flushHandlers();
+    });
+  }
 }
 
 //---
@@ -84,7 +115,7 @@ function getProxyHandler(
       }
       const ok = Reflect.set(target, prop, value, receiver);
       const handlers = handlersMap.get(targetOriginal);
-      if (localOptions.scheduled)
+      if (localOptions.useScheduler)
         handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef)));
       else
         handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
@@ -93,7 +124,7 @@ function getProxyHandler(
     deleteProperty(target, prop) {
       const ok = Reflect.deleteProperty(target, prop);
       const handlers = handlersMap.get(targetOriginal);
-      if (localOptions.scheduled)
+      if (localOptions.useScheduler)
         handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef)));
       else
         handlers?.forEach(handler => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef));

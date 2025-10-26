@@ -7,6 +7,9 @@ import {
   PROXYTARGET,
   ISPROXY,
   EventFunctionProxyHandler,
+  enqueueHandler,
+  flushHandlers,
+  runInBatch,
 } from "./GProxy";
 import { TplVar, GAddToo, IFunction, IVarOrConst, IBindDef } from "./GGenerator";
 import { globalObject, passiveSupported } from "./global";
@@ -1458,78 +1461,84 @@ export class GTpl implements IGtplObject {
 
   destroy(elements = true) {
 
-    if (this.isDestroyed) {
-      console.warn('[GTPL] Component already destroyed', this.ID);
-      return;
-    }
+    runInBatch(() => {
 
-    if (this.cleanupCallbacks && this.cleanupCallbacks.size > 0) {
-      this.cleanupCallbacks.forEach(callback => {
-        try {
-          callback();
-        } catch (error) {
-          console.error('[GTPL] Error in cleanup callback:', error);
+      enqueueHandler(() => {
+
+        if (this.isDestroyed) {
+          console.warn('[GTPL] Component already destroyed', this.ID);
+          return;
         }
-      });
-      this.cleanupCallbacks.clear();
-    }
 
-    this.isDestroyed = true;
+        if (this.cleanupCallbacks && this.cleanupCallbacks.size > 0) {
+          this.cleanupCallbacks.forEach(callback => {
+            try {
+              callback();
+            } catch (error) {
+              console.error('[GTPL] Error in cleanup callback:', error);
+            }
+          });
+          this.cleanupCallbacks.clear();
+        }
 
-    this.GtplChilds.forEach(child => child.destroy(false));
+        this.isDestroyed = true;
 
-    this.GtplChilds.clear();
+        this.GtplChilds.forEach(child => child.destroy(false));
 
-    if (this.BindDef) {
-      for (const objdef of this.BindDef) {
-        removeEventHandler(objdef.val, this.BoundEventProxy);
-      }
-      this.BindDef.clear();
-    }
+        this.GtplChilds.clear();
 
-    if (this.BindMap) {
-      for (const [bind, ctxgtpl] of this.BindMap) {
-        delBind(ctxgtpl, bind);
-      }
-      this.BindMap.clear();
-    }
+        if (this.BindDef) {
+          for (const objdef of this.BindDef) {
+            removeEventHandler(objdef.val, this.BoundEventProxy);
+          }
+          this.BindDef.clear();
+        }
 
-    if (elements) {
-      removeElements(this.Elements);
-      if (this.RenderElements) {
-        const entries = Array.isArray(this.Elements) ? this.Elements.length : 1;
-        for (let index = 0; index < entries; index++) {
-          const bind: IBindObject = this.RenderElements[index];
-          if (bind) {
-            if (bind.ele)
-              removeElements(bind.ele);
-            if (bind.eles)
-              removeElements(bind.eles);
+        if (this.BindMap) {
+          for (const [bind, ctxgtpl] of this.BindMap) {
+            delBind(ctxgtpl, bind);
+          }
+          this.BindMap.clear();
+        }
+
+        if (elements) {
+          removeElements(this.Elements);
+          if (this.RenderElements) {
+            const entries = Array.isArray(this.Elements) ? this.Elements.length : 1;
+            for (let index = 0; index < entries; index++) {
+              const bind: IBindObject = this.RenderElements[index];
+              if (bind) {
+                if (bind.ele)
+                  removeElements(bind.ele);
+                if (bind.eles)
+                  removeElements(bind.eles);
+              }
+            }
+            this.RenderElements = null;
           }
         }
-        this.RenderElements = null;
-      }
-    }
 
-    // Cleanup total
-    this.Elements = null!;
-    this.Root = null!;
-    this.BindTree = null!;
-    this.BindConst = null!;
-    this.Context = null!;
-    this.Parent = null!;
+        // Cleanup total
+        this.Elements = null!;
+        this.Root = null!;
+        this.BindTree = null!;
+        this.BindConst = null!;
+        this.Context = null!;
+        this.Parent = null!;
+
+      });
+
+    });
+
+    flushHandlers();
+
   }
 
   onCleanup(callback: () => void): void {
-    if (this.isDestroyed) {
+    if (this.isDestroyed)
       return;
-    }
-    if (typeof callback !== 'function') {
+    if (typeof callback !== 'function')
       return;
-    }
-    if (!this.cleanupCallbacks) {
-      this.cleanupCallbacks = new Set();
-    }
     this.cleanupCallbacks.add(callback);
   }
 

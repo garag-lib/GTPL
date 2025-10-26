@@ -332,6 +332,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         const GCompile = gtpl.jit.GCompile;
         const GAddToo = gtpl.GAddToo;
         const GTpl = gtpl.GTpl;
+        gtpl.GEnableScheduled(true);
         document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.code-block > template').forEach(async (template) => {
                 //---
