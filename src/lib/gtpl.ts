@@ -4,12 +4,14 @@ import { GGenerator, GCompile, GAddToo } from "../GGenerator";
 import { STACK, activateMemoryLeakObserver, css2obj, style2css } from "../GUtils";
 import { GCode } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
-import { isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
+import { enableScheduledHandlers, flushHandlers, isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
 
 export default {
     'GTpl': GTpl,
     'GGenerator': GGenerator,
     'GAddToo': GAddToo,
+    'GEnableScheduled': enableScheduledHandlers,
+    'GFlush': flushHandlers,
     'jit': {
         'GCompile': GCompile,
         'GCode': GCode

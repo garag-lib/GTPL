@@ -2,6 +2,39 @@
 import { TypeEventProxyHandler } from './GEnums';
 import { isStaticType } from './GUtils';
 
+//---
+
+const localOptions = {
+  scheduled: false
+};
+
+const pendingHandlers = new Set<Function>();
+
+export function enableScheduledHandlers(enable: boolean) {
+  localOptions.scheduled = enable;
+  if( !enable ) {
+    flushHandlers();
+  }
+}
+
+export function flushHandlers() {
+  for (const handler of pendingHandlers) {
+    try {
+      handler();
+    } catch (err) {
+      console.error("[flushHandlers] Error:", err);
+    }
+  }
+  pendingHandlers.clear();
+}
+
+export function enqueueHandler(handler: Function) {
+  pendingHandlers.add(handler);
+  queueMicrotask(flushHandlers);
+}
+
+//---
+
 export type PathProxyHandler = any;
 export type EventFunctionProxyHandler = (
   type: TypeEventProxyHandler,
@@ -51,13 +84,19 @@ function getProxyHandler(
       }
       const ok = Reflect.set(target, prop, value, receiver);
       const handlers = handlersMap.get(targetOriginal);
-      handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
+      if (localOptions.scheduled)
+        handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef)));
+      else
+        handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
       return ok;
     },
     deleteProperty(target, prop) {
       const ok = Reflect.deleteProperty(target, prop);
       const handlers = handlersMap.get(targetOriginal);
-      handlers?.forEach(handler => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef));
+      if (localOptions.scheduled)
+        handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef)));
+      else
+        handlers?.forEach(handler => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef));
       return ok;
     },
     has(target, prop) {
@@ -117,39 +156,29 @@ export function pathToString(path: PathProxyHandler): string {
 }
 
 export function removeEventHandler(target: any, event: EventFunctionProxyHandler): void {
-  // Get the real target if it's a proxy
   if (isGProxy(target)) {
     target = (target as any)[PROXYTARGET];
   }
-  // Get handlers for this target
   const handlers = handlersMap.get(target);
   if (!handlers) {
-    return; // No handlers registered
+    return;
   }
-  // Remove this specific handler
   handlers.delete(event);
-  // If no more handlers, clean up completely
   if (handlers.size === 0) {
-    // 1. Remove from handlers map
     handlersMap.delete(target);
-    // 2. Get the proxy entry
     const entry = proxyCache.get(target);
     if (entry) {
-      // 3. Revoke the proxy (makes it throw on access)
       try {
         entry.revoke();
       } catch (error) {
         console.error('[GProxy] Error revoking proxy:', error);
       }
-      // 4. Remove from cache
       proxyCache.delete(target);
     }
-    // 5. If the target is an object/array, recursively clean up nested proxies
     if (target && typeof target === 'object') {
       Object.keys(target).forEach(key => {
         const value = target[key];
         if (value && typeof value === 'object') {
-          // Try to clean up nested proxies
           const nestedHandlers = handlersMap.get(value);
           if (nestedHandlers && nestedHandlers.size === 0) {
             removeEventHandler(value, event);
