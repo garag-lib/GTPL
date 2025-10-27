@@ -6,10 +6,7 @@ import {
   PathProxyHandler,
   PROXYTARGET,
   ISPROXY,
-  EventFunctionProxyHandler,
-  enqueueHandler,
-  flushHandlers,
-  runInBatch,
+  EventFunctionProxyHandler
 } from "./GProxy";
 import { TplVar, GAddToo, IFunction, IVarOrConst, IBindDef } from "./GGenerator";
 import { globalObject, passiveSupported } from "./global";
@@ -334,14 +331,12 @@ function createGetterAndSetter(
           }
         };
         const ret = doSet();
-        enqueueHandler(() => {
-          gtpl.eventPRoxy(
-            TypeEventProxyHandler.SET,
-            [objdef.key],
-            newval,
-            objdef
-          );
-        });
+        gtpl.eventPRoxy(
+          TypeEventProxyHandler.SET,
+          [objdef.key],
+          newval,
+          objdef
+        );
         return ret;
       },
     });
@@ -1461,76 +1456,66 @@ export class GTpl implements IGtplObject {
 
   destroy(elements = true) {
 
-    runInBatch(() => {
+    if (this.isDestroyed) {
+      console.warn('[GTPL] Component already destroyed', this.ID);
+      return;
+    }
 
-      enqueueHandler(() => {
-
-        if (this.isDestroyed) {
-          console.warn('[GTPL] Component already destroyed', this.ID);
-          return;
+    if (this.cleanupCallbacks && this.cleanupCallbacks.size > 0) {
+      this.cleanupCallbacks.forEach(callback => {
+        try {
+          callback();
+        } catch (error) {
+          console.error('[GTPL] Error in cleanup callback:', error);
         }
-
-        if (this.cleanupCallbacks && this.cleanupCallbacks.size > 0) {
-          this.cleanupCallbacks.forEach(callback => {
-            try {
-              callback();
-            } catch (error) {
-              console.error('[GTPL] Error in cleanup callback:', error);
-            }
-          });
-          this.cleanupCallbacks.clear();
-        }
-
-        this.isDestroyed = true;
-
-        this.GtplChilds.forEach(child => child.destroy(false));
-
-        this.GtplChilds.clear();
-
-        if (this.BindDef) {
-          for (const objdef of this.BindDef) {
-            removeEventHandler(objdef.val, this.BoundEventProxy);
-          }
-          this.BindDef.clear();
-        }
-
-        if (this.BindMap) {
-          for (const [bind, ctxgtpl] of this.BindMap) {
-            delBind(ctxgtpl, bind);
-          }
-          this.BindMap.clear();
-        }
-
-        if (elements) {
-          removeElements(this.Elements);
-          if (this.RenderElements) {
-            const entries = Array.isArray(this.Elements) ? this.Elements.length : 1;
-            for (let index = 0; index < entries; index++) {
-              const bind: IBindObject = this.RenderElements[index];
-              if (bind) {
-                if (bind.ele)
-                  removeElements(bind.ele);
-                if (bind.eles)
-                  removeElements(bind.eles);
-              }
-            }
-            this.RenderElements = null;
-          }
-        }
-
-        // Cleanup total
-        this.Elements = null!;
-        this.Root = null!;
-        this.BindTree = null!;
-        this.BindConst = null!;
-        this.Context = null!;
-        this.Parent = null!;
-
       });
+      this.cleanupCallbacks.clear();
+    }
 
-    });
+    this.isDestroyed = true;
 
-    flushHandlers();
+    this.GtplChilds.forEach(child => child.destroy(false));
+
+    this.GtplChilds.clear();
+
+    if (this.BindDef) {
+      for (const objdef of this.BindDef) {
+        removeEventHandler(objdef.val, this.BoundEventProxy);
+      }
+      this.BindDef.clear();
+    }
+
+    if (this.BindMap) {
+      for (const [bind, ctxgtpl] of this.BindMap) {
+        delBind(ctxgtpl, bind);
+      }
+      this.BindMap.clear();
+    }
+
+    if (elements) {
+      removeElements(this.Elements);
+      if (this.RenderElements) {
+        const entries = Array.isArray(this.Elements) ? this.Elements.length : 1;
+        for (let index = 0; index < entries; index++) {
+          const bind: IBindObject = this.RenderElements[index];
+          if (bind) {
+            if (bind.ele)
+              removeElements(bind.ele);
+            if (bind.eles)
+              removeElements(bind.eles);
+          }
+        }
+        this.RenderElements = null;
+      }
+    }
+
+    // Cleanup total
+    this.Elements = null!;
+    this.Root = null!;
+    this.BindTree = null!;
+    this.BindConst = null!;
+    this.Context = null!;
+    this.Parent = null!;
 
   }
 

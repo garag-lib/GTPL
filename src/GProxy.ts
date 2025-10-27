@@ -4,6 +4,8 @@ import { isStaticType } from './GUtils';
 
 //---
 
+/*
+
 const localOptions = {
   useScheduler: false,
   batchDepth: 0,
@@ -12,9 +14,11 @@ const localOptions = {
 
 const pendingHandlers = new Set<Function>();
 
+
 export function enableScheduledHandlers(enable: boolean) {
-  if (!enable)
+  if (!enable) {
     flushHandlers();
+  }
   localOptions.useScheduler = enable;
 }
 
@@ -31,8 +35,10 @@ export function runInBatch(fn: () => void) {
 }
 
 export function flushHandlers() {
-  if (localOptions.batchDepth > 0) return;
-  if (pendingHandlers.size === 0) return;
+  if (localOptions.batchDepth > 0)
+    return;
+  if (pendingHandlers.size === 0)
+    return;
   for (const handler of pendingHandlers) {
     try {
       handler();
@@ -58,6 +64,8 @@ export function enqueueHandler(handler: Function) {
     });
   }
 }
+
+*/
 
 //---
 
@@ -109,13 +117,13 @@ function getProxyHandler(
       }
       const ok = Reflect.set(target, prop, value, receiver);
       const handlers = handlersMap.get(targetOriginal);
-      handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef)));
+      handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
       return ok;
     },
     deleteProperty(target, prop) {
       const ok = Reflect.deleteProperty(target, prop);
       const handlers = handlersMap.get(targetOriginal);
-      handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef)));
+      handlers?.forEach(handler => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef));
       return ok;
     },
     has(target, prop) {
