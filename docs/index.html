@@ -314,7 +314,8 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <template>
             <div>{{ content }}</div>
             <div g-inner="content"></div>
-            <button onclick="{{ this.content = '<b>HOLA</b>'; console.log(`hola parece que funciona: ${this.content}`);  }}">
+            <button
+                onclick="{{ this.content = '<b>HOLA</b>'; console.log(`hola parece que funciona: ${this.content}`);  }}">
                 Click Me
             </button>
         </template>
@@ -332,7 +333,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         const GCompile = gtpl.jit.GCompile;
         const GAddToo = gtpl.GAddToo;
         const GTpl = gtpl.GTpl;
-        gtpl.GEnableScheduled(true);
+        //---
         document.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.code-block > template').forEach(async (template) => {
                 //---
@@ -350,7 +351,6 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                 content = lines.map(line => line.slice(minIndent)).join('\n');
                 codeBlock.textContent = content;
                 Prism.highlightElement(codeBlock);
-                //---
             });
         });
     </script>

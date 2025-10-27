@@ -318,31 +318,31 @@ function createGetterAndSetter(
       },
       set: function (newval: any) {
         objdef.val = newval;
-        if (isStaticType(newval)) {
-          delete objdef.pro;
+        const doSet = () => {
+          if (isStaticType(newval)) {
+            delete objdef.pro;
+            return objdef.val;
+          } else {
+            while (objdef.val[ISPROXY]) objdef.val = objdef.val[PROXYTARGET];
+            objdef.pro = GProxy(
+              objdef.val,
+              gtpl.BoundEventProxy,
+              objdef,
+              [objdef.key]
+            );
+            return objdef.pro;
+          }
+        };
+        const ret = doSet();
+        enqueueHandler(() => {
           gtpl.eventPRoxy(
             TypeEventProxyHandler.SET,
             [objdef.key],
             newval,
             objdef
           );
-          return objdef.val;
-        } else {
-          while (objdef.val[ISPROXY]) objdef.val = objdef.val[PROXYTARGET];
-          objdef.pro = GProxy(
-            objdef.val,
-            gtpl.BoundEventProxy,
-            objdef,
-            [objdef.key]
-          );
-          gtpl.eventPRoxy(
-            TypeEventProxyHandler.SET,
-            [objdef.key],
-            newval,
-            objdef
-          );
-          return objdef.pro;
-        }
+        });
+        return ret;
       },
     });
   } catch (ex) {

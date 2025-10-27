@@ -13,17 +13,11 @@ const localOptions = {
 const pendingHandlers = new Set<Function>();
 
 export function enableScheduledHandlers(enable: boolean) {
-  console.log('enableScheduledHandlers', enable);
   if (!enable)
     flushHandlers();
   localOptions.useScheduler = enable;
 }
 
-/**
- * Ejecuta un bloque dentro de un batch controlado.
- * Mientras haya batches anidados, no se hace flush automático.
- * Ideal para operaciones de alto nivel (por ej. destroy(), renderAll(), etc.)
- */
 export function runInBatch(fn: () => void) {
   localOptions.batchDepth++;
   try {
@@ -37,10 +31,8 @@ export function runInBatch(fn: () => void) {
 }
 
 export function flushHandlers() {
-  console.log('flushHandlers');
   if (localOptions.batchDepth > 0) return;
   if (pendingHandlers.size === 0) return;
-  console.log('flushHandlers', pendingHandlers);
   for (const handler of pendingHandlers) {
     try {
       handler();
@@ -53,7 +45,10 @@ export function flushHandlers() {
 }
 
 export function enqueueHandler(handler: Function) {
-  console.log('enqueueHandler', handler);
+  if (!localOptions.useScheduler) {
+    handler();
+    return;
+  }
   pendingHandlers.add(handler);
   if (!localOptions.microtaskQueued && localOptions.batchDepth === 0) {
     localOptions.microtaskQueued = true;
@@ -80,8 +75,6 @@ export const PROXYTARGET = Symbol('proxy target');
 const proxyCache = new WeakMap<object, { proxy: any; revoke: () => void }>();
 const handlersMap = new WeakMap<object, Set<EventFunctionProxyHandler>>();
 
-const fakeEventHandler: EventFunctionProxyHandler = () => { }; // siempre la misma
-
 export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any } {
   return !!obj && typeof obj === 'object' && ISPROXY in obj;
 }
@@ -89,7 +82,8 @@ export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any 
 function getProxyHandler(
   targetOriginal: any,
   objRef: any,
-  parentPath: PathProxyHandler = []
+  parentPath: PathProxyHandler = [],
+  event: EventFunctionProxyHandler
 ): ProxyHandler<any> {
   return {
     get(target, prop, receiver) {
@@ -101,13 +95,13 @@ function getProxyHandler(
           for (const item of origIter()) {
             yield (isStaticType(item) || isGProxy(item))
               ? item
-              : createGProxy(item, fakeEventHandler, objRef, [...parentPath, Symbol.iterator]);
+              : createGProxy(item, event, objRef, [...parentPath, Symbol.iterator]);
           }
         };
       }
       const val = Reflect.get(target, prop, receiver);
       if (isStaticType(val) || isGProxy(val)) return val;
-      return createGProxy(val, fakeEventHandler, objRef, [...parentPath, prop]);
+      return createGProxy(val, event, objRef, [...parentPath, prop]);
     },
     set(target, prop, value, receiver) {
       if (isGProxy(value)) {
@@ -115,19 +109,13 @@ function getProxyHandler(
       }
       const ok = Reflect.set(target, prop, value, receiver);
       const handlers = handlersMap.get(targetOriginal);
-      if (localOptions.useScheduler)
-        handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef)));
-      else
-        handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
+      handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef)));
       return ok;
     },
     deleteProperty(target, prop) {
       const ok = Reflect.deleteProperty(target, prop);
       const handlers = handlersMap.get(targetOriginal);
-      if (localOptions.useScheduler)
-        handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef)));
-      else
-        handlers?.forEach(handler => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef));
+      handlers?.forEach(handler => enqueueHandler(() => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef)));
       return ok;
     },
     has(target, prop) {
@@ -156,7 +144,7 @@ function createGProxy<T extends object>(
     return existing.proxy;
   }
   // primera vez que lo vemos: creamos revocable + handler set
-  const handler = getProxyHandler(target, objRef, parentPath);
+  const handler = getProxyHandler(target, objRef, parentPath, event);
   const { proxy, revoke } = Proxy.revocable(target, handler);
   proxyCache.set(target, { proxy, revoke });
   handlersMap.set(target, new Set([event]));
@@ -205,17 +193,6 @@ export function removeEventHandler(target: any, event: EventFunctionProxyHandler
         console.error('[GProxy] Error revoking proxy:', error);
       }
       proxyCache.delete(target);
-    }
-    if (target && typeof target === 'object') {
-      Object.keys(target).forEach(key => {
-        const value = target[key];
-        if (value && typeof value === 'object') {
-          const nestedHandlers = handlersMap.get(value);
-          if (nestedHandlers && nestedHandlers.size === 0) {
-            removeEventHandler(value, event);
-          }
-        }
-      });
     }
   }
 }
