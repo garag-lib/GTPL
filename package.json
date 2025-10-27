@@ -3,17 +3,22 @@
   "version": "1.1.1",
   "type": "module",
   "repository": "https://github.com/garag-lib/GTPL",
-  "description": "GTPL is a TypeScript library designed for creating reactive template systems with a unique approach that incorporates Direct DOM and Proxy. Inspired by technologies like Vue.js, angular aot or jsx, GTPL offers an efficient and powerful way to build reactive applications with optimized performance and all of this in a compact 9 KB javascript package.",
-  "main": "dist/gtpl.min.js",
+  "description": "GTPL is a TypeScript library for reactive templates.",
+  "main": "dist/gtpl.cjs.min.js",
+  "module": "dist/gtpl.esm.min.js",
   "types": "dist/gtpl.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/gtpl.esm.min.js",
+      "require": "./dist/gtpl.cjs.min.js"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "rollup -c",
-    "build:dev": "rollup -c --environment NODE_ENV:development",
-    "server": "php -S localhost:8080",
-    "test-parser": "ts-node --project tsconfig-rollup.json tests/parser.ts"
+    "build:dev": "rollup -c --environment NODE_ENV:development"
   },
   "author": "Manuel Peliz",
   "license": "LGPL-2.1 license",

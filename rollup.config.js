@@ -15,32 +15,56 @@ const banner = `/*!
 */`;
 
 export default [
-  // Configuración para el bundle JavaScript
+  // -----------------------------------------------------------
+  // 🌍 ESM moderno (para browsers y Node >=14)
+  // -----------------------------------------------------------
   {
     input: 'src/lib/gtpl.ts',
     output: {
-      file: 'dist/gtpl.min.js',
-      format: 'umd',
-      name: 'gtpl',
+      file: 'dist/gtpl.esm.min.js',
+      format: 'es',
       sourcemap: true,
       banner,
-      globals: {},
+    },
+    plugins: [
+      typescript({
+        tsconfig: './tsconfig-rollup.json',
+        declaration: false,
+        declarationMap: false
+      }),
+      terser({
+        format: { comments: /^!/ } // Preserva solo el banner
+      })
+    ]
+  },
+
+  // -----------------------------------------------------------
+  // 🖥️ Compatibilidad con Node (CommonJS)
+  // -----------------------------------------------------------
+  {
+    input: 'src/lib/gtpl.ts',
+    output: {
+      file: 'dist/gtpl.cjs.min.js',
+      format: 'cjs',
+      sourcemap: true,
+      banner,
       exports: 'default'
     },
     plugins: [
       typescript({
         tsconfig: './tsconfig-rollup.json',
-        declaration: false, // No generar .d.ts aquí
+        declaration: false,
         declarationMap: false
       }),
       terser({
-        format: {
-          comments: /^!/  // Preserva solo comentarios que empiezan con /*!
-        }
+        format: { comments: /^!/ } // Minificación + preserva banner
       })
     ]
   },
-  // Configuración para unificar los .d.ts en un solo archivo
+
+  // -----------------------------------------------------------
+  // 📘 Declaraciones de tipos (.d.ts)
+  // -----------------------------------------------------------
   {
     input: 'src/lib/gtpl.ts',
     output: {
@@ -48,8 +72,6 @@ export default [
       format: 'es',
       banner
     },
-    plugins: [
-      dts()
-    ]
+    plugins: [dts()]
   }
 ];
