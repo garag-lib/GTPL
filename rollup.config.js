@@ -57,7 +57,31 @@ export default [
         declarationMap: false
       }),
       terser({
-        format: { comments: /^!/ } // Minificación + preserva banner
+        format: { comments: /^!/ }
+      })
+    ]
+  },
+
+  // -----------------------------------------------------------
+  // 🌐 Web plano (IIFE / UMD global)
+  // -----------------------------------------------------------
+  {
+    input: 'src/lib/gtpl.ts',
+    output: {
+      file: 'dist/gtpl.global.min.js',
+      format: 'iife', // o "umd" si quieres compatibilidad AMD
+      name: 'gtpl',   // expone como window.gtpl
+      sourcemap: true,
+      banner
+    },
+    plugins: [
+      typescript({
+        tsconfig: './tsconfig-rollup.json',
+        declaration: false,
+        declarationMap: false
+      }),
+      terser({
+        format: { comments: /^!/ }
       })
     ]
   },
