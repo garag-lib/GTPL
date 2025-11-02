@@ -1,4 +1,4 @@
-import { IVarOrConst, IFunction, IObjParsed, TplVar } from '../GGenerator';
+import { IVarOrConst, IFunction, IObjParsed, TplVar } from '../GEnums';
 import { globalObject } from '../global';
 
 const palabrasReservadas = [

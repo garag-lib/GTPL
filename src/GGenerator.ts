@@ -1,91 +1,29 @@
-import { BindTypes, TypeEventProxyHandler } from './GEnums';
-import { EventFunctionProxyHandler } from './GProxy';
+import { AttrType, BindTypes, IBindObject, IGtplObject } from './GEnums';
 import { globalObject } from './global';
 
-export interface IBindDef {
-    key: string;
-    val: any;
-    pro: any;
-  }
-export interface IVarOrConst {
-    va?: null | TplVar,
-    ct?: null | string
+const Directives = new Map();
+
+function registerDirective(name: string, cls: any) {
+    if (Directives.has(name))
+        return false;
+    Directives.set(name, cls);
+    return true;
 }
 
-export interface IFunction {
-    name: TplVar,
-    params?: IVarOrConst[]
+const ElementDirectives = new WeakMap();
+
+function applyDirective(ele: HTMLElement, name: string, value: string, objRoot: any) {
+    const DirectiveClass = Directives.get(name);
+    if (!DirectiveClass)
+        return false;
+    const instance = new DirectiveClass(ele, value, objRoot);
+    let instances = ElementDirectives.get(ele);
+    if (!instances) {
+        instances = [];
+        ElementDirectives.set(ele, instances);
+    }
+    instances.push(instance);
 }
-
-export interface IIndex {
-    index: string,
-    target: string
-}
-
-export interface IFormula {
-    code?: string,
-    vars?: TplVar[],
-    fnc?: Function
-}
-
-export interface IObjParsed {
-    vorc?: IVarOrConst,
-    svar?: string,
-    functions?: IFunction[],
-    index?: IIndex,
-    formula?: IFormula,
-    params?: IVarOrConst[]
-}
-
-export interface IGtplObject {
-    refresh(): unknown;
-    ID?: string,
-    Root: any,
-    Elements: any,
-    RenderElements?: any,
-    GtplChilds: Set<IGtplObject>,
-    BindMap: Map<IBindObject, IGtplObject>,
-    BindTree: any;
-    BindDef: any,
-    addBind: Function,
-    getContext: Function,
-    getValue: Function,
-    getRoot: Function,
-    getGtplRoot: Function,
-    destroy: Function,
-    eventPRoxy: Function,
-    addTo: Function,
-    launchChange: Function,
-    BoundEventProxy: EventFunctionProxyHandler
-    cleanupCallbacks?: Set<() => void>;
-    isDestroyed?: boolean;
-    onCleanup(callback: () => void): void;
-}
-
-export interface IBindObject {
-    type: BindTypes,
-    prop?: string,
-    link: IObjParsed,
-    index?: number,
-    case?: IBindObject[],
-    gen?: ProGen,
-    uid?: string,
-    common?: any,
-    ele?: any,
-    mark?: any,
-    eles?: IGtplObject[],
-    gtpl?: IGtplObject,
-    simetric?: boolean,
-    attrs?: string[]
-}
-
-//---
-
-export type AttrType = (string | IBindObject | string[]);
-
-export type ProGen = string | Function;
-
-export type TplVar = string[];
 
 //---
 
@@ -161,7 +99,9 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
             if (Array.isArray(attributes)) {
                 attributes.forEach((attr) => {
                     if (Array.isArray(attr)) {
-                        ele.setAttribute(attr[0], attr[1]);
+                        if (!(Directives.has(attr[0]) && applyDirective(ele, attr[0], attr[1], objRoot))) {
+                            ele.setAttribute(attr[0], attr[1]);
+                        }
                     } else {
                         const bind: IBindObject = <IBindObject>attr;
                         objRoot.addBind(bindNode(bind, ele));
@@ -181,3 +121,5 @@ export const GGenerator = createElement;
 export const GAddToo = appendChildsFromFnc;
 
 export const GCompile = compile;
+
+export const GregisterDirective = registerDirective;

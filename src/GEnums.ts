@@ -43,3 +43,95 @@ export const enum NodeTypes {
     DOCUMENT_FRAGMENT_NODE,
     //NOTATION_NODE
 };
+
+export type PathProxyHandler = any;
+
+export type EventFunctionProxyHandler = (
+    type: TypeEventProxyHandler,
+    path: PathProxyHandler,
+    value: any,
+    objRef: any
+) => void;
+
+export type AttrType = (string | IBindObject | string[]);
+
+export type ProGen = string | Function;
+
+export type TplVar = string[];
+
+export interface IBindDef {
+    key: string;
+    val: any;
+    pro: any;
+}
+export interface IVarOrConst {
+    va?: null | TplVar,
+    ct?: null | string
+}
+
+export interface IFunction {
+    name: TplVar,
+    params?: IVarOrConst[]
+}
+
+export interface IIndex {
+    index: string,
+    target: string
+}
+
+export interface IFormula {
+    code?: string,
+    vars?: TplVar[],
+    fnc?: Function
+}
+
+export interface IObjParsed {
+    vorc?: IVarOrConst,
+    svar?: string,
+    functions?: IFunction[],
+    index?: IIndex,
+    formula?: IFormula,
+    params?: IVarOrConst[]
+}
+
+export interface IGtplObject {
+    refresh(): unknown;
+    ID?: string,
+    Root: any,
+    Elements: any,
+    RenderElements?: any,
+    GtplChilds: Set<IGtplObject>,
+    BindMap: Map<IBindObject, IGtplObject>,
+    BindTree: any;
+    BindDef: any,
+    addBind: Function,
+    getContext: Function,
+    getValue: Function,
+    getRoot: Function,
+    getGtplRoot: Function,
+    destroy: Function,
+    eventPRoxy: Function,
+    addTo: Function,
+    launchChange: Function,
+    BoundEventProxy: EventFunctionProxyHandler
+    cleanupCallbacks?: Set<() => void>;
+    isDestroyed?: boolean;
+    onCleanup(callback: () => void): void;
+}
+
+export interface IBindObject {
+    type: BindTypes,
+    prop?: string,
+    link: IObjParsed,
+    index?: number,
+    case?: IBindObject[],
+    gen?: ProGen,
+    uid?: string,
+    common?: any,
+    ele?: any,
+    mark?: any,
+    eles?: IGtplObject[],
+    gtpl?: IGtplObject,
+    simetric?: boolean,
+    attrs?: string[]
+}

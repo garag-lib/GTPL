@@ -4,13 +4,14 @@
   "type": "module",
   "repository": "https://github.com/garag-lib/GTPL",
   "description": "GTPL is a TypeScript library for reactive templates.",
-  "main": "dist/gtpl.cjs.min.js",
-  "module": "dist/gtpl.esm.min.js",
-  "types": "dist/gtpl.d.ts",
+  "main": "./dist/gtpl.cjs.min.js",
+  "module": "./dist/gtpl.esm.min.js",
+  "types": "./dist/gtpl.d.ts",
   "exports": {
     ".": {
       "import": "./dist/gtpl.esm.min.js",
-      "require": "./dist/gtpl.cjs.min.js"
+      "require": "./dist/gtpl.cjs.min.js",
+      "types": "./dist/gtpl.d.ts"
     }
   },
   "files": [

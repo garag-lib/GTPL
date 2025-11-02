@@ -1,14 +1,7 @@
 import { BindTypes, TypeEventProxyHandler } from "./GEnums";
-import { IGtplObject, IBindObject, IIndex } from "./GGenerator";
-import {
-  GProxy,
-  removeEventHandler,
-  PathProxyHandler,
-  PROXYTARGET,
-  ISPROXY,
-  EventFunctionProxyHandler
-} from "./GProxy";
-import { TplVar, GAddToo, IFunction, IVarOrConst, IBindDef } from "./GGenerator";
+import { GProxy, removeEventHandler, PROXYTARGET, ISPROXY } from "./GProxy";
+import { GAddToo } from "./GGenerator";
+import { IFunction, IVarOrConst, IBindDef, TplVar, PathProxyHandler, EventFunctionProxyHandler, IGtplObject, IBindObject, IIndex } from './GEnums';
 import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
 

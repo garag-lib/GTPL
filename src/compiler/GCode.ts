@@ -1,8 +1,6 @@
-import { NodeTypes, BindTypes } from '../GEnums';
+import { NodeTypes, BindTypes, IBindObject, IFormula, IObjParsed, AttrType, ProGen } from '../GEnums';
 import { GParse } from './GParse';
-import { IBindObject, IFormula, IObjParsed } from '../GGenerator';
 import { css2obj, log, style2css } from '../GUtils';
-import { AttrType, ProGen } from '../GGenerator';
 import { globalObject } from '../global';
 
 let gparse!: GParse;

@@ -1,5 +1,5 @@
 // GProxy.ts
-import { TypeEventProxyHandler } from './GEnums';
+import { EventFunctionProxyHandler, PathProxyHandler, TypeEventProxyHandler } from './GEnums';
 import { isStaticType } from './GUtils';
 
 //---
@@ -69,13 +69,7 @@ export function enqueueHandler(handler: Function) {
 
 //---
 
-export type PathProxyHandler = any;
-export type EventFunctionProxyHandler = (
-  type: TypeEventProxyHandler,
-  path: PathProxyHandler,
-  value: any,
-  objRef: any
-) => void;
+
 
 export const ISPROXY = Symbol('is proxy');
 export const PROXYTARGET = Symbol('proxy target');
