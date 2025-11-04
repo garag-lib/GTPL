@@ -21,7 +21,7 @@ export default [
   {
     input: 'src/lib/gtpl.ts',
     output: {
-      file: 'dist/gtpl.esm.min.js',
+      file: 'dist/gtpl.esm.js',
       format: 'es',
       sourcemap: true,
       banner,
@@ -44,7 +44,7 @@ export default [
   {
     input: 'src/lib/gtpl.ts',
     output: {
-      file: 'dist/gtpl.cjs.min.js',
+      file: 'dist/gtpl.cjs.js',
       format: 'cjs',
       sourcemap: true,
       banner,
@@ -68,7 +68,7 @@ export default [
   {
     input: 'src/lib/gtpl.ts',
     output: {
-      file: 'dist/gtpl.global.min.js',
+      file: 'dist/gtpl.global.js',
       format: 'iife', // o "umd" si quieres compatibilidad AMD
       name: 'gtpl',   // expone como window.gtpl
       sourcemap: true,
