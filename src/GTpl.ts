@@ -456,6 +456,26 @@ function searchBind(gtpl: IGtplObject, bind: IBindObject): boolean {
 
 //---
 
+function checkBindElements(gtpl: IGtplObject, bind: IBindObject): boolean {
+  if (bind.type === BindTypes.ELE && bind.link?.vorc?.va && bind.ele) {
+    updateVar(bind.link.vorc.va, gtpl, bind.ele, true);
+    return true;
+  }
+  if (bind.type === BindTypes.ELES && bind.link?.vorc?.va && bind.ele) {
+    const va = bind.link.vorc.va;
+    let arr = reduceVar(gtpl, va);
+    if (!Array.isArray(arr)) {
+      updateVar(va, gtpl, [], true);
+      arr = reduceVar(gtpl, va);
+    }
+    if (!arr.includes(bind.ele)) {
+      arr.push(bind.ele);
+    }
+    return true;
+  }
+  return false;
+}
+
 function checkBindVar(gtpl: IGtplObject, bind: IBindObject): boolean {
   if (bind.type == BindTypes.VAR) {
     //log('checkBindVar', gtpl, bind);
@@ -1429,11 +1449,12 @@ export class GTpl implements IGtplObject {
 
   addBind(bind: IBindObject) {
     if (this.checkDestroyed('addBind')) return;
-    if (!checkBindVar(this, bind))
-      if (!checkBindEvent(this, bind))
-        if (!checkBindFormula(this, bind))
-          if (!checkBind(this, bind))
-            this.BindConst.add(bind);
+    if (!checkBindElements(this, bind))
+      if (!checkBindVar(this, bind))
+        if (!checkBindEvent(this, bind))
+          if (!checkBindFormula(this, bind))
+            if (!checkBind(this, bind))
+              this.BindConst.add(bind);
     if (privateProperties.getProperty(this, "GenerationFinish")) {
       this.launchChange(TypeEventProxyHandler.UKNOW4, bind);
     }
