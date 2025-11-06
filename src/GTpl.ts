@@ -1297,7 +1297,7 @@ async function updateISbind(
     gtpl.GtplChilds.add(newgtpl);
     bind.ele = newgtpl.Elements;
   } else {
-    bind.ele = result;
+    bind.ele = result[ISPROXY] ? result[PROXYTARGET] : result;
   }
   //---
   privateProperties.getProperty(gtpl, "MarkEle").set(bind.mark, bind.ele);
