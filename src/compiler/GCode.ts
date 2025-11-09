@@ -210,7 +210,7 @@ function getId(): string {
         if (letterIndex >= 26)
             letterIndex = 0;
     }
-    const letra = String.fromCharCode(97 + letterIndex); 
+    const letra = String.fromCharCode(97 + letterIndex);
     const sufijo = counter.toString(36).padStart(5, '0');
     counter++;
     return letra + sufijo;
@@ -343,6 +343,7 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                         attrs = Attributes2JSON(atributos);
 
                         if (bind_is) {
+                            (bind_is.attrs as any) = atributos;
                             ({ jsonAttr2, jsonAttr } = addGen2ObjConditional(bind_is, uuid, bind_for, jsonAttr2, jsonAttr));
                         }
 

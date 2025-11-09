@@ -88,9 +88,11 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
                         console.error(tempvar, attr);
                         return;
                     }
-                    if (attr.type == BindTypes.TEXT)
+                    if (attr.type == BindTypes.TEXT) {
                         objRoot.addBind(bindNode(<IBindObject>attr, tempvar));
-                    else objRoot.addBind(bindNode(<IBindObject>attr, undefined, tempvar));
+                    } else {
+                        objRoot.addBind(bindNode(<IBindObject>attr, undefined, tempvar));
+                    }
                 });
             }
             return tempvar;
@@ -98,21 +100,36 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
             const ele = globalObject.document.createElement(nodeName);
             appendChildsFromFnc(ele, fncChilds, objRoot);
             if (Array.isArray(attributes)) {
+                //---
+                const temp_directives: any[] = [];
+                //---
                 attributes.forEach((attr) => {
                     if (Array.isArray(attr)) {
-                        if (!(Directives.has(attr[0]) && applyDirective(ele, attr[0], attr[1], objRoot))) {
+                        if (Directives.has(attr[0])) {
+                            temp_directives.push(attr);
+                        } else {
                             ele.setAttribute(attr[0], attr[1]);
                         }
                     } else {
                         const bind: IBindObject = <IBindObject>attr;
                         if (bind.prop && Directives.has(bind.prop)) {
-                            const inst = applyDirective(ele, bind.prop, '', objRoot);
-                            objRoot.addBind(bindNode(bind, inst));
+                            temp_directives.push(bind);
                         } else {
                             objRoot.addBind(bindNode(bind, ele));
                         }
                     }
                 });
+                //---
+                temp_directives.forEach((attr) => {
+                    if (Array.isArray(attr)) {
+                        applyDirective(ele, attr[0], attr[1], objRoot);
+                    } else {
+                        const bind: any = attr;
+                        const inst = applyDirective(ele, bind.prop, '', objRoot);
+                        objRoot.addBind(bindNode(bind, inst));
+                    }
+                });
+                //---
             }
             return ele;
     }

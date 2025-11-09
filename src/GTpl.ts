@@ -1317,6 +1317,11 @@ async function updateISbind(
     gtpl.GtplChilds.add(newgtpl);
     bind.ele = newgtpl.Elements;
   } else {
+    const val = result[ISPROXY] ? result[PROXYTARGET] : result;
+    // TODO si es es un string es hacer documtnt.create(string)
+    // luego hay que obtener el gtpl del creado o enviado
+    // se le hace un addbind de los atrubutos que tenemos en el bind
+    // el problema será no repetir binds que ya hemos añadido
     bind.ele = result[ISPROXY] ? result[PROXYTARGET] : result;
   }
   //---
