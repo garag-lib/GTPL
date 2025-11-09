@@ -107,10 +107,10 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
                         const bind: IBindObject = <IBindObject>attr;
                         if (bind.prop && Directives.has(bind.prop)) {
                             const inst = applyDirective(ele, bind.prop, '', objRoot);
-                            if (inst)
-                                bind.ele = inst;
+                            objRoot.addBind(bindNode(bind, inst));
+                        } else {
+                            objRoot.addBind(bindNode(bind, ele));
                         }
-                        objRoot.addBind(bindNode(bind, ele));
                     }
                 });
             }
