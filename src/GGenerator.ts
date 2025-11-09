@@ -23,6 +23,7 @@ function applyDirective(ele: HTMLElement, name: string, value: string, objRoot: 
         ElementDirectives.set(ele, instances);
     }
     instances.push(instance);
+    return instance;
 }
 
 //---
@@ -104,6 +105,11 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
                         }
                     } else {
                         const bind: IBindObject = <IBindObject>attr;
+                        if (bind.prop && Directives.has(bind.prop)) {
+                            const inst = applyDirective(ele, bind.prop, '', objRoot);
+                            if (inst)
+                                bind.ele = inst;
+                        }
                         objRoot.addBind(bindNode(bind, ele));
                     }
                 });
