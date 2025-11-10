@@ -7,8 +7,8 @@ let gparse!: GParse;
 
 const regex_var = /([a-zA-Z\_][\w]+)\s*\=\s*([a-zA-Z\_][\w\.]+)/i;
 
-function getGen(nodeName: string, atributos: string | null, nodelist?: string | null): string {
-    return 'g(\'' + nodeName + '\',' + (atributos ? atributos : 'null') + ',' + (nodelist ? nodelist : 'null') + ',o)';
+function getGen(tag: string, attrs?: string | null, children?: string | null): string {
+    return `g('${tag}',${attrs ?? 'null'},${children ?? 'null'},o)`;
 }
 
 function getFunction(gen: string, parent?: any, commongen?: any): string {
@@ -82,16 +82,20 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
             break;
         case 'g-var':
             tt = tt || BindTypes.VAR;
-            const m = regex_var.exec(value);
-            if (m) {
-                const [, svar, rhs] = m;
-                atributos.push({
-                    type: tt,
-                    link: { svar, vorc: { va: rhs.split('.') } }
-                });
-                return true;
-            }
-            break;
+            value.split(';').forEach(v => {
+                const trimmed = v.trim();
+                if (!trimmed) return;
+                const m = regex_var.exec(trimmed);
+                if (m) {
+                    const [, svar, rhs] = m;
+                    const attrObj: any = {
+                        type: tt,
+                        link: { svar, vorc: { va: rhs.split('.') } }
+                    };
+                    atributos.push(attrObj);
+                }
+            });
+            return atributos.length > 0;
         case 'g-tpl':
             tt = tt || BindTypes.TPL;
             atributos.push({
@@ -213,14 +217,50 @@ function getId(): string {
     return letra + sufijo;
 }
 
-async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, headers?: boolean, bindSwitch?: null | IBindObject): Promise<string> {
+interface IStringBuilder {
+    add: (s: string) => void;
+    addComma: (s: string, s_conds?: string[]) => void;
+    addCommaOnly: (s_conds?: string[]) => void;
+    toString: (s_left?: string, s_right?: string) => string;
+}
+
+function sb(): IStringBuilder {
+    const parts: string[] = [];
+    return {
+        add(s: string): void {
+            parts.push(s);
+        },
+        addComma(s: string, s_conds?: string[]): void {
+            if (parts.length) {
+                let needComma = true;
+                const last = parts[parts.length - 1];
+                if (s_conds?.includes(last)) needComma = false;
+                if (needComma) parts.push(',');
+            }
+            parts.push(s);
+        },
+        addCommaOnly(s_conds?: string[]): void {
+            if (parts.length) {
+                let needComma = true;
+                const last = parts[parts.length - 1];
+                if (s_conds?.includes(last)) needComma = false;
+                if (needComma) parts.push(',');
+            }
+        },
+        toString(s_left: string = '', s_right: string = ''): string {
+            return s_left + parts.join('') + s_right;
+        }
+    };
+}
+
+function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, headers?: boolean, bindSwitch?: null | IBindObject): string {
     //---
     if (gparse == null)
         gparse = new GParse();
     //---
-    let parse: string = '';
-    if (headers !== false)
-        parse = '[';
+    let parse: IStringBuilder = sb();
+    //if (headers !== false)
+    //    parse = '[';
     //---
     let bind_for: null | IBindObject,
         bind_switch: null | IBindObject,
@@ -247,9 +287,12 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                 {
                     //---
                     if (node.nodeName.toLowerCase() == 'script') {
-                        if (parse != '[')
-                            parse += ',';
-                        parse += getGen(node.nodeName, JSON.stringify(node.textContent));
+                        //if (parse != '[')
+                        //    parse += ',';
+                        //parse += getGen(node.nodeName, JSON.stringify(node.textContent));
+                        parse.addComma(
+                            getGen(node.nodeName, JSON.stringify(node.textContent))
+                            , ['[']);
                         continue;
                     }
                     //---
@@ -305,8 +348,9 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                     if (bind_is && (bind_case || bind_switch || bind_tpl))
                         throw new Error('not is and ( case or switch ot tpl ) ' + Array.from(ele.attributes, (item) => item.name + '=' + item.value + '"').join(' '));
                     //---
-                    if (parse != '[' && parse != '')
-                        parse += ',';
+                    //if (parse != '[' && parse != '')
+                    //    parse += ',';
+                    parse.addCommaOnly(['[']);
                     //---
                     if (bind_tpl) {
                         const ct: any = (<any>bind_tpl).link.vorc.ct;
@@ -314,18 +358,14 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
-                            childsnodes = await NodeList2Function(childs, real, true, bind_switch);
+                            childsnodes = NodeList2Function(childs, real, true, bind_switch);
                         } else {
-                            /** @TODO better fetch **/
-                            const tpl = await (await fetch(ct)).text();
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(tpl.trim(), "text/html");
-                            childsnodes = await NodeList2Function(doc.body.childNodes, real, true, bind_switch);
+                            console.error('template ' + ct + ' undefined.');
                         }
                     } else {
                         real = (ele.nodeName.toLowerCase() == 'template') ? (<any>ele).content : ele;
                         childs = (<any>real).childNodes;
-                        childsnodes = await NodeList2Function(childs, real, true, bind_switch);
+                        childsnodes = NodeList2Function(childs, real, true, bind_switch);
                     }
                     //---
                     if (bind_is || bind_if || bind_case || bind_for || bind_switch) {
@@ -407,7 +447,7 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                             bind_case.gen = uuid;
                             bind_case.common = common;
 
-                            parse += getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), parent);
+                            parse.add(getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), parent));
 
                         } else {
 
@@ -438,13 +478,13 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
 
                                 // jsonAttr -> solo for
 
-                                parse += getFunction(getGen('#comment', '[' + JSON.stringify(bind_for.uid) + ',' + jsonAttr + ']'), parent, common);
+                                parse.add(getFunction(getGen('#comment', '[' + JSON.stringify(bind_for.uid) + ',' + jsonAttr + ']'), parent, common));
 
                             } else {
 
                                 // jsonAttr -> solo if, notif, switch, is ...
 
-                                parse += getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), parent, common);
+                                parse.add(getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), parent, common));
 
                             }
 
@@ -456,17 +496,17 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
 
                             if (ele.nodeName.toLowerCase() == 'template') {
 
-                                parse += childsnodes;
+                                parse.add(childsnodes);
 
                             } else {
 
-                                parse += getFunction(getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes), parent);
+                                parse.add(getFunction(getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes), parent));
 
                             }
 
                         } else {
 
-                            parse += getFunction(getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes), parent);
+                            parse.add(getFunction(getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes), parent));
 
                         }
 
@@ -484,45 +524,53 @@ async function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?:
                             const r = gparse.getResult();
                             if (r && r.length) {
                                 r.forEach((item: string | IObjParsed) => {
-                                    if (parse != '[' && parse != '')
-                                        parse += ',';
+                                    //if (parse != '[' && parse != '')
+                                    //    parse += ',';
+                                    parse.addCommaOnly(['[']);
                                     if (typeof item == 'string') {
-                                        parse += getGen(node.nodeName, JSON.stringify(item));
+                                        parse.add(getGen(node.nodeName, JSON.stringify(item)));
                                     } else {
-                                        parse += getGen(node.nodeName, Attributes2JSON([{
-                                            type: BindTypes.TEXT,
-                                            prop: 'textContent',
-                                            link: item
-                                        }]));
+                                        parse.add(
+                                            getGen(node.nodeName, Attributes2JSON([{
+                                                type: BindTypes.TEXT,
+                                                prop: 'textContent',
+                                                link: item
+                                            }]))
+                                        );
                                     }
                                 });
                             }
                         }
                     }
                     if (normal) {
-                        if (parse != '[' && parse != '')
-                            parse += ',';
-                        parse += getGen(node.nodeName, JSON.stringify(node.nodeValue));
+                        //if (parse != '[' && parse != '')
+                        //    parse += ',';
+                        parse.addComma(
+                            getGen(node.nodeName, JSON.stringify(node.nodeValue))
+                            , ['[']);
                     }
                 }
                 break;
             case NodeTypes.COMMENT_NODE:
                 {
-                    if (parse != '[' && parse != '')
-                        parse += ',';
-                    parse += getGen(node.nodeName, JSON.stringify(node.nodeValue));
+                    //if (parse != '[' && parse != '')
+                    //    parse += ',';
+                    parse.addComma(
+                        getGen(node.nodeName, JSON.stringify(node.nodeValue))
+                        , ['[']);
                 }
                 break;
         }
     };
-    if (headers !== false)
-        parse += ']';
+    //if (headers !== false)
+    //   parse += ']';
+    const result = parse.toString(headers !== false ? '[' : '', headers !== false ? ']' : '');
     if (parent === undefined)
-        return '(o)=>' + parse;
-    return parse;
+        return '(o)=>' + result;
+    return result;
 }
 
-export async function GCode(html: string | Node | NodeListOf<ChildNode>): Promise<string> {
+export function GCode(html: string | Node | NodeListOf<ChildNode>): string {
     if (typeof html == 'string') {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html.trim(), "text/html");

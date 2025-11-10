@@ -335,10 +335,10 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         const GTpl = gtpl.GTpl;
         //---
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.querySelectorAll('.code-block > template').forEach(async (template) => {
+            document.querySelectorAll('.code-block > template').forEach((template) => {
                 //---
                 const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
-                const aot = await GCode(template.innerHTML);
+                const aot = GCode(template.innerHTML);
                 const gtpl = new GTpl({ root: {}, generator: GCompile(aot) });
                 gtpl.addTo(renderedContent);
                 //---
