@@ -1,6 +1,6 @@
 import { BindTypes, TypeEventProxyHandler } from "./GEnums";
 import { GProxy, removeEventHandler, PROXYTARGET, ISPROXY } from "./GProxy";
-import { GAddToo } from "./GGenerator";
+import { GAddArributes, GAddToo } from "./GGenerator";
 import { IFunction, IVarOrConst, IBindDef, TplVar, PathProxyHandler, EventFunctionProxyHandler, IGtplObject, IBindObject, IIndex } from './GEnums';
 import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
@@ -1298,6 +1298,13 @@ async function updateISbind(
     delete bind.eles;
   } else if (bind.ele) {
     hide(bind);
+    if (bind.attrs) {
+      for (const attr of bind.attrs) {
+        if (!Array.isArray(attr)) {
+          delBind(gtpl, attr as any);
+        }
+      }
+    }
   }
   //---
   if (!bresult) return gtpl;
@@ -1318,10 +1325,8 @@ async function updateISbind(
     bind.ele = newgtpl.Elements;
   } else {
     const val = result[ISPROXY] ? result[PROXYTARGET] : result;
-    // TODO si es es un string es hacer documtnt.create(string)
-    // luego hay que obtener el gtpl del creado o enviado
-    // se le hace un addbind de los atrubutos que tenemos en el bind
-    // el problema será no repetir binds que ya hemos añadido
+    if (bind.attrs)
+      GAddArributes(bind.attrs, val, gtpl);
     bind.ele = val;
   }
   //---
