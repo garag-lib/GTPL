@@ -1322,7 +1322,7 @@ async function updateISbind(
     // luego hay que obtener el gtpl del creado o enviado
     // se le hace un addbind de los atrubutos que tenemos en el bind
     // el problema será no repetir binds que ya hemos añadido
-    bind.ele = result[ISPROXY] ? result[PROXYTARGET] : result;
+    bind.ele = val;
   }
   //---
   privateProperties.getProperty(gtpl, "MarkEle").set(bind.mark, bind.ele);

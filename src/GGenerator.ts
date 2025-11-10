@@ -99,39 +99,43 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
         default:
             const ele = globalObject.document.createElement(nodeName);
             appendChildsFromFnc(ele, fncChilds, objRoot);
-            if (Array.isArray(attributes)) {
-                //---
-                const temp_directives: any[] = [];
-                //---
-                attributes.forEach((attr) => {
-                    if (Array.isArray(attr)) {
-                        if (Directives.has(attr[0])) {
-                            temp_directives.push(attr);
-                        } else {
-                            ele.setAttribute(attr[0], attr[1]);
-                        }
-                    } else {
-                        const bind: IBindObject = <IBindObject>attr;
-                        if (bind.prop && Directives.has(bind.prop)) {
-                            temp_directives.push(bind);
-                        } else {
-                            objRoot.addBind(bindNode(bind, ele));
-                        }
-                    }
-                });
-                //---
-                temp_directives.forEach((attr) => {
-                    if (Array.isArray(attr)) {
-                        applyDirective(ele, attr[0], attr[1], objRoot);
-                    } else {
-                        const bind: any = attr;
-                        const inst = applyDirective(ele, bind.prop, '', objRoot);
-                        objRoot.addBind(bindNode(bind, inst));
-                    }
-                });
-                //---
-            }
+            addArributes(attributes, ele, objRoot);
             return ele;
+    }
+}
+
+function addArributes(attributes: AttrType[], ele: any, objRoot: IGtplObject) {
+    if (Array.isArray(attributes)) {
+        //---
+        const temp_directives: any[] = [];
+        //---
+        attributes.forEach((attr) => {
+            if (Array.isArray(attr)) {
+                if (Directives.has(attr[0])) {
+                    temp_directives.push(attr);
+                } else {
+                    ele.setAttribute(attr[0], attr[1]);
+                }
+            } else {
+                const bind: IBindObject = <IBindObject>attr;
+                if (bind.prop && Directives.has(bind.prop)) {
+                    temp_directives.push(bind);
+                } else {
+                    objRoot.addBind(bindNode(bind, ele));
+                }
+            }
+        });
+        //---
+        temp_directives.forEach((attr) => {
+            if (Array.isArray(attr)) {
+                applyDirective(ele, attr[0], attr[1], objRoot);
+            } else {
+                const bind: any = attr;
+                const inst = applyDirective(ele, bind.prop, '', objRoot);
+                objRoot.addBind(bindNode(bind, inst));
+            }
+        });
+        //---
     }
 }
 
@@ -146,3 +150,5 @@ export const GAddToo = appendChildsFromFnc;
 export const GCompile = compile;
 
 export const GregisterDirective = registerDirective;
+
+export const GAddArributes = addArributes;

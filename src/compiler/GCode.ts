@@ -5,7 +5,7 @@ import { globalObject } from '../global';
 
 let gparse!: GParse;
 
-const regex_var = /([a-zA-Z\_][\w]+)\s*\=\s*([a-zA-Z][\w\.]+)/gi;
+const regex_var = /([a-zA-Z\_][\w]+)\s*\=\s*([a-zA-Z\_][\w\.]+)/i;
 
 function getGen(nodeName: string, atributos: string | null, nodelist?: string | null): string {
     return 'g(\'' + nodeName + '\',' + (atributos ? atributos : 'null') + ',' + (nodelist ? nodelist : 'null') + ',o)';
@@ -82,16 +82,12 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
             break;
         case 'g-var':
             tt = tt || BindTypes.VAR;
-            if (value.match(regex_var)) {
-                const vars = value.split(regex_var);
+            const m = regex_var.exec(value);
+            if (m) {
+                const [, svar, rhs] = m;
                 atributos.push({
                     type: tt,
-                    link: {
-                        svar: vars[1],
-                        vorc: {
-                            va: vars[2].split('.')
-                        }
-                    }
+                    link: { svar, vorc: { va: rhs.split('.') } }
                 });
                 return true;
             }
@@ -178,7 +174,8 @@ function Attributes2JSON(atributos: AttrType[], onlyone: boolean = false): strin
                                 const { vars, code } = subValue as IFormula;
                                 if (code != undefined) {
                                     const fncParams = vars?.map(v => v[0]).join(',') || '';
-                                    const isAsync = code.match(/[\s;]await[\W]/gm) ? ' async ' : '';
+                                    const isAsync = /\bawait\b/.test(code) ? ' async ' : '';
+                                    //const isAsync = code.match(/[\s;]await[\W]/gm) ? ' async ' : '';
                                     const fncBody = `{${code}}`;
                                     return `"${subKey}":{"vars":${JSON.stringify(vars)},"fnc":${isAsync}function(${fncParams})${fncBody}}`;
                                 } else {
