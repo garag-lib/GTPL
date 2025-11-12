@@ -108,6 +108,7 @@ export interface IGtplObject {
     getContext: Function,
     getValue: Function,
     getRoot: Function,
+    localVars: Map<string, any>,
     getGtplRoot: Function,
     destroy: Function,
     eventPRoxy: Function,

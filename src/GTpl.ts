@@ -163,10 +163,20 @@ function updateVar(
   value: any,
   force: boolean = false
 ) {
-  //console.log('updateVar', va, value, force);
+  if (!va.length) return;
+  const name = va[0];
+  // 1️⃣ Si la variable es local (declarada con g-var), actualizar en localVars
+  if (ctx.localVars && ctx.localVars.has(name)) {
+    const old = ctx.localVars.get(name);
+    if (force || old !== value) {
+      ctx.localVars.set(name, value);
+    }
+    return;
+  }
+  // 2️⃣ Si tiene varios niveles (obj.prop.sub), sigue la lógica normal
   if (va.length > 1) {
     const reduce: any = (obj: any, index: number, fin: number) => {
-      if (index == fin) return obj[va[index]];
+      if (index === fin) return obj[va[index]];
       return reduce(obj[va[index]], ++index, fin);
     };
     const ret = reduce(ctx.Root, 0, va.length - 2);
@@ -175,12 +185,14 @@ function updateVar(
       ret[fin] = value;
     }
   } else {
+    // 3️⃣ Variable normal (en Root)
     const fin = va[0];
     if (force || ctx.Root[fin] != value) {
       ctx.Root[fin] = value;
     }
   }
 }
+
 
 function reduceVar(
   gtpl: IGtplObject,
@@ -189,12 +201,28 @@ function reduceVar(
   index?: number,
   limit?: number
 ): any {
-  if (index == undefined) index = 0;
-  if (limit !== undefined && index >= name.length - limit) return val;
-  const result = val == undefined ? gtpl.getValue(name[index++]) : val[name[index++]];
-  if (limit !== undefined && index >= name.length - limit) return result;
-  if (index >= name.length) return result;
-  return reduceVar(gtpl, name, result, index);
+  if (index == undefined)
+    index = 0;
+  if (limit !== undefined && index >= name.length - limit)
+    return val;
+  let base: any;
+  // 1️⃣ Si es la primera clave, buscar en localVars
+  if (index === 0 && gtpl.localVars && gtpl.localVars.has(name[0])) {
+    base = gtpl.localVars.get(name[0]);
+    index++;
+  } else {
+    base = val === undefined
+      ? gtpl.getValue(name[index++])
+      : val[name[index++]];
+    //if (base === undefined && gtpl.Parent) {
+    //  return reduceVar(gtpl.Parent, name, val, index - 1, limit);
+    //}
+  }
+  if (limit !== undefined && index >= name.length - limit)
+    return base;
+  if (index >= name.length)
+    return base;
+  return reduceVar(gtpl, name, base, index);
 }
 
 async function reduceFnc(
@@ -1379,10 +1407,9 @@ async function updateVARbind(
   if (!svar) return gtpl;
   if (!bind.ele) return gtpl;
   //---
-  gtpl = getContext(gtpl, bind);
+  //gtpl = getContext(gtpl, bind);
   //---
-  if (bind.ele[svar] != result)
-    bind.ele[svar] = result;
+  gtpl.localVars.set(svar, result);
   //---
   return gtpl;
 }
@@ -1448,6 +1475,11 @@ export class GTpl implements IGtplObject {
    */
   Root: any;
 
+  /**
+   * variables locales definidas con g-var
+   */
+  localVars: Map<string, any>;
+
   BoundEventProxy: EventFunctionProxyHandler;
 
   cleanupCallbacks!: Set<() => void>;
@@ -1461,6 +1493,7 @@ export class GTpl implements IGtplObject {
     this.BindConst = new Set();
     this.BindDef = new Set();
     this.GtplChilds = new Set();
+    this.localVars = new Map();
     this.BoundEventProxy = this.eventPRoxy.bind(this);
     this.loadOptions(options);
   }
@@ -1482,12 +1515,16 @@ export class GTpl implements IGtplObject {
   }
 
   getValue(key: any): any {
+    // 1️⃣ Variables locales de este GTpl
+    if (this.localVars && this.localVars.has(key))
+      return this.localVars.get(key);
+    // 2️⃣ Variables en el contexto de datos (Root)
     const ref = this.Root;
-    if (ref) {
-      if (ref.hasOwnProperty(key)) return ref[key];
-      if (ref[key] !== undefined) return ref[key];
-    }
-    if (this.Parent) return this.Parent.getValue(key);
+    if (ref && (key in ref))
+      return ref[key];
+    // 3️⃣ Delegar al padre
+    if (this.Parent)
+      return this.Parent.getValue(key);
     return undefined;
   }
 
@@ -1502,10 +1539,18 @@ export class GTpl implements IGtplObject {
   }
 
   getContext(key: string): GTpl {
-    if (this.Context && this.Context.has(key)) return this;
-    if (this.Parent) return this.Parent.getContext(key);
+    // Si existe como variable local, el contexto es este GTpl
+    if (this.localVars && this.localVars.has(key))
+      return this;
+    // Si la variable está en el contexto de datos
+    if (this.Context && this.Context.has(key))
+      return this;
+    // Si no, busca hacia arriba
+    if (this.Parent)
+      return this.Parent.getContext(key);
     return this.getGtplRoot();
   }
+
 
   addBind(bind: IBindObject) {
     if (this.checkDestroyed('addBind')) return;
