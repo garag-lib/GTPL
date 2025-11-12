@@ -5,8 +5,6 @@ import { globalObject } from '../global';
 
 let gparse!: GParse;
 
-const regex_var = /([a-zA-Z\_][\w]+)\s*\=\s*([a-zA-Z\_][\w\.]+)/i;
-
 function getGen(tag: string, attrs?: string | null, children?: string | null): string {
     return `g('${tag}',${attrs ?? 'null'},${children ?? 'null'},o)`;
 }
@@ -82,20 +80,27 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
             break;
         case 'g-var':
             tt = tt || BindTypes.VAR;
-            value.split(';').forEach(v => {
-                const trimmed = v.trim();
-                if (!trimmed) return;
-                const m = regex_var.exec(trimmed);
-                if (m) {
-                    const [, svar, rhs] = m;
-                    const attrObj: any = {
-                        type: tt,
-                        link: { svar, vorc: { va: rhs.split('.') } }
-                    };
-                    atributos.push(attrObj);
-                }
-            });
-            return atributos.length > 0;
+            const decls = value.split(';').map(s => s.trim()).filter(Boolean);
+            let threrare = false;
+            for (const decl of decls) {
+                const eqPos = decl.indexOf('=');
+                if (eqPos < 0) continue;
+                const lhs = decl.slice(0, eqPos).trim();
+                const rhs = decl.slice(eqPos + 1).trim();
+                if (!lhs || !rhs) continue;
+                gparse.setString(`{{${rhs}}}`);
+                if (!gparse.check()) continue;
+                const parsed = gparse.getSingleResult();
+                if (!parsed) continue;
+                parsed.svar = lhs;
+                const attrObj: any = {
+                    type: tt,
+                    link: parsed
+                };
+                atributos.push(attrObj);
+                threrare = true;
+            }
+            return threrare;
         case 'g-tpl':
             tt = tt || BindTypes.TPL;
             atributos.push({

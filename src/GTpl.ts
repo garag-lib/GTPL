@@ -250,8 +250,15 @@ async function calculateBind(me: IGtplObject, bind: IBindObject, value?: any, ex
     result = await fnc.apply(gtpl.Root, arrval);
   } else {
     if (bind.link.vorc) {
-      if (bind.link.vorc.va != undefined)
+      if (bind.link.vorc.va != undefined) {
+        const va = bind.link.vorc.va;
+        if (va.length === 1 && va[0] === 'this') {
+          result = gtpl.Root;
+        } else {
+          result = (value !== undefined) ? value : reduceVar(gtpl, va);
+        }
         result = value != undefined ? value : reduceVar(gtpl, bind.link.vorc.va);
+      }
       if (bind.link.vorc.ct != undefined) result = bind.link.vorc.ct;
     }
     if (bind.link.functions) {
@@ -478,7 +485,28 @@ function checkBindElements(gtpl: IGtplObject, bind: IBindObject): boolean {
 
 function checkBindVar(gtpl: IGtplObject, bind: IBindObject): boolean {
   if (bind.type == BindTypes.VAR) {
-    //log('checkBindVar', gtpl, bind);
+    let result = false;
+    if (bind.link.vorc && bind.link.vorc.va) {
+      result = true;
+      addBind2Object(gtpl, bind.link.vorc.va, bind);
+    }
+    if (bind.link.functions) {
+      bind.link.functions.forEach((fnc: IFunction) => {
+        if (fnc.params) {
+          fnc.params.forEach((param: IVarOrConst) => {
+            if (param.va) {
+              result = true;
+              addBind2Object(gtpl, param.va, bind);
+            }
+          });
+        }
+      });
+    }
+    return result;
+  }
+  return false;
+  /*
+  if (bind.type == BindTypes.VAR) {
     if (bind.link.svar && bind.link.vorc && bind.link.vorc.va) {
       const temp = bind.link.vorc.va.join("");
       if (temp == "this") {
@@ -490,6 +518,7 @@ function checkBindVar(gtpl: IGtplObject, bind: IBindObject): boolean {
     return true;
   }
   return false;
+  */
 }
 
 function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
@@ -1337,6 +1366,27 @@ async function updateISbind(
   return gtpl;
 }
 
+async function updateVARbind(
+  type: TypeEventProxyHandler,
+  gtpl: IGtplObject,
+  bind: IBindObject,
+  result?: any,
+  path?: string[]
+) {
+  //log('VAR', bind, result, path);
+  //---
+  const svar = bind.link.svar;
+  if (!svar) return gtpl;
+  if (!bind.ele) return gtpl;
+  //---
+  gtpl = getContext(gtpl, bind);
+  //---
+  if (bind.ele[svar] != result)
+    bind.ele[svar] = result;
+  //---
+  return gtpl;
+}
+
 //---
 
 export class GTpl implements IGtplObject {
@@ -1644,6 +1694,9 @@ export class GTpl implements IGtplObject {
         break;
       case BindTypes.IS:
         gtpl = await updateISbind(type, this, bind, result, path);
+        break;
+      case BindTypes.VAR:
+        gtpl = await updateVARbind(type, this, bind, result, path);
         break;
     }
     checkRenderElements(gtpl, bind);
