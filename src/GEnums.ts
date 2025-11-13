@@ -24,9 +24,7 @@ export const enum BindTypes {
     ELE,
     ELES,
     IS,
-    REF,
-    TPL,
-    VAR
+    TPL
 };
 
 export const enum NodeTypes {
@@ -108,7 +106,6 @@ export interface IGtplObject {
     getContext: Function,
     getValue: Function,
     getRoot: Function,
-    localVars: Map<string, any>,
     getGtplRoot: Function,
     destroy: Function,
     eventPRoxy: Function,

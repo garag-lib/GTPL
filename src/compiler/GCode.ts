@@ -78,29 +78,6 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
                 return true;
             }
             break;
-        case 'g-var':
-            tt = tt || BindTypes.VAR;
-            const decls = value.split(';').map(s => s.trim()).filter(Boolean);
-            let threrare = false;
-            for (const decl of decls) {
-                const eqPos = decl.indexOf('=');
-                if (eqPos < 0) continue;
-                const lhs = decl.slice(0, eqPos).trim();
-                const rhs = decl.slice(eqPos + 1).trim();
-                if (!lhs || !rhs) continue;
-                gparse.setString(`{{${rhs}}}`);
-                if (!gparse.check()) continue;
-                const parsed = gparse.getSingleResult();
-                if (!parsed) continue;
-                parsed.svar = lhs;
-                const attrObj: any = {
-                    type: tt,
-                    link: parsed
-                };
-                atributos.push(attrObj);
-                threrare = true;
-            }
-            return threrare;
         case 'g-tpl':
             tt = tt || BindTypes.TPL;
             atributos.push({

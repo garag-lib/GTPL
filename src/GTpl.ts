@@ -164,16 +164,6 @@ function updateVar(
   force: boolean = false
 ) {
   if (!va.length) return;
-  const name = va[0];
-  // 1️⃣ Si la variable es local (declarada con g-var), actualizar en localVars
-  if (ctx.localVars && ctx.localVars.has(name)) {
-    const old = ctx.localVars.get(name);
-    if (force || old !== value) {
-      ctx.localVars.set(name, value);
-    }
-    return;
-  }
-  // 2️⃣ Si tiene varios niveles (obj.prop.sub), sigue la lógica normal
   if (va.length > 1) {
     const reduce: any = (obj: any, index: number, fin: number) => {
       if (index === fin) return obj[va[index]];
@@ -185,7 +175,6 @@ function updateVar(
       ret[fin] = value;
     }
   } else {
-    // 3️⃣ Variable normal (en Root)
     const fin = va[0];
     if (force || ctx.Root[fin] != value) {
       ctx.Root[fin] = value;
@@ -205,19 +194,9 @@ function reduceVar(
     index = 0;
   if (limit !== undefined && index >= name.length - limit)
     return val;
-  let base: any;
-  // 1️⃣ Si es la primera clave, buscar en localVars
-  if (index === 0 && gtpl.localVars && gtpl.localVars.has(name[0])) {
-    base = gtpl.localVars.get(name[0]);
-    index++;
-  } else {
-    base = val === undefined
-      ? gtpl.getValue(name[index++])
-      : val[name[index++]];
-    //if (base === undefined && gtpl.Parent) {
-    //  return reduceVar(gtpl.Parent, name, val, index - 1, limit);
-    //}
-  }
+  let base = val === undefined
+    ? gtpl.getValue(name[index++])
+    : val[name[index++]];
   if (limit !== undefined && index >= name.length - limit)
     return base;
   if (index >= name.length)
@@ -509,44 +488,6 @@ function checkBindElements(gtpl: IGtplObject, bind: IBindObject): boolean {
     return true;
   }
   return false;
-}
-
-function checkBindVar(gtpl: IGtplObject, bind: IBindObject): boolean {
-  if (bind.type == BindTypes.VAR) {
-    let result = false;
-    if (bind.link.vorc && bind.link.vorc.va) {
-      result = true;
-      addBind2Object(gtpl, bind.link.vorc.va, bind);
-    }
-    if (bind.link.functions) {
-      bind.link.functions.forEach((fnc: IFunction) => {
-        if (fnc.params) {
-          fnc.params.forEach((param: IVarOrConst) => {
-            if (param.va) {
-              result = true;
-              addBind2Object(gtpl, param.va, bind);
-            }
-          });
-        }
-      });
-    }
-    return result;
-  }
-  return false;
-  /*
-  if (bind.type == BindTypes.VAR) {
-    if (bind.link.svar && bind.link.vorc && bind.link.vorc.va) {
-      const temp = bind.link.vorc.va.join("");
-      if (temp == "this") {
-        bind.ele[bind.link.svar] = gtpl.Root;
-      } else {
-        bind.ele[bind.link.svar] = reduceVar(gtpl, bind.link.vorc.va);
-      }
-    }
-    return true;
-  }
-  return false;
-  */
 }
 
 function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
@@ -1394,26 +1335,6 @@ async function updateISbind(
   return gtpl;
 }
 
-async function updateVARbind(
-  type: TypeEventProxyHandler,
-  gtpl: IGtplObject,
-  bind: IBindObject,
-  result?: any,
-  path?: string[]
-) {
-  //log('VAR', bind, result, path);
-  //---
-  const svar = bind.link.svar;
-  if (!svar) return gtpl;
-  if (!bind.ele) return gtpl;
-  //---
-  //gtpl = getContext(gtpl, bind);
-  //---
-  gtpl.localVars.set(svar, result);
-  //---
-  return gtpl;
-}
-
 //---
 
 export class GTpl implements IGtplObject {
@@ -1475,11 +1396,6 @@ export class GTpl implements IGtplObject {
    */
   Root: any;
 
-  /**
-   * variables locales definidas con g-var
-   */
-  localVars: Map<string, any>;
-
   BoundEventProxy: EventFunctionProxyHandler;
 
   cleanupCallbacks!: Set<() => void>;
@@ -1493,7 +1409,6 @@ export class GTpl implements IGtplObject {
     this.BindConst = new Set();
     this.BindDef = new Set();
     this.GtplChilds = new Set();
-    this.localVars = new Map();
     this.BoundEventProxy = this.eventPRoxy.bind(this);
     this.loadOptions(options);
   }
@@ -1515,14 +1430,9 @@ export class GTpl implements IGtplObject {
   }
 
   getValue(key: any): any {
-    // 1️⃣ Variables locales de este GTpl
-    if (this.localVars && this.localVars.has(key))
-      return this.localVars.get(key);
-    // 2️⃣ Variables en el contexto de datos (Root)
     const ref = this.Root;
     if (ref && (key in ref))
       return ref[key];
-    // 3️⃣ Delegar al padre
     if (this.Parent)
       return this.Parent.getValue(key);
     return undefined;
@@ -1539,13 +1449,8 @@ export class GTpl implements IGtplObject {
   }
 
   getContext(key: string): GTpl {
-    // Si existe como variable local, el contexto es este GTpl
-    if (this.localVars && this.localVars.has(key))
-      return this;
-    // Si la variable está en el contexto de datos
     if (this.Context && this.Context.has(key))
       return this;
-    // Si no, busca hacia arriba
     if (this.Parent)
       return this.Parent.getContext(key);
     return this.getGtplRoot();
@@ -1554,12 +1459,15 @@ export class GTpl implements IGtplObject {
 
   addBind(bind: IBindObject) {
     if (this.checkDestroyed('addBind')) return;
-    if (!checkBindElements(this, bind))
-      if (!checkBindVar(this, bind))
-        if (!checkBindEvent(this, bind))
-          if (!checkBindFormula(this, bind))
-            if (!checkBind(this, bind))
-              this.BindConst.add(bind);
+    if (!checkBindElements(this, bind)) {
+      if (!checkBindEvent(this, bind)) {
+        if (!checkBindFormula(this, bind)) {
+          if (!checkBind(this, bind)) {
+            this.BindConst.add(bind);
+          }
+        }
+      }
+    }
     if (privateProperties.getProperty(this, "GenerationFinish")) {
       this.launchChange(TypeEventProxyHandler.UKNOW4, bind);
     }
@@ -1739,9 +1647,6 @@ export class GTpl implements IGtplObject {
         break;
       case BindTypes.IS:
         gtpl = await updateISbind(type, this, bind, result, path);
-        break;
-      case BindTypes.VAR:
-        gtpl = await updateVARbind(type, this, bind, result, path);
         break;
     }
     checkRenderElements(gtpl, bind);
