@@ -110,6 +110,8 @@ export interface IGtplObject {
     destroy: Function,
     eventPRoxy: Function,
     addTo: Function,
+    insertAfterTo: Function,
+    insertBeforeTo: Function,
     launchChange: Function,
     BoundEventProxy: EventFunctionProxyHandler
     cleanupCallbacks?: Set<() => void>;

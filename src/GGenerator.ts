@@ -36,32 +36,61 @@ function bindNode(bind: IBindObject, node?: Node, mark?: Node) {
     return bind;
 }
 
-function appendChildsFromFnc(ele: Node | any[], childs: Node | Function | any[], objRoot: IGtplObject) {
-    //console.log('appendChildsFromFnc', ele, childs, objRoot);
+type NodeLike = Node | any[];
+type ChildInput = Node | Function | any[];
+
+function processChild(
+    ele: NodeLike,
+    childs: ChildInput,
+    objRoot: IGtplObject,
+    insertFn: (ele: Node, child: Node) => void
+) {
+    // Caso: array de hijos ⇒ procesar uno por uno
     if (Array.isArray(childs)) {
-        childs.forEach((child: any) => {
-            appendChildsFromFnc(ele, child, objRoot);
-        });
-    } else if (typeof childs == 'function') {
-        appendChildsFromFnc(ele, childs(objRoot), objRoot);
-    } else if (childs !== null && childs !== undefined) {
-        if (Array.isArray(ele)) {
-            ele.push(childs);
-        } else {
-            ele.appendChild(childs);
-            /*
-            try {
-                if (ele.nodeName && ele.nodeName.toLowerCase() == 'select' &&
-                    childs.nodeName && childs.nodeName.toLowerCase() == 'option') {
-                    if ((ele as HTMLSelectElement).value !== '' &&
-                        (ele as HTMLSelectElement).value === (childs as HTMLOptionElement).value) {
-                        (childs as HTMLOptionElement).selected = true;
-                    }
-                }
-            } catch (ex) { console.error(ex); }
-            */
-        }
+        childs.forEach(child => processChild(ele, child, objRoot, insertFn));
+        return;
     }
+
+    // Caso: función ⇒ ejecutar y procesar resultado
+    if (typeof childs === "function") {
+        processChild(ele, childs(objRoot), objRoot, insertFn);
+        return;
+    }
+
+    // Valores vacíos ⇒ ignorar
+    if (childs === null || childs === undefined) {
+        return;
+    }
+
+    // Si el elemento es un array ⇒ sólo pushear
+    if (Array.isArray(ele)) {
+        ele.push(childs);
+        return;
+    }
+
+    // El resto: aplicar la función de inserción
+    insertFn(ele, childs);
+}
+
+function appendChildsFromFnc(ele: NodeLike, childs: ChildInput, objRoot: IGtplObject) {
+    processChild(ele, childs, objRoot, (e, c) => e.appendChild(c));
+}
+
+function insertBeforeFromFnc(ele: NodeLike, childs: ChildInput, objRoot: IGtplObject) {
+    processChild(ele, childs, objRoot, (e, c) => {
+        const parent = e.parentNode;
+        if (parent) parent.insertBefore(c, e);
+    });
+}
+
+function insertAfterFromFnc(ele: NodeLike, childs: ChildInput, objRoot: IGtplObject) {
+    processChild(ele, childs, objRoot, (e, c) => {
+        const parent = e.parentNode;
+        if (!parent) return;
+        const next = e.nextSibling;
+        if (next) parent.insertBefore(c, next);
+        else parent.appendChild(c);
+    });
 }
 
 function createElement(nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject) {
@@ -145,7 +174,11 @@ function compile(gcode: string, ggenerator?: any): any {
 
 export const GGenerator = createElement;
 
-export const GAddToo = appendChildsFromFnc;
+export const GAddTo = appendChildsFromFnc;
+
+export const GInsertBeforeTo = insertBeforeFromFnc;
+
+export const GInsertAfterTo = insertAfterFromFnc;
 
 export const GCompile = compile;
 

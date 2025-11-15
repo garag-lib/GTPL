@@ -1,6 +1,6 @@
 import { BindTypes, TypeEventProxyHandler } from "./GEnums";
 import { GProxy, removeEventHandler, PROXYTARGET, ISPROXY } from "./GProxy";
-import { GAddArributes, GAddToo } from "./GGenerator";
+import { GAddArributes, GAddTo, GInsertAfterTo, GInsertBeforeTo } from "./GGenerator";
 import { IFunction, IVarOrConst, IBindDef, TplVar, PathProxyHandler, EventFunctionProxyHandler, IGtplObject, IBindObject, IIndex } from './GEnums';
 import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
@@ -182,7 +182,6 @@ function updateVar(
   }
 }
 
-
 function reduceVar(
   gtpl: IGtplObject,
   name: string[],
@@ -190,18 +189,12 @@ function reduceVar(
   index?: number,
   limit?: number
 ): any {
-  if (index == undefined)
-    index = 0;
-  if (limit !== undefined && index >= name.length - limit)
-    return val;
-  let base = val === undefined
-    ? gtpl.getValue(name[index++])
-    : val[name[index++]];
-  if (limit !== undefined && index >= name.length - limit)
-    return base;
-  if (index >= name.length)
-    return base;
-  return reduceVar(gtpl, name, base, index);
+  if (index == undefined) index = 0;
+  if (limit !== undefined && index >= name.length - limit) return val;
+  const result = val == undefined ? gtpl.getValue(name[index++]) : val[name[index++]];
+  if (limit !== undefined && index >= name.length - limit) return result;
+  if (index >= name.length) return result;
+  return reduceVar(gtpl, name, result, index);
 }
 
 async function reduceFnc(
@@ -1421,7 +1414,7 @@ export class GTpl implements IGtplObject {
       if (options.generator) {
         this.FncElements = options.generator;
         this.Elements = [];
-        GAddToo(this.Elements, this.FncElements, this);
+        GAddTo(this.Elements, this.FncElements, this);
       }
       privateProperties.setProperty(this, "GenerationFinish", true);
       if (options.refresh === undefined || options.refresh === true)
@@ -1570,39 +1563,43 @@ export class GTpl implements IGtplObject {
     }
   }
 
-  addTo(ele: Node | any[]) {
+  private processRenderAndApply(ele: Node | any[], applyFn: (ele: Node | any[], arr: any, ctx: any) => void) {
     if (this.checkDestroyed('addBind')) return;
-    //console.log('addTo', ele);
     if (this.RenderElements) {
-      const render_arr: any = [];
-      const arr = Array.isArray(this.Elements)
-        ? this.Elements
-        : [this.Elements];
-      arr.forEach((ele: Node, index: number) => {
-        if (this.RenderElements[index]) {
-          const bind: IBindObject = this.RenderElements[index];
-          if (bind.ele) {
-            render_arr.push(bind.ele);
-          } else if (bind.eles) {
-            bind.eles.forEach((gtpl: IGtplObject) => gtpl.addTo(render_arr));
-            render_arr.push(bind.mark);
-          }
-        } else {
-          render_arr.push(ele);
+      const render_arr: any[] = [];
+      const arr = Array.isArray(this.Elements) ? this.Elements : [this.Elements];
+      arr.forEach((element: Node, index: number) => {
+        const bind: IBindObject | undefined = this.RenderElements[index];
+        if (!bind) {
+          render_arr.push(element);
+          return;
+        }
+        if (bind.ele) {
+          render_arr.push(bind.ele);
+        } else if (bind.eles) {
+          bind.eles.forEach((gtpl: IGtplObject) => gtpl.addTo(render_arr));
+          render_arr.push(bind.mark);
         }
       });
-      GAddToo(ele, render_arr, this);
+      applyFn(ele, render_arr, this);
     } else {
-      GAddToo(ele, this.Elements, this);
+      applyFn(ele, this.Elements, this);
     }
   }
 
-  eventPRoxy(
-    type: TypeEventProxyHandler,
-    path: PathProxyHandler,
-    value: any,
-    objRef: any
-  ) {
+  addTo(ele: Node | any[]) {
+    this.processRenderAndApply(ele, GAddTo);
+  }
+
+  insertAfterTo(ele: Node | any[]) {
+    this.processRenderAndApply(ele, GInsertAfterTo);
+  }
+
+  insertBeforeTo(ele: Node | any[]) {
+    this.processRenderAndApply(ele, GInsertBeforeTo);
+  }
+
+  eventPRoxy(type: TypeEventProxyHandler, path: PathProxyHandler, value: any, objRef: any) {
     //log('eventPRoxy', 'event:', type, 'path:', path, 'value:', value, 'objref:', objRef);
     const pa = path;
     pa?.shift();

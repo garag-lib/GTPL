@@ -1,6 +1,6 @@
 
 import { GTpl } from "../GTpl";
-import { GGenerator, GCompile, GAddToo, GregisterDirective } from "../GGenerator";
+import { GGenerator, GCompile, GAddTo, GregisterDirective, GInsertAfterTo, GInsertBeforeTo } from "../GGenerator";
 import { STACK, activateMemoryLeakObserver, css2obj, style2css } from "../GUtils";
 import { GCode } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
@@ -8,7 +8,9 @@ import { GProxy, isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
 
 export default {
     'GTpl': GTpl,
-    'GAddToo': GAddToo,
+    'GAddTo': GAddTo,
+    'GInsertAfterTo': GInsertAfterTo,
+    'GInsertBeforeTo': GInsertBeforeTo,
     'GregisterDirective': GregisterDirective,
     'GGenerator': GGenerator,
     'GProxy': GProxy,
