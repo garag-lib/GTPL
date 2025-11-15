@@ -18,7 +18,7 @@ export function style2css(prop: any) {
 const typeArray = ['symbol', 'bigint', 'undefined', 'boolean', 'string', 'number'];
 
 export function isStaticType(val: any): boolean {
-    if (val === null || val === undefined)
+    if (val == null)
         return true;
     const type = typeof val;
     return typeArray.includes(type);

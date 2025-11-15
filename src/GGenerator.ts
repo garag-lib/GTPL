@@ -58,7 +58,7 @@ function processChild(
     }
 
     // Valores vacíos ⇒ ignorar
-    if (childs === null || childs === undefined) {
+    if (childs == null) {
         return;
     }
 

@@ -897,7 +897,7 @@ async function updateATTRbind(
   gtpl = getContext(gtpl, bind);
   const updateProperty = (prop: string, value: any) => {
     if (bind.ele[prop] !== undefined && bind.ele[prop] !== null) {
-      if (value === undefined || value === null) {
+      if (value == null) {
         if (bind.ele[prop] !== "")
           bind.ele[prop] = null;
       } else if (bind.ele[prop] != value) {
@@ -908,7 +908,7 @@ async function updateATTRbind(
         }
       }
     } else {
-      if (value === undefined || value === null) {
+      if (value == null) {
         bind.ele.removeAttribute(prop);
       } else if (bind.ele.getAttribute(prop) != value) {
         bind.ele.setAttribute(prop, value);
@@ -918,7 +918,7 @@ async function updateATTRbind(
   if (bind.prop) {
     updateProperty(bind.prop, result);
   } else {
-    if (result === undefined || result === null) {
+    if (result == null) {
       if (bind.attrs) {
         bind.attrs.forEach((key) => {
           updateProperty(key, null);
