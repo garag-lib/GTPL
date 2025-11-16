@@ -112,8 +112,10 @@ function getProxyHandler(
       }
       //---
       const ok = Reflect.set(target, prop, value, receiver);
-      const handlers = handlersMap.get(targetOriginal);
-      handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
+      if (ok) {
+        const handlers = handlersMap.get(targetOriginal);
+        handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
+      }
       return ok;
     },
     deleteProperty(target, prop) {
