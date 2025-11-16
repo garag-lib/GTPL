@@ -35,7 +35,8 @@ export default [
       terser({
         format: { comments: /^!/ } // Preserva solo el banner
       })
-    ]
+    ],
+    external: ['tslib']
   },
 
   // -----------------------------------------------------------
@@ -59,7 +60,8 @@ export default [
       terser({
         format: { comments: /^!/ }
       })
-    ]
+    ],
+    external: ['tslib']
   },
 
   // -----------------------------------------------------------
@@ -83,7 +85,8 @@ export default [
       terser({
         format: { comments: /^!/ }
       })
-    ]
+    ],
+    external: ['tslib']
   },
 
   // -----------------------------------------------------------
@@ -96,6 +99,7 @@ export default [
       format: 'es',
       banner
     },
-    plugins: [dts()]
+    plugins: [dts()],
+    external: ['tslib']
   }
 ];

@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["DOM", "ES2017"],
+    "lib": [
+      "DOM",
+      "ES2017"
+    ],
     "module": "ESNext",
     "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
+    "importHelpers": true,
     "sourceMap": true,
     "outDir": "./dist",
     "removeComments": true,
@@ -19,5 +23,11 @@
   },
   "include": [
     "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "docs",
+    "tests"
   ]
 }
