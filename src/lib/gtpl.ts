@@ -1,7 +1,7 @@
 
 import { GTpl } from "../GTpl";
 import { GGenerator, GCompile, GAddTo, GregisterDirective, GInsertAfterTo, GInsertBeforeTo } from "../GGenerator";
-import { STACK, activateMemoryLeakObserver, css2obj, style2css } from "../GUtils";
+import { STACK, css2obj, style2css } from "../GUtils";
 import { GCode } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
 import { GProxy, isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
@@ -27,7 +27,6 @@ export default {
         'isGProxy': isGProxy,
         'unGProxy': unGProxy,
         'PROXYTARGET': PROXYTARGET,
-        'ISPROXY': ISPROXY,
-        'activateMemoryLeakObserver': activateMemoryLeakObserver
+        'ISPROXY': ISPROXY
     }
 };

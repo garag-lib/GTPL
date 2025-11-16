@@ -1,49 +1,77 @@
 
 export function css2obj(css: string): Record<string, string> {
     const obj: Record<string, string> = {};
-    const s = css.toLowerCase()
-        .replace(/-(.)/g, (m, g) => g.toUpperCase())
-        .replace(/;\s?$/g, "")
-        .split(/:|;/g);
-    for (let i = 0, n = s.length; i < n; i += 2) {
-        obj[s[i].replace(/\s/g, "")] = s[i + 1].replace(/^\s+|\s+$/g, "");
+    let buffer = "";
+    let inString: string | null = null;
+    let parenDepth = 0;
+    const pushRule = (rule: string) => {
+        rule = rule.trim();
+        if (!rule) return;
+        const index = rule.indexOf(":");
+        if (index === -1) return;
+        const prop = rule.slice(0, index).trim();
+        const value = rule.slice(index + 1).trim();
+        if (!prop) return;
+        // Variables CSS: mantener tal cual
+        const key = prop.startsWith("--")
+            ? prop
+            : prop.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+        obj[key] = value;
+    };
+    for (let i = 0; i < css.length; i++) {
+        const char = css[i];
+        // --- string tracking ---
+        if (char === '"' || char === "'") {
+            if (inString === char) {
+                inString = null;
+            } else if (!inString) {
+                inString = char;
+            }
+        }
+        // --- parens tracking ---
+        if (!inString) {
+            if (char === "(") parenDepth++;
+            if (char === ")") parenDepth--;
+        }
+        // --- rule boundary: semicolon outside strings & parentheses ---
+        if (!inString && parenDepth === 0 && char === ";") {
+            pushRule(buffer);
+            buffer = "";
+            continue;
+        }
+        buffer += char;
     }
+    // Última regla si no acaba con ;
+    pushRule(buffer);
     return obj;
 }
 
-export function style2css(prop: any) {
-    return prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLocaleLowerCase();
+export function style2css(prop: string) {
+    if (prop.startsWith("--")) return prop; // variables CSS
+    return prop.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
-const typeArray = ['symbol', 'bigint', 'undefined', 'boolean', 'string', 'number'];
+const staticTypes = new Set([
+    "symbol",
+    "bigint",
+    "undefined",
+    "boolean",
+    "string",
+    "number"
+]);
 
 export function isStaticType(val: any): boolean {
-    if (val == null)
-        return true;
-    const type = typeof val;
-    return typeArray.includes(type);
+    return val === null || staticTypes.has(typeof val);
 }
 
-export function log(...args: any): void {
+export function log(...args: any[]) {
     console.log('%c----------', 'font-weight:bold');
-    args.forEach((arg: any) => {
-        console.log(arg);
-    });
+    console.log(...args);
     console.log('%c----------', 'font-weight:bold');
 }
 
-export function STACK(...args: any) {
-    //const functionName = log.caller?.name || arguments.callee.caller?.name;
-    args.push((new Error(args.shift())).stack);
-    log(...args);
+export function STACK(message: string, ...rest: any[]) {
+    const err = new Error(message);
+    console.error("%cSTACK ERROR:", "color:red;font-weight:bold", message);
+    log(err.stack, ...rest);
 }
-
-export function activateMemoryLeakObserver() {
-    const observer = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-            console.warn('Posible memory leak:', entry);
-        }
-    });
-    observer.observe({ entryTypes: ['measure'] });
-}
-
