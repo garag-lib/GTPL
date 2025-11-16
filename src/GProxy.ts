@@ -75,10 +75,6 @@ export const PROXYTARGET = Symbol('proxy target');
 const proxyCache = new WeakMap<object, { proxy: any; revoke: () => void }>();
 const handlersMap = new WeakMap<object, Set<EventFunctionProxyHandler>>();
 
-export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any } {
-  return !!obj && typeof obj === 'object' && (obj as any)[ISPROXY] === true;
-}
-
 function getProxyHandler(
   targetOriginal: any,
   objRef: any,
@@ -97,13 +93,13 @@ function getProxyHandler(
           for (const item of origIter.call(target)) {
             yield (isStaticType(item) || isGProxy(item))
               ? item
-              : createGProxy(item, event, objRef, [...parentPath, Symbol.iterator]);
+              : GProxy(item, event, objRef, [...parentPath, Symbol.iterator]);
           }
         };
       }
       const val = Reflect.get(target, prop, receiver);
       if (isStaticType(val) || isGProxy(val)) return val;
-      return createGProxy(val, event, objRef, [...parentPath, prop]);
+      return GProxy(val, event, objRef, [...parentPath, prop]);
     },
     set(target, prop, value, receiver) {
       if (isGProxy(value)) {
@@ -142,7 +138,11 @@ function getProxyHandler(
   };
 }
 
-function createGProxy<T extends object>(
+export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any } {
+  return !!obj && typeof obj === 'object' && (obj as any)[ISPROXY] === true;
+}
+
+export function GProxy<T extends object>(
   target: T,
   event: EventFunctionProxyHandler,
   objRef: any,
@@ -164,12 +164,9 @@ function createGProxy<T extends object>(
   return proxy;
 }
 
-export const GProxy = createGProxy;
-
 export function unGProxy<T = any>(obj: T): T {
-  if (isGProxy(obj)) {
+  if (isGProxy(obj))
     return (obj as any)[PROXYTARGET];
-  }
   return obj;
 }
 
