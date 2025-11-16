@@ -1,7 +1,7 @@
 
 import { GTpl } from "../GTpl";
 import { GGenerator, GCompile, GAddTo, GregisterDirective, GInsertAfterTo, GInsertBeforeTo } from "../GGenerator";
-import { STACK, css2obj, style2css } from "../GUtils";
+import { STACK, css2obj, log, style2css } from "../GUtils";
 import { GCode } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
 import { GProxy, isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
@@ -19,6 +19,7 @@ export default {
         'GCode': GCode
     },
     'utils': {
+        'log': log,
         'stack': STACK,
         'css2obj': css2obj,
         'style2css': style2css,

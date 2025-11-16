@@ -157,17 +157,7 @@ export const GProxy = createGProxy;
 
 export function unGProxy<T = any>(obj: T): T {
   if (isGProxy(obj)) {
-    obj = (obj as any)[PROXYTARGET];
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(unGProxy) as any;
-  }
-  if (obj && typeof obj === 'object') {
-    const result: any = {};
-    for (const key of Reflect.ownKeys(obj)) {
-      result[key as any] = unGProxy((obj as any)[key]);
-    }
-    return result;
+    return (obj as any)[PROXYTARGET];
   }
   return obj;
 }
