@@ -64,6 +64,30 @@ export function isStaticType(val: any): boolean {
     return val === null || staticTypes.has(typeof val);
 }
 
+export function isNonProxyableObject(obj: any): boolean {
+    if (obj === null) return true;
+    const t = typeof obj;
+    // funciones → no proxificables
+    if (t === "function") return true;
+    // tipos nativos complejos → no proxificables
+    if (
+        obj instanceof Date ||
+        obj instanceof RegExp ||
+        obj instanceof Map ||
+        obj instanceof Set ||
+        obj instanceof WeakMap ||
+        obj instanceof WeakSet ||
+        obj instanceof ArrayBuffer ||
+        ArrayBuffer.isView(obj) // TypedArrays
+    ) {
+        return true;
+    }
+    // objetos no extensibles → no proxificables
+    if (!Object.isExtensible(obj)) return true;
+    return false;
+}
+
+
 export function log(...args: any[]) {
     console.log('%c----------', 'font-weight:bold');
     console.log(...args);
