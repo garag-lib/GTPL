@@ -1,5 +1,5 @@
 import { BindTypes, TypeEventProxyHandler } from "./GEnums";
-import { GProxy, removeEventHandler, PROXYTARGET, ISPROXY } from "./GProxy";
+import { GProxy, unGProxy, toRaw } from "./GProxy";
 import { GAddArributes, GAddTo, GInsertAfterTo, GInsertBeforeTo } from "./GGenerator";
 import { IFunction, IVarOrConst, IBindDef, TplVar, PathProxyHandler, EventFunctionProxyHandler, IGtplObject, IBindObject, IIndex } from './GEnums';
 import { globalObject, passiveSupported } from "./global";
@@ -307,7 +307,7 @@ function createGetterAndSetter(
       get: function () {
         if (objdef.pro !== undefined) return objdef.pro;
         if (isStaticType(objdef.val)) return objdef.val;
-        while (objdef.val[ISPROXY]) objdef.val = objdef.val[PROXYTARGET];
+        objdef.val = toRaw(objdef.val);
         objdef.pro = GProxy(objdef.val, gtpl.BoundEventProxy, objdef, [
           objdef.key,
         ]);
@@ -320,7 +320,7 @@ function createGetterAndSetter(
             delete objdef.pro;
             return objdef.val;
           } else {
-            while (objdef.val[ISPROXY]) objdef.val = objdef.val[PROXYTARGET];
+            objdef.val = toRaw(objdef.val);
             objdef.pro = GProxy(
               objdef.val,
               gtpl.BoundEventProxy,
@@ -1315,7 +1315,7 @@ async function updateISbind(
     gtpl.GtplChilds.add(newgtpl);
     bind.ele = newgtpl.Elements;
   } else {
-    const val = result[ISPROXY] ? result[PROXYTARGET] : result;
+    const val = toRaw(result);
     if (bind.attrs)
       GAddArributes(bind.attrs, val, gtpl);
     bind.ele = val;
@@ -1500,7 +1500,7 @@ export class GTpl implements IGtplObject {
 
     if (this.BindDef) {
       for (const objdef of this.BindDef) {
-        removeEventHandler(objdef.val, this.BoundEventProxy);
+        unGProxy(objdef.val, this.BoundEventProxy);
       }
       this.BindDef.clear();
     }

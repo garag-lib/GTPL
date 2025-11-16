@@ -138,6 +138,32 @@ function getProxyHandler(
   };
 }
 
+function removeProxyHandler(
+  target: any,
+  event: EventFunctionProxyHandler
+): void {
+  if (isGProxy(target)) {
+    target = (target as any)[PROXYTARGET];
+  }
+  const handlers = handlersMap.get(target);
+  if (!handlers) {
+    return;
+  }
+  handlers.delete(event);
+  if (handlers.size === 0) {
+    handlersMap.delete(target);
+    const entry = proxyCache.get(target);
+    if (entry) {
+      try {
+        entry.revoke();
+      } catch (error) {
+        console.error('[GProxy] Error revoking proxy:', error);
+      }
+      proxyCache.delete(target);
+    }
+  }
+}
+
 export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any } {
   return !!obj && typeof obj === 'object' && (obj as any)[ISPROXY] === true;
 }
@@ -164,35 +190,22 @@ export function GProxy<T extends object>(
   return proxy;
 }
 
-export function unGProxy<T = any>(obj: T): T {
-  if (isGProxy(obj))
-    return (obj as any)[PROXYTARGET];
-  return obj;
+export function unGProxy<T = any>(
+  target: T,
+  event: EventFunctionProxyHandler
+): T {
+  const raw = toRaw(target);
+  removeProxyHandler(raw, event);
+  return raw;
+}
+
+export function toRaw<T = any>(obj: T): T {
+  let current: any = obj;
+  while (isGProxy(current))
+    current = current[PROXYTARGET];
+  return current;
 }
 
 export function pathToString(path: PathProxyHandler): string {
   return path.map(String).join('.');
-}
-
-export function removeEventHandler(target: any, event: EventFunctionProxyHandler): void {
-  if (isGProxy(target)) {
-    target = (target as any)[PROXYTARGET];
-  }
-  const handlers = handlersMap.get(target);
-  if (!handlers) {
-    return;
-  }
-  handlers.delete(event);
-  if (handlers.size === 0) {
-    handlersMap.delete(target);
-    const entry = proxyCache.get(target);
-    if (entry) {
-      try {
-        entry.revoke();
-      } catch (error) {
-        console.error('[GProxy] Error revoking proxy:', error);
-      }
-      proxyCache.delete(target);
-    }
-  }
 }

@@ -4,7 +4,7 @@ import { GGenerator, GCompile, GAddTo, GregisterDirective, GInsertAfterTo, GInse
 import { STACK, css2obj, log, style2css } from "../GUtils";
 import { GCode } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
-import { GProxy, isGProxy, ISPROXY, PROXYTARGET, unGProxy } from "../GProxy";
+import { GProxy, isGProxy, ISPROXY, PROXYTARGET, toRaw, unGProxy } from "../GProxy";
 
 export default {
     'GTpl': GTpl,
@@ -14,6 +14,7 @@ export default {
     'GregisterDirective': GregisterDirective,
     'GGenerator': GGenerator,
     'GProxy': GProxy,
+    'unGProxy': unGProxy,
     'jit': {
         'GCompile': GCompile,
         'GCode': GCode
@@ -26,7 +27,7 @@ export default {
         'globalObject': globalObject,
         'passiveSupported': passiveSupported,
         'isGProxy': isGProxy,
-        'unGProxy': unGProxy,
+        'toRaw': toRaw,
         'PROXYTARGET': PROXYTARGET,
         'ISPROXY': ISPROXY
     }
