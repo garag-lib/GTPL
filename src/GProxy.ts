@@ -1,6 +1,6 @@
 // GProxy.ts
 import { EventFunctionProxyHandler, PathProxyHandler, TypeEventProxyHandler } from './GEnums';
-import { isStaticType } from './GUtils';
+import { isNonProxyableObject, isStaticType } from './GUtils';
 
 //---
 
@@ -69,8 +69,6 @@ export function enqueueHandler(handler: Function) {
 
 //---
 
-
-
 export const ISPROXY = Symbol('is proxy');
 export const PROXYTARGET = Symbol('proxy target');
 
@@ -78,7 +76,7 @@ const proxyCache = new WeakMap<object, { proxy: any; revoke: () => void }>();
 const handlersMap = new WeakMap<object, Set<EventFunctionProxyHandler>>();
 
 export function isGProxy(obj: any): obj is { [ISPROXY]: true;[PROXYTARGET]: any } {
-  return !!obj && typeof obj === 'object' && ISPROXY in obj;
+  return !!obj && typeof obj === 'object' && (obj as any)[ISPROXY] === true;
 }
 
 function getProxyHandler(
@@ -92,9 +90,11 @@ function getProxyHandler(
       if (prop === ISPROXY) return true;
       if (prop === PROXYTARGET) return targetOriginal;
       if (prop === Symbol.iterator) {
-        const origIter = (target as any)[Symbol.iterator].bind(target);
+        const origIter = (target as any)[Symbol.iterator];
+        if (typeof origIter !== 'function')
+          return origIter;
         return function* () {
-          for (const item of origIter()) {
+          for (const item of origIter.call(target)) {
             yield (isStaticType(item) || isGProxy(item))
               ? item
               : createGProxy(item, event, objRef, [...parentPath, Symbol.iterator]);
@@ -109,6 +109,12 @@ function getProxyHandler(
       if (isGProxy(value)) {
         value = (value as any)[PROXYTARGET];
       }
+      //---
+      const prev = Reflect.get(target, prop, receiver);
+      if (isStaticType(prev) && prev === value) {
+        return true;
+      }
+      //---
       const ok = Reflect.set(target, prop, value, receiver);
       const handlers = handlersMap.get(targetOriginal);
       handlers?.forEach(handler => handler(TypeEventProxyHandler.SET, [...parentPath, prop], value, objRef));
@@ -116,8 +122,12 @@ function getProxyHandler(
     },
     deleteProperty(target, prop) {
       const ok = Reflect.deleteProperty(target, prop);
-      const handlers = handlersMap.get(targetOriginal);
-      handlers?.forEach(handler => handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef));
+      if (ok) {
+        const handlers = handlersMap.get(targetOriginal);
+        handlers?.forEach(handler =>
+          handler(TypeEventProxyHandler.UNSET, [...parentPath, prop], undefined, objRef)
+        );
+      }
       return ok;
     },
     has(target, prop) {
@@ -138,7 +148,8 @@ function createGProxy<T extends object>(
   objRef: any,
   parentPath: PathProxyHandler = []
 ): T {
-  if (isStaticType(target)) return target;
+  if (isStaticType(target) || isNonProxyableObject(target))
+    return target;
   const existing = proxyCache.get(target);
   if (existing) {
     // sigue vivo mientras tenga handlers
