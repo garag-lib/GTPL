@@ -67,8 +67,15 @@ export function isStaticType(val: any): boolean {
 export function isNonProxyableObject(obj: any): boolean {
     if (obj === null) return true;
     const t = typeof obj;
-    // funciones → no proxificables
+    // 🚫 funciones → no proxificables
     if (t === "function") return true;
+    // 🚫 OBJETOS DOM / WINDOW / COLECCIONES DOM → no proxificables
+    // (protegido con typeof para que no reviente en Node)
+    if (typeof Window !== "undefined" && obj instanceof Window) return true;
+    if (typeof Node !== "undefined" && obj instanceof Node) return true;
+    if (typeof DOMTokenList !== "undefined" && obj instanceof DOMTokenList) return true;
+    if (typeof NodeList !== "undefined" && obj instanceof NodeList) return true;
+    if (typeof HTMLCollection !== "undefined" && obj instanceof HTMLCollection) return true;
     // tipos nativos complejos → no proxificables
     if (
         obj instanceof Date ||

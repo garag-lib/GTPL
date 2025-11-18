@@ -84,7 +84,7 @@ function getProxyHandler(
   return {
     get(target, prop, receiver) {
       if (prop === ISPROXY) return true;
-      if (prop === PROXYTARGET) return targetOriginal;
+      if (prop === PROXYTARGET || prop == '__target') return targetOriginal;
       if (prop === Symbol.iterator) {
         const origIter = (target as any)[Symbol.iterator];
         if (typeof origIter !== 'function')
