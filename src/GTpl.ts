@@ -1424,6 +1424,8 @@ export class GTpl implements IGtplObject {
 
   getValue(key: any): any {
     const ref = this.Root;
+    if (key == 'this')
+      return ref;
     if (ref && (key in ref))
       return ref[key];
     if (this.Parent)
