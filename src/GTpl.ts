@@ -1444,13 +1444,14 @@ export class GTpl implements IGtplObject {
   }
 
   getContext(key: string): GTpl {
+    if (key == 'this')
+      return this;
     if (this.Context && this.Context.has(key))
       return this;
     if (this.Parent)
       return this.Parent.getContext(key);
     return this.getGtplRoot();
   }
-
 
   addBind(bind: IBindObject) {
     if (this.checkDestroyed('addBind')) return;
