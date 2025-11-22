@@ -346,6 +346,8 @@ function createGetterAndSetter(
 }
 
 function addBind2Object(gtpl: IGtplObject, va: TplVar, bind: IBindObject) {
+  if (va.length == 0 || (va.length == 1 && va[0] == 'this'))
+    return;
   let ref: any = gtpl.BindTree;
   for (let i = 0, n = va.length; i < n; i++) {
     const name = va[i];
@@ -382,7 +384,7 @@ function getBind2Object(
   gtpl: IGtplObject,
   va: TplVar,
   bind: IBindObject
-): Set<IBindObject> {
+): Set<IBindObject> | null {
   /*
     if (bind.gtpl && bind.gtpl != gtpl) {
         console.error('getBind2Object', 2);
@@ -401,6 +403,8 @@ function getBind2Object(
          }
      }
      */
+  if (va.length == 0 || (va.length == 1 && va[0] == 'this'))
+    return null;
   let ref: any = gtpl.BindTree;
   for (let i = 0, n = va.length; i < n; i++) {
     const name = va[i];
@@ -416,11 +420,11 @@ function getBind2Object(
 
 function delBind(gtpl: IGtplObject, bind: IBindObject) {
   if (bind.link.vorc && bind.link.vorc.va) {
-    getBind2Object(gtpl, bind.link.vorc.va, bind).delete(bind);
+    getBind2Object(gtpl, bind.link.vorc.va, bind)?.delete(bind);
   }
   if (bind.link.formula?.vars) {
     bind.link.formula.vars.forEach((va) => {
-      getBind2Object(gtpl, va, bind).delete(bind);
+      getBind2Object(gtpl, va, bind)?.delete(bind);
     });
   }
   if (bind.simetric && bind.ele) {
@@ -443,12 +447,13 @@ function delBind(gtpl: IGtplObject, bind: IBindObject) {
 function searchBind(gtpl: IGtplObject, bind: IBindObject): boolean {
   let encontrado = false;
   if (bind.link.vorc && bind.link.vorc.va) {
-    if (getBind2Object(gtpl, bind.link.vorc.va, bind).has(bind))
+    if (getBind2Object(gtpl, bind.link.vorc.va, bind)?.has(bind))
       encontrado = true;
   }
   if (bind.link.formula?.vars) {
     bind.link.formula.vars.forEach((va) => {
-      if (getBind2Object(gtpl, va, bind).has(bind)) encontrado = true;
+      if (getBind2Object(gtpl, va, bind)?.has(bind))
+        encontrado = true;
     });
   }
   if (!encontrado) {
