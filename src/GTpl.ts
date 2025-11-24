@@ -45,6 +45,7 @@ class privateProperties {
 interface IsimetricAttrValue {
   va: Array<string>;
   ctx: IGtplObject;
+  prop: string;
 }
 
 type simetricAttrValueSet = Set<IsimetricAttrValue>;
@@ -54,29 +55,34 @@ const simetricAttr: WeakMap<Node, simetricAttrValueSet> = new WeakMap();
 function initChangeEvents() {
   if (globalCache.binitChangeEvents) return;
   globalCache.binitChangeEvents = true;
-  const lastProcessedValue = new WeakMap();
-  const changeEvent = function (event: any) {
+  const lastProcessedValue = new WeakMap<any, Map<string, any>>();
+  const handler = function (event: any) {
     const ele: any = event.target;
-    if (
-      event.type === "change" &&
-      lastProcessedValue.has(ele) &&
-      lastProcessedValue.get(ele) === ele.value
-    ) {
-      return;
+    const bindings = simetricAttr.get(ele);
+    if (!bindings || !bindings.size) return;
+    let perElement = lastProcessedValue.get(ele);
+    if (!perElement) {
+      perElement = new Map<string, any>();
+      lastProcessedValue.set(ele, perElement);
     }
-    if (simetricAttr.has(ele)) {
-      const temp = simetricAttr.get(ele);
-      if (temp) {
-        for (let obj of temp) {
-          updateVar(obj.va, obj.ctx, ele.value);
-        }
-        lastProcessedValue.set(ele, ele.value);
+    for (const obj of bindings) {
+      const prop = obj.prop || "value";
+      let current: any;
+      if (prop in ele) {
+        current = ele[prop];
+      } else {
+        current = ele.getAttribute(prop);
       }
+      if (perElement.get(prop) === current) 
+        continue;
+      updateVar(obj.va, obj.ctx, current);
+      perElement.set(prop, current);
     }
   };
   if (globalObject && typeof globalObject.addEventListener === 'function') {
-    globalObject.addEventListener("input", changeEvent);
-    globalObject.addEventListener("change", changeEvent);
+    globalObject.addEventListener("input", handler);
+    globalObject.addEventListener("change", handler);
+    globalObject.addEventListener("toggle", handler);
   }
 }
 
@@ -571,13 +577,12 @@ function checkSimetricBind(gtpl: IGtplObject, bind: IBindObject) {
       const va = bind.link.vorc.va;
       const ctx: any = gtpl.getContext(va[0]);
       //---
-      if (bind.prop == "value") {
-        if (!simetricAttr.has(bind.ele)) simetricAttr.set(bind.ele, new Set());
-        simetricAttr.get(bind.ele)?.add({
-          va: va,
-          ctx: ctx,
-        });
-      }
+      if (!simetricAttr.has(bind.ele)) simetricAttr.set(bind.ele, new Set());
+      simetricAttr.get(bind.ele)?.add({
+        va: va,
+        ctx: ctx,
+        prop: bind.prop
+      });
       //---
       if (bind.prop in bind.ele.constructor.prototype) {
         const original: any = Object.getOwnPropertyDescriptor(

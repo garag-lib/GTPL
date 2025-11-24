@@ -12,11 +12,11 @@ function registerDirective(name: string, cls: any) {
 
 const ElementDirectives = new WeakMap();
 
-function applyDirective(ele: HTMLElement, name: string, value: string, objRoot: any) {
+function applyDirective(ele: HTMLElement, name: string, value: string, objRoot: any, argument?: any) {
     const DirectiveClass = Directives.get(name);
     if (!DirectiveClass)
         return false;
-    const instance = new DirectiveClass(ele, value, objRoot);
+    const instance = new DirectiveClass(ele, value, objRoot, argument);
     let instances = ElementDirectives.get(ele);
     if (!instances) {
         instances = [];
@@ -133,39 +133,53 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
     }
 }
 
+function resolveDirective(attrName: string) {
+    if (Directives.has(attrName))
+        return { dirName: attrName, arg: null as string | null };
+    const [dirName, arg] = attrName.split(':');
+    if (Directives.has(dirName))
+        return { dirName, arg };
+    return null;
+}
+
 function addArributes(attributes: AttrType[], ele: any, objRoot: IGtplObject) {
-    if (Array.isArray(attributes)) {
-        //---
-        const temp_directives: any[] = [];
-        //---
-        attributes.forEach((attr) => {
-            if (Array.isArray(attr)) {
-                if (Directives.has(attr[0])) {
-                    temp_directives.push(attr);
-                } else {
-                    ele.setAttribute(attr[0], attr[1]);
-                }
+    if (!Array.isArray(attributes)) return;
+    const temp_directives: any[] = [];
+    attributes.forEach((attr) => {
+        if (Array.isArray(attr)) {
+            // Atributo estático: ["g-set:nombre", "valor"]
+            const res = resolveDirective(attr[0]);
+            if (res) {
+                temp_directives.push([attr, res]);
             } else {
-                const bind: IBindObject = <IBindObject>attr;
-                if (bind.prop && Directives.has(bind.prop)) {
-                    temp_directives.push(bind);
-                } else {
-                    objRoot.addBind(bindNode(bind, ele));
-                }
+                ele.setAttribute(attr[0], attr[1]);
             }
-        });
-        //---
-        temp_directives.forEach((attr) => {
-            if (Array.isArray(attr)) {
-                applyDirective(ele, attr[0], attr[1], objRoot);
-            } else {
-                const bind: any = attr;
-                const inst = applyDirective(ele, bind.prop, '', objRoot);
-                objRoot.addBind(bindNode(bind, inst));
+        } else {
+            // Bind: IBindObject
+            const bind: IBindObject = attr as IBindObject;
+            let res: any = null;
+            if (bind.prop) {
+                res = resolveDirective(bind.prop as string);
+                if (res) temp_directives.push([bind, res]);
             }
-        });
-        //---
-    }
+            if (!res) objRoot.addBind(bindNode(bind, ele));
+        }
+    });
+    // Instanciar directivas
+    temp_directives.forEach((entry) => {
+        const bindOrAttr = entry[0];
+        const res = entry[1];
+        if (Array.isArray(bindOrAttr)) {
+            // Atributo estático -> new Directive(ele, value, objRoot, arg)
+            const [name, value] = bindOrAttr;
+            applyDirective(ele, res.dirName, value, objRoot, res.arg);
+        } else {
+            // Bind -> instancia como "elemento" del bind
+            const bind = bindOrAttr as IBindObject;
+            const inst = applyDirective(ele, res.dirName, '', objRoot, res.arg);
+            objRoot.addBind(bindNode(bind, inst));
+        }
+    });
 }
 
 function compile(gcode: string, ggenerator?: any): any {
