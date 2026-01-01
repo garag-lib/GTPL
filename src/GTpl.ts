@@ -1547,6 +1547,10 @@ export class GTpl implements IGtplObject {
       }
     }
 
+    if (this.watchers)
+      this.watchers.clear();
+    this.watchers = null!;
+
     // Cleanup total
     this.Elements = null!;
     this.Root = null!;
