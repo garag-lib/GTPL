@@ -73,7 +73,7 @@ function initChangeEvents() {
       } else {
         current = ele.getAttribute(prop);
       }
-      if (perElement.get(prop) === current) 
+      if (perElement.get(prop) === current)
         continue;
       updateVar(obj.va, obj.ctx, current);
       perElement.set(prop, current);
@@ -1292,6 +1292,7 @@ async function updateISbind(
   memValues.set(bind, result);
   //---
   let check = false;
+  // si hay bind.eles es que se envió un array/función es que se envió una función generadora.
   if (bind.eles) {
     check = true;
     bind.eles[0].destroy();
@@ -1403,6 +1404,8 @@ export class GTpl implements IGtplObject {
 
   cleanupCallbacks!: Set<() => void>;
 
+  watchers!: Map<string, Set<Function>>;
+
   isDestroyed: boolean = false;
 
   constructor(options?: any) {
@@ -1412,6 +1415,8 @@ export class GTpl implements IGtplObject {
     this.BindConst = new Set();
     this.BindDef = new Set();
     this.GtplChilds = new Set();
+    this.cleanupCallbacks = new Set();
+    this.watchers = new Map();
     this.BoundEventProxy = this.eventPRoxy.bind(this);
     this.loadOptions(options);
   }
@@ -1612,13 +1617,69 @@ export class GTpl implements IGtplObject {
     this.processRenderAndApply(ele, GInsertBeforeTo);
   }
 
+  watch(path: string | string[], cb: (info: any) => void) {
+    if (this.isDestroyed) return () => { };
+    const key = Array.isArray(path) ? path.join(".") : path;
+    let set = this.watchers.get(key);
+    if (!set) this.watchers.set(key, set = new Set());
+    set.add(cb);
+    const unwatch = () => {
+      const s = this.watchers.get(key);
+      if (!s) return;
+      s.delete(cb);
+      if (!s.size) this.watchers.delete(key);
+    };
+    this.onCleanup(unwatch);
+    return unwatch;
+  }
+
+  private emitWatchers(type: TypeEventProxyHandler, pathArr: PathProxyHandler, value: any, objRef: any) {
+    if (!this.watchers || this.watchers.size === 0) return;
+    if (!pathArr || !pathArr.length) return;
+    if ((pathArr as Array<string | number | symbol>).some((p: string | number | symbol) => typeof p === "symbol")) return;
+    const full = pathArr.map(String).join(".");
+    if (!full) return;
+    const callKey = (key: string) => {
+      const set = this.watchers.get(key);
+      if (!set) return;
+      for (const cb of set) {
+        try {
+          cb({ type, path: full, value, objRef, watch: key });
+        } catch (e) {
+          console.error("[GTPL watch] error", e);
+        }
+      }
+    };
+    callKey(full);
+    const parts = full.split(".");
+    for (let i = parts.length - 1; i >= 1; i--) {
+      callKey(parts.slice(0, i).join("."));
+    }
+    for (let i = parts.length - 1; i >= 1; i--) {
+      callKey(parts.slice(0, i).join(".") + ".*");
+    }
+    callKey("*");
+  }
+
   eventPRoxy(type: TypeEventProxyHandler, path: PathProxyHandler, value: any, objRef: any) {
     //log('eventPRoxy', 'event:', type, 'path:', path, 'value:', value, 'objref:', objRef);
+    //---
+    /*
+    const pathCopy: any[] = Array.isArray(path) ? path.slice() : [];
+    const subPath = pathCopy.slice(1);
+    iterBind(this.BindTree[objRef.key], type, subPath as any, value, [], 0)
+      .forEach((args: any) => this.launchChange.apply(this, args));
+    */
+    //---
+    this.emitWatchers(type, path, value, objRef);
+    //---
     const pa = path;
     pa?.shift();
+    //---
     iterBind(this.BindTree[objRef.key], type, path, value, [], 1).forEach((args: any) =>
       this.launchChange.apply(this, args)
     );
+    //---
   }
 
   async launchChange(
