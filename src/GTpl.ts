@@ -55,16 +55,11 @@ const simetricAttr: WeakMap<Node, simetricAttrValueSet> = new WeakMap();
 function initChangeEvents() {
   if (globalCache.binitChangeEvents) return;
   globalCache.binitChangeEvents = true;
-  const lastProcessedValue = new WeakMap<any, Map<string, any>>();
+  //const lastProcessedValue = new WeakMap<any, Map<string, any>>();
   const handler = function (event: any) {
     const ele: any = event.target;
     const bindings = simetricAttr.get(ele);
     if (!bindings || !bindings.size) return;
-    let perElement = lastProcessedValue.get(ele);
-    if (!perElement) {
-      perElement = new Map<string, any>();
-      lastProcessedValue.set(ele, perElement);
-    }
     for (const obj of bindings) {
       const prop = obj.prop || "value";
       let current: any;
@@ -73,10 +68,19 @@ function initChangeEvents() {
       } else {
         current = ele.getAttribute(prop);
       }
+      //---
+      /*let perElement = lastProcessedValue.get(ele);
+      if (!perElement) {
+        perElement = new Map<string, any>();
+        lastProcessedValue.set(ele, perElement);
+      }
       if (perElement.get(prop) === current)
-        continue;
+        continue;*/
+      //---
       updateVar(obj.va, obj.ctx, current);
-      perElement.set(prop, current);
+      //---
+      /*perElement.set(prop, current);*/
+      //---
     }
   };
   if (globalObject && typeof globalObject.addEventListener === 'function') {
@@ -177,12 +181,12 @@ function updateVar(
     };
     const ret = reduce(ctx.Root, 0, va.length - 2);
     const fin = va[va.length - 1];
-    if (force || ret[fin] != value) {
+    if (force || ret[fin] !== value) {
       ret[fin] = value;
     }
   } else {
     const fin = va[0];
-    if (force || ctx.Root[fin] != value) {
+    if (force || ctx.Root[fin] !== value) {
       ctx.Root[fin] = value;
     }
   }
