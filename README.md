@@ -119,6 +119,14 @@ Package outputs:
 - `g-inner` writes directly to `innerHTML`; use trusted HTML only.
 - JIT compilation executes generated code (`GCompile`), so compile only trusted template sources.
 
+## Attribution
+
+If you use GTPL in a product or publication, a short attribution is appreciated:
+
+`Powered by GTPL (https://github.com/garag-lib/GTPL)`
+
+For formal attribution details, see [NOTICE](NOTICE) and [CITATION.cff](CITATION.cff).
+
 ## License
 
-LGPL-2.1 license
+Apache-2.0

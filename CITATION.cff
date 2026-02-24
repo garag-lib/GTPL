@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: GTPL
+message: "If you use GTPL, please cite this project."
+type: software
+authors:
+  - family-names: Peliz
+    given-names: Manuel
+repository-code: "https://github.com/garag-lib/GTPL"
+license: Apache-2.0
+version: 1.1.1
