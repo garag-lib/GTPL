@@ -85,4 +85,3 @@ jobs:
           files: |
             artifacts/*.zip
             artifacts/*.tar.gz
-            dist/*
