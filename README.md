@@ -2,6 +2,8 @@
 
 Reactive template library with direct DOM updates and Proxy-based reactivity.
 
+GTPL is a TypeScript library for reactive template systems built around Direct DOM and Proxy. Inspired by Vue, Angular AOT, and JSX, it delivers efficient reactive UI updates in a compact 11kB JavaScript package.
+
 GTPL provides:
 - A small runtime for reactive rendering.
 - Template compilation in two modes: JIT (runtime) and AOT (precompiled).
@@ -99,6 +101,20 @@ If you use the global bundle (`dist/gtpl.global.js`):
 <script>
   const { GTpl, jit: { GCode, GCompile } } = gtpl;
 </script>
+```
+
+## Releases (Precompiled Builds)
+
+GitHub Releases include precompiled `dist/` artifacts (`.zip` and `.tar.gz`), so consumers can download ready-to-use
+bundles without building locally:
+
+https://github.com/garag-lib/GTPL/releases
+
+To publish a new release (maintainer flow):
+
+```bash
+git tag v1.1.2
+git push origin v1.1.2
 ```
 
 ## Development

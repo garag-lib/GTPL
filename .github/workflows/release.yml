@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag (e.g. v1.1.2)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Prepare release artifacts
+        id: prep
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag_name }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+
+          VERSION="${TAG#v}"
+
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+          mkdir -p artifacts
+          cp -R dist "artifacts/gtpl-${VERSION}-dist"
+          tar -czf "artifacts/gtpl-${VERSION}-dist.tar.gz" -C artifacts "gtpl-${VERSION}-dist"
+          (
+            cd artifacts
+            zip -qr "gtpl-${VERSION}-dist.zip" "gtpl-${VERSION}-dist"
+          )
+          rm -rf "artifacts/gtpl-${VERSION}-dist"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.prep.outputs.tag }}
+          name: GTPL ${{ steps.prep.outputs.tag }}
+          generate_release_notes: true
+          target_commitish: ${{ github.sha }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/*.tar.gz
+            artifacts/*.zip
