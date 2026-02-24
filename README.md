@@ -105,12 +105,12 @@ If you use the global bundle (`dist/gtpl.global.js`):
 
 ## Releases (Precompiled Builds)
 
-GitHub Releases include precompiled `dist/` artifacts (`.zip` and `.tar.gz`), so consumers can download ready-to-use
-bundles without building locally:
+On every pushed tag `v*`, GitHub Actions runs tests, builds `dist/`, and publishes precompiled release assets (`.zip`,
+`.tar.gz`, and raw `dist/*`) automatically:
 
 https://github.com/garag-lib/GTPL/releases
 
-To publish a new release (maintainer flow):
+To publish a new release:
 
 ```bash
 git tag v1.1.2

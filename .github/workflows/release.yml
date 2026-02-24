@@ -1,0 +1,57 @@
+name: Release Dist
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Package dist artifacts
+        id: package
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p artifacts
+          cp -R dist "artifacts/gtpl-${VERSION}-dist"
+          tar -czf "artifacts/gtpl-${VERSION}-dist.tar.gz" -C artifacts "gtpl-${VERSION}-dist"
+          (
+            cd artifacts
+            zip -qr "gtpl-${VERSION}-dist.zip" "gtpl-${VERSION}-dist"
+          )
+          rm -rf "artifacts/gtpl-${VERSION}-dist"
+
+      - name: Create release and upload dist files
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: GTPL ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            artifacts/*.zip
+            artifacts/*.tar.gz
+            dist/*
