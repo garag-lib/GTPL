@@ -7,50 +7,312 @@
     <title>GTPL</title>
     <link href="reset.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
     <style>
+        :root {
+            --bg: #eef2ec;
+            --text: #132218;
+            --muted: #466153;
+            --surface: #f8fbf7;
+            --surface-2: #ffffff;
+            --border: #c8d7c8;
+            --accent: #1e855f;
+            --accent-2: #d8f06f;
+            --shadow: 0 10px 25px rgba(19, 34, 24, 0.08);
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            color: var(--text);
+            font-family: "Space Grotesk", "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at 20% 0%, #f8fff2 0%, transparent 35%),
+                radial-gradient(circle at 100% 0%, #ddf0de 0%, transparent 32%),
+                var(--bg);
         }
 
-        pre {
-            background-color: #2d2d2d;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
+        .hero {
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid #b9cfbc;
+            background: linear-gradient(120deg, #1f2c22 0%, #2f4639 60%, #385544 100%);
+            color: #f5fffb;
+            box-shadow: var(--shadow);
         }
 
-        code {
-            font-family: "Courier New", Courier, monospace;
+        .hero h1 {
+            font-size: clamp(1.6rem, 3.2vw, 2.7rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
         }
 
-        .rendered-block {
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f4f4f4;
-            border-radius: 5px;
+        .hero p {
+            color: #d6efe4;
+            font-size: 1rem;
+            line-height: 1.5;
+            max-width: 70ch;
         }
 
-        .rendered-block {
-            padding: 1em;
-            margin: .5em 0;
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1rem;
+        }
+
+        .hero-actions a {
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 0.4rem 0.9rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .hero-actions .btn-primary {
+            color: #182118;
+            background: var(--accent-2);
+        }
+
+        .hero-actions .btn-secondary {
+            color: #effcf2;
+            border-color: #7ea58f;
+        }
+
+        .layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            gap: 1rem;
+            padding: 0 1rem 2rem;
+        }
+
+        .toc {
+            position: sticky;
+            top: 1rem;
+            align-self: start;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+        }
+
+        .toc h2 {
+            font-size: 1rem;
+            margin: 0 0 0.75rem;
+        }
+
+        .toc ul {
+            list-style: decimal;
+            padding-left: 1.2rem;
+        }
+
+        .toc li+li {
+            margin-top: 0.45rem;
+        }
+
+        .toc a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+        }
+
+        .doc-main {
+            min-width: 0;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin: 0 0 1.2rem;
+        }
+
+        .summary-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.8rem 0.9rem;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-item h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .summary-item p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.35;
         }
 
         h2 {
-            font-size: 2em;
-            margin: 1em 0 1em 0;
+            font-size: clamp(1.15rem, 2.8vw, 1.8rem);
+            margin: 1.2rem 0 0.45rem;
+            line-height: 1.15;
+        }
+
+        .demo-intro {
+            color: var(--muted);
+            margin-bottom: 0.7rem;
+            line-height: 1.4;
+        }
+
+        .code-block,
+        .rendered-block,
+        .info-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 0.7rem;
+        }
+
+        .code-block {
+            background: #141b16;
+            overflow: hidden;
+        }
+
+        pre {
+            background-color: #141b16;
+            border-radius: 0;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        pre {
+            padding: 0.95rem;
+        }
+
+        code {
+            font-family: "IBM Plex Mono", "Courier New", monospace;
+            font-size: 0.88rem;
+        }
+
+        .rendered-block {
+            padding: 1rem;
+            background-color: var(--surface-2);
         }
 
         .rendered-content {
             overflow: auto;
         }
+
+        .info-card {
+            background: var(--surface);
+            padding: 1rem;
+        }
+
+        .info-card p {
+            color: var(--muted);
+            line-height: 1.45;
+            margin-bottom: 0.8rem;
+        }
+
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-size: 0.93rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .api-table th,
+        .api-table td {
+            padding: 0.65rem;
+            border-bottom: 1px solid #d8e5d7;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .api-table th {
+            font-weight: 700;
+            background: #ecf5eb;
+        }
+
+        .api-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .list {
+            list-style: disc;
+            padding-left: 1.3rem;
+        }
+
+        .list li+li {
+            margin-top: 0.35rem;
+        }
+
+        .kbd {
+            display: inline-block;
+            padding: 0.08rem 0.4rem;
+            border-radius: 6px;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.8rem;
+            border: 1px solid #c3d2c5;
+            background: #f6fbf6;
+        }
+
+        @media (max-width: 980px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <a href="https://github.com/garag-lib/GTPL">GTPL github</a>
+    <header class="hero" id="top">
+        <h1>GTPL Documentation Playground</h1>
+        <p>Reactive templates with direct DOM updates, JIT/AOT compilation and flexible directives. The sections
+            below are live examples: each snippet is compiled and rendered on the page.</p>
+        <div class="hero-actions">
+            <a class="btn-primary" href="https://github.com/garag-lib/GTPL">Repository</a>
+            <a class="btn-secondary" href="#quick-reference">Quick Reference</a>
+            <a class="btn-secondary" href="#api-reference">API Summary</a>
+        </div>
+    </header>
+    <div class="layout">
+        <aside class="toc" aria-label="Table of contents">
+            <h2>Contents</h2>
+            <ul id="toc-list"></ul>
+        </aside>
+        <main class="doc-main">
+            <section class="summary-grid">
+                <article class="summary-item">
+                    <h3>Pipeline</h3>
+                    <p><span class="kbd">template</span> -> <span class="kbd">GCode</span> -> <span class="kbd">GCompile</span> -> <span class="kbd">GTpl</span></p>
+                </article>
+                <article class="summary-item">
+                    <h3>Reactive Core</h3>
+                    <p>State changes are observed via Proxy and mapped to bind trees for direct DOM updates.</p>
+                </article>
+                <article class="summary-item">
+                    <h3>Directive Model</h3>
+                    <p>Use built-ins like <span class="kbd">g-if</span>, <span class="kbd">g-for</span>, <span class="kbd">g-switch</span> or register your own directives.</p>
+                </article>
+            </section>
     <!-- ##################################################### -->
-    <h2>Variables, constants, and functions on them</h2>
+    <h2 class="demo-title">Basics: variables and constants</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -78,7 +340,7 @@
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>Variables, constants, and functions on them</h2>
+    <h2 class="demo-title">Functions, formulas, and events</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -115,7 +377,7 @@
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>Bidirectional variables</h2>
+    <h2 class="demo-title">Bidirectional variables</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -137,7 +399,7 @@
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>Attributes</h2>
+    <h2 class="demo-title">Attributes</h2>
     <style>
         .cls {
             color: #00f;
@@ -174,7 +436,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>Styles</h2>
+    <h2 class="demo-title">Styles</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -192,7 +454,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>If, not If</h2>
+    <h2 class="demo-title">Conditional rendering</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -207,7 +469,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>Switch</h2>
+    <h2 class="demo-title">Switch</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -241,7 +503,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>For</h2>
+    <h2 class="demo-title">For</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -288,7 +550,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>Templates</h2>
+    <h2 class="demo-title">Templates</h2>
     <template id="form">
         <div>{{ index }} - {{ value }}</div>
     </template>
@@ -308,7 +570,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <h2>INNER HTML</h2>
+    <h2 class="demo-title">Inner HTML</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
         <template>
@@ -324,30 +586,137 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
-    <script src="../dist/gtpl.global.js"></script>
+    <section class="info-card" id="quick-reference">
+        <h2 class="doc-title">Quick Reference</h2>
+        <p>Template expressions are wrapped in <span class="kbd">{{ ... }}</span>. GTPL supports variables,
+            constants, chained functions and formulas.</p>
+        <ul class="list">
+            <li><span class="kbd">{{ foo }}</span>: read variable</li>
+            <li><span class="kbd">{{ 'constant' }}</span>: constant value</li>
+            <li><span class="kbd">{{ foo:format }}</span>: pass through function</li>
+            <li><span class="kbd">{{ return foo + 1 }}</span>: formula expression</li>
+            <li><span class="kbd">[value]="{{ foo }}"</span>: two-way bind attribute/property</li>
+            <li><span class="kbd">g-if</span>, <span class="kbd">g-notif</span>, <span class="kbd">g-switch</span>, <span class="kbd">g-case</span>, <span class="kbd">g-for</span>, <span class="kbd">g-inner</span></li>
+        </ul>
+    </section>
+    <section class="info-card" id="api-reference">
+        <h2 class="doc-title">API Summary</h2>
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>API</th>
+                    <th>Purpose</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="kbd">gtpl.jit.GCode(html)</span></td>
+                    <td>Transform template HTML into AOT code string.</td>
+                    <td><span class="kbd">const aot = GCode(template)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="kbd">gtpl.jit.GCompile(aot)</span></td>
+                    <td>Compile generated AOT string into element generator function.</td>
+                    <td><span class="kbd">const gen = GCompile(aot)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="kbd">new gtpl.GTpl(options)</span></td>
+                    <td>Create reactive instance bound to a root object.</td>
+                    <td><span class="kbd">new GTpl({ root, generator: gen })</span></td>
+                </tr>
+                <tr>
+                    <td><span class="kbd">instance.addTo(node)</span></td>
+                    <td>Append rendered template to target node.</td>
+                    <td><span class="kbd">instance.addTo(container)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="kbd">instance.watch(path, cb)</span></td>
+                    <td>Observe reactive path changes from GTPL state.</td>
+                    <td><span class="kbd">instance.watch('foo', cb)</span></td>
+                </tr>
+                <tr>
+                    <td><span class="kbd">instance.destroy()</span></td>
+                    <td>Unmount elements, listeners and watchers.</td>
+                    <td><span class="kbd">instance.destroy()</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Security note: <span class="kbd">g-inner</span> writes directly to <span class="kbd">innerHTML</span>.
+            Use trusted HTML sources only.</p>
+    </section>
+        </main>
+    </div>
+    <!-- ##################################################### -->
+    <script src="./gtpl.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-markup.min.js"></script>
     <script>
         const GCode = gtpl.jit.GCode;
-        const GGenerator = gtpl.GGenerator;
         const GCompile = gtpl.jit.GCompile;
-        const GAddToo = gtpl.GAddToo;
         const GTpl = gtpl.GTpl;
         //---
-        document.addEventListener('DOMContentLoaded', (event) => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const notes = [
+                'Initialize values, run setup logic, and read constants/variables in template expressions.',
+                'Chain functions, execute formulas, and trigger events that mutate reactive state.',
+                'Bind form controls in one-way or two-way mode using regular and bracket syntax.',
+                'Render dynamic attributes and apply/remove multiple properties from reactive objects.',
+                'Use full CSS text or per-property reactive style binds.',
+                'Toggle nodes with positive and inverse conditions through g-if and g-notif.',
+                'Route rendering with g-switch and g-case blocks.',
+                'Iterate arrays with index/value aliases using g-for.',
+                'Reuse DOM fragments with named template blocks and g-tpl.',
+                'Inject HTML directly with g-inner (trusted content only).'
+            ];
+
+            const ids = new Map();
+            const tocList = document.getElementById('toc-list');
+            const allHeadings = document.querySelectorAll('.doc-main h2');
+            allHeadings.forEach((heading, index) => {
+                const label = heading.textContent.trim();
+                const base = label
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/(^-|-$)/g, '') || `section-${index + 1}`;
+                const seen = ids.get(base) || 0;
+                ids.set(base, seen + 1);
+                heading.id = seen ? `${base}-${seen + 1}` : base;
+
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${heading.id}`;
+                a.textContent = label;
+                li.appendChild(a);
+                tocList.appendChild(li);
+            });
+
+            const demoHeadings = document.querySelectorAll('.demo-title');
+            demoHeadings.forEach((heading, index) => {
+                const note = notes[index];
+                if (!note) return;
+                const p = document.createElement('p');
+                p.className = 'demo-intro';
+                p.textContent = note;
+                heading.insertAdjacentElement('afterend', p);
+            });
+
             document.querySelectorAll('.code-block > template').forEach((template) => {
                 //---
                 const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
                 const aot = GCode(template.innerHTML);
-                const gtpl = new GTpl({ root: {}, generator: GCompile(aot) });
-                gtpl.addTo(renderedContent);
+                const instance = new GTpl({ root: {}, generator: GCompile(aot) });
+                instance.addTo(renderedContent);
                 //---
                 const codeBlock = template.previousElementSibling.querySelector('code');
                 let content = template.innerHTML;
                 content = content.replace(/^\n+/, '');
                 content = content.replace(/\n\s+$/, '');
                 const lines = content.split('\n');
-                const minIndent = Math.min(...lines.filter(line => line.trim()).map(line => line.match(/^[ \t]*/)[0].length));
+                const nonEmptyLines = lines.filter(line => line.trim());
+                const minIndent = nonEmptyLines.length
+                    ? Math.min(...nonEmptyLines.map(line => line.match(/^[ \t]*/)[0].length))
+                    : 0;
                 content = lines.map(line => line.slice(minIndent)).join('\n');
                 codeBlock.textContent = content;
                 Prism.highlightElement(codeBlock);

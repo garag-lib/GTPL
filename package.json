@@ -20,7 +20,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "build:dev": "rollup -c --environment NODE_ENV:development"
+    "build:dev": "rollup -c --environment NODE_ENV:development",
+    "test": "TS_NODE_PROJECT=tsconfig-rollup.json node --loader ts-node/esm --experimental-specifier-resolution=node --test tests/*.test.ts"
   },
   "author": "Manuel Peliz",
   "license": "LGPL-2.1 license",

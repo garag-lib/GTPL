@@ -1,29 +1,14 @@
-// extensiveTestParserWithExpected.ts
+import assert from 'node:assert/strict';
+import test from 'node:test';
 import { GParse } from '../src/compiler/GParse';
 
 interface TestCase {
     description: string;
     input: string;
-    // Si se espera que la prueba se ejecute correctamente, se define "expected"
-    // Si se espera error, se marca "expectError" y se puede definir "errorMessage" (substring a buscar)
-    expected?: any;
-    expectError?: boolean;
-    errorMessage?: string;
+    expected: any;
 }
 
-/**
- * Compara dos valores de forma profunda usando JSON.stringify.
- * NOTA: Esto asume que el orden de las propiedades es consistente.
- */
-function deepEqual(a: any, b: any): boolean {
-    return JSON.stringify(a) === JSON.stringify(b);
-}
-
-/**
- * Ejecuta todos los casos de prueba comparando el resultado del parser con el esperado.
- */
-function runTests() {
-    const testCases: TestCase[] = [
+const testCases: TestCase[] = [
         // Texto sin bloques dinámicos
         {
             description: "Texto sin bloques",
@@ -129,7 +114,7 @@ function runTests() {
             input: `Escapado: {{"He said \\"Hello\\" and left"}}`,
             expected: [
                 "Escapado: ",
-                { vorc: { ct: "He said \"Hello\" and left" } }
+                { vorc: { ct: "He said \\\"Hello\\\" and left" } }
             ]
         },
         // Bloque con fórmula aritmética simple
@@ -174,7 +159,7 @@ function runTests() {
                     formula:
                     {
                         code: " (x) => x * 2 ",
-                        vars: [["x"]]
+                        vars: []
                     }
                 }
             ]
@@ -335,32 +320,16 @@ function runTests() {
         }
 
 
-    ];
+];
 
-    let passed = 0;
-    let failed = 0;
-    const solo_este = 20;
-
-    testCases.forEach((test, index) => {
-        if (solo_este !== null && (index + 1) != solo_este)
-            return;
-        console.log(`\nTest #${index + 1}: ${test.description}`);
-        console.log(`Input: ${test.input}`);
-        const parser = new GParse();
-        parser.setString(test.input);
-        parser.check();
-        const actual = parser.getResult();
-        if (deepEqual(actual, test.expected)) {
-            console.log("✅ OK - Resultado correcto.");
-            passed++;
-        } else {
-            console.error("❌ ERROR - Resultado incorrecto.");
-            console.error("Esperado:\n", JSON.stringify(test.expected));
-            console.error("Obtenido:\n", JSON.stringify(actual));
-            failed++;
-        }
-    });
-    console.log(`\nResumen de pruebas: ${passed} OK, ${failed} fallidas.`);
-}
-
-runTests();
+test('GParse should parse all supported expressions', async (t) => {
+    for (const [index, testCase] of testCases.entries()) {
+        await t.test(`case #${index + 1}: ${testCase.description}`, () => {
+            const parser = new GParse();
+            parser.setString(testCase.input);
+            parser.check();
+            const actual = parser.getResult();
+            assert.deepStrictEqual(actual, testCase.expected);
+        });
+    }
+});

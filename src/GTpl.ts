@@ -1681,10 +1681,9 @@ export class GTpl implements IGtplObject {
     //---
     this.emitWatchers(type, path, value, objRef);
     //---
-    const pa = path;
-    pa?.shift();
+    const subPath = Array.isArray(path) ? path.slice(1) : [];
     //---
-    iterBind(this.BindTree[objRef.key], type, path, value, [], 1).forEach((args: any) =>
+    iterBind(this.BindTree[objRef.key], type, subPath, value, [], 1).forEach((args: any) =>
       this.launchChange.apply(this, args)
     );
     //---
