@@ -106,18 +106,17 @@ If you use the global bundle (`dist/gtpl.global.js`):
 ## Releases (Precompiled Builds)
 
 When a GitHub Release is published, GitHub Actions runs tests, builds `dist/`, and uploads precompiled assets
-(`.zip`, `.tar.gz`, and raw `dist/*`) to that release automatically:
+(`.zip` and `.tar.gz`) to that release automatically:
 
 https://github.com/garag-lib/GTPL/releases
 
 To publish a new release:
 
 ```bash
-# 1) create and push tag
-git tag v1.1.4
-git push origin v1.1.4
+# single command flow (tests + build + version bump + commit + push + tag push)
+npm run release -- 1.1.4
 
-# 2) publish release in GitHub UI for that tag (workflow triggers on publish)
+# then publish release in GitHub UI for that tag (workflow triggers on publish)
 ```
 
 ## Development
