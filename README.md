@@ -1,29 +1,124 @@
-# GTPL - Reactive Template Library with Direct DOM
+# GTPL
 
-GTPL is a TypeScript library designed for creating reactive template systems with a unique approach that incorporates Direct DOM and Proxy. Inspired by technologies like Vue.js, angular aot or jsx, GTPL offers an efficient and powerful way to build reactive applications with optimized performance and all of this in a compact 9KB(gzip) javascript package.
+Reactive template library with direct DOM updates and Proxy-based reactivity.
 
-Examples: https://garag-lib.github.io/GTPL/
+GTPL provides:
+- A small runtime for reactive rendering.
+- Template compilation in two modes: JIT (runtime) and AOT (precompiled).
+- Built-in directives for conditional rendering, loops, switching, styles, and dynamic attributes.
 
-## Key Features:
+Interactive examples: https://garag-lib.github.io/GTPL/
 
-- **Advanced Reactivity:** GTPL makes it easy to create reactive applications using Proxy, enabling more efficient and precise reactivity compared to conventional approaches.
+## Installation
 
-- **Direct DOM:** Unlike libraries that use Virtual DOM, GTPL employs Direct DOM, meaning updates are reflected directly in the DOM without the need for an intermediate abstraction layer. This provides improved performance and more direct interaction with the DOM.
+```bash
+npm install gtpl
+```
 
-- **Familiar Syntax:** With an intuitive and easy-to-learn syntax, GTPL offers a comfortable and familiar development experience for developers, especially those already familiar with the angular ecosystem.
+## Quick Start (JIT)
 
-- **Static Typing:** Written in TypeScript, GTPL leverages static typing to detect errors at compile time and improve code robustness and maintainability.
+```ts
+import gtpl from 'gtpl';
 
-- **Template Optimization at Build Time:** GTPL enables template compilation in the style of Ahead-of-Time (AOT) of Angular. This means that templates are compiled during the project build phase rather than in the user's browser. This significantly improves performance and reduces browser load, as precompiled templates are ready for immediate rendering.
+const { GTpl, jit: { GCode, GCompile } } = gtpl;
 
-- **Lightweight Runtime Compiler for Dynamic Templates:** In addition to static template compilation, GTPL also offers a lightweight runtime compiler for working with dynamic templates. This allows for dynamic template generation and manipulation at runtime, providing greater flexibility and customization capabilities in building interactive and dynamic user interfaces.
+const template = `
+  <div>
+    <h2>Counter: {{ count }}</h2>
+    <button onclick="{{ this.count = this.count + 1 }}">+1</button>
+    <button onclick="{{ this.count = 0 }}">Reset</button>
+  </div>
+`;
 
-## Benefits:
+const root = { count: 0 };
+const aot = GCode(template);
+const generator = GCompile(aot);
 
-- **Better Performance:** Utilizing Direct DOM and Proxy-based reactivity contributes to optimized performance of applications, especially in scenarios where high rendering speed and DOM manipulation are required.
+const app = new GTpl({ root, generator });
+app.addTo(document.getElementById('app'));
+```
 
-- **Flexibility:** GTPL offers a high degree of flexibility in component creation and application state management, allowing easy adaptation to a variety of use cases and specific requirements.
+## JIT vs AOT
 
-- **Scalability:** Thanks to its efficient approach and flexible architecture, GTPL is highly scalable and can be used in projects of any size, from small applications to large enterprise systems.
+| Mode | When to use | Flow |
+|---|---|---|
+| JIT | Dynamic templates generated at runtime | `template -> GCode -> GCompile -> GTpl` |
+| AOT | Stable templates compiled during build | `precompiled code -> GCompile -> GTpl` |
 
-With GTPL, you can efficiently build reactive applications with superior performance, leveraging the latest innovations in user interface development while maintaining a comfortable and productive development experience for developers. And all of this in a compact 9 KB package!
+AOT is recommended for production when templates are known in advance.
+
+## Template Syntax
+
+| Syntax | Meaning |
+|---|---|
+| `{{ foo }}` | Read variable |
+| `{{ 'hello' }}` | Constant |
+| `{{ foo:format }}` | Pipe/chained function |
+| `{{ return foo + 1 }}` | Formula expression |
+| `onclick="{{ this.count++ }}"` | Event expression |
+| `[value]="{{ foo }}"` | Two-way bind property |
+
+## Built-in Directives
+
+| Directive | Purpose |
+|---|---|
+| `g-if` | Render when truthy |
+| `g-notif` | Render when falsy |
+| `g-switch` / `g-case` | Switch/case rendering |
+| `g-for="arr;index;value"` | List rendering |
+| `g-attr` | Dynamic attributes from object |
+| `g-style` | Dynamic inline styles |
+| `g-inner` | Set `innerHTML` |
+| `g-tpl` | Reuse named templates |
+| `g-bind` / `g-binds` | Element/collection references |
+
+## API Overview
+
+```ts
+import gtpl from 'gtpl';
+
+const { GTpl, GregisterDirective, jit: { GCode, GCompile } } = gtpl;
+```
+
+Main pieces:
+- `GCode(html)`: parses template HTML into generated code string.
+- `GCompile(code)`: compiles generated code into a render function.
+- `new GTpl({ root, generator })`: creates reactive instance.
+- `instance.addTo(node)`: mounts rendered nodes.
+- `instance.watch(path, cb)`: subscribes to reactive path changes.
+- `instance.refresh()`: triggers recomputation.
+- `instance.destroy()`: removes listeners, bindings, and rendered nodes.
+- `GregisterDirective(name, class)`: register custom directive.
+
+## Browser Global Build
+
+If you use the global bundle (`dist/gtpl.global.js`):
+
+```html
+<script src="dist/gtpl.global.js"></script>
+<script>
+  const { GTpl, jit: { GCode, GCompile } } = gtpl;
+</script>
+```
+
+## Development
+
+```bash
+npm run build
+npm test
+```
+
+Package outputs:
+- `dist/gtpl.esm.js`
+- `dist/gtpl.cjs.js`
+- `dist/gtpl.global.js`
+- `dist/gtpl.d.ts`
+
+## Security Notes
+
+- `g-inner` writes directly to `innerHTML`; use trusted HTML only.
+- JIT compilation executes generated code (`GCompile`), so compile only trusted template sources.
+
+## License
+
+LGPL-2.1 license
