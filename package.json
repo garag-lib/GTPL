@@ -1,5 +1,5 @@
 {
-  "name": "gtpl",
+  "name": "@mpeliz/gtpl",
   "version": "1.1.2",
   "type": "module",
   "repository": {
@@ -23,6 +23,9 @@
     "NOTICE",
     "CITATION.cff"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "rollup -c",
     "build:dev": "rollup -c --environment NODE_ENV:development",

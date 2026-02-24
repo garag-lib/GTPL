@@ -14,13 +14,13 @@ Interactive examples: https://garag-lib.github.io/GTPL/
 ## Installation
 
 ```bash
-npm install gtpl
+npm install @mpeliz/gtpl
 ```
 
 ## Quick Start (JIT)
 
 ```ts
-import gtpl from 'gtpl';
+import gtpl from '@mpeliz/gtpl';
 
 const { GTpl, jit: { GCode, GCompile } } = gtpl;
 
@@ -77,7 +77,7 @@ AOT is recommended for production when templates are known in advance.
 ## API Overview
 
 ```ts
-import gtpl from 'gtpl';
+import gtpl from '@mpeliz/gtpl';
 
 const { GTpl, GregisterDirective, jit: { GCode, GCompile } } = gtpl;
 ```
