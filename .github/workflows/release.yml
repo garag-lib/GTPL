@@ -1,9 +1,9 @@
 name: Release Dist
 
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types:
+      - published
 
 permissions:
   contents: write
@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,7 +37,8 @@ jobs:
         id: package
         shell: bash
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
           mkdir -p artifacts
           cp -R dist "artifacts/gtpl-${VERSION}-dist"
           tar -czf "artifacts/gtpl-${VERSION}-dist.tar.gz" -C artifacts "gtpl-${VERSION}-dist"
@@ -48,9 +51,7 @@ jobs:
       - name: Create release and upload dist files
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: GTPL ${{ github.ref_name }}
-          generate_release_notes: true
+          tag_name: ${{ github.event.release.tag_name }}
           files: |
             artifacts/*.zip
             artifacts/*.tar.gz
