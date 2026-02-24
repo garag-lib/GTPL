@@ -47,10 +47,41 @@ jobs:
           )
           rm -rf "artifacts/gtpl-${VERSION}-dist"
 
+      - name: Delete previous dist assets for this release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releaseId = context.payload.release.id;
+            const assets = await github.paginate(
+              github.rest.repos.listReleaseAssets,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: releaseId,
+                per_page: 100
+              }
+            );
+
+            const shouldDelete = (name) => {
+              return /^gtpl-.*-dist\.(zip|tar\.gz)$/.test(name)
+                || /^gtpl\.(cjs\.js|cjs\.js\.map|d\.ts|esm\.js|esm\.js\.map|global\.js|global\.js\.map)$/.test(name);
+            };
+
+            for (const asset of assets) {
+              if (!shouldDelete(asset.name)) continue;
+              core.info(`Deleting existing asset: ${asset.name}`);
+              await github.rest.repos.deleteReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                asset_id: asset.id
+              });
+            }
+
       - name: Create release and upload dist files
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
+          overwrite_files: true
           files: |
             artifacts/*.zip
             artifacts/*.tar.gz
