@@ -5,6 +5,18 @@ import { globalObject } from '../global';
 
 let gparse!: GParse;
 
+export interface GCodeOptions {
+    allowFormulas?: boolean;
+    allowEvents?: boolean;
+    allowInnerHTML?: boolean;
+}
+
+const defaultGCodeOptions: Required<GCodeOptions> = {
+    allowFormulas: true,
+    allowEvents: true,
+    allowInnerHTML: true
+};
+
 function getGen(tag: string, attrs?: string | null, children?: string | null): string {
     return `g('${tag}',${attrs ?? 'null'},${children ?? 'null'},o)`;
 }
@@ -41,7 +53,16 @@ function addGen2ObjConditional(bind: IBindObject, uuid: string, bind_for: IBindO
     return { jsonAttr2, jsonAttr };
 }
 
-function parseAttribute(atributos: AttrType[], prop: string, value: string): boolean {
+function containsFormula(parsed: IObjParsed | undefined): boolean {
+    return !!(parsed && parsed.formula);
+}
+
+function parseAttribute(
+    atributos: AttrType[],
+    prop: string,
+    value: string,
+    options: Required<GCodeOptions>
+): boolean {
     let tt: null | BindTypes = null;
     switch (prop) {
         case 'g-is':
@@ -63,12 +84,17 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
         case 'g-for':
             tt = tt || BindTypes.FOR;
         case 'g-inner':
+            if (!options.allowInnerHTML)
+                throw new Error('Unsafe directive blocked in safe mode: g-inner');
             tt = tt || BindTypes.INNER;
             gparse.setString(`{{${value}}}`);
             if (gparse.check()) {
+                const single = gparse.getSingleResult();
+                if (containsFormula(single) && !options.allowFormulas)
+                    throw new Error('Unsafe formula blocked in safe mode');
                 const attrObj = {
                     type: tt,
-                    link: gparse.getSingleResult()
+                    link: single
                 };
                 if (tt === BindTypes.IS) {
                     atributos.unshift(attrObj);
@@ -99,6 +125,8 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
                 let r: any = gparse.getResult();
                 if (r && r.length) {
                     if (r.length == 1) {
+                        if (containsFormula(r[0] as IObjParsed) && !options.allowFormulas)
+                            throw new Error('Unsafe formula blocked in safe mode');
                         atributos.push({
                             type: BindTypes.STYLE,
                             prop: 'cssText',
@@ -111,6 +139,8 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
                         gparse.setString(<string>val);
                         if (gparse.check()) {
                             r = gparse.getSingleResult();
+                            if (containsFormula(r) && !options.allowFormulas)
+                                throw new Error('Unsafe formula blocked in safe mode');
                             atributos.push({
                                 type: BindTypes.STYLE,
                                 prop: key,
@@ -132,9 +162,14 @@ function parseAttribute(atributos: AttrType[], prop: string, value: string): boo
             if (gparse.check()) {
                 const r = gparse.getResult();
                 if (r && r.length == 1) {
+                    const isEvent = prop.startsWith('on');
+                    if (isEvent && !options.allowEvents)
+                        throw new Error(`Unsafe event blocked in safe mode: ${prop}`);
+                    if (containsFormula(r[0] as IObjParsed) && !options.allowFormulas)
+                        throw new Error('Unsafe formula blocked in safe mode');
                     const attrObj = {
-                        type: prop.startsWith('on') ? BindTypes.EVENT : BindTypes.ATTR,
-                        prop: prop.startsWith('on') ? prop.substring(2) : prop,
+                        type: isEvent ? BindTypes.EVENT : BindTypes.ATTR,
+                        prop: isEvent ? prop.substring(2) : prop,
                         link: <any>r[0]
                     };
                     atributos.push(attrObj);
@@ -235,7 +270,13 @@ function sb(): IStringBuilder {
     };
 }
 
-function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, headers?: boolean, bindSwitch?: null | IBindObject): string {
+function NodeList2Function(
+    nodes: NodeListOf<ChildNode> | Node[],
+    parent?: any,
+    headers?: boolean,
+    bindSwitch?: null | IBindObject,
+    options: Required<GCodeOptions> = defaultGCodeOptions
+): string {
     //---
     if (gparse == null)
         gparse = new GParse();
@@ -283,7 +324,7 @@ function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, 
                     for (let i = 0, n = ele.attributes.length, ref: NamedNodeMap = ele.attributes; i < n; i++) {
                         const attr = ref.item(i);
                         if (attr) {
-                            if (!parseAttribute(atributos, attr.name, attr.value)) {
+                            if (!parseAttribute(atributos, attr.name, attr.value, options)) {
                                 atributos.push([attr.name, attr.value]);
                             } else if (atributos.length) {
                                 const bind: any = atributos[atributos.length - 1];
@@ -340,14 +381,14 @@ function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, 
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
-                            childsnodes = NodeList2Function(childs, real, true, bind_switch);
+                            childsnodes = NodeList2Function(childs, real, true, bind_switch, options);
                         } else {
                             console.error('template ' + ct + ' undefined.');
                         }
                     } else {
                         real = (ele.nodeName.toLowerCase() == 'template') ? (<any>ele).content : ele;
                         childs = (<any>real).childNodes;
-                        childsnodes = NodeList2Function(childs, real, true, bind_switch);
+                        childsnodes = NodeList2Function(childs, real, true, bind_switch, options);
                     }
                     //---
                     if (bind_is || bind_if || bind_case || bind_for || bind_switch) {
@@ -512,6 +553,8 @@ function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, 
                                     if (typeof item == 'string') {
                                         parse.add(getGen(node.nodeName, JSON.stringify(item)));
                                     } else {
+                                        if (containsFormula(item as IObjParsed) && !options.allowFormulas)
+                                            throw new Error('Unsafe formula blocked in safe mode');
                                         parse.add(
                                             getGen(node.nodeName, Attributes2JSON([{
                                                 type: BindTypes.TEXT,
@@ -553,11 +596,28 @@ function NodeList2Function(nodes: NodeListOf<ChildNode> | Node[], parent?: any, 
 }
 
 export function GCode(html: string | Node | NodeListOf<ChildNode>): string {
+    const options = { ...defaultGCodeOptions };
     if (typeof html == 'string') {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html.trim(), "text/html");
-        return NodeList2Function(doc.body.childNodes);
+        return NodeList2Function(doc.body.childNodes, undefined, undefined, undefined, options);
     } else {
-        return NodeList2Function(html instanceof Node ? [html] : html);
+        return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, options);
+    }
+}
+
+export function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptions): string {
+    const safeOptions: Required<GCodeOptions> = {
+        allowFormulas: false,
+        allowEvents: false,
+        allowInnerHTML: false,
+        ...options
+    };
+    if (typeof html == 'string') {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html.trim(), "text/html");
+        return NodeList2Function(doc.body.childNodes, undefined, undefined, undefined, safeOptions);
+    } else {
+        return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, safeOptions);
     }
 }

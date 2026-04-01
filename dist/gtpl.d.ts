@@ -9,11 +9,11 @@ declare const enum TypeEventProxyHandler {
     UNSET = 1,
     CALL = 2,
     DEFINE = 3,
-    UKNOW4 = 4,
-    UKNOW5 = 5,
-    UKNOW6 = 6,
-    UKNOW7 = 7,
-    UKNOW8 = 8
+    FORCE_REFRESH_ROOT = 4,
+    FORCE_REFRESH_MAP = 5,
+    FORCE_REFRESH_CONST = 6,
+    RESERVED7 = 7,
+    RESERVED8 = 8
 }
 declare const enum BindTypes {
     TEXT = 0,
@@ -186,7 +186,13 @@ declare function style2css(prop: string): string;
 declare function log(...args: any[]): void;
 declare function STACK(message: string, ...rest: any[]): void;
 
+interface GCodeOptions {
+    allowFormulas?: boolean;
+    allowEvents?: boolean;
+    allowInnerHTML?: boolean;
+}
 declare function GCode(html: string | Node | NodeListOf<ChildNode>): string;
+declare function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptions): string;
 
 declare const ISPROXY: unique symbol;
 declare const PROXYTARGET: unique symbol;
@@ -209,7 +215,9 @@ declare const _default: {
     unGProxy: typeof unGProxy;
     jit: {
         GCompile: (gcode: string, ggenerator?: any) => any;
+        GCompileSafe: (generator: unknown) => any;
         GCode: typeof GCode;
+        GCodeSafe: typeof GCodeSafe;
     };
     utils: {
         log: typeof log;

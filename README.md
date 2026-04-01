@@ -85,6 +85,8 @@ const { GTpl, GregisterDirective, jit: { GCode, GCompile } } = gtpl;
 Main pieces:
 - `GCode(html)`: parses template HTML into generated code string.
 - `GCompile(code)`: compiles generated code into a render function.
+- `GCodeSafe(html)`: safe parser mode (blocks formulas, inline events, and `g-inner`).
+- `GCompileSafe(generatorFn)`: accepts only precompiled generator functions (no runtime eval).
 - `new GTpl({ root, generator })`: creates reactive instance.
 - `instance.addTo(node)`: mounts rendered nodes.
 - `instance.watch(path, cb)`: subscribes to reactive path changes.
@@ -136,6 +138,7 @@ Package outputs:
 
 - `g-inner` writes directly to `innerHTML`; use trusted HTML only.
 - JIT compilation executes generated code (`GCompile`), so compile only trusted template sources.
+- Use `GCodeSafe` + `GCompileSafe` when templates are not fully trusted.
 
 ## Attribution
 

@@ -3,11 +3,11 @@ export const enum TypeEventProxyHandler {
     UNSET,     // 1
     CALL,      // 2  ← para trap apply()
     DEFINE,    // 3  ← para trap defineProperty()
-    UKNOW4,    // 4
-    UKNOW5,    // 5
-    UKNOW6,    // 6
-    UKNOW7,    // 7
-    UKNOW8     // 8
+    FORCE_REFRESH_ROOT,  // 4
+    FORCE_REFRESH_MAP,   // 5
+    FORCE_REFRESH_CONST, // 6
+    RESERVED7,           // 7
+    RESERVED8            // 8
 };
 
 export const enum BindTypes {

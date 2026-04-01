@@ -186,6 +186,12 @@ function compile(gcode: string, ggenerator?: any): any {
     return new Function('g', `return ${gcode};`)(ggenerator ? ggenerator : createElement);
 }
 
+function compileSafe(generator: unknown): any {
+    if (typeof generator !== "function")
+        throw new Error("GCompileSafe expects a precompiled generator function");
+    return generator;
+}
+
 export const GGenerator = createElement;
 
 export const GAddTo = appendChildsFromFnc;
@@ -195,6 +201,8 @@ export const GInsertBeforeTo = insertBeforeFromFnc;
 export const GInsertAfterTo = insertAfterFromFnc;
 
 export const GCompile = compile;
+
+export const GCompileSafe = compileSafe;
 
 export const GregisterDirective = registerDirective;
 

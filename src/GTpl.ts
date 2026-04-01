@@ -9,6 +9,8 @@ const ElementReferenceIndex = Symbol("ElementReferenceIndex");
 
 const globalCache: any = {
   binitChangeEvents: false,
+  changeEventsCount: 0,
+  changeEventsHandler: null,
 };
 
 //---
@@ -52,10 +54,16 @@ type simetricAttrValueSet = Set<IsimetricAttrValue>;
 
 const simetricAttr: WeakMap<Node, simetricAttrValueSet> = new WeakMap();
 
+type SimetricPatchInfo = {
+  count: number;
+  restore: () => void;
+};
+
+const simetricPatchedProps: WeakMap<Node, Map<string, SimetricPatchInfo>> = new WeakMap();
+
 function initChangeEvents() {
   if (globalCache.binitChangeEvents) return;
   globalCache.binitChangeEvents = true;
-  //const lastProcessedValue = new WeakMap<any, Map<string, any>>();
   const handler = function (event: any) {
     const ele: any = event.target;
     const bindings = simetricAttr.get(ele);
@@ -83,11 +91,128 @@ function initChangeEvents() {
       //---
     }
   };
-  if (globalObject && typeof globalObject.addEventListener === 'function') {
-    globalObject.addEventListener("input", handler);
-    globalObject.addEventListener("change", handler);
-    globalObject.addEventListener("toggle", handler);
+  globalCache.changeEventsHandler = handler;
+}
+
+function addChangeEventsRef() {
+  initChangeEvents();
+  globalCache.changeEventsCount++;
+  if (globalCache.changeEventsCount > 1) {
+    return;
   }
+  if (globalObject && typeof globalObject.addEventListener === 'function') {
+    globalObject.addEventListener("input", globalCache.changeEventsHandler);
+    globalObject.addEventListener("change", globalCache.changeEventsHandler);
+    globalObject.addEventListener("toggle", globalCache.changeEventsHandler);
+  }
+}
+
+function removeChangeEventsRef() {
+  if (!globalCache.changeEventsCount) {
+    return;
+  }
+  globalCache.changeEventsCount--;
+  if (globalCache.changeEventsCount > 0) {
+    return;
+  }
+  if (
+    globalObject &&
+    typeof globalObject.removeEventListener === 'function' &&
+    globalCache.changeEventsHandler
+  ) {
+    globalObject.removeEventListener("input", globalCache.changeEventsHandler);
+    globalObject.removeEventListener("change", globalCache.changeEventsHandler);
+    globalObject.removeEventListener("toggle", globalCache.changeEventsHandler);
+  }
+}
+
+function patchSimetricProperty(bind: IBindObject, va: TplVar, ctx: IGtplObject) {
+  if (!bind.ele || !bind.prop) {
+    return;
+  }
+  const ele: any = bind.ele;
+  const prop = bind.prop;
+  let map = simetricPatchedProps.get(ele);
+  if (!map) {
+    map = new Map<string, SimetricPatchInfo>();
+    simetricPatchedProps.set(ele, map);
+  }
+  const existing = map.get(prop);
+  if (existing) {
+    existing.count++;
+    (bind as any)._simetricPatchProp = prop;
+    return;
+  }
+  const prototype = ele.constructor?.prototype;
+  if (!prototype || !(prop in prototype)) {
+    return;
+  }
+  const original: any = Object.getOwnPropertyDescriptor(prototype, prop);
+  if (!original || typeof original.get !== "function" || typeof original.set !== "function") {
+    return;
+  }
+  const hadOwnDescriptor = Object.prototype.hasOwnProperty.call(ele, prop);
+  const ownDescriptor = hadOwnDescriptor ? Object.getOwnPropertyDescriptor(ele, prop) : undefined;
+  Object.defineProperty(ele, prop, {
+    configurable: true,
+    enumerable: original.enumerable,
+    get: function () {
+      return original.get.call(this);
+    },
+    set: function (value: any) {
+      if (prop === "value" && ele.nodeName?.toLowerCase?.() === "select") {
+        const ret = original.set.call(this, value);
+        if (original.get.call(this) == value) {
+          updateVar(va, ctx, value);
+        } else {
+          console.error("select value not valid", value + " not in options");
+        }
+        return ret;
+      }
+      updateVar(va, ctx, value);
+      return original.set.call(this, value);
+    },
+  });
+  map.set(prop, {
+    count: 1,
+    restore: () => {
+      if (hadOwnDescriptor && ownDescriptor) {
+        Object.defineProperty(ele, prop, ownDescriptor);
+      } else {
+        delete ele[prop];
+      }
+    },
+  });
+  (bind as any)._simetricPatchProp = prop;
+}
+
+function unpatchSimetricProperty(bind: IBindObject) {
+  if (!bind.ele) {
+    return;
+  }
+  const prop: string | undefined = (bind as any)._simetricPatchProp;
+  if (!prop) {
+    return;
+  }
+  const map = simetricPatchedProps.get(bind.ele);
+  if (!map) {
+    delete (bind as any)._simetricPatchProp;
+    return;
+  }
+  const entry = map.get(prop);
+  if (!entry) {
+    delete (bind as any)._simetricPatchProp;
+    return;
+  }
+  entry.count--;
+  if (entry.count <= 0) {
+    entry.restore();
+    map.delete(prop);
+    if (!map.size) {
+      simetricPatchedProps.delete(bind.ele);
+    }
+  }
+  delete (bind as any)._simetricPatchProp;
 }
 
 //---
@@ -440,17 +565,29 @@ function delBind(gtpl: IGtplObject, bind: IBindObject) {
   if (bind.simetric && bind.ele) {
     const setBindings = simetricAttr.get(bind.ele);
     if (setBindings) {
-      // Filtramos fuera todas las entradas cuyo ctx sea este GTpl
-      const nuevo = new Set(
-        Array.from(setBindings)
-          .filter(item => item.ctx !== gtpl)
-      );
-      if (nuevo.size) {
-        simetricAttr.set(bind.ele, nuevo);
+      const entry = (bind as any)._simetricEntry as IsimetricAttrValue | undefined;
+      if (entry && setBindings.has(entry)) {
+        setBindings.delete(entry);
+        if (!setBindings.size) {
+          simetricAttr.delete(bind.ele);
+        }
       } else {
-        simetricAttr.delete(bind.ele);
+        const nuevo = new Set(
+          Array.from(setBindings).filter((item) => item.ctx !== gtpl)
+        );
+        if (nuevo.size) {
+          simetricAttr.set(bind.ele, nuevo);
+        } else {
+          simetricAttr.delete(bind.ele);
+        }
       }
     }
+    if ((bind as any)._simetricRefTracked) {
+      removeChangeEventsRef();
+      delete (bind as any)._simetricRefTracked;
+    }
+    unpatchSimetricProperty(bind);
+    delete (bind as any)._simetricEntry;
   }
 }
 
@@ -504,8 +641,6 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
     const ctx: IGtplObject = getContext(gtpl, bind);
     const obj = { gtpl: ctx, bind: bind };
     const options: any = { passive: false };
-    if (["wheel", "mousewheel", "touchstart", "touchmove"].includes(bind.prop.toLowerCase()))
-      options.passive = true;
     //---
     const handler = async function (event: any) {
       const result = await calculateBind(obj.gtpl, obj.bind, undefined, event);
@@ -573,7 +708,10 @@ function checkSimetricBind(gtpl: IGtplObject, bind: IBindObject) {
     const { prop } = bind;
     if (prop.startsWith('[') && prop.endsWith(']')) {
       //---
-      initChangeEvents();
+      if (!(bind as any)._simetricRefTracked) {
+        addChangeEventsRef();
+        (bind as any)._simetricRefTracked = true;
+      }
       //---
       bind.simetric = true;
       bind.prop = prop.slice(1, - 1);
@@ -582,46 +720,14 @@ function checkSimetricBind(gtpl: IGtplObject, bind: IBindObject) {
       const ctx: any = gtpl.getContext(va[0]);
       //---
       if (!simetricAttr.has(bind.ele)) simetricAttr.set(bind.ele, new Set());
-      simetricAttr.get(bind.ele)?.add({
+      const entry = {
         va: va,
         ctx: ctx,
         prop: bind.prop
-      });
-      //---
-      if (bind.prop in bind.ele.constructor.prototype) {
-        const original: any = Object.getOwnPropertyDescriptor(
-          bind.ele.constructor.prototype,
-          bind.prop
-        );
-        if (original) {
-          Object.defineProperty(bind.ele, bind.prop, {
-            get: function () {
-              //console.log('get', bind, this, original.get.call(this));
-              return original.get.call(this);
-            },
-            set: function (value) {
-              //console.log('set', bind, this, value);
-              if (
-                bind.prop == "value" &&
-                bind.ele.nodeName.toLowerCase() == "select"
-              ) {
-                const ret = original.set.call(this, value);
-                if (original.get.call(this) == value)
-                  updateVar(va, ctx, value);
-                else console.error("select value not valid", value + ' not in options');
-                return ret;
-              } else {
-                updateVar(va, ctx, value);
-                return original.set.call(this, value);
-              }
-            },
-          });
-        } else {
-          console.error("simetric attr error", bind.prop, " not in ", bind.ele.constructor.prototype);
-        }
-      } else {
-        console.error("simetric attr error", bind.prop, " in ", bind.ele);
-      }
+      };
+      simetricAttr.get(bind.ele)?.add(entry);
+      (bind as any)._simetricEntry = entry;
+      patchSimetricProperty(bind, va, ctx);
       //---
     }
   }
@@ -649,6 +755,20 @@ function checkBind(gtpl: IGtplObject, bind: IBindObject): boolean {
   return result;
 }
 
+function collectBindsFromTree(tree: any, out: Set<IBindObject>) {
+  if (!tree) {
+    return;
+  }
+  if (tree.me) {
+    tree.me.forEach((bind: IBindObject) => out.add(bind));
+  }
+  if (tree.tree) {
+    Object.keys(tree.tree).forEach((key) => {
+      collectBindsFromTree(tree.tree[key], out);
+    });
+  }
+}
+
 //---
 
 function removeElements(elements: any) {
@@ -663,7 +783,7 @@ function removeElements(elements: any) {
       }
       delete elements[ElementReferenceIndex];
     }
-    if (elements instanceof Element) {
+    if (typeof Element !== "undefined" && elements instanceof Element) {
       while (elements.attributes.length > 0) {
         elements.removeAttribute(elements.attributes[0].name);
       }
@@ -1484,7 +1604,7 @@ export class GTpl implements IGtplObject {
       }
     }
     if (privateProperties.getProperty(this, "GenerationFinish")) {
-      this.launchChange(TypeEventProxyHandler.UKNOW4, bind);
+      this.launchChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind);
     }
   }
 
@@ -1526,6 +1646,17 @@ export class GTpl implements IGtplObject {
       }
       this.BindDef.clear();
     }
+
+    const localBinds = new Set<IBindObject>();
+    if (this.BindTree) {
+      collectBindsFromTree(this.BindTree, localBinds);
+    }
+    if (this.BindConst) {
+      this.BindConst.forEach((bind) => localBinds.add(bind));
+    }
+    localBinds.forEach((bind) => {
+      delBind(this, bind);
+    });
 
     if (this.BindMap) {
       for (const [bind, ctxgtpl] of this.BindMap) {
@@ -1575,16 +1706,16 @@ export class GTpl implements IGtplObject {
 
   refresh() {
     for (let objdef of this.BindDef) {
-      this.eventPRoxy(TypeEventProxyHandler.UKNOW4, [], undefined, objdef);
+      this.eventPRoxy(TypeEventProxyHandler.FORCE_REFRESH_ROOT, [], undefined, objdef);
     }
     if (this.BindMap) {
       for (let [bind, gtpl] of this.BindMap) {
-        gtpl.launchChange(TypeEventProxyHandler.UKNOW5, bind);
+        gtpl.launchChange(TypeEventProxyHandler.FORCE_REFRESH_MAP, bind);
       }
     }
     if (this.BindConst) {
       for (let bind of this.BindConst) {
-        this.launchChange(TypeEventProxyHandler.UKNOW6, bind);
+        this.launchChange(TypeEventProxyHandler.FORCE_REFRESH_CONST, bind);
       }
     }
   }
