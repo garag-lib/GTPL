@@ -1,5 +1,5 @@
 /*!
-* @mpeliz/gtpl v1.1.2
+* @mpeliz/gtpl v1.1.3
 * (c) 2024 Manuel Peliz
 * @license Apache-2.0
 * @repository [object Object]
