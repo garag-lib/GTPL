@@ -505,6 +505,45 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
+    <h2 class="demo-title">Switch with template containers</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{
+                const trustedHtml = String.fromCharCode(60) + 'strong>Trusted HTML' + String.fromCharCode(60) + '/strong>';
+                this.rows = [
+                    { title: 'Normal', type: 'text', value: 'Plain text' },
+                    { title: 'Inner', type: 'html', value: trustedHtml },
+                    { title: 'Component', type: 'component', value: 'DOM node' }
+                ];
+                this.renderNode = function(row) {
+                    const span = document.createElement('span');
+                    span.style.cssText = 'display:inline-block;padding:2px 6px;border:1px solid #1e855f;color:#1e855f';
+                    span.textContent = row.value;
+                    return span;
+                };
+                return '';
+            }}</div>
+            <div g-for="rows;index;row">
+                <span>{{ row.title }}: </span>
+                <template g-switch="row.type">
+                    <template g-case="'text'">
+                        <span>{{ row.value }}</span>
+                    </template>
+                    <template g-case="'html'">
+                        <span g-inner="row.value"></span>
+                    </template>
+                    <template g-case="'component'">
+                        <span g-is="row:renderNode"></span>
+                    </template>
+                </template>
+            </div>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
     <h2 class="demo-title">For</h2>
     <div class="code-block">
         <pre><code class="language-html"></code></pre>
@@ -667,6 +706,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                 'Use full CSS text or per-property reactive style binds.',
                 'Toggle nodes with positive and inverse conditions through g-if and g-notif.',
                 'Route rendering with g-switch and g-case blocks.',
+                'Use template as a transparent container for structural switch/case blocks without adding DOM.',
                 'Iterate arrays with index/value aliases using g-for.',
                 'Reuse DOM fragments with named template blocks and g-tpl.',
                 'Inject HTML directly with g-inner (trusted content only).'

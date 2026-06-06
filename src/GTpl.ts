@@ -859,7 +859,12 @@ function checkMarkEle(gtpl: IGtplObject, bind: IBindObject, bresult: boolean) {
           if (MarkEle.has(bind.mark)) {
             bind.ele = MarkEle.get(bind.mark);
           } else {
-            bind.ele = (<Function>bind.gen)(bind.gtpl ? bind.gtpl : gtpl);
+            if (typeof bind.gen === "function") {
+              bind.ele = (<Function>bind.gen)(bind.gtpl ? bind.gtpl : gtpl);
+            } else {
+              bind.ele = [];
+              GAddTo(bind.ele, bind.gen as any, bind.gtpl ? bind.gtpl : gtpl);
+            }
             MarkEle.set(bind.mark, bind.ele);
           }
           delete bind.gen;
@@ -952,6 +957,23 @@ function renderBind(gtpl: IGtplObject, bind: IBindObject, render: boolean) {
   }
   if (render && !canrender) return false;
   return true;
+}
+
+function collectCommentMarks(ele: any, marks: any) {
+  if (!ele) return;
+  if (Array.isArray(ele)) {
+    ele.forEach((node) => collectCommentMarks(node, marks));
+    return;
+  }
+  if (ele.nodeType === 8 && ele.textContent?.length == 6) {
+    marks[ele.textContent] = ele;
+    return;
+  }
+  const childs = ele.content?.childNodes || ele.childNodes;
+  if (!childs) return;
+  for (let i = 0, n = childs.length; i < n; i++) {
+    collectCommentMarks(childs[i], marks);
+  }
 }
 
 function getElementIndex(gtpl: IGtplObject, bind: IBindObject) {
@@ -1344,14 +1366,7 @@ async function updateSWITCHbind(
         //---
         const mcobj: any = {};
         //---
-        for (let i = 0, n = bind.ele.childNodes.length; i < n; i++) {
-          const node = bind.ele.childNodes[i];
-          if (node.nodeType === 8) {
-            if (node.textContent.length == 6) {
-              mcobj[node.textContent] = node;
-            }
-          }
-        }
+        collectCommentMarks(bind.ele, mcobj);
         //---
         for (let i = 0, n = bind.case.length; i < n; i++) {
           const ca = bind.case[i];

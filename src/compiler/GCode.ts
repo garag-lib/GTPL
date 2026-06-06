@@ -459,7 +459,7 @@ function NodeList2Function(
 
                             common.push({
                                 'var': uuid,
-                                'gen': bind_is ? 'null' : getFunction(getGen(ele.nodeName, attrs, childsnodes), true)
+                                'gen': bind_is ? 'null' : (ele.nodeName.toLowerCase() == 'template' ? childsnodes : getFunction(getGen(ele.nodeName, attrs, childsnodes), true))
                             });
 
                         }
