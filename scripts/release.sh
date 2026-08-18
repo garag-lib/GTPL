@@ -54,7 +54,10 @@ echo "==> Bumping package version to ${VERSION}"
 npm version "${VERSION}" --no-git-tag-version
 
 echo "==> Committing version bump"
-git add package.json package-lock.json
+git add package.json
+if git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
+  git add package-lock.json
+fi
 if git diff --cached --quiet; then
   echo "Error: no changes staged after version bump."
   exit 1
