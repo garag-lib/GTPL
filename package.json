@@ -29,7 +29,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:dev": "rollup -c --environment NODE_ENV:development",
-    "test": "TS_NODE_PROJECT=tsconfig-rollup.json node --loader ts-node/esm --experimental-specifier-resolution=node --test tests/*.test.ts",
+    "test": "TS_NODE_PROJECT=tsconfig-rollup.json TS_NODE_TRANSPILE_ONLY=1 node --loader ts-node/esm --experimental-specifier-resolution=node --test tests/*.test.ts",
     "clean:artifacts": "rm -rf artifacts/*",
     "release": "./scripts/release.sh",
     "prepublishOnly": "npm test && npm run build",
@@ -44,6 +44,7 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^18.19.70",
     "rollup": "^4.9.6",
     "rollup-plugin-dts": "^6.1.0",
     "ts-node": "^10.9.2",

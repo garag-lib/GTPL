@@ -543,14 +543,19 @@ function getBind2Object(
   let ref: any = gtpl.BindTree;
   for (let i = 0, n = va.length; i < n; i++) {
     const name = va[i];
+    // A formula can bind variables from different GTpl contexts (for example,
+    // a parent helper and a g-for row). During cleanup each context only owns
+    // part of those paths, so a missing branch is expected.
+    if (!ref || ref[name] == undefined)
+      return null;
+    ref = ref[name];
     if (i < n - 1) {
-      ref = ref[name];
+      if (ref.tree == undefined)
+        return null;
       ref = ref.tree;
-    } else {
-      ref = ref[name];
     }
   }
-  return ref.me;
+  return ref?.me ?? null;
 }
 
 function delBind(gtpl: IGtplObject, bind: IBindObject) {
@@ -1664,7 +1669,9 @@ export class GTpl implements IGtplObject {
 
     const localBinds = new Set<IBindObject>();
     if (this.BindTree) {
-      collectBindsFromTree(this.BindTree, localBinds);
+      Object.keys(this.BindTree).forEach((key) => {
+        collectBindsFromTree(this.BindTree[key], localBinds);
+      });
     }
     if (this.BindConst) {
       this.BindConst.forEach((bind) => localBinds.add(bind));

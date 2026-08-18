@@ -73,3 +73,33 @@ test('GTpl.destroy removes DOM event listeners tracked on rendered elements', ()
   assert.equal(calls.filter((c) => c.type === 'add').length, 1);
   assert.equal(calls.filter((c) => c.type === 'remove').length, 1);
 });
+
+test('GTpl.destroy cleans formula bindings split across parent and g-for contexts', () => {
+  const parent = new GTpl();
+  const child = new GTpl();
+  const bind: any = {
+    type: BindTypes.ATTR,
+    link: {
+      formula: {
+        vars: [['path'], ['item', 'stallId']],
+        fnc: () => ''
+      }
+    }
+  };
+  const parentBinds = new Set([bind]);
+  const childBinds = new Set([bind]);
+
+  parent.BindTree = { path: { me: parentBinds } };
+  child.BindTree = {
+    item: {
+      tree: {
+        stallId: { me: childBinds }
+      }
+    }
+  };
+  child.BindMap = new Map([[bind, parent]]);
+
+  assert.doesNotThrow(() => child.destroy(false));
+  assert.equal(parentBinds.size, 0);
+  assert.equal(childBinds.size, 0);
+});
