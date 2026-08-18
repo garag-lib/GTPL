@@ -7,14 +7,14 @@
     "url": "git+https://github.com/garag-lib/GTPL.git"
   },
   "description": "GTPL is a TypeScript library for reactive template systems built around Direct DOM and Proxy, inspired by Vue, Angular AOT, and JSX, delivering efficient reactive UI updates in a compact 11kB JavaScript package.",
-  "main": "./dist/gtpl.cjs.js",
+  "main": "./dist/gtpl.cjs",
   "module": "./dist/gtpl.esm.js",
   "types": "./dist/gtpl.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": "./dist/gtpl.esm.js",
-      "require": "./dist/gtpl.cjs.js",
+      "require": "./dist/gtpl.cjs",
       "types": "./dist/gtpl.d.ts"
     }
   },
@@ -27,9 +27,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && npm run test:package",
     "build:dev": "rollup -c --environment NODE_ENV:development",
     "test": "TS_NODE_PROJECT=tsconfig-rollup.json TS_NODE_TRANSPILE_ONLY=1 node --loader ts-node/esm --experimental-specifier-resolution=node --test tests/*.test.ts",
+    "test:package": "node tests/package.test.cjs",
     "clean:artifacts": "rm -rf artifacts/*",
     "release": "./scripts/release.sh",
     "prepublishOnly": "npm test && npm run build",

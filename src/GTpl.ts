@@ -449,9 +449,11 @@ function createGetterAndSetter(
         return objdef.pro;
       },
       set: function (newval: any) {
-        objdef.val = newval;
+        const rawNewValue = toRaw(newval);
+        unGProxy(objdef.val, gtpl.BoundEventProxy, objdef);
+        objdef.val = rawNewValue;
         const doSet = () => {
-          if (isStaticType(newval)) {
+          if (isStaticType(rawNewValue)) {
             delete objdef.pro;
             return objdef.val;
           } else {
@@ -469,7 +471,7 @@ function createGetterAndSetter(
         gtpl.eventPRoxy(
           TypeEventProxyHandler.SET,
           [objdef.key],
-          newval,
+          rawNewValue,
           objdef
         );
         return ret;
@@ -1662,7 +1664,7 @@ export class GTpl implements IGtplObject {
 
     if (this.BindDef) {
       for (const objdef of this.BindDef) {
-        unGProxy(objdef.val, this.BoundEventProxy);
+        unGProxy(objdef.val, this.BoundEventProxy, objdef);
       }
       this.BindDef.clear();
     }
@@ -1785,6 +1787,7 @@ export class GTpl implements IGtplObject {
     if (!set) this.watchers.set(key, set = new Set());
     set.add(cb);
     const unwatch = () => {
+      if (!this.watchers) return;
       const s = this.watchers.get(key);
       if (!s) return;
       s.delete(cb);
@@ -1834,9 +1837,9 @@ export class GTpl implements IGtplObject {
     //---
     this.emitWatchers(type, path, value, objRef);
     //---
-    const subPath = Array.isArray(path) ? path.slice(1) : [];
+    const proxyPath = Array.isArray(path) ? path : [];
     //---
-    iterBind(this.BindTree[objRef.key], type, subPath, value, [], 1).forEach((args: any) =>
+    iterBind(this.BindTree[objRef.key], type, proxyPath, value, [], 1).forEach((args: any) =>
       this.launchChange.apply(this, args)
     );
     //---

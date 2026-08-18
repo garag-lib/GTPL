@@ -201,7 +201,7 @@ declare function isGProxy(obj: any): obj is {
     [PROXYTARGET]: any;
 };
 declare function GProxy<T extends object>(target: T, event: EventFunctionProxyHandler, objRef: any, parentPath?: PathProxyHandler): T;
-declare function unGProxy<T = any>(target: T, event: EventFunctionProxyHandler): T;
+declare function unGProxy<T = any>(target: T, event: EventFunctionProxyHandler, objRef?: any): T;
 declare function toRaw<T = any>(obj: T): T;
 
 declare const _default: {

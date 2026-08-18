@@ -5,6 +5,7 @@ import { BindTypes, TypeEventProxyHandler } from '../src/GEnums';
 import { GTpl } from '../src/GTpl';
 import { css2obj, style2css } from '../src/GUtils';
 import { GCompile, GCompileSafe } from '../src/GGenerator';
+import { GProxy, unGProxy } from '../src/GProxy';
 
 test('css2obj parses static and dynamic CSS values', () => {
   const css = "color:red;font-weight:bold;background-image:url('x;y');--my-var:10px";
@@ -14,6 +15,14 @@ test('css2obj parses static and dynamic CSS values', () => {
     fontWeight: 'bold',
     backgroundImage: "url('x;y')",
     '--my-var': '10px'
+  });
+});
+
+test('css2obj preserves escaped quotes and semicolons inside strings', () => {
+  const parsed = css2obj('content:"a\\\";b";color:red');
+  assert.deepStrictEqual(parsed, {
+    content: '"a\\\";b"',
+    color: 'red'
   });
 });
 
@@ -30,6 +39,76 @@ test('GTpl.eventPRoxy does not mutate received path', () => {
   gtpl.eventPRoxy(TypeEventProxyHandler.SET, path, 123, { key: 'foo' });
 
   assert.deepStrictEqual(path, ['foo', 'bar', 'baz']);
+  gtpl.destroy(false);
+});
+
+test('GProxy preserves the path and context of every shared subscription', () => {
+  const shared = { x: 0 };
+  const ownerA = { key: 'a' };
+  const ownerB = { key: 'b' };
+  const seen: any[] = [];
+  const eventA = (_type: any, path: any[], _value: any, objRef: any) => {
+    seen.push({ listener: 'a', path: path.join('.'), key: objRef.key });
+  };
+  const eventB = (_type: any, path: any[], _value: any, objRef: any) => {
+    seen.push({ listener: 'b', path: path.join('.'), key: objRef.key });
+  };
+  const proxyA = GProxy(shared, eventA, ownerA, ['a']);
+  const proxyB = GProxy(shared, eventB, ownerB, ['b']);
+
+  proxyB.x = 1;
+
+  assert.equal(proxyA, proxyB);
+  assert.deepStrictEqual(seen, [
+    { listener: 'a', path: 'a.x', key: 'a' },
+    { listener: 'b', path: 'b.x', key: 'b' }
+  ]);
+  unGProxy(proxyA, eventA, ownerA);
+  unGProxy(proxyB, eventB, ownerB);
+});
+
+test('unGProxy removes nested subscriptions without affecting other owners', () => {
+  const shared = { nested: { x: 0 } };
+  const ownerA = { key: 'a' };
+  const ownerB = { key: 'b' };
+  const seen: string[] = [];
+  const eventA = (_type: any, path: any[]) => seen.push(`a:${path.join('.')}`);
+  const eventB = (_type: any, path: any[]) => seen.push(`b:${path.join('.')}`);
+  const proxyA = GProxy(shared, eventA, ownerA, ['a']);
+  const proxyB = GProxy(shared, eventB, ownerB, ['b']);
+  const nested = proxyA.nested;
+
+  assert.equal(nested, proxyA.nested);
+  unGProxy(proxyA, eventA, ownerA);
+  nested.x = 1;
+
+  assert.deepStrictEqual(seen, ['b:b.nested.x']);
+  unGProxy(proxyB, eventB);
+  assert.throws(() => { nested.x = 2; }, TypeError);
+});
+
+test('GTpl disconnects the previous reactive tree when replacing a root value', async () => {
+  const root = { value: { nested: { x: 1 } } };
+  const element = { title: '' };
+  const gtpl = new GTpl();
+  gtpl.Root = root;
+  gtpl.Elements = [];
+  gtpl.addBind({
+    type: BindTypes.ATTR,
+    prop: 'title',
+    ele: element,
+    link: { vorc: { va: ['value', 'nested', 'x'] } }
+  } as any);
+  const oldValue = root.value;
+  const oldNested = oldValue.nested;
+
+  root.value = { nested: { x: 2 } };
+  await new Promise(resolve => setImmediate(resolve));
+
+  assert.throws(() => { oldNested.x = 3; }, TypeError);
+  assert.doesNotThrow(() => { root.value.nested.x = 4; });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(element.title, 4);
   gtpl.destroy(false);
 });
 
@@ -102,4 +181,14 @@ test('GTpl.destroy cleans formula bindings split across parent and g-for context
   assert.doesNotThrow(() => child.destroy(false));
   assert.equal(parentBinds.size, 0);
   assert.equal(childBinds.size, 0);
+});
+
+test('unwatch remains safe to call after GTpl.destroy', () => {
+  const gtpl = new GTpl();
+  const unwatch = gtpl.watch('value', () => { });
+
+  gtpl.destroy(false);
+
+  assert.doesNotThrow(unwatch);
+  assert.doesNotThrow(unwatch);
 });

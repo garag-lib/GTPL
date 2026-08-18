@@ -130,7 +130,7 @@ npm test
 
 Package outputs:
 - `dist/gtpl.esm.js`
-- `dist/gtpl.cjs.js`
+- `dist/gtpl.cjs`
 - `dist/gtpl.global.js`
 - `dist/gtpl.d.ts`
 

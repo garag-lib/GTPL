@@ -22,10 +22,14 @@ export function css2obj(css: string): Record<string, string> {
         const char = css[i];
         // --- string tracking ---
         if (char === '"' || char === "'") {
-            if (inString === char) {
-                inString = null;
-            } else if (!inString) {
-                inString = char;
+            let backslashes = 0;
+            for (let j = i - 1; j >= 0 && css[j] === "\\"; j--) backslashes++;
+            if (backslashes % 2 === 0) {
+                if (inString === char) {
+                    inString = null;
+                } else if (!inString) {
+                    inString = char;
+                }
             }
         }
         // --- parens tracking ---

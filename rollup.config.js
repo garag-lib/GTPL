@@ -45,7 +45,7 @@ export default [
   {
     input: 'src/lib/gtpl.ts',
     output: {
-      file: 'dist/gtpl.cjs.js',
+      file: 'dist/gtpl.cjs',
       format: 'cjs',
       sourcemap: true,
       banner,

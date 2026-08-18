@@ -64,7 +64,7 @@ jobs:
 
             const shouldDelete = (name) => {
               return /^gtpl-.*-dist\.(zip|tar\.gz)$/.test(name)
-                || /^gtpl\.(cjs\.js|cjs\.js\.map|d\.ts|esm\.js|esm\.js\.map|global\.js|global\.js\.map)$/.test(name);
+                || /^gtpl\.(cjs|cjs\.map|cjs\.js|cjs\.js\.map|d\.ts|esm\.js|esm\.js\.map|global\.js|global\.js\.map)$/.test(name);
             };
 
             for (const asset of assets) {
