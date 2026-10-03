@@ -94,6 +94,7 @@ export interface IObjParsed {
 
 export interface IGtplObject {
     refresh(): unknown;
+    ready(): Promise<void>;
     ID?: string,
     Root: any,
     Elements: any,

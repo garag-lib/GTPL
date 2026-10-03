@@ -1,5 +1,5 @@
 /*!
-* @mpeliz/gtpl v1.1.4
+* @mpeliz/gtpl v1.1.6
 * (c) 2024 Manuel Peliz
 * @license Apache-2.0
 * @repository [object Object]
@@ -68,6 +68,7 @@ interface IObjParsed {
 }
 interface IGtplObject {
     refresh(): unknown;
+    ready(): Promise<void>;
     ID?: string;
     Root: any;
     Elements: any;
@@ -160,6 +161,11 @@ declare class GTpl implements IGtplObject {
     cleanupCallbacks: Set<() => void>;
     watchers: Map<string, Set<Function>>;
     isDestroyed: boolean;
+    private initialUpdates;
+    private initialFailure?;
+    private initialReady?;
+    private initialReject?;
+    private initialRenderSettled;
     constructor(options?: any);
     loadOptions(options?: any): void;
     getValue(key: any): any;
@@ -171,6 +177,10 @@ declare class GTpl implements IGtplObject {
     destroy(elements?: boolean): void;
     onCleanup(callback: () => void): void;
     refresh(): void;
+    /** Wait for the initial bindings and generated children. Mount before awaiting. */
+    ready(): Promise<void>;
+    private waitInitialRender;
+    private trackInitialUpdate;
     private processRenderAndApply;
     addTo(ele: Node | any[]): void;
     insertAfterTo(ele: Node | any[]): void;
@@ -179,6 +189,7 @@ declare class GTpl implements IGtplObject {
     private emitWatchers;
     eventPRoxy(type: TypeEventProxyHandler, path: PathProxyHandler, value: any, objRef: any): void;
     launchChange(type: TypeEventProxyHandler, bind: IBindObject, path?: string[], value?: any): Promise<void>;
+    private applyChange;
 }
 
 declare function css2obj(css: string): Record<string, string>;

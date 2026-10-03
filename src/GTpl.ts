@@ -1387,6 +1387,7 @@ async function updateSWITCHbind(
       for (let i = 0, n = bind.case.length; i < n; i++) {
         const ca = bind.case[i];
         const valca = await calculateBind(gtpl, ca);
+        if (gtpl.isDestroyed || bind.gtpl?.isDestroyed) return gtpl;
         if (valca == result) {
           const gtplcase = createGTpl(
             gtpl,
@@ -1553,6 +1554,12 @@ export class GTpl implements IGtplObject {
   watchers!: Map<string, Set<Function>>;
 
   isDestroyed: boolean = false;
+
+  private initialUpdates = new Set<Promise<void>>();
+  private initialFailure?: { error: unknown };
+  private initialReady?: Promise<void>;
+  private initialReject?: (error: unknown) => void;
+  private initialRenderSettled = false;
 
   constructor(options?: any) {
     //log('constructor', this, options);
@@ -1744,6 +1751,64 @@ export class GTpl implements IGtplObject {
     }
   }
 
+  /** Wait for the initial bindings and generated children. Mount before awaiting. */
+  ready(): Promise<void> {
+    if (!this.initialReady) {
+      this.initialReady = new Promise<void>((resolve, reject) => {
+        const finish = (error?: { error: unknown }) => {
+          if (this.initialRenderSettled) return;
+          this.initialRenderSettled = true;
+          this.initialReject = undefined;
+          this.cleanupCallbacks.delete(cancel);
+          if (error) reject(error.error);
+          else resolve();
+        };
+        const cancel = () => finish({ error: new Error('[GTPL] Component destroyed before ready') });
+        this.initialReject = error => finish({ error });
+        this.onCleanup(cancel);
+        this.waitInitialRender().then(() => finish(), error => finish({ error }));
+      });
+    }
+    return this.initialReady;
+  }
+
+  private async waitInitialRender(): Promise<void> {
+    do {
+      if (this.isDestroyed)
+        throw new Error('[GTPL] Component destroyed before ready');
+      if (this.initialFailure)
+        throw this.initialFailure.error;
+      if (!this.initialUpdates.size) return;
+      await Promise.all(this.initialUpdates);
+      // Updates can create children or register more bindings while rendering.
+    } while (true);
+  }
+
+  private trackInitialUpdate(update: Promise<void>, owner: GTpl) {
+    const contexts = new Set<GTpl>();
+    const collect = (context: GTpl) => {
+      if (context.getGtplRoot().initialRenderSettled) return;
+      while (context) {
+        if (!context.initialRenderSettled) contexts.add(context);
+        context = context.Parent as GTpl;
+      }
+    };
+    collect(this);
+    collect(owner);
+    if (!contexts.size) return;
+    // Observe failures immediately, including failures before ready() is called.
+    const observed = update.then(() => {
+      contexts.forEach(context => context.initialUpdates.delete(observed));
+    }, error => {
+      contexts.forEach(context => {
+        if (!context.initialFailure) context.initialFailure = { error };
+        context.initialUpdates.delete(observed);
+        context.initialReject?.(error);
+      });
+    });
+    contexts.forEach(context => context.initialUpdates.add(observed));
+  }
+
   private processRenderAndApply(ele: Node | any[], applyFn: (ele: Node | any[], arr: any, ctx: any) => void) {
     if (this.checkDestroyed('addBind')) return;
     if (this.RenderElements) {
@@ -1845,7 +1910,18 @@ export class GTpl implements IGtplObject {
     //---
   }
 
-  async launchChange(
+  launchChange(
+    type: TypeEventProxyHandler,
+    bind: IBindObject,
+    path?: string[],
+    value?: any
+  ): Promise<void> {
+    const update = this.applyChange(type, bind, path, value);
+    this.trackInitialUpdate(update, (bind.gtpl || this) as GTpl);
+    return update;
+  }
+
+  private async applyChange(
     type: TypeEventProxyHandler,
     bind: IBindObject,
     path?: string[],
@@ -1855,6 +1931,7 @@ export class GTpl implements IGtplObject {
     if (BindTypes.EVENT == bind.type)
       return;
     const result = await calculateBind(this, bind, value);
+    if (this.isDestroyed || bind.gtpl?.isDestroyed) return;
     let gtpl: IGtplObject = this;
     switch (bind.type) {
       case BindTypes.TEXT:
@@ -1883,6 +1960,6 @@ export class GTpl implements IGtplObject {
         gtpl = await updateISbind(type, this, bind, result, path);
         break;
     }
-    checkRenderElements(gtpl, bind);
+    if (!gtpl.isDestroyed) checkRenderElements(gtpl, bind);
   }
 }

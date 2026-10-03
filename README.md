@@ -40,6 +40,41 @@ const app = new GTpl({ root, generator });
 app.addTo(document.getElementById('app'));
 ```
 
+## Replacing server-rendered content
+
+Mount into a `DocumentFragment` and await the initial render before replacing
+the container's children. Supply the original template and the same initial
+data used by the server:
+
+```js
+const container = document.getElementById('app');
+const root = JSON.parse(document.getElementById('initial-data').textContent);
+const fragment = document.createDocumentFragment();
+let app;
+
+try {
+  app = new GTpl({ root, generator });
+  app.addTo(fragment);
+  await app.ready();
+  container.replaceChildren(fragment);
+} catch (error) {
+  app?.destroy();
+  console.error(error);
+}
+```
+
+The container stays in place, and the generated nodes retain their listeners
+and bindings when moved. The mounting step must precede `ready()` so structural
+directives can insert and remove nodes. The same sequence works with JIT and AOT
+generators.
+
+`ready()` returns a cached `Promise<void>` for the initial render, including
+asynchronous bindings and work started by generated children (`g-for`, `g-if`,
+`g-switch`, and `g-is`). It rejects on an initial binding/render error or if the
+instance is destroyed before initialization finishes. It does not trigger a
+refresh or wait for subsequent reactive updates. With `refresh: false`, start
+the initial refresh explicitly before calling `ready()`.
+
 ## JIT vs AOT
 
 | Mode | When to use | Flow |
@@ -91,6 +126,7 @@ Main pieces:
 - `instance.addTo(node)`: mounts rendered nodes.
 - `instance.watch(path, cb)`: subscribes to reactive path changes.
 - `instance.refresh()`: triggers recomputation.
+- `instance.ready()`: waits for initial rendering; mount before awaiting.
 - `instance.destroy()`: removes listeners, bindings, and rendered nodes.
 - `GregisterDirective(name, class)`: register custom directive.
 
