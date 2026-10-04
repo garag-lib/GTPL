@@ -1194,7 +1194,9 @@ async function updateFORbind(
   //---
   const index: any = (Array.isArray(path) && path.length) ? path[0] : undefined;
   //---
-  if (!isNaN(index)) {
+  // Iterator subscriptions carry Symbol.iterator, which cannot be coerced to
+  // a number. Reconcile the full collection for such non-index paths.
+  if (typeof index !== 'symbol' && !isNaN(index)) {
     const ppath: any = path;
     if (type == TypeEventProxyHandler.SET) {
       let update = false;
@@ -1930,8 +1932,14 @@ export class GTpl implements IGtplObject {
     if (this.checkDestroyed('launchChange')) return;
     if (BindTypes.EVENT == bind.type)
       return;
-    const result = await calculateBind(this, bind, value);
+    let result = await calculateBind(this, bind, value);
     if (this.isDestroyed || bind.gtpl?.isDestroyed) return;
+    if (bind.type === BindTypes.FOR) {
+      // Replacing a reactive value may revoke the calculated proxy during the
+      // await. Snapshot raw rows before child cleanup can revoke more proxies.
+      const rows = toRaw(result);
+      if (Array.isArray(rows)) result = Array.from(rows, row => toRaw(row));
+    }
     let gtpl: IGtplObject = this;
     switch (bind.type) {
       case BindTypes.TEXT:

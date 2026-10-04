@@ -57,6 +57,53 @@ function directive(app: GTpl, type: BindTypes, link: any, gen: Function) {
   return mark;
 }
 
+for (const phase of ['initial', 'mounted']) {
+  test(`g-for safely replaces 191 rows with 12 during ${phase} rendering`, async () => {
+    const root = { rows: Array.from({ length: 191 }, (_, index) => ({ label: `old ${index}` })) };
+    const app = new GTpl({ root, generator: (ctx: GTpl) => [
+      directive(ctx, BindTypes.FOR,
+        { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+        (row: GTpl) => [boundText(row, (value: any) => value.label, [['row']])])
+    ] });
+    const fragment = new TestNode(11);
+    app.addTo(fragment as any);
+    try {
+      if (phase === 'mounted') {
+        await app.ready();
+        assert.equal(fragment.childNodes.filter(node => node.nodeType === 3).length, 191);
+      }
+      root.rows = Array.from({ length: 12 }, (_, index) => ({ label: `new ${index}` }));
+      await app.ready();
+      await new Promise(resolve => setImmediate(resolve));
+      assert.deepStrictEqual(fragment.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent),
+        Array.from({ length: 12 }, (_, index) => `new ${index}`));
+      assert.equal(app.GtplChilds.size, 12);
+    } finally {
+      app.destroy();
+    }
+  });
+}
+
+test('g-for accepts mutations reached through an array iterator without coercing Symbol paths', async () => {
+  const root = { rows: [{ label: 'old' }] };
+  const app = new GTpl({ root, generator: (ctx: GTpl) => [
+    directive(ctx, BindTypes.FOR,
+      { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+      (row: GTpl) => [boundText(row, (value: any) => value.label, [['row']])])
+  ] });
+  const fragment = new TestNode(11);
+  app.addTo(fragment as any);
+  // The iterator subscribes the row with a Symbol.iterator path before ready settles.
+  const [row] = root.rows;
+  row.label = 'new';
+  try {
+    await app.ready();
+    assert.deepStrictEqual(fragment.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent), ['new']);
+  } finally {
+    app.destroy();
+  }
+});
+
 test('ready waits for async initial bindings before moving nodes and retaining events', async () => {
   const value = deferred<number>();
   const container = new TestNode();
@@ -179,20 +226,35 @@ test('ready rejects a nested failure even while another initial binding is pendi
   gate.resolve('late result');
 });
 
-test('destroy rejects pending readiness and prevents a late DOM update', async () => {
-  const gate = deferred<string>();
-  let text!: TestNode;
-  const app = new GTpl({ root: {}, generator: (ctx: GTpl) => [
-    text = boundText(ctx, () => gate.promise)
-  ] });
-  app.addTo(new TestNode(11) as any);
-  const ready = app.ready();
-  app.destroy();
-  await assert.rejects(ready, /destroyed before ready/);
-  gate.resolve('late result');
-  await new Promise(resolve => setImmediate(resolve));
-  assert.equal(text.textContent, '');
-});
+for (const destroyedContext of ['caller', 'binding owner']) {
+  test(`destroying the ${destroyedContext} prevents a late DOM update`, async () => {
+    const gate = deferred<string>();
+    const owner = new GTpl({ root: {}, generator: () => [] });
+    let text!: TestNode;
+    const app = new GTpl({ root: {}, generator: (ctx: GTpl) => {
+      text = new TestNode(3);
+      ctx.addBind({ type: BindTypes.TEXT, ele: text, gtpl: owner,
+        link: { formula: { fnc: () => gate.promise } } });
+      return [text];
+    } });
+    const fragment = new TestNode(11);
+    app.addTo(fragment as any);
+    const ready = app.ready();
+    if (destroyedContext === 'caller') {
+      app.destroy();
+      await assert.rejects(ready, /destroyed before ready/);
+    } else {
+      owner.destroy();
+    }
+    gate.resolve('late result');
+    if (destroyedContext === 'binding owner') await ready;
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(text.textContent, '');
+    assert.equal(text.parentNode, destroyedContext === 'caller' ? null : fragment);
+    if (!app.isDestroyed) app.destroy();
+    if (!owner.isDestroyed) owner.destroy();
+  });
+}
 
 test('ready covers an explicit initial refresh but does not wait for later refreshes', async () => {
   let value = Promise.resolve('initial');

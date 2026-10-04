@@ -5,7 +5,23 @@ import { BindTypes, TypeEventProxyHandler } from '../src/GEnums';
 import { GTpl } from '../src/GTpl';
 import { css2obj, style2css } from '../src/GUtils';
 import { GCompile, GCompileSafe } from '../src/GGenerator';
-import { GProxy, unGProxy } from '../src/GProxy';
+import { GProxy, unGProxy, toRaw } from '../src/GProxy';
+
+test('toRaw recovers raw identity after revocation without reviving the proxy', () => {
+  const raw = { nested: { value: 1 } };
+  const owner = {};
+  const event = () => {};
+  const proxy = GProxy(raw, event, owner);
+  const nested = proxy.nested;
+  unGProxy(proxy, event, owner);
+  assert.throws(() => proxy.nested, TypeError);
+  assert.throws(() => nested.value, TypeError);
+  assert.equal(toRaw(proxy), raw);
+  assert.equal(toRaw(nested), raw.nested);
+  for (const value of [null, undefined, 0, 'text', Symbol('value'), () => {}, {}]) {
+    assert.equal(toRaw(value), value);
+  }
+});
 
 test('css2obj parses static and dynamic CSS values', () => {
   const css = "color:red;font-weight:bold;background-image:url('x;y');--my-var:10px";

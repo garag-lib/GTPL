@@ -73,6 +73,9 @@ export const ISPROXY = Symbol('is proxy');
 export const PROXYTARGET = Symbol('proxy target');
 
 const proxyCache = new WeakMap<object, { proxy: any; revoke: () => void }>();
+// Keep raw identity available after revocation for in-flight render results.
+// Weak keys do not retain proxies once callers release them.
+const proxyTargets = new WeakMap<object, object>();
 
 interface ProxySubscription {
   event: EventFunctionProxyHandler;
@@ -298,6 +301,7 @@ export function GProxy<T extends object>(
   const handler = getProxyHandler(target);
   const { proxy, revoke } = Proxy.revocable(target, handler);
   proxyCache.set(target, { proxy, revoke });
+  proxyTargets.set(proxy, target);
   return proxy;
 }
 
@@ -313,8 +317,16 @@ export function unGProxy<T = any>(
 
 export function toRaw<T = any>(obj: T): T {
   let current: any = obj;
-  while (isGProxy(current))
-    current = current[PROXYTARGET];
+  while (isWeakMapKey(current)) {
+    const target = proxyTargets.get(current);
+    if (target) {
+      current = target;
+    } else if (isGProxy(current)) {
+      current = current[PROXYTARGET];
+    } else {
+      break;
+    }
+  }
   return current;
 }
 
