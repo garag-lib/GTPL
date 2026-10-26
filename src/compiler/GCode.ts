@@ -375,20 +375,25 @@ function NodeList2Function(
                     //    parse += ',';
                     parse.addCommaOnly(['[']);
                     //---
+                    // A conditional template must return nodes when invoked. Passing null
+                    // makes its immediate children execute inside its lazy generator.
+                    const conditionalTemplate = ele.nodeName.toLowerCase() == 'template' &&
+                        (bind_is || bind_if || bind_case || bind_for || bind_switch);
                     if (bind_tpl) {
                         const ct: any = (<any>bind_tpl).link.vorc.ct;
                         const tpl = globalObject.document.getElementById(ct);
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
-                            childsnodes = NodeList2Function(childs, real, true, bind_switch, options);
+                            const fragment = ele.nodeName.toLowerCase() == 'template' && !conditionalTemplate;
+                            childsnodes = NodeList2Function(childs, conditionalTemplate || (fragment && real === undefined) ? null : real, !fragment, bind_switch, options);
                         } else {
                             console.error('template ' + ct + ' undefined.');
                         }
                     } else {
                         real = (ele.nodeName.toLowerCase() == 'template') ? (<any>ele).content : ele;
                         childs = (<any>real).childNodes;
-                        childsnodes = NodeList2Function(childs, real, true, bind_switch, options);
+                        childsnodes = NodeList2Function(childs, conditionalTemplate ? null : real, true, bind_switch, options);
                     }
                     //---
                     if (bind_is || bind_if || bind_case || bind_for || bind_switch) {
@@ -443,7 +448,7 @@ function NodeList2Function(
 
                                 common.push({
                                     'var': uuid,
-                                    'gen': childsnodes
+                                    'gen': getFunction(childsnodes, true)
                                 });
 
                             } else {
@@ -459,7 +464,7 @@ function NodeList2Function(
 
                             common.push({
                                 'var': uuid,
-                                'gen': bind_is ? 'null' : (ele.nodeName.toLowerCase() == 'template' ? childsnodes : getFunction(getGen(ele.nodeName, attrs, childsnodes), true))
+                                'gen': bind_is ? 'null' : (ele.nodeName.toLowerCase() == 'template' ? getFunction(childsnodes, true) : getFunction(getGen(ele.nodeName, attrs, childsnodes), true))
                             });
 
                         }
@@ -514,25 +519,17 @@ function NodeList2Function(
                         }
 
                     } else {
-
-                        if (bind_tpl) {
-
-                            if (ele.nodeName.toLowerCase() == 'template') {
-
-                                parse.add(childsnodes);
-
-                            } else {
-
-                                parse.add(getFunction(getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes), parent));
-
-                            }
-
+                        if (bind_tpl && ele.nodeName.toLowerCase() == 'template') {
+                            parse.add(childsnodes);
                         } else {
-
-                            parse.add(getFunction(getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes), parent));
-
+                            const gen = getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes);
+                            // A static leaf needs no child closure. Its enclosing structural
+                            // generator still controls when its DOM and directives are created.
+                            const staticLeaf = !bind_tpl && atributos.every(attr => Array.isArray(attr)) &&
+                                Array.from(ele.childNodes).every(child => child.nodeType === NodeTypes.TEXT_NODE &&
+                                    !(child.nodeValue || '').includes('{{'));
+                            parse.add(staticLeaf ? gen : getFunction(gen, parent));
                         }
-
                     }
                     //---
                 }
