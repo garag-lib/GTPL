@@ -14,7 +14,6 @@ export const branchTitle = (branch, index) =>
   `Vista ${branch} · bloque ${index}`;
 export const branchText = (branch, index) =>
   `Contenido propio de la vista ${branch}, bloque ${index}. Este panel contiene títulos, texto, datos reactivos y opciones. Su árbol solo debe construirse al activarlo.`;
-
 export function heavyHtml(branch, engine = "gtpl") {
   return Array.from(
     { length: BLOCKS },
@@ -23,6 +22,25 @@ export function heavyHtml(branch, engine = "gtpl") {
   ).join("");
 }
 export function methodTemplate(key, engine) {
+  if (engine === "svelte") {
+    const branch = (i) =>
+      `<section class="bench-branch" data-branch="${i}">${heavyHtml(i).replaceAll("{{tick}}", "{state.tick}")}</section>`;
+    if (key.startsWith("switch-")) {
+      const count = Number(key.split("-")[1]);
+      return `<div>${Array.from({ length: count }, (_, i) => `{${i ? ":else if" : "#if"} state.active === ${i}}${branch(i)}`).join("")}{/if}</div>`;
+    }
+    if (key === "if") return `{#if state.visible}${branch(0)}{/if}`;
+    const content = {
+      for: '<article class="method-row" data-key={row.id}><b>{row.label}</b><i>{row.value}</i></article>',
+      styles:
+        '<div class="bench-box" style:background-color={state.theme.backgroundColor} style:color={state.theme.color} style:width={state.theme.width}>Caja</div>',
+      classes: `<div class={'bench-box '+state.className}>Caja</div>`,
+      attributes:
+        '<button class="bench-attr" {...state.attrs}>{state.tick}</button>',
+      forms: '<input class="bench-input" type="text" bind:value={state.text}>',
+    }[key];
+    return `<div>{#each state.${key === "for" ? "rows" : "items"} as row (row.id)}${content}{/each}${key === "forms" ? '<output class="form-output">{state.text}</output>' : ""}</div>`;
+  }
   const isSwitch = key.startsWith("switch-");
   if (isSwitch) {
     const count = Number(key.split("-")[1]);

@@ -74,6 +74,7 @@
               <option value="vue">Vue</option>
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
+              <option value="svelte">Svelte</option>
               <option value="vanilla">JavaScript directo</option></select
             ><span id="engine-a-meta" class="engine-meta"></span
           ></label>
@@ -86,6 +87,7 @@
               <option value="vue">Vue</option>
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
+              <option value="svelte">Svelte</option>
               <option value="gtpl">GTPL · AOT</option>
               <option value="gtpl-jit">GTPL · JIT</option>
               <option value="vanilla">JavaScript directo</option></select
@@ -344,7 +346,7 @@
         </div>
         <p class="section-intro">
           Estado independiente por celda. GTPL usa una instancia; React, estado
-          local; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un
+          local; Svelte, componentes con estado reactivo por celda; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un
           x-data por celda. El mismo bucle aplica el mismo lote aleatorio a
           todos.
         </p>
@@ -460,9 +462,9 @@
             <span>05</span>
             <h3>Versiones y compilación</h3>
             <p>
-              GTPL AOT, Vue y Angular se precompilan; React usa producción; GTPL
+              GTPL AOT, Svelte, Vue y Angular se precompilan; React usa producción; GTPL
               JIT compila al montar y Alpine interpreta HTML. React confirma
-              cambios con flushSync y Angular con detectChanges. Las cifras
+              cambios con flushSync, Svelte también usa flushSync y Angular con detectChanges. Las cifras
               describen estos adaptadores y este dispositivo.
             </p>
           </article>
@@ -502,6 +504,7 @@
               >Angular</a
             >
             · <a href="https://alpinejs.dev/directives/if">Alpine</a>
+            · <a href="https://svelte.dev/docs/svelte/if">Svelte</a>
           </p>
           <p id="environment"></p>
         </div>

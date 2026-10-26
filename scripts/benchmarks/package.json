@@ -6,12 +6,12 @@
     "build": "node build.mjs"
   },
   "dependencies": {
-    "@babel/core": "8.0.9",
     "@angular/common": "22.2.3",
     "@angular/compiler": "22.2.3",
     "@angular/compiler-cli": "22.2.3",
     "@angular/core": "22.2.3",
     "@angular/platform-browser": "22.2.3",
+    "@babel/core": "8.0.9",
     "@vue/compiler-dom": "3.5.44",
     "alpinejs": "3.17.5",
     "esbuild": "0.28.2",
@@ -19,6 +19,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "rxjs": "7.8.2",
+    "svelte": "5.57.3",
     "tslib": "2.8.1",
     "typescript": "6.0.3",
     "vue": "3.5.44"

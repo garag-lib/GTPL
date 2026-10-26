@@ -1,3 +1,8 @@
+import {
+  prepareSvelteState,
+  writeSvelteComponent,
+  svelteImports,
+} from "./svelte-adapters.mjs";
 import { build } from "esbuild";
 import { compile } from "@vue/compiler-dom";
 import { transformAsync } from "@babel/core";
@@ -12,7 +17,6 @@ import path from "node:path";
 import { CASES, templates } from "./templates.mjs";
 import { createGridSources } from "./grid-adapters.mjs";
 import { prepareMethods, bundleMethods } from "./method-adapters.mjs";
-
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const work = path.join(here, "node_modules/.gtpl-build");
@@ -35,7 +39,6 @@ globalThis.window = dom.window;
 globalThis.document = dom.window.document;
 globalThis.DOMParser = dom.window.DOMParser;
 globalThis.Node = dom.window.Node;
-
 await build({
   entryPoints: [path.join(root, "src/compiler/GCode.ts")],
   bundle: true,
@@ -56,7 +59,15 @@ export function createAdapter() {
     destroy() { app?.destroy(); app = state = null; }
   };
 }`;
+await prepareSvelteState(work);
+const svelteView = await writeSvelteComponent(
+  work,
+  "svelte-view",
+  templates.svelte,
+);
 const sources = {
+  svelte: `${svelteImports}import View from '${svelteView}';
+export function createAdapter(){let app,state;return {mount(target,data){state=reactiveState(data);flushSync(()=>{app=mount(View,{target,props:{state}});});},update(tick,active){flushSync(()=>{state.tick=tick;state.active=active;});},destroy(){if(app)flushSync(()=>unmount(app));app=state=null;}};}`,
   gtpl: gAdapter(
     `const generator = ${gCode}; const getGenerator = () => generator;`,
   ),
@@ -103,7 +114,6 @@ export function createAdapter() { let element; return {
 };
 const gridSources = await createGridSources({ root, work, GCode });
 const preparedMethods = await prepareMethods({ root, work, GCode });
-
 // Angular's actual AOT compiler; no runtime compiler or development mode in the bundle.
 await writeFile(
   path.join(work, "angular.ts"),
@@ -148,7 +158,6 @@ execFileSync(
   ],
   { stdio: "inherit" },
 );
-
 const pkg = JSON.parse(await readFile(path.join(here, "package.json"), "utf8"));
 const own = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const manifest = {
@@ -239,6 +248,7 @@ for (const id of [
   }
   const bytes = await readFile(path.join(output, file));
   const dependency = {
+    svelte: "svelte",
     angular: "@angular/core",
     vue: "@vue/compiler-dom",
     alpine: "alpinejs",
@@ -282,6 +292,9 @@ await writeFile(
   JSON.stringify(templates, null, 2) + "\n",
 );
 const runtimePackages = [
+  "svelte",
+  "esm-env",
+  "clsx",
   "@angular/core",
   "@angular/common",
   "@angular/platform-browser",
@@ -301,7 +314,7 @@ let licenses = `GTPL\n${await readFile(path.join(root, "LICENSE"), "utf8")}\n${a
 for (const name of runtimePackages) {
   const directory = path.join(here, "node_modules", name);
   let license;
-  for (const file of ["LICENSE", "LICENSE.txt", "LICENSE.md"]) {
+  for (const file of ["LICENSE", "LICENSE.txt", "LICENSE.md", "license"]) {
     try {
       license = await readFile(path.join(directory, file), "utf8");
       break;

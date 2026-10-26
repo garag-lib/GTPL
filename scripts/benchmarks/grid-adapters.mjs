@@ -1,7 +1,7 @@
+import { writeSvelteComponent, svelteImports } from "./svelte-adapters.mjs";
 import { compile } from "@vue/compiler-dom";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
-
 export async function createGridSources({ root, work, GCode }) {
   const template =
     '<span class="grid-cell" data-cell="{{id}}" data-value="{{value}}">{{value}}</span>';
@@ -14,7 +14,20 @@ export function createAdapter() { let apps=[],models=[]; return {
   update({indices,values}) {for(let i=0;i<indices.length;i++)models[indices[i]].value=values[i];},
   destroy(){for(const app of apps)app.destroy();apps=[];models=[];}
 };}`;
+  const cell = await writeSvelteComponent(
+    work,
+    "grid-svelte-cell",
+    '<span class="grid-cell" data-cell={state.id} data-value={state.value}>{state.value}</span>',
+  );
+  const grid = await writeSvelteComponent(
+    work,
+    "grid-svelte-view",
+    '<div class="bench-grid">{#each state.cells as model (model.id)}<Cell state={model}/>{/each}</div>',
+    `import Cell from '${cell}';`,
+  );
   const sources = {
+    "grid-svelte": `${svelteImports}import View from '${grid}';
+export function createAdapter(){let app,state;return {mount(target,{columns,rows}){state=reactiveState({cells:Array.from({length:columns*rows},(_,id)=>({id,value:0}))});flushSync(()=>{app=mount(View,{target,props:{state}});});},update({indices,values}){flushSync(()=>{for(let i=0;i<indices.length;i++)state.cells[indices[i]].value=values[i];});},destroy(){if(app)flushSync(()=>unmount(app));app=state=null;}};}`,
     "grid-gtpl": gtpl(
       `const generator=${GCode(template)};const getGenerator=()=>generator;`,
     ),

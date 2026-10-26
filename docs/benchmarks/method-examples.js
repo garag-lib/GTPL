@@ -29,6 +29,29 @@ export function methodExample(method, id, cases = 32) {
       : method === "if"
         ? "La misma secuencia en todos los motores: false → true → false → true → false. Entre fases, el ejecutor espera el DOM, solicita layout y valida la vista. Los tiempos miden primera creación, retirada y reentrada; la última retirada permite leer memoria. Las líneas mostradas representan fases separadas."
         : "Extracto del patrón. El adaptador completo, el arranque y las operaciones medidas están enlazados en las fuentes.";
+  if (engine === "svelte") {
+    const svelteBlock = block.replaceAll("{{tick}}", "{state.tick}");
+    const code = {
+      switch: `{#if state.active === 0}\n  <section>\n${svelteBlock}\n  </section>\n{:else if state.active === 1}\n  <section><!-- Otro árbol HTML grande --></section>\n{/if}`,
+      if: `{#if state.visible}\n  <section>\n${svelteBlock}\n  </section>\n{/if}\n\n// Fases separadas, confirmadas por el ejecutor:\nstate.visible = true; // Primera creación\nstate.visible = false; // Retirar\nstate.visible = true; // Reentrada\nstate.visible = false; // Retirada final`,
+      for: `{#each state.rows as row (row.id)}\n  <article><b>{row.label}</b><i>{row.value}</i></article>\n{/each}\n\nstate.rows = [...state.rows, newRow];\nstate.rows = [...state.rows].reverse();`,
+      styles: `<div style:background-color={state.theme.backgroundColor}\n  style:color={state.theme.color}\n  style:width={state.theme.width}>Caja</div>`,
+      classes: `<div class={'bench-box ' + state.className}>Caja</div>\nstate.className = 'tone-b';`,
+      attributes: `<button {...state.attrs}>{state.tick}</button>`,
+      forms: `<input type="text" bind:value={state.text}>\n<output>{state.text}</output>`,
+      grid: `<!-- Cell.svelte: un componente por celda -->\n<script>let { state } = $props();</script>\n<span class="grid-cell" data-value={state.value}>\n  {state.value}\n</span>\n\n// Un modelo reactivo por celda. En cada lote:\nflushSync(() => {\n  for (let i = 0; i < indices.length; i++) {\n    state.cells[indices[i]].value = values[i];\n  }\n});`,
+    }[method];
+    return {
+      code:
+        (method === "grid"
+          ? ""
+          : "<script>\n  let { state } = $props();\n  // El adaptador pasa un objeto creado con $state.\n</script>\n\n") +
+        code,
+      note:
+        memory +
+        " Svelte se precompila en producción con runes; el adaptador confirma el montaje y los cambios con flushSync. El compilador no se descarga en el navegador.",
+    };
+  }
   let code;
   if (method === "switch")
     code = {

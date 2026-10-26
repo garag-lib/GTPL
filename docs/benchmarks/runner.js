@@ -5,6 +5,7 @@ const allowed = [
   "gtpl",
   "gtpl-jit",
   "vue",
+  "svelte",
   "react",
   "angular",
   "alpine",

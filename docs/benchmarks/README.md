@@ -32,7 +32,7 @@ only the chosen pattern and variant.
 
 `method-definitions.mjs` generates native templates and React render functions.
 `method-adapters.mjs` supplies readable adapters and bundles their modules.
-GTPL AOT and Vue templates are precompiled. Angular uses its real AOT compiler,
+GTPL AOT, Svelte and Vue templates are precompiled. Angular uses its real AOT compiler,
 without the runtime compiler or Zone.js. React uses production mode. GTPL JIT
 compiles at mount; Alpine interprets HTML at mount. Dependencies are pinned in
 `scripts/benchmarks/package-lock.json`.
@@ -87,7 +87,7 @@ For takes the median of three operations of each type, resetting the base list
 before each. Styles, classes, attributes and forms measure ten updates, followed
 by rAF cadence for 1.2 seconds. Forms use the prototype's native value setter and
 a bubbling input event to exercise binding. Native wrappers, list semantics and
-inert declarations can differ. React, Vue, Angular and Alpine use keys; GTPL uses
+inert declarations can differ. React, Svelte, Vue, Angular and Alpine use keys; GTPL uses
 its native list directive. Complete order and values are validated.
 
 Charts show medians, with p95 and ranges in the table. JSON schema 2 retains
@@ -174,3 +174,9 @@ Examples are excerpts of the selected pattern. Line counts describe that excerpt
 not a universal measure of programming ease. Complete readable definitions,
 adapters and the executed module are linked on the page. The library lifecycle
 regression checks ownership/destruction of switch/list instances across visits.
+
+## Svelte
+
+Svelte se fija a la versión indicada en `scripts/benchmarks/package.json` y se compila durante el build con `dev: false`, `generate: 'client'` y runes. El compilador no forma parte de los bundles del navegador. Los switch usan cadenas nativas `{#if}/{:else if}` con 8, 32 o 64 árboles explícitos, cada uno con los mismos 128 bloques. Las listas usan claves, los formularios `bind:value` y la cuadrícula un componente por celda.
+
+El adaptador utiliza `mount`, `unmount` y `flushSync` para incluir el trabajo de DOM en cada operación, igual que la confirmación explícita de React/Angular. El ejecutor conserva sus validaciones compartidas de DOM, retirada, actualizaciones y muestras de memoria. Las definiciones HTML de las ramas pueden permanecer cargadas; no se confunden con nodos insertados en la vista. Los tamaños y las dependencias transitivas de cada entrada se registran en el manifest.

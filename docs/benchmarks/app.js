@@ -25,6 +25,7 @@ const engines = {
     name: "React",
     note: "Producción · render confirmado con flushSync",
   },
+  svelte: { name: "Svelte", note: "AOT · runes · DOM confirmado con flushSync" },
   vue: { name: "Vue", note: "Plantilla precompilada · directivas nativas" },
   alpine: {
     name: "Alpine",

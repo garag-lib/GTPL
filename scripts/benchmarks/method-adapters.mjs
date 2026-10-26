@@ -1,3 +1,4 @@
+import { writeSvelteComponent, svelteImports } from "./svelte-adapters.mjs";
 import { compile } from "@vue/compiler-dom";
 import { build } from "esbuild";
 import { transformAsync } from "@babel/core";
@@ -13,7 +14,6 @@ import {
   heavyHtml,
   BLOCKS,
 } from "./method-definitions.mjs";
-
 export async function prepareMethods({ root, work, GCode }) {
   await writeFile(
     path.join(work, "method-state.js"),
@@ -31,6 +31,7 @@ export function input(host,value){const el=host.querySelector('input');Object.ge
       "gtpl-jit",
       "react",
       "vue",
+      "svelte",
       "alpine",
       "vanilla",
     ]) {
@@ -45,6 +46,15 @@ export function createAdapter({size}){let app,host,state=createState(size);funct
       if (id === "vue")
         source = `${stateImport} import {createApp,reactive,nextTick} from 'vue';${compile(methodTemplate(key, "vue"), { mode: "module", prefixIdentifiers: true, hoistStatic: true }).code}
 export function createAdapter({size}){let app,host,state=reactive(createState(size));return {mount(target){host=target;app=createApp({setup:()=>state,render});app.mount(host);},async set(patch){Object.assign(state,patch);await nextTick();},async input(value){input(host,value);await nextTick();},destroy(){app?.unmount();app=host=state=null;}};}`;
+      if (id === "svelte") {
+        const component = await writeSvelteComponent(
+          work,
+          `method-${key}-svelte-view`,
+          methodTemplate(key, "svelte"),
+        );
+        source = `${stateImport}${svelteImports}import View from '${component}';
+export function createAdapter({size}){let app,host,state=reactiveState(createState(size));return {mount(target){host=target;flushSync(()=>{app=mount(View,{target,props:{state}});});},set(patch){flushSync(()=>Object.assign(state,patch));},input(value){flushSync(()=>input(host,value));},destroy(){if(app)flushSync(()=>unmount(app));app=host=state=null;}};}`;
+      }
       if (id === "alpine")
         source = `${stateImport} import Alpine from 'alpinejs';window.Alpine=Alpine;let state;Alpine.data('benchMethod',()=>state);let started=false;
 export function createAdapter({size}){let host,element;state=createState(size);return {mount(target){host=target;Alpine.mutateDom(()=>{host.innerHTML=${JSON.stringify(methodTemplate(key, "alpine"))};});element=host.firstElementChild;if(!started){Alpine.start();started=true;}else Alpine.initTree(element);state=Alpine.$data(element);},set(patch){Object.assign(state,patch);},input(value){input(host,value);},destroy(){if(element){Alpine.destroyTree(element);Alpine.mutateDom(()=>element.remove());}element=host=state=null;}};}`;

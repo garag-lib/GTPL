@@ -196,7 +196,7 @@ export const methodMetrics = [
     "Invertir el orden",
     "ms",
     "lower",
-    "Invertir una lista. React, Vue y Angular conservan claves; GTPL usa su directiva nativa.",
+    "Invertir una lista. React, Svelte, Vue y Angular conservan claves; GTPL usa su directiva nativa.",
   ),
   m(
     "replaceMs",

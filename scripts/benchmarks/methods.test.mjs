@@ -23,9 +23,9 @@ test("method selection keeps switch memory primary and validates its concrete va
     assert.ok(selectedMetrics(key, true).every(Boolean));
 });
 test("large switch branches are explicit trees, not a shared loop", () => {
-  for (const engine of ["gtpl", "vue", "alpine", "angular"]) {
+  for (const engine of ["gtpl", "vue", "alpine", "angular", "svelte"]) {
     const html = methodTemplate("switch-8", engine);
-    assert.doesNotMatch(html, /g-for|v-for|x-for|@for/);
+    assert.doesNotMatch(html, /g-for|v-for|x-for|@for|\{#each/);
     const dom = new JSDOM(html);
     const branches =
       engine === "alpine"
