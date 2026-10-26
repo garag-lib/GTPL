@@ -4,14 +4,14 @@
   "gtplSourceHash": "4b851b9365dacad8ee08145d8e0191bbb138588987cf026b9bcefa3a10141f09",
   "frameworks": {
     "gtpl": {
-      "version": "1.1.7",
+      "version": "1.1.8",
       "file": "benchmarks/vendor/gtpl.js",
       "bytes": 34358,
       "gzipBytes": 9267,
       "sha256": "3a39b10eb0aa7882eba9def0cc32e8aab8f5db54cc2b66bc5804c6480dc4e705"
     },
     "gtpl-jit": {
-      "version": "1.1.7",
+      "version": "1.1.8",
       "file": "benchmarks/vendor/gtpl-jit.js",
       "bytes": 42924,
       "gzipBytes": 13482,
@@ -55,14 +55,14 @@
   },
   "gridFrameworks": {
     "gtpl": {
-      "version": "1.1.7",
+      "version": "1.1.8",
       "file": "benchmarks/vendor/grid-gtpl.js",
       "bytes": 26541,
       "gzipBytes": 8844,
       "sha256": "a02315ffe49592943ccc4434719be8c23cf7c3d4ff9fb5953dec7761f92e8afd"
     },
     "gtpl-jit": {
-      "version": "1.1.7",
+      "version": "1.1.8",
       "file": "benchmarks/vendor/grid-gtpl-jit.js",
       "bytes": 40538,
       "gzipBytes": 13398,
