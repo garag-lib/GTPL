@@ -438,10 +438,11 @@
             <p>
               La API experimental estima todo el entorno relacionado, incluyendo
               el controlador y los iframes. Se calculan diferencias desde un
-              ejecutor vacío y entre fases, manteniendo quieto el controlador
-              durante la muestra. Así se incluye DOM sin atribución individual,
-              con ruido posible por GC y memoria compartida. No es RAM total de
-              Chrome ni atribución exacta por framework.
+              ejecutor vacío y entre fases, manteniendo las gráficas estables
+              durante la muestra y actualizando solo el texto de estado. Así se
+              incluye DOM sin atribución individual, con ruido posible por GC y
+              memoria compartida. No es RAM total de Chrome ni atribución exacta
+              por framework.
             </p>
           </article>
           <article>
@@ -479,8 +480,12 @@
         </div>
         <div class="method-footer">
           <p>
-            La memoria puede tardar minutos. Usa «Activar medición de memoria»
-            en un navegador compatible; también puedes ejecutar
+            Cada lectura puede esperar al navegador. Se muestra la fase y el
+            tiempo transcurrido, con un límite de 30 segundos por lectura. Si no
+            responde, se cierra ese ejecutor y la comparación continúa en uno
+            nuevo sin memoria; los datos faltantes quedan como N/D. Usa «Activar
+            medición de memoria» en un navegador compatible; también puedes
+            ejecutar
             <code>node scripts/benchmarks/serve.mjs --isolated</code>.
           </p>
           <p>

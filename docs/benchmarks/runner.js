@@ -334,7 +334,9 @@ addEventListener("message", async (event) => {
     const result = methodMode
       ? await (
           await import("./method-runner.js")
-        ).runMethod(event.data.config, id, host, status)
+        ).runMethod(event.data.config, id, host, status, (progress) =>
+          send("progress", { progress }),
+        )
       : gridMode
         ? await (
             await import("./grid-runner.js")
@@ -342,7 +344,12 @@ addEventListener("message", async (event) => {
         : await run(event.data.config);
     send("result", { result });
   } catch (error) {
-    send("error", { error: error.message });
+    send("error", {
+      error: error.message,
+      code: error.code,
+      phase: error.phase,
+      timeoutMs: error.timeoutMs,
+    });
   }
 });
 try {

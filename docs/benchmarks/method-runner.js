@@ -1,4 +1,6 @@
 import { methodKey, methodMetrics } from "./method-catalog.js";
+import { readMemory, memoryPhaseCount, MEMORY_TIMEOUT_MS } from "./memory.js";
+export { readMemory } from "./memory.js";
 const BLOCKS = 128;
 const median = (values) => {
   const v = [...values].sort((a, b) => a - b),
@@ -32,30 +34,6 @@ export function domSnapshot(host) {
     inertElements,
     inertBlocks,
   };
-}
-export async function readMemory() {
-  if (
-    !crossOriginIsolated ||
-    typeof performance.measureUserAgentSpecificMemory !== "function"
-  )
-    return null;
-  try {
-    const result = await performance.measureUserAgentSpecificMemory();
-    const exclusive = result.breakdown.filter(
-      (part) =>
-        part.attribution.length &&
-        part.attribution.every((item) => item.url === location.href),
-    );
-    return {
-      totalBytes: result.bytes,
-      exclusiveBytes: exclusive.length
-        ? exclusive.reduce((n, part) => n + part.bytes, 0)
-        : null,
-      breakdown: result.breakdown,
-    };
-  } catch (error) {
-    return { totalBytes: null, error: error.message };
-  }
 }
 function waitFor(host, predicate) {
   if (predicate()) return Promise.resolve();
@@ -192,7 +170,13 @@ function verifySimple(host, method, state, size) {
       );
   }
 }
-export async function runMethod(config, id, host, status) {
+export async function runMethod(
+  config,
+  id,
+  host,
+  status,
+  onProgress = () => {},
+) {
   const method = config.method,
     key = methodKey(method, config.cases),
     size = config.size;
@@ -209,10 +193,26 @@ export async function runMethod(config, id, host, status) {
     operations = {};
   async function record(phase) {
     status.textContent = `${method} · ${phase}${config.memory ? " · leyendo memoria" : ""}`;
-    const dom = domSnapshot(host),
-      memory = config.memory ? await readMemory() : null;
+    const progress = {
+      kind: "memory",
+      phase,
+      index: snapshots.length + 1,
+      total: memoryPhaseCount(config),
+      timeoutMs: MEMORY_TIMEOUT_MS,
+    };
+    if (config.memory) onProgress({ ...progress, reading: true });
+    const dom = domSnapshot(host);
+    let memory = null;
+    if (config.memory)
+      try {
+        memory = await readMemory();
+      } catch (error) {
+        error.phase = phase;
+        throw error;
+      }
     const entry = { phase, dom, memory };
     snapshots.push(entry);
+    if (config.memory) onProgress({ ...progress, reading: false });
     return entry;
   }
   // Import after this baseline so template/code residency is included. The

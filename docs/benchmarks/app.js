@@ -8,6 +8,11 @@ import {
 import { summarize, comparison } from "./stats.js";
 import { gridSizes } from "./grid-workload.js";
 import { renderGridCharts } from "./grid-charts.js";
+import {
+  createMemoryExecutor,
+  memoryPhaseCount,
+  MEMORY_TIMEOUT_MS,
+} from "./memory.js";
 
 const $ = (selector) => document.querySelector(selector);
 const engines = {
@@ -104,6 +109,12 @@ function renderCharts() {
     const av = stats(a, metric.key),
       bv = stats(b, metric.key),
       max = Math.max(Math.abs(av?.median ?? 0), Math.abs(bv?.median ?? 0));
+    const pending = (id) =>
+      !runData ||
+      (running &&
+        !runData.samples[id].length &&
+        (metric.kind !== "memory" ||
+          (runData.config.memory && !runData.memoryWarnings.length)));
     bar(
       card,
       engines[a].name,
@@ -111,18 +122,32 @@ function renderCharts() {
       max,
       metric,
       false,
-      !runData,
+      pending(a),
     );
-    bar(card, engines[b].name, bv?.median ?? null, max, metric, true, !runData);
+    bar(
+      card,
+      engines[b].name,
+      bv?.median ?? null,
+      max,
+      metric,
+      true,
+      pending(b),
+    );
     const foot = element("div", undefined, "metric-footer");
     if (metric.kind === "memory")
       foot.textContent = !runData
         ? "Pendiente · activa memoria para medir MiB"
         : !runData.config.memory
           ? "Memoria desactivada; el DOM sí se verifica."
-          : av || bv
-            ? "Deltas del entorno JS+DOM · puede intervenir el GC"
-            : "API no disponible o lectura fallida.";
+          : runData.memoryWarnings.length
+            ? av || bv
+              ? "Lecturas parciales: API sin respuesta; faltantes como N/D."
+              : "API sin respuesta: RAM N/D; DOM y tiempos verificados."
+            : av || bv
+              ? "Deltas del entorno JS+DOM · puede intervenir el GC"
+              : running
+                ? "Medición en curso; la fase y la espera aparecen en el ejecutor."
+                : "API no disponible o lectura fallida.";
     else if (metric.direction === "none")
       foot.textContent =
         av || bv
@@ -203,7 +228,9 @@ function renderVerdict() {
       ? `Hay ${runData.errors.length} muestra(s) fallida(s) o interrumpida(s). Consulta el JSON para ver el detalle; no se convierten en ceros.`
       : runData.cancelled
         ? "Ejecución detenida. Se conservan las muestras completas."
-        : "Medianas del caso elegido. Código y plantillas residen en memoria; los recuentos distinguen vista activa y contenido inerte. Los deltas de memoria pueden variar por el GC.";
+        : runData.memoryWarnings.length
+          ? "La API de memoria superó el límite de espera. La comparación continuó en ejecutores nuevos sin memoria; las lecturas faltantes son N/D. Consulta el JSON para ver el detalle."
+          : "Medianas del caso elegido. Código y plantillas residen en memoria; los recuentos distinguen vista activa y contenido inerte. Los deltas de memoria pueden variar por el GC.";
 }
 
 function renderSamples() {
@@ -417,6 +444,11 @@ function renderPair() {
     retention: String($("#retention").checked),
   });
   $("#memory-mode").href = "benchmarks/isolated.html?" + query;
+  if (memorySupported)
+    $("#memory-help").textContent =
+      method() === "grid"
+        ? "El grid no mide memoria."
+        : `${Number($("#samples").value) * 2 * memoryPhaseCount({ method: method(), retention: $("#retention").checked })} lecturas de memoria en total. Cada lectura puede esperar al navegador; límite de ${MEMORY_TIMEOUT_MS / 1000} s. Se mostrará la fase y el tiempo de espera. JS+DOM, no RAM total de Chrome.`;
   renderCharts();
 }
 function setRunning(value) {
@@ -428,14 +460,16 @@ function setRunning(value) {
   $("#stop").disabled = !value;
   $("#export-json").disabled = $("#export-csv").disabled = value || !runData;
 }
-function execute(id, config, signal) {
+function execute(id, config, signal, onProgress) {
   return new Promise((resolve, reject) => {
     const iframe = document.createElement("iframe");
     const token = crypto.randomUUID();
     iframe.title = `Benchmark real de ${engines[id].name}`;
     iframe.src = `benchmarks/runner.html?engine=${id}&token=${token}&mode=${config.mode === "grid" ? "grid" : "method"}`;
+    let heartbeat;
     const cleanup = () => {
       clearTimeout(timeout);
+      clearInterval(heartbeat);
       removeEventListener("message", receive);
       signal.removeEventListener("abort", abort);
       iframe.remove();
@@ -464,7 +498,23 @@ function execute(id, config, signal) {
           location.origin,
         );
       if (event.data.type === "result") finish(null, event.data.result);
-      if (event.data.type === "error") finish(new Error(event.data.error));
+      if (event.data.type === "progress" && onProgress) {
+        clearInterval(heartbeat);
+        const progress = event.data.progress,
+          started = performance.now();
+        const update = () =>
+          onProgress({ ...progress, waitedMs: performance.now() - started });
+        update();
+        if (progress.reading) heartbeat = setInterval(update, 1000);
+      }
+      if (event.data.type === "error")
+        finish(
+          Object.assign(new Error(event.data.error), {
+            code: event.data.code,
+            phase: event.data.phase,
+            timeoutMs: event.data.timeoutMs,
+          }),
+        );
     };
     addEventListener("message", receive);
     signal.addEventListener("abort", abort, { once: true });
@@ -533,6 +583,7 @@ async function start() {
     },
     samples: { [a]: [], [b]: [] },
     errors: [],
+    memoryWarnings: [],
     order: [],
     cancelled: false,
   };
@@ -550,6 +601,9 @@ async function start() {
   };
   let done = 0;
   const failed = new Set();
+  const executeSample = createMemoryExecutor(execute, (warning) =>
+    runData.memoryWarnings.push({ ...warning, round: Math.floor(done / 2) }),
+  );
   renderCharts();
   try {
     for (let round = 0; round < config.count; round++) {
@@ -567,10 +621,25 @@ async function start() {
             throw new Error(
               "Motor omitido tras un fallo anterior en esta ejecución.",
             );
-          const result = await execute(
+          const result = await executeSample(
             id,
             { ...config, mode: method() === "grid" ? "grid" : "method" },
             controller.signal,
+            (progress) => {
+              const prefix = `${engines[id].name} · muestra ${round + 1} de ${config.count}`;
+              if (progress.kind === "memory-fallback") {
+                $("#progress").value = done;
+                $("#status").textContent =
+                  `${prefix} · API de memoria sin respuesta; ejecutando sin RAM (N/D).`;
+              } else {
+                $("#progress").value =
+                  done +
+                  (progress.index - (progress.reading ? 1 : 0)) /
+                    progress.total;
+                $("#status").textContent =
+                  `${prefix} · memoria ${progress.index}/${progress.total}: ${progress.phase} · ${progress.reading ? `esperando ${Math.floor(progress.waitedMs / 1000)} s (límite ${progress.timeoutMs / 1000} s)` : "lectura terminada"}`;
+              }
+            },
           );
           if (
             !result.validated ||
@@ -593,7 +662,9 @@ async function start() {
     const errors = runData.errors.length;
     $("#status").textContent = errors
       ? `Finalizado con ${errors} muestra(s) fallida(s). Exporta el JSON para ver el detalle.`
-      : "Comparación terminada. Todas las muestras se han validado.";
+      : runData.memoryWarnings.length
+        ? "Comparación terminada y validada. La API de memoria no respondió; lecturas faltantes como N/D."
+        : "Comparación terminada. Todas las muestras se han validado.";
   } catch (error) {
     runData.cancelled = true;
     $("#status").textContent =
@@ -658,6 +729,11 @@ function download(format) {
       ]);
     for (const id of runData.engines)
       for (const sample of runData.samples[id]) {
+        if (sample.result.memoryStatus) {
+          const info = sample.result.memoryStatus;
+          push(id, sample, "memory.status", info.state, "estado", info.phase);
+          push(id, sample, "memory.reason", info.message, "texto", info.phase);
+        }
         for (const metric of selectedMetrics(runData.config.method, true))
           push(
             id,

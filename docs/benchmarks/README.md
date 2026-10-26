@@ -113,7 +113,7 @@ node scripts/benchmarks/serve.mjs --isolated
 Snapshots record the empty runner before import, mounted initial state, active
 view and optionally removed view. Charts use differences of the API's total
 environment bytes, including JS and DOM. The parent holds charts/results stable
-throughout each sample. This includes shared/unattributed DOM costs missed by an
+throughout each sample; only the progress status text changes. This includes shared/unattributed DOM costs missed by an
 iframe-URL-only sum. It is an experimental estimate, not exact framework
 attribution or Chrome process RAM. Shared memory and uncontrolled GC introduce
 noise; negative deltas remain visible and memory is never ranked as a winner.
@@ -124,6 +124,19 @@ active minus definitions estimates activation; active minus baseline estimates
 their combined cost. Retired minus initial can show caches/retention but does not
 prove a leak. API calls may wait tens of seconds and a sample may take minutes.
 Memory reads are outside timed operations. The grid does not measure memory.
+
+The UI reports the current memory phase, completed phase count and elapsed wait.
+Each read has a 30-second deadline. If it expires, the pending browser request
+cannot be cancelled, so its iframe is removed and that sample is run again in a
+fresh iframe without memory. Remaining samples in the same comparison also skip
+memory to avoid repeated waits. DOM and timings must still validate; missing RAM
+stays N/D. A new comparison retries the memory API. JSON records `memoryWarnings`
+and per-sample `memoryStatus`; CSV includes status and reason rows. Ordinary DOM
+errors remain failures, and Stop never triggers a retry.
+
+Chromium may wait for garbage collection before resolving a measurement; several
+sequential snapshots can legitimately take minutes. See the browser's
+[measurement timing documentation](https://web.dev/articles/monitor-total-page-memory-usage#local_testing).
 
 ## Growing grid
 
