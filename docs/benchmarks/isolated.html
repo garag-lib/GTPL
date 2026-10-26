@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GTPL · Activar medición de memoria</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <style>
+      body {
+        margin: 40px auto;
+        padding: 24px;
+        max-width: 620px;
+        background: #f0f3ed;
+        color: #17291f;
+        font:
+          16px/1.7 system-ui,
+          sans-serif;
+      }
+      h1 {
+        font-size: 28px;
+        line-height: 1.25;
+      }
+      code {
+        font-size: 13px;
+      }
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Preparando la medición de memoria</h1>
+    <p id="isolation-status" role="status">
+      Activando el aislamiento necesario. El navegador volverá al laboratorio
+      con la medición habilitada.
+    </p>
+    <p>
+      Este modo usa un service worker limitado a la carpeta de benchmarks.
+      Consulta los recursos en la red en cada ejecución; no guarda resultados ni
+      contenido para uso sin conexión.
+    </p>
+    <p>
+      Si el navegador no lo permite, ejecuta
+      <code>node scripts/benchmarks/serve.mjs --isolated</code> desde el
+      repositorio.
+    </p>
+    <a href="../benchmarks.html">← Volver al modo normal</a>
+    <script type="module" src="isolation.js"></script>
+  </body>
+</html>

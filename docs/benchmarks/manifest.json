@@ -1,21 +1,21 @@
 {
   "schema": 1,
   "cases": 12,
-  "gtplSourceHash": "b6c1916bed26f70246a37fe18c337cbe56f9d534c3c658e9911187a66099c3df",
+  "gtplSourceHash": "4b851b9365dacad8ee08145d8e0191bbb138588987cf026b9bcefa3a10141f09",
   "frameworks": {
     "gtpl": {
       "version": "1.1.7",
       "file": "benchmarks/vendor/gtpl.js",
-      "bytes": 34149,
-      "gzipBytes": 9170,
-      "sha256": "a02d31b85a14e0a19cf62b0b0083046c1e2889a0b701a460b548a664290c13ec"
+      "bytes": 34358,
+      "gzipBytes": 9267,
+      "sha256": "3a39b10eb0aa7882eba9def0cc32e8aab8f5db54cc2b66bc5804c6480dc4e705"
     },
     "gtpl-jit": {
       "version": "1.1.7",
       "file": "benchmarks/vendor/gtpl-jit.js",
-      "bytes": 42717,
-      "gzipBytes": 13398,
-      "sha256": "2f6ab36d5fab259caeedf15120883e2ad3ef1c6496c0a8ffd3389a98c9fb896c"
+      "bytes": 42924,
+      "gzipBytes": 13482,
+      "sha256": "62214ede08fa2db689a1873fd324399cd1ad3726379428548f1f1c7d4a30efc4"
     },
     "vue": {
       "version": "3.5.44",

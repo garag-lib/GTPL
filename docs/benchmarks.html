@@ -170,6 +170,11 @@
             <small id="memory-help">Comprobando compatibilidad…</small></span
           ></label
         >
+        <p class="memory-activation">
+          <a id="memory-mode" class="secondary" href="benchmarks/isolated.html"
+            >Activar medición de memoria ↗</a
+          >
+        </p>
         <div class="action-row">
           <button class="primary" id="run" disabled>
             <span aria-hidden="true">▶</span> Ejecutar comparación</button
@@ -249,6 +254,10 @@
                 <option value="switchRevisitMs">Switch · revisita</option>
                 <option value="fps">FPS</option>
                 <option value="memoryBytes">Memoria atribuida</option>
+                <option value="memoryMountedBytes">Memoria montada</option>
+                <option value="memoryGrowthBytes">
+                  Memoria tras revisitas
+                </option>
               </select>
             </div>
             <p class="subtle">
@@ -429,18 +438,19 @@
             <p>
               Se usa <code>measureUserAgentSpecificMemory</code> cuando existe y
               hay aislamiento de origen. Solo se suman bloques atribuidos
-              exclusivamente al iframe; se muestra el delta desde después del
-              calentamiento hasta después del montaje. Excluye memoria
-              compartida y no atribuida. El GC no está controlado; el delta
-              puede ser negativo. No equivale a RAM total ni permite declarar un
-              ganador.
+              exclusivamente al iframe; se muestran la memoria de la vista
+              montada, el delta desde el calentamiento y el cambio tras las
+              revisitas. Excluye memoria compartida y no atribuida. El GC no
+              está controlado; el delta puede ser negativo. No equivale a RAM
+              total ni permite declarar un ganador.
             </p>
           </article>
         </div>
         <div class="method-footer">
           <p>
-            En GitHub Pages, la memoria normalmente aparecerá como N/D. Para
-            probarla en un entorno local aislado:
+            Usa «Activar medición de memoria» para abrir el laboratorio aislado,
+            también en GitHub Pages, en navegadores compatibles. Puedes usar el
+            servidor local:
             <code>node scripts/benchmarks/serve.mjs --isolated</code>. Puede
             tardar bastante más.
             <a

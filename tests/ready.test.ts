@@ -57,6 +57,44 @@ function directive(app: GTpl, type: BindTypes, link: any, gen: Function) {
   return mark;
 }
 
+test('a rendered child owns inherited g-for rows and releases ancestor bindings', async () => {
+  const root = { rows: [{}, {}, {}, {}], tick: 0 };
+  const parent = new GTpl({ root, generator: () => [] });
+  const host = new TestNode(11);
+  try {
+    for (let visit = 0; visit < 4; visit++) {
+      const texts: TestNode[] = [];
+      const branch = new GTpl({ parent, generator: (ctx: GTpl) => [
+        directive(ctx, BindTypes.FOR,
+          { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+          (row: GTpl) => {
+            const text = boundText(row, (tick: number) => String(tick), [['tick']]);
+            texts.push(text);
+            return [text];
+          })
+      ] });
+      parent.GtplChilds.add(branch);
+      branch.addTo(host as any);
+      root.tick = visit;
+      await new Promise(resolve => setImmediate(resolve));
+      assert.equal(parent.GtplChilds.size, 1, 'rows belong to their rendered branch');
+      assert.equal(branch.GtplChilds.size, 4);
+      assert.equal(parent.BindTree.tick.me.size, 4);
+      const rows = [...branch.GtplChilds];
+      branch.destroy();
+      parent.GtplChilds.delete(branch);
+      assert.ok(rows.every(row => row.isDestroyed));
+      assert.equal(parent.BindTree.tick.me.size, 0, 'inactive rows release ancestor bindings');
+      root.tick = 100 + visit;
+      await new Promise(resolve => setImmediate(resolve));
+      assert.deepStrictEqual(texts.map(text => text.textContent), Array(4).fill(String(visit)));
+      assert.equal(host.childNodes.length, 0);
+    }
+  } finally {
+    parent.destroy();
+  }
+});
+
 for (const phase of ['initial', 'mounted']) {
   test(`g-for safely replaces 191 rows with 12 during ${phase} rendering`, async () => {
     const root = { rows: Array.from({ length: 191 }, (_, index) => ({ label: `old ${index}` })) };

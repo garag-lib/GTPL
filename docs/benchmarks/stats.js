@@ -93,6 +93,32 @@ export const metrics = [
     note: "Cadencia de rAF sin carga, antes de cada animación.",
     scenario: "frames",
   },
+  {
+    key: "memoryMountedBytes",
+    title: "Memoria de la vista montada",
+    unit: "MiB",
+    direction: "none",
+    note: "Memoria atribuida exclusivamente al ejecutor, incluido su runtime. No es la RAM total del proceso.",
+    scenario: "memory",
+  },
+  {
+    key: "memoryAfterSwitchBytes",
+    title: "Memoria después del switch",
+    unit: "MiB",
+    direction: "none",
+    note: "Memoria exclusiva después de 11 primeras visitas y 12 revisitas.",
+    scenario: "memory",
+    needsSwitch: true,
+  },
+  {
+    key: "memoryGrowthBytes",
+    title: "Δ memoria tras revisitas",
+    unit: "MiB",
+    direction: "none",
+    note: "Cambio tras recorrer las 12 ramas dos veces. Incluye cachés y variación del GC; crecer no demuestra una fuga.",
+    scenario: "memory",
+    needsSwitch: true,
+  },
 ];
 
 export function comparison(a, b, metric) {

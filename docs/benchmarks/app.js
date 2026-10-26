@@ -72,7 +72,20 @@ function bar(container, label, value, max, metric, rival, pending = false) {
 function renderCharts() {
   const [a, b] = pair();
   $("#charts").replaceChildren();
-  for (const metric of metrics.slice(0, 6)) {
+  const chartKeys = [
+    "mountMs",
+    "updateMs",
+    "switchFirstMs",
+    "switchRevisitMs",
+    "fps",
+    "memoryBytes",
+    "frameP95Ms",
+    "memoryMountedBytes",
+    "memoryGrowthBytes",
+  ];
+  for (const metric of metrics.filter((metric) =>
+    chartKeys.includes(metric.key),
+  )) {
     const card = element("article", undefined, "chart-card");
     const header = element("header");
     header.append(
@@ -103,10 +116,22 @@ function renderCharts() {
     bar(card, engines[b].name, bv?.median ?? null, max, metric, true, !runData);
     const footer = element("div", undefined, "metric-footer");
     if (metric.direction === "none") {
-      footer.textContent =
-        av || bv
-          ? "Delta firmado · barra = magnitud · sin clasificación"
-          : "Requiere API de memoria + aislamiento de origen";
+      if (!memorySupported)
+        footer.textContent =
+          "Activa el modo de memoria en un navegador compatible.";
+      else if (!runData) footer.textContent = "Pendiente de medición";
+      else if (!runData.config.memory)
+        footer.textContent = "Medición de memoria desactivada";
+      else if (
+        metric.needsSwitch &&
+        !runData.config.scenarios.includes("switch")
+      )
+        footer.textContent = "Selecciona también el escenario Switch lazy.";
+      else
+        footer.textContent =
+          av || bv
+            ? "Experimental · valores firmados · sin clasificación"
+            : "N/D: memoria no atribuida por el navegador.";
     } else if (!runData) footer.textContent = "Pendiente de medición";
     else if (!runData.config.scenarios.includes(metric.scenario))
       footer.textContent = "Escenario no seleccionado";
@@ -595,9 +620,23 @@ const memorySupported =
   crossOriginIsolated &&
   typeof performance.measureUserAgentSpecificMemory === "function";
 $("#memory").disabled = !memorySupported;
+$("#memory-mode").hidden = memorySupported;
+$("#memory-mode").parentElement.hidden = crossOriginIsolated;
+if (
+  memorySupported &&
+  new URLSearchParams(location.search).get("memory") === "1"
+) {
+  $("#memory").checked = true;
+  $("#samples").value = "3";
+}
 $("#memory-help").textContent = memorySupported
-  ? "API experimental disponible. Cada muestra puede tardar hasta un minuto más; no mide la RAM total."
-  : "N/D aquí. Requiere un navegador compatible y un servidor con COOP/COEP; GitHub Pages no los activa por defecto.";
+  ? "Modo de memoria activo. Mide la vista montada y el cambio tras revisitas. Puede añadir un minuto por muestra; excluye memoria compartida y RAM del proceso."
+  : crossOriginIsolated
+    ? "Aislamiento activo, pero este navegador no ofrece la API de memoria. Usa una versión compatible de Chrome o Edge."
+    : "Abre el modo de memoria para habilitar esta API en Chrome o Edge compatibles, también en GitHub Pages.";
+// Isolated pages supply an asset base; fragment links still target this page.
+for (const link of document.querySelectorAll('a[href^="#"]'))
+  link.href = new URL(link.getAttribute("href"), location.href).href;
 $("#environment").textContent =
   `${navigator.userAgent} · ${navigator.hardwareConcurrency ?? "?"} hilos · ${innerWidth} × ${innerHeight} px · DPR ${devicePixelRatio} · aislamiento: ${crossOriginIsolated ? "sí" : "no"}`;
 $("#run").addEventListener("click", start);

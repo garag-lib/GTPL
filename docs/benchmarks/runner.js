@@ -167,6 +167,7 @@ async function run(config) {
   host.replaceChildren();
   adapter = null;
   await pause();
+  if (collectMemory) status.textContent = "Memoria · base antes del montaje";
   const baseline = collectMemory ? await memory() : null;
   adapter = createAdapter();
   const values = {
@@ -185,7 +186,9 @@ async function run(config) {
       0,
     );
     const nodes = domCount();
+    if (collectMemory) status.textContent = "Memoria · vista montada";
     const mountedMemory = collectMemory ? await memory() : null;
+    let afterSwitchMemory = null;
     let tick = 0,
       active = 0;
     if (scenarios.includes("update")) {
@@ -214,6 +217,10 @@ async function run(config) {
         await pause();
       }
       active = 11;
+      if (collectMemory) {
+        status.textContent = "Memoria · después de las revisitas del switch";
+        afterSwitchMemory = await memory();
+      }
     }
     let fps = null,
       frameP95Ms = null,
@@ -285,11 +292,19 @@ async function run(config) {
           Number.isFinite(mountedMemory?.bytes)
             ? mountedMemory.bytes - baseline.bytes
             : null,
+        memoryMountedBytes: mountedMemory?.bytes ?? null,
+        memoryAfterSwitchBytes: afterSwitchMemory?.bytes ?? null,
+        memoryGrowthBytes:
+          Number.isFinite(afterSwitchMemory?.bytes) &&
+          Number.isFinite(mountedMemory?.bytes)
+            ? afterSwitchMemory.bytes - mountedMemory.bytes
+            : null,
       },
       raw: values,
       memory: {
         baseline,
         mounted: mountedMemory,
+        afterSwitch: afterSwitchMemory,
         method: "exclusive-url-attribution",
         gcControlled: false,
       },

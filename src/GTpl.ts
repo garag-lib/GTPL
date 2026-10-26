@@ -796,7 +796,7 @@ function removeElements(elements: any) {
       }
     }
     if (elements.destroy) {
-      elements.destroy(true);
+      if (!elements.isDestroyed) elements.destroy(true);
     } else {
       elements.parentNode?.removeChild(elements);
     }
@@ -1178,6 +1178,10 @@ async function updateFORbind(
 ) {
   //console.log('FOR', type, bind, result, path);
   //---
+  // Data can come from an ancestor while the generated rows belong to the
+  // rendering component. Keep that ownership so removing a switch branch also
+  // destroys its rows and unregisters their bindings from ancestor contexts.
+  const owner = bind.gtpl || gtpl;
   gtpl = getContext(gtpl, bind);
   //---
   //if (!searchBind(gtpl, bind)) {
@@ -1278,7 +1282,7 @@ async function updateFORbind(
     delete_arr.forEach((rowinfo: any) => {
       const [newgtpl, index] = rowinfo;
       newgtpl.destroy();
-      gtpl.GtplChilds.delete(newgtpl);
+      owner.GtplChilds.delete(newgtpl);
     });
   }
   //---
@@ -1295,7 +1299,7 @@ async function updateFORbind(
     render_arr.forEach((rowinfo: any) => {
       const [newgtpl, index] = rowinfo;
       newgtpl.addTo(all);
-      gtpl.GtplChilds.add(newgtpl);
+      owner.GtplChilds.add(newgtpl);
     });
     //---
     if (bind.mark.parentNode) {
@@ -1332,6 +1336,7 @@ async function updateSWITCHbind(
 ) {
   //log('SWITCH', bind, result, path);
   //---
+  const owner = bind.gtpl || gtpl;
   gtpl = getContext(gtpl, bind);
   //---
   const bresult = result !== undefined && result !== null ? true : false;
@@ -1360,7 +1365,7 @@ async function updateSWITCHbind(
       bind.eles.forEach((gtplcase: IGtplObject) => {
         hide((<any>gtplcase).refCase);
         gtplcase.destroy();
-        gtpl.GtplChilds.delete(gtplcase);
+        owner.GtplChilds.delete(gtplcase);
       });
       delete bind.eles;
     }
@@ -1402,7 +1407,7 @@ async function updateSWITCHbind(
           ca.ele = gtplcase.Elements;
           ca.eles = [gtplcase];
           (<any>gtplcase).refCase = ca;
-          gtpl.GtplChilds.add(gtplcase);
+          owner.GtplChilds.add(gtplcase);
           //console.error('GtplChilds', gtpl.GtplChilds.size);
           bind.eles = ca.eles;
           break;
@@ -1432,6 +1437,7 @@ async function updateISbind(
 ) {
   //log('IS', bind, result, path);
   //---
+  const owner = bind.gtpl || gtpl;
   gtpl = getContext(gtpl, bind);
   //---
   const bresult = result !== undefined && result !== null ? true : false;
@@ -1445,7 +1451,7 @@ async function updateISbind(
   if (bind.eles) {
     check = true;
     bind.eles[0].destroy();
-    gtpl.GtplChilds.delete(bind.eles[0]);
+    owner.GtplChilds.delete(bind.eles[0]);
     delete bind.eles;
   } else if (bind.ele) {
     hide(bind);
@@ -1472,7 +1478,7 @@ async function updateISbind(
       gen: result,
     });
     bind.eles = [newgtpl];
-    gtpl.GtplChilds.add(newgtpl);
+    owner.GtplChilds.add(newgtpl);
     bind.ele = newgtpl.Elements;
   } else {
     const val = toRaw(result);
@@ -1667,7 +1673,9 @@ export class GTpl implements IGtplObject {
 
     this.isDestroyed = true;
 
-    this.GtplChilds.forEach(child => child.destroy(false));
+    // A child can render outside its original insertion marker (g-is/switch).
+    // Dispose its rendered roots before clearing its element references.
+    this.GtplChilds.forEach(child => child.destroy(elements));
 
     this.GtplChilds.clear();
 
@@ -1679,6 +1687,15 @@ export class GTpl implements IGtplObject {
     }
 
     const localBinds = new Set<IBindObject>();
+    const renderedRoots = new Set<any>();
+    const rememberRenderedRoot = (bind: IBindObject) => {
+      if (!elements || (bind.gtpl && bind.gtpl !== this)) return;
+      if (
+        bind.ele &&
+        (bind.type === BindTypes.IF || bind.type === BindTypes.NOTIF ||
+          bind.type === BindTypes.SWITCH || bind.type === BindTypes.IS)
+      ) renderedRoots.add(bind.ele);
+    };
     if (this.BindTree) {
       Object.keys(this.BindTree).forEach((key) => {
         collectBindsFromTree(this.BindTree[key], localBinds);
@@ -1688,11 +1705,13 @@ export class GTpl implements IGtplObject {
       this.BindConst.forEach((bind) => localBinds.add(bind));
     }
     localBinds.forEach((bind) => {
+      rememberRenderedRoot(bind);
       delBind(this, bind);
     });
 
     if (this.BindMap) {
       for (const [bind, ctxgtpl] of this.BindMap) {
+        rememberRenderedRoot(bind);
         delBind(ctxgtpl, bind);
       }
       this.BindMap.clear();
@@ -1700,6 +1719,9 @@ export class GTpl implements IGtplObject {
 
     if (elements) {
       removeElements(this.Elements);
+      // Inherited structural bindings live in an ancestor's bind tree, so
+      // their inserted roots may not appear in this instance's Elements list.
+      renderedRoots.forEach(root => removeElements(root));
       if (this.RenderElements) {
         const entries = Array.isArray(this.Elements) ? this.Elements.length : 1;
         for (let index = 0; index < entries; index++) {

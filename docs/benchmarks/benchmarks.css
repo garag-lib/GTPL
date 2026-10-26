@@ -454,6 +454,15 @@ input[type="checkbox"] {
   display: block;
   margin-top: 3px;
 }
+.memory-activation {
+  margin: -10px 0 24px;
+}
+.memory-activation a {
+  text-decoration: none;
+}
+.memory-activation[hidden] {
+  display: none;
+}
 .action-row {
   display: flex;
   gap: 9px;

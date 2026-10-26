@@ -20,6 +20,7 @@ The build dependencies are separate from the library's dependencies.
 npm ci --prefix scripts/benchmarks
 node scripts/benchmarks/build.mjs
 node --test scripts/benchmarks/stats.test.mjs
+node --test scripts/benchmarks/lifecycle.test.mjs
 ```
 
 Commit the regenerated `vendor/`, `manifest.json`, `templates.json`, and the build
@@ -67,19 +68,27 @@ fixed by `scripts/benchmarks/package-lock.json`.
 
 ## Memory
 
-GitHub Pages normally cannot provide the cross-origin isolation required by
-`performance.measureUserAgentSpecificMemory`. Memory is **N/D** when unavailable,
-and it is opt-in even when supported. For a compatible browser locally:
+Click **Activar medición de memoria** to open the isolated lab, including on
+GitHub Pages. `isolated.html` opts into a first-party service worker scoped only
+to `benchmarks/`. It fetches resources from the network, adds COOP/COEP headers,
+and opens `lab.html`, generated from the same benchmark HTML with a corrected
+asset base (including a fallback for hard refreshes). It does not cache files or results and leaves the documentation
+outside its scope unchanged. HTTPS (or localhost) and a compatible browser are
+required. Unsupported memory APIs remain explicitly **N/D**.
+
+For a compatible browser locally, headers can also be supplied directly:
 
 ```sh
 node scripts/benchmarks/serve.mjs --isolated
 ```
 
-The runner records the delta between after warm-up and after measured mount.
+The runner records snapshots after warm-up, after mount and after switch revisits.
+Charts show memory attributed to the mounted view (including its runtime),
+the change from warm-up, and growth after 23 branch changes.
 It sums only entries whose attributions all point to that runner's exact URL;
 shared/unattributed entries and the parent page are excluded. This is attributed
 memory, not total RAM or retained memory. GC is not controlled, and negative
-deltas are kept. Two measurements may add a minute or more per sample. They run
+deltas are kept. Three measurements may add a minute or more per sample. They run
 outside the timing window. There is deliberately no memory winner or global score.
 
 ## Check a release
@@ -92,6 +101,10 @@ outside the timing window. There is deliberately no memory winner or global scor
 4. Inspect desktop and 390px mobile widths. Controls, code and charts must fit.
 5. In an isolated compatible browser, enable memory and confirm attributed
    measurements or explicit N/D; never substitute shared heap estimates.
+
+The lifecycle regression test runs the real compiler and DOM in jsdom. It checks
+that switch branches own their loop rows and release their inherited bindings
+across repeated visits, preventing work and retained memory from accumulating.
 
 Code snippets are illustrative three-state examples, include setup and updates,
 and omit tool configuration. Line counts describe those snippets, not a universal
