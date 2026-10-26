@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
         run: npm install
@@ -29,8 +29,16 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Install and test benchmark tooling
+        run: |
+          npm ci --prefix scripts/benchmarks --no-audit --no-fund
+          node --test scripts/benchmarks/*.test.mjs
+
       - name: Build dist
         run: npm run build
+
+      - name: Build benchmark bundles
+        run: node scripts/benchmarks/build.mjs
 
       - name: Package dist artifacts
         id: package

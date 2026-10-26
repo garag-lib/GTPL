@@ -1,5 +1,7 @@
 import { examples } from "./examples.js";
 import { metrics, summarize, comparison } from "./stats.js";
+import { gridSizes } from "./grid-workload.js";
+import { renderGridCharts } from "./grid-charts.js";
 
 const $ = (selector) => document.querySelector(selector);
 const engines = {
@@ -116,7 +118,9 @@ function renderCharts() {
     bar(card, engines[b].name, bv?.median ?? null, max, metric, true, !runData);
     const footer = element("div", undefined, "metric-footer");
     if (metric.direction === "none") {
-      if (!memorySupported)
+      if (runData && !runData.config.scenarios.some((s) => s !== "grid"))
+        footer.textContent = "La memoria se mide en las pruebas de ramas.";
+      else if (!memorySupported)
         footer.textContent =
           "Activa el modo de memoria en un navegador compatible.";
       else if (!runData) footer.textContent = "Pendiente de medición";
@@ -196,6 +200,7 @@ function renderCharts() {
   }
   renderSamples();
   renderVerdict();
+  renderGridCharts({ runData, engines, pair: pair() });
 }
 
 function renderVerdict() {
@@ -400,7 +405,7 @@ function execute(id, config, signal) {
     const iframe = document.createElement("iframe");
     const token = crypto.randomUUID();
     iframe.title = `Benchmark real de ${engines[id].name}`;
-    iframe.src = `benchmarks/runner.html?engine=${id}&token=${token}`;
+    iframe.src = `benchmarks/runner.html?engine=${id}&token=${token}${config.mode === "grid" ? "&mode=grid" : ""}`;
     const cleanup = () => {
       clearTimeout(timeout);
       removeEventListener("message", receive);
@@ -462,7 +467,24 @@ async function start() {
     count: Number($("#samples").value),
     scenarios,
     memory: $("#memory").checked,
+    grid: {
+      columns: Number($("#grid-columns").value),
+      rows: Number($("#grid-rows").value),
+      step: Number($("#grid-step").value),
+      levels: Number($("#grid-levels").value),
+      percent: Number($("#grid-percent").value),
+      durationMs: Number($("#grid-duration").value),
+      seed: 42,
+    },
   };
+  if (scenarios.includes("grid")) {
+    try {
+      gridSizes(config.grid);
+    } catch (error) {
+      $("#status").textContent = error.message;
+      return;
+    }
+  }
   const first = crypto.getRandomValues(new Uint8Array(1))[0] % 2;
   runData = {
     schema: 1,
@@ -519,7 +541,39 @@ async function start() {
             throw new Error(
               "Motor omitido tras un fallo anterior en esta ejecución.",
             );
-          const result = await execute(id, config, controller.signal);
+          const classicScenarios = config.scenarios.filter((s) => s !== "grid");
+          const result = classicScenarios.length
+            ? await execute(
+                id,
+                { ...config, scenarios: classicScenarios },
+                controller.signal,
+              )
+            : {
+                metrics: Object.fromEntries(metrics.map((m) => [m.key, null])),
+                raw: { frameIntervals: [] },
+                validated: true,
+              };
+          if (config.scenarios.includes("grid")) {
+            $("#status").textContent =
+              `${engines[id].name} · grid creciente · muestra ${round + 1}/${config.count}`;
+            const gridResult = await execute(
+              id,
+              { ...config, mode: "grid", scenarios: ["grid"], memory: false },
+              controller.signal,
+            );
+            if (
+              !gridResult.validated ||
+              gridResult.grid.length !== config.grid.levels ||
+              gridResult.grid.some(
+                (point) =>
+                  !point.validated ||
+                  !Number.isFinite(point.fps) ||
+                  point.frames < 1,
+              )
+            )
+              throw new Error("Grid no validado.");
+            result.grid = gridResult.grid;
+          }
           if (
             !result.validated ||
             Object.values(result.metrics).some(
@@ -578,6 +632,9 @@ function download(format) {
       "unit",
       "source_hash",
       "started_at",
+      "grid_columns",
+      "grid_rows",
+      "grid_cells",
     ];
     const rows = [columns];
     for (const id of runData.engines)
@@ -595,7 +652,34 @@ function download(format) {
             metric.unit,
             manifest.gtplSourceHash,
             runData.startedAt,
+            "",
+            "",
+            "",
           ]);
+    for (const id of runData.engines)
+      for (const sample of runData.samples[id])
+        for (const point of sample.result.grid ?? [])
+          for (const [key, unit] of [
+            ["fps", "fps"],
+            ["frameP95Ms", "ms"],
+            ["updateMs", "ms"],
+            ["updatesPerSecond", "celdas/s"],
+            ["generationMs", "ms"],
+          ])
+            rows.push([
+              id,
+              manifest.frameworks[id].version,
+              sample.round + 1,
+              "",
+              `grid.${key}`,
+              point[key],
+              unit,
+              manifest.gtplSourceHash,
+              runData.startedAt,
+              point.columns,
+              point.rows,
+              point.cells,
+            ]);
     content = rows
       .map((row) =>
         row
@@ -655,12 +739,34 @@ addEventListener("resize", () => {
     controller.abort();
   }
 });
+new IntersectionObserver(
+  () => {
+    if (!running) return;
+    const rect = $("#runner-slot").getBoundingClientRect();
+    const visible = Math.max(
+      0,
+      Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0),
+    );
+    if (visible < rect.height / 2) {
+      $("#status").textContent =
+        "El ejecutor dejó de estar visible; muestra interrumpida.";
+      controller.abort();
+    }
+  },
+  { threshold: [0, 0.5, 1] },
+).observe($("#runner-slot"));
 $("#sample-metric").addEventListener("change", renderSamples);
+$("#grid-metric").addEventListener("change", () =>
+  renderGridCharts({ runData, engines, pair: pair() }),
+);
 $("#export-json").addEventListener("click", () => download("json"));
 $("#export-csv").addEventListener("click", () => download("csv"));
 for (const control of controls)
   control.addEventListener("change", () => {
     if (running) return;
+    $("#grid-config").hidden = !document.querySelector(
+      "[name=scenario][value=grid]",
+    ).checked;
     runData = null;
     $("#export-json").disabled = $("#export-csv").disabled = true;
     $("#result-context").textContent =

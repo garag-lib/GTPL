@@ -10,6 +10,7 @@ import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { CASES, templates } from "./templates.mjs";
+import { createGridSources } from "./grid-adapters.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
@@ -99,6 +100,7 @@ export function createAdapter() { let element; return {
   destroy() {host?.replaceChildren();host=state=branch=cells=null;}
 }; }`,
 };
+const gridSources = await createGridSources({ root, work, GCode });
 
 // Angular's actual AOT compiler; no runtime compiler or development mode in the bundle.
 await writeFile(
@@ -129,7 +131,7 @@ await writeFile(
       ignoreDeprecations: "6.0",
     },
     angularCompilerOptions: { compilationMode: "full", strictTemplates: true },
-    files: ["angular.ts"],
+    files: ["angular.ts", "grid-angular.ts"],
   }),
 );
 execFileSync(
@@ -152,6 +154,7 @@ const manifest = {
   cases: CASES,
   gtplSourceHash: "",
   frameworks: {},
+  gridFrameworks: {},
 };
 const srcFiles = execFileSync("git", ["ls-files", "src"], {
   cwd: root,
@@ -164,12 +167,18 @@ const hash = createHash("sha256");
 for (const file of srcFiles)
   hash.update(file).update(await readFile(path.join(root, file)));
 manifest.gtplSourceHash = hash.digest("hex");
-for (const [id, source] of Object.entries(sources))
+for (const [id, source] of Object.entries({ ...sources, ...gridSources }))
   await writeFile(path.join(work, `${id}.js`), source);
-for (const id of [...Object.keys(sources), "angular"]) {
+for (const id of [
+  ...Object.keys(sources),
+  "angular",
+  ...Object.keys(gridSources),
+  "grid-angular",
+]) {
+  const engine = id.replace(/^grid-/, "");
   const entry =
-    id === "angular"
-      ? path.join(work, "ng/angular.js")
+    engine === "angular"
+      ? path.join(work, `ng/${id}.js`)
       : path.join(work, `${id}.js`);
   const file = `${id}.js`;
   await build({
@@ -192,7 +201,7 @@ for (const id of [...Object.keys(sources), "angular"]) {
     legalComments: "external",
     nodePaths: [path.join(here, "node_modules")],
     plugins:
-      id === "angular"
+      engine === "angular"
         ? [
             {
               name: "angular-linker",
@@ -232,11 +241,14 @@ for (const id of [...Object.keys(sources), "angular"]) {
     vue: "@vue/compiler-dom",
     alpine: "alpinejs",
     react: "react",
-  }[id];
-  manifest.frameworks[id] = {
+  }[engine];
+  const group = id.startsWith("grid-")
+    ? manifest.gridFrameworks
+    : manifest.frameworks;
+  group[engine] = {
     version: dependency
       ? pkg.dependencies[dependency]
-      : id.startsWith("gtpl")
+      : engine.startsWith("gtpl")
         ? own.version
         : "DOM API",
     file: `benchmarks/vendor/${file}`,

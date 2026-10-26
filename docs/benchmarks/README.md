@@ -19,8 +19,7 @@ The build dependencies are separate from the library's dependencies.
 ```sh
 npm ci --prefix scripts/benchmarks
 node scripts/benchmarks/build.mjs
-node --test scripts/benchmarks/stats.test.mjs
-node --test scripts/benchmarks/lifecycle.test.mjs
+node --test scripts/benchmarks/*.test.mjs
 ```
 
 Commit the regenerated `vendor/`, `manifest.json`, `templates.json`, and the build
@@ -63,7 +62,7 @@ fixed by `scripts/benchmarks/package-lock.json`.
 - The chart shows medians between samples, with raw operation timings, frame
   intervals, run order, errors and environment in JSON. CSV provides one row per
   engine/sample/metric; absent values remain blank. No results persist or upload.
-- Losing visibility or resizing aborts the run; explicit Stop discards the
+- Losing visibility, scrolling the executor out of view or resizing aborts the run; explicit Stop discards the
   incomplete sample and preserves completed samples. Errors never become zeros.
 
 ## Memory
@@ -110,3 +109,35 @@ Code snippets are illustrative three-state examples, include setup and updates,
 and omit tool configuration. Line counts describe those snippets, not a universal
 measure of programming ease. The benchmark's exact templates and bundles are
 linked on the page; the readable adapters live in `scripts/benchmarks/build.mjs`.
+
+## Growing grid
+
+Select **Grid creciente** to measure an X-by-Y grid at successively larger
+sizes. Both axes grow by the configured step, up to 128 by 128 cells. The
+default changes every cell on every animation frame; 10% and 25% densities
+select a reproducible random subset without replacement. A seeded generator
+uses the same sequence prefix for every engine and level. Every selected cell
+receives a different numeric value, with its CSS color derived from that value.
+
+Each cell has independent reactive state: a GTPL instance, a React component
+with local state, a Vue component with its own reactive model, an Angular
+OnPush component reading a signal, or an Alpine x-data scope. Vanilla DOM is a
+manual reference. This isolates granular updates from list reconciliation;
+the original row/switch scenarios still exercise list directives separately.
+The readable adapters are in `scripts/benchmarks/grid-adapters.mjs`.
+
+Each engine/sample gets a fresh iframe for the grid, and each size gets a fresh
+component tree after a discarded 4-by-4 warm-up. The complete grid fits inside
+the same visible viewport. Mounting, module loading and full final verification
+are excluded from FPS. One shared rAF loop includes random workload generation,
+state updates, DOM confirmation and layout. The cached first and last changed
+cell references confirm each batch; every cell is checked against the seeded
+model after each level. Incorrect output rejects the sample. JSON retains raw
+frame intervals, update/generator timings, frame counts, checksums and seeds.
+CSV adds `grid.*` metric rows and the exact dimensions.
+
+The chart compares median FPS, p95 frame interval, updates per second or update
+time against cell count. FPS are capped by display refresh and browser
+scheduling. Samples with few observed frames are labeled as unstable. This is
+rAF cadence, not a direct GPU paint counter. Memory and bundle sizes in the
+original section describe the row/switch workload, not the separate grid bundles.

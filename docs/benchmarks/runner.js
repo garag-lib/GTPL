@@ -36,6 +36,7 @@ const dataFor = (size) => ({
 });
 let createAdapter;
 let busy = false;
+const gridMode = parameters.get("mode") === "grid";
 
 // The same DOM completion fence is used for every engine. No fixed sleeps in timings.
 // Full output verification follows each measured operation, outside its stopwatch.
@@ -329,7 +330,12 @@ addEventListener("message", async (event) => {
     return;
   busy = true;
   try {
-    send("result", { result: await run(event.data.config) });
+    const result = gridMode
+      ? await (
+          await import("./grid-runner.js")
+        ).runGrid(event.data.config, createAdapter, host, status)
+      : await run(event.data.config);
+    send("result", { result });
   } catch (error) {
     send("error", { error: error.message });
   }
@@ -337,7 +343,9 @@ addEventListener("message", async (event) => {
 try {
   if (!allowed.includes(id) || parent === window)
     throw new Error("Abre este ejecutor desde benchmarks.html.");
-  ({ createAdapter } = await import(`./vendor/${id}.js`));
+  ({ createAdapter } = await import(
+    `./vendor/${gridMode ? "grid-" : ""}${id}.js`
+  ));
   send("ready");
 } catch (error) {
   status.textContent = error.message;

@@ -156,10 +156,16 @@ To publish a new release:
 
 ```bash
 # single command flow (tests + build + version bump + commit + push + tag push)
-npm run release -- 1.1.4
+npm run release -- 1.1.8
 
 # then publish release in GitHub UI for that tag (workflow triggers on publish)
 ```
+
+The release helper requires Node 24.15+ on the Node 24 line (or a version
+supported by the pinned Angular benchmark compiler). It changes the version
+before building and commits the versioned distribution, documentation and
+benchmark bundles together. Publishing the GitHub Release runs the same checks
+and attaches the compiled archives. npm publishing remains a separate command.
 
 ## Development
 

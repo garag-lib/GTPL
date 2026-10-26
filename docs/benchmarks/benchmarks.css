@@ -400,7 +400,7 @@ h3 {
   padding: 0;
   margin: 22px 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 9px;
 }
 .scenarios legend {
@@ -1268,5 +1268,75 @@ button[hidden] {
   }
   .bar-fill {
     transition: none;
+  }
+}
+.grid-config {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 0 0 22px;
+  background: #f2f6ec;
+}
+.grid-config[hidden] {
+  display: none;
+}
+.grid-config legend {
+  font-size: 11px;
+  font-weight: 600;
+}
+.grid-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.grid-fields input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 9px 12px;
+  background: white;
+  color: var(--ink);
+  font-size: 12px;
+}
+.grid-config p {
+  font-size: 10px;
+  color: var(--muted);
+  margin: 14px 0 0;
+}
+.grid-results {
+  padding: 28px;
+  margin-top: 40px;
+  scroll-margin-top: 20px;
+}
+.grid-results .sample-chart svg {
+  max-height: none;
+}
+.grid-results .subtle {
+  margin-top: 16px;
+}
+@media (max-width: 620px) {
+  .grid-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid-results {
+    padding: 19px 15px;
+  }
+  .grid-results .sample-chart {
+    overflow-x: auto;
+  }
+  .grid-results .sample-chart svg {
+    min-width: 560px;
+  }
+  .grid-results .table-scroll {
+    font-size: 10px;
+  }
+}
+.grid-results .sample-chart text {
+  font-size: 14px;
+}
+@media (max-width: 620px) {
+  .grid-results .sample-chart svg {
+    min-width: 750px;
   }
 }

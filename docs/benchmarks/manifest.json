@@ -52,5 +52,56 @@
       "gzipBytes": 100992,
       "sha256": "5255c4adff96d953ec9738d2f03fa2dd9f61fead3a991c55e1d6d6eabe08aeb3"
     }
+  },
+  "gridFrameworks": {
+    "gtpl": {
+      "version": "1.1.7",
+      "file": "benchmarks/vendor/grid-gtpl.js",
+      "bytes": 26541,
+      "gzipBytes": 8844,
+      "sha256": "a02315ffe49592943ccc4434719be8c23cf7c3d4ff9fb5953dec7761f92e8afd"
+    },
+    "gtpl-jit": {
+      "version": "1.1.7",
+      "file": "benchmarks/vendor/grid-gtpl-jit.js",
+      "bytes": 40538,
+      "gzipBytes": 13398,
+      "sha256": "26d1f8f12a1a7ce7ca27334791ae021109bd9329e7f2eace7a093647981a71f9"
+    },
+    "react": {
+      "version": "19.3.1",
+      "file": "benchmarks/vendor/grid-react.js",
+      "bytes": 222083,
+      "gzipBytes": 69112,
+      "sha256": "e93c23571d949578b5d064f1ef66d500e97d00194e547051165f9fe48dc531ae"
+    },
+    "vue": {
+      "version": "3.5.44",
+      "file": "benchmarks/vendor/grid-vue.js",
+      "bytes": 55697,
+      "gzipBytes": 22395,
+      "sha256": "5d44e919092279d7451c8138d4f1b2d70289e6c28979203453c2f51e4708f494"
+    },
+    "alpine": {
+      "version": "3.17.5",
+      "file": "benchmarks/vendor/grid-alpine.js",
+      "bytes": 56054,
+      "gzipBytes": 20027,
+      "sha256": "6d2dcf65a2c9124e97e4254132f1556cb42a15beb50853c27dd90f091d460f9b"
+    },
+    "vanilla": {
+      "version": "DOM API",
+      "file": "benchmarks/vendor/grid-vanilla.js",
+      "bytes": 465,
+      "gzipBytes": 305,
+      "sha256": "8dcf42880705c3e2e0b3155dfa737a48263f00ff6d64e34d75f0a2848e795472"
+    },
+    "angular": {
+      "version": "22.2.3",
+      "file": "benchmarks/vendor/grid-angular.js",
+      "bytes": 308342,
+      "gzipBytes": 100753,
+      "sha256": "3772f3bbc5ed64ded624a353c664a23bde31ef65504a063204017e6737104fe1"
+    }
   }
 }

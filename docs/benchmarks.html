@@ -48,7 +48,7 @@
       </div>
       <div class="hero-foot">
         <span><b>07</b> motores y modos</span
-        ><span><b>04</b> escenarios reales</span
+        ><span><b>05</b> escenarios reales</span
         ><span><b>12</b> ramas condicionales</span
         ><span class="local-tag">● Ejecución local · sin CDN</span>
       </div>
@@ -163,6 +163,70 @@
               ><b>04 Fluidez</b><small>1,2 segundos de actividad</small></span
             ></label
           >
+          <label
+            ><input type="checkbox" name="scenario" value="grid" /><span
+              ><b>05 Grid creciente</b
+              ><small>Celdas aleatorias en cada rAF</small></span
+            ></label
+          >
+        </fieldset>
+        <fieldset id="grid-config" class="grid-config" hidden>
+          <legend>Grid · estado independiente por celda</legend>
+          <div class="grid-fields">
+            <label class="field"
+              >Columnas X<input
+                id="grid-columns"
+                type="number"
+                min="2"
+                max="128"
+                value="16"
+            /></label>
+            <label class="field"
+              >Filas Y<input
+                id="grid-rows"
+                type="number"
+                min="2"
+                max="128"
+                value="16"
+            /></label>
+            <label class="field"
+              >Crecer ambos ejes<input
+                id="grid-step"
+                type="number"
+                min="1"
+                max="64"
+                value="16"
+            /></label>
+            <label class="field"
+              >Niveles<select id="grid-levels">
+                <option value="1">1 · tamaño fijo</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="6">6</option>
+              </select></label
+            >
+            <label class="field"
+              >Cambios por frame<select id="grid-percent">
+                <option value="100">100 % de celdas</option>
+                <option value="25">25 % aleatorio</option>
+                <option value="10">10 % aleatorio</option>
+              </select></label
+            >
+            <label class="field"
+              >Tiempo por nivel<select id="grid-duration">
+                <option value="1500">1,5 s</option>
+                <option value="3000" selected>3 s</option>
+                <option value="5000">5 s</option>
+              </select></label
+            >
+          </div>
+          <p>
+            Valores y selección aleatorios reproducibles (semilla 42). Cada
+            nivel suma el crecimiento a X e Y, hasta un máximo de 128 × 128. La
+            carga es idéntica por frame en ambos motores. El grid se mide en un
+            iframe nuevo y su montaje queda fuera de los FPS.
+          </p>
         </fieldset>
         <label class="memory-option"
           ><input type="checkbox" id="memory" /><span
@@ -296,6 +360,70 @@
         </details>
       </section>
 
+      <section
+        class="panel grid-results"
+        id="grid-results"
+        aria-labelledby="grid-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">GRID / ¿HASTA DÓNDE AGUANTA?</p>
+            <h2 id="grid-title">Más celdas. La misma pantalla.</h2>
+          </div>
+          <label class="field"
+            >Eje vertical<select id="grid-metric">
+              <option value="fps">FPS · más es mejor</option>
+              <option value="frameP95Ms">Intervalo p95 · menos es mejor</option>
+              <option value="updatesPerSecond">
+                Actualizaciones por segundo
+              </option>
+              <option value="updateMs">Tiempo de actualización</option>
+            </select></label
+          >
+        </div>
+        <p class="section-intro">
+          Un valor y un color por celda, con estado independiente. GTPL usa una
+          instancia por celda; React, estado local; Vue, modelos reactivos por
+          componente; Angular, señales con OnPush; Alpine, un x-data por celda.
+          Un único bucle requestAnimationFrame aplica el mismo lote aleatorio a
+          todos.
+        </p>
+        <div id="grid-chart" class="sample-chart"></div>
+        <div class="table-scroll">
+          <table>
+            <caption>
+              Medianas por tamaño del grid y motor
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Tamaño</th>
+                <th scope="col">Contendiente A</th>
+                <th scope="col">Contendiente B</th>
+              </tr>
+            </thead>
+            <tbody id="grid-table"></tbody>
+          </table>
+        </div>
+        <p class="subtle">
+          FPS limitados por el refresco de pantalla. Se mide la cadencia de rAF
+          con cambios confirmados y layout; incluye el generador aleatorio común
+          y excluye montaje y validación completa. Los motores más rápidos
+          ejecutan un prefijo más largo de la misma secuencia. El grid completo
+          cabe en el ejecutor, sin virtualización. Memoria y pesos de la sección
+          anterior pertenecen a las pruebas de ramas.
+        </p>
+        <p class="subtle">
+          <a
+            href="https://github.com/garag-lib/GTPL/blob/main/scripts/benchmarks/grid-adapters.mjs"
+            >Adaptadores del grid ↗</a
+          >
+          ·
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame"
+            >Sobre requestAnimationFrame ↗</a
+          >
+        </p>
+      </section>
       <section class="code-section" aria-labelledby="code-title">
         <div class="section-heading">
           <div>

@@ -29,7 +29,7 @@ if [[ "$BRANCH" != "main" ]]; then
   exit 1
 fi
 
-if ! git diff --quiet || ! git diff --cached --quiet; then
+if [[ -n "$(git status --porcelain)" ]]; then
   echo "Error: working tree is not clean. Commit/stash your changes first."
   exit 1
 fi
@@ -47,14 +47,20 @@ fi
 echo "==> Running tests"
 npm test
 
-echo "==> Building dist"
-npm run build
+echo "==> Installing and checking benchmark build tools"
+npm ci --prefix scripts/benchmarks --no-audit --no-fund
+node --test scripts/benchmarks/*.test.mjs
 
 echo "==> Bumping package version to ${VERSION}"
 npm version "${VERSION}" --no-git-tag-version
 
-echo "==> Committing version bump"
-git add package.json
+echo "==> Building versioned dist and documentation bundles"
+npm run build
+cp dist/gtpl.global.js docs/gtpl.global.js
+node scripts/benchmarks/build.mjs
+
+echo "==> Committing version bump and compiled assets"
+git add package.json dist docs/gtpl.global.js docs/benchmarks/vendor docs/benchmarks/manifest.json docs/benchmarks/templates.json docs/benchmarks/lab.html
 if git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
   git add package-lock.json
 fi

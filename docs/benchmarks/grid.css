@@ -1,0 +1,54 @@
+bench-grid-app,
+grid-cell {
+  display: contents;
+}
+.bench-grid {
+  height: 154px;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--grid-rows), minmax(0, 1fr));
+  gap: 1px;
+  background: #14291f;
+  overflow: hidden;
+}
+.grid-cell {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  font:
+    500 min(10px, calc(145px / var(--grid-rows))) ui-monospace,
+    monospace;
+  color: #132218;
+  background: #d8f36a;
+  line-height: 1;
+  white-space: nowrap;
+}
+.grid-cell[data-value$="1"] {
+  background: #c6e8a0;
+}
+.grid-cell[data-value$="2"] {
+  background: #98d4a1;
+}
+.grid-cell[data-value$="3"] {
+  background: #6dbbb3;
+}
+.grid-cell[data-value$="4"] {
+  background: #94bfde;
+}
+.grid-cell[data-value$="5"] {
+  background: #a1abe0;
+}
+.grid-cell[data-value$="6"] {
+  background: #bca3d9;
+}
+.grid-cell[data-value$="7"] {
+  background: #dda9cf;
+}
+.grid-cell[data-value$="8"] {
+  background: #e7c6a4;
+}
+.grid-cell[data-value$="9"] {
+  background: #e4df98;
+}
