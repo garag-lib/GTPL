@@ -69,13 +69,13 @@ export default [
   // -----------------------------------------------------------
   {
     input: 'src/lib/gtpl.ts',
-    output: {
-      file: 'dist/gtpl.global.js',
+    output: ['dist/gtpl.global.js', 'docs/gtpl.global.js'].map(file => ({
+      file,
       format: 'iife', // o "umd" si quieres compatibilidad AMD
       name: 'gtpl',   // expone como window.gtpl
       sourcemap: true,
       banner
-    },
+    })),
     plugins: [
       typescript({
         tsconfig: './tsconfig-rollup.json',
