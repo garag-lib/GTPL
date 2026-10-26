@@ -1,11 +1,34 @@
 const block =
   '<article class="bench-block">\n  <h4>Panel grande</h4>\n  <p>Contenido propio de esta rama…</p>\n  <span>{{tick}}</span>\n  <!-- Más bloques HTML, sin for compartido -->\n</article>';
+function ifSequence(engine) {
+  const assign = {
+    gtpl: (value) => `state.visible = ${value};`,
+    react: (value) => `setVisible(${value});`,
+    vue: (value) => `visible.value = ${value};`,
+    angular: (value) => `this.visible = ${value};`,
+    alpine: (value) => `state.visible = ${value};`,
+    vanilla: (value) => `visible = ${value}; render();`,
+  }[engine];
+  return (
+    "// Inicialmente oculto. Cada línea es una fase separada.\n// El ejecutor confirma el DOM antes de pasar a la siguiente.\n" +
+    [
+      [true, "Primera creación"],
+      [false, "Retirar"],
+      [true, "Volver a mostrar"],
+      [false, "Retirada final y lectura de memoria"],
+    ]
+      .map(([value, label]) => `${assign(value)} // ${label}`)
+      .join("\n")
+  );
+}
 export function methodExample(method, id, cases = 32) {
   const engine = id === "gtpl-jit" ? "gtpl" : id;
   const memory =
     method === "switch"
       ? `En el experimento hay ${cases} ramas explícitas, cada una con 128 bloques HTML. Este extracto muestra dos ramas. Las definiciones permanecen cargadas; se mide qué instancias y nodos se construyen.`
-      : "Extracto del patrón. El adaptador completo, el arranque y las operaciones medidas están enlazados en las fuentes.";
+      : method === "if"
+        ? "La misma secuencia en todos los motores: false → true → false → true → false. Entre fases, el ejecutor espera el DOM, solicita layout y valida la vista. Los tiempos miden primera creación, retirada y reentrada; la última retirada permite leer memoria. Las líneas mostradas representan fases separadas."
+        : "Extracto del patrón. El adaptador completo, el arranque y las operaciones medidas están enlazados en las fuentes.";
   let code;
   if (method === "switch")
     code = {
@@ -27,13 +50,20 @@ export function methodExample(method, id, cases = 32) {
     }[engine];
   if (method === "if")
     code = {
-      gtpl: `<section g-if="visible">\n${block}\n</section>\n\nstate.visible = true;\nstate.visible = false;`,
-      react: `{visible && <PanelGrande tick={tick} />}\n\nsetVisible(true);\nsetVisible(false);`,
-      vue: `<section v-if="visible">\n${block}\n</section>\n\nvisible.value = true;`,
-      angular: `@if (visible) {\n${block}\n}\n\nthis.visible = true;`,
-      alpine: `<template x-if="visible">\n  <section><!-- Árbol grande --></section>\n</template>`,
-      vanilla: `if (visible) {\n  container.append(createLargePanel());\n} else {\n  container.replaceChildren();\n}`,
+      gtpl: `<section g-if="visible">\n${block}\n</section>`,
+      react: `function View({ visible, tick }) {\n  return visible ? (\n    <section>\n${block
+        .replaceAll("class=", "className=")
+        .replace("{{tick}}", "{tick}")
+        .replace(
+          /<!-- (.*?) -->/g,
+          "{/* $1 */}",
+        )}\n    </section>\n  ) : null;\n}`,
+      vue: `<section v-if="visible">\n${block}\n</section>`,
+      angular: `@if (visible) {\n  <section>\n${block}\n  </section>\n}`,
+      alpine: `<template x-if="visible">\n  <section>\n${block.replace("<span>{{tick}}</span>", '<span x-text="tick"></span>')}\n  </section>\n</template>\n\n// Estado reactivo del componente:\nconst state = Alpine.$data(element);`,
+      vanilla: `const htmlGrande = \`<section>\n${block.replace("{{tick}}", "__TICK__")}\n</section>\`;\n\nfunction render() {\n  container.innerHTML = visible\n    ? htmlGrande.replaceAll('__TICK__', tick)\n    : '';\n}`,
     }[engine];
+  if (method === "if") code += "\n\n" + ifSequence(engine);
   if (method === "styles")
     code = {
       gtpl: `<div g-style="background-color:{{theme.backgroundColor}};
