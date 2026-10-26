@@ -2,10 +2,10 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Compara GTPL con React, Vue, Alpine y Angular en tu navegador: renderizado, switch, FPS, memoria y código."
+      content="Compara motores y patrones: memoria de switch, listas for, if, estilos, atributos, formularios y grid."
     />
     <title>GTPL vs · Benchmark Lab</title>
     <link rel="icon" href="benchmarks/favicon.svg" type="image/svg+xml" />
@@ -23,43 +23,41 @@
         ><a href="https://github.com/garag-lib/GTPL">GitHub ↗</a>
       </div>
     </nav>
-
     <header class="hero wrap">
       <div class="hero-copy">
         <div class="eyebrow">
-          <span class="dot"></span> EL NAVEGADOR TIENE LA ÚLTIMA PALABRA
+          <span class="dot"></span> CADA PATRÓN TIENE SU PREGUNTA
         </div>
-        <h1>Menos intuición.<br /><span>Más mediciones.</span></h1>
+        <h1>Elige motores.<br /><span>Después, el caso.</span></h1>
         <p>
-          GTPL frente a los demás. La misma interfaz, el mismo trabajo y los
-          resultados de tu máquina. Elige un rival y descubre dónde marca la
-          diferencia.
+          ¿Qué memoria necesita una sola rama entre muchas vistas grandes?
+          ¿Cuánto cuesta invertir una lista, cambiar estilos o propagar un
+          input? Compara la misma técnica y el mismo resultado.
         </p>
         <div class="hero-tags">
-          <span>Velocidad</span><span>Fluidez</span><span>Memoria</span
-          ><span>Código</span>
+          <span>Switch y memoria</span><span>For / if</span
+          ><span>Estilos y bindings</span><span>Grid y FPS</span>
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="orbit orbit-one"></div>
         <div class="orbit orbit-two"></div>
         <span class="art-g">g.</span><span class="art-vs">VS</span>
-        <div class="art-label">MEASURE. COMPARE. REPEAT.</div>
+        <div class="art-label">PATRÓN. OBJETIVO. EVIDENCIA.</div>
       </div>
       <div class="hero-foot">
         <span><b>07</b> motores y modos</span
-        ><span><b>05</b> escenarios reales</span
-        ><span><b>12</b> ramas condicionales</span
-        ><span class="local-tag">● Ejecución local · sin CDN</span>
+        ><span><b>08</b> casos programáticos</span
+        ><span><b>128</b> bloques por rama grande</span
+        ><span class="local-tag">● Ejecución en tu navegador</span>
       </div>
     </header>
-
     <main class="wrap">
       <section class="arena panel" aria-labelledby="arena-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">01 / CONFIGURA EL DUELO</p>
-            <h2 id="arena-title">Una comparación a tu medida.</h2>
+            <p class="eyebrow">01 / MOTORES Y CASO</p>
+            <h2 id="arena-title">Compara una metodología concreta.</h2>
           </div>
           <span class="chip" id="engine-state">Cargando motores…</span>
         </div>
@@ -75,10 +73,8 @@
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
               <option value="vanilla">JavaScript directo</option></select
-            ><span id="engine-a-meta" class="engine-meta"
-              >Plantilla precompilada · DOM directo</span
-            ></label
-          >
+            ><span id="engine-a-meta" class="engine-meta"></span
+          ></label>
           <span class="vs-badge" aria-hidden="true">vs</span>
           <label class="engine-card engine-right"
             ><span class="engine-kicker"
@@ -91,84 +87,70 @@
               <option value="gtpl">GTPL · AOT</option>
               <option value="gtpl-jit">GTPL · JIT</option>
               <option value="vanilla">JavaScript directo</option></select
-            ><span id="engine-b-meta" class="engine-meta"
-              >Producción · render confirmado con flushSync</span
-            ></label
-          >
+            ><span id="engine-b-meta" class="engine-meta"></span
+          ></label>
         </div>
-        <div class="config-row">
+        <div class="config-row method-picker">
           <label class="field"
-            >Filas por rama<select id="size">
-              <option value="100">100 · ligero</option>
-              <option value="500" selected>500 · estándar</option>
-              <option value="1000">1.000 · exigente</option>
-              <option value="3000">3.000 · estrés</option>
+            >Caso programático<select id="method">
+              <option value="switch">Switch · memoria de ramas grandes</option>
+              <option value="for">For · listas y reconciliación</option>
+              <option value="if">If · creación y retirada</option>
+              <option value="styles">Estilos en línea</option>
+              <option value="classes">Clases CSS</option>
+              <option value="attributes">Atributos y texto</option>
+              <option value="forms">Formulario · enlace bidireccional</option>
+              <option value="grid">Grid · crecimiento y FPS</option>
             </select></label
           >
           <label class="field"
             >Muestras por motor<select id="samples">
-              <option value="3">3 · exploración</option>
-              <option value="5" selected>5 · comparación</option>
-              <option value="9">9 · mayor estabilidad</option>
+              <option value="1">1 · exploración</option>
+              <option value="3" selected>3 · comparación</option>
+              <option value="5">5 · mayor estabilidad</option>
             </select></label
           >
-          <div class="config-note">
-            <b>Orden alternado A/B</b
-            ><span
-              >Un motor por vez. Cada muestra empieza en un iframe nuevo.</span
+          <label class="field" id="size-field" hidden
+            >Elementos del caso<select id="size">
+              <option value="100">100</option>
+              <option value="500" selected>500</option>
+              <option value="1000">1.000</option>
+              <option value="3000">3.000</option>
+            </select></label
+          >
+        </div>
+        <p id="case-goal" class="case-goal"></p>
+        <fieldset id="switch-config" class="grid-config">
+          <legend>Switch · muchas ramas grandes, solo una elegida</legend>
+          <div class="grid-fields">
+            <label class="field"
+              >Ramas declaradas<select id="cases">
+                <option value="8">8 × 128 bloques</option>
+                <option value="32" selected>32 × 128 bloques</option>
+                <option value="64">64 × 128 bloques</option>
+              </select></label
+            ><label class="field"
+              >Elegir únicamente la rama<input
+                id="active-case"
+                type="number"
+                min="0"
+                max="31"
+                value="0" /></label
+            ><label class="memory-option retention-option"
+              ><input id="retention" type="checkbox" /><span
+                >Prueba adicional de retención<small
+                  >Recorrer ramas y retirar la vista al final.</small
+                ></span
+              ></label
             >
           </div>
-        </div>
-        <fieldset class="scenarios">
-          <legend>Escenarios</legend>
-          <label
-            ><input
-              type="checkbox"
-              name="scenario"
-              value="mount"
-              checked
-            /><span
-              ><b>01 Montaje</b><small>Crear la primera vista</small></span
-            ></label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="scenario"
-              value="update"
-              checked
-            /><span
-              ><b>02 Reactividad</b
-              ><small>Actualizar todas las filas</small></span
-            ></label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="scenario"
-              value="switch"
-              checked
-            /><span
-              ><b>03 Switch lazy</b
-              ><small>Primera visita y revisita</small></span
-            ></label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="scenario"
-              value="frames"
-              checked
-            /><span
-              ><b>04 Fluidez</b><small>1,2 segundos de actividad</small></span
-            ></label
-          >
-          <label
-            ><input type="checkbox" name="scenario" value="grid" /><span
-              ><b>05 Grid creciente</b
-              ><small>Celdas aleatorias en cada rAF</small></span
-            ></label
-          >
+          <p>
+            Son árboles HTML explícitos y distintos: cada rama contiene 128
+            bloques con títulos, texto, un dato reactivo y listas. No se usa un
+            for compartido dentro del switch. Primero se mide sin ninguna vista;
+            después se activa solamente la rama elegida. El código y las
+            definiciones están cargados en ambos estados.
+          </p>
         </fieldset>
         <fieldset id="grid-config" class="grid-config" hidden>
           <legend>Grid · estado independiente por celda</legend>
@@ -179,25 +161,22 @@
                 type="number"
                 min="2"
                 max="128"
-                value="16"
-            /></label>
-            <label class="field"
+                value="16" /></label
+            ><label class="field"
               >Filas Y<input
                 id="grid-rows"
                 type="number"
                 min="2"
                 max="128"
-                value="16"
-            /></label>
-            <label class="field"
+                value="16" /></label
+            ><label class="field"
               >Crecer ambos ejes<input
                 id="grid-step"
                 type="number"
                 min="1"
                 max="64"
-                value="16"
-            /></label>
-            <label class="field"
+                value="16" /></label
+            ><label class="field"
               >Niveles<select id="grid-levels">
                 <option value="1">1 · tamaño fijo</option>
                 <option value="2">2</option>
@@ -205,15 +184,13 @@
                 <option value="4" selected>4</option>
                 <option value="6">6</option>
               </select></label
-            >
-            <label class="field"
+            ><label class="field"
               >Cambios por frame<select id="grid-percent">
                 <option value="100">100 % de celdas</option>
                 <option value="25">25 % aleatorio</option>
                 <option value="10">10 % aleatorio</option>
               </select></label
-            >
-            <label class="field"
+            ><label class="field"
               >Tiempo por nivel<select id="grid-duration">
                 <option value="1500">1,5 s</option>
                 <option value="3000" selected>3 s</option>
@@ -222,15 +199,13 @@
             >
           </div>
           <p>
-            Valores y selección aleatorios reproducibles (semilla 42). Cada
-            nivel suma el crecimiento a X e Y, hasta un máximo de 128 × 128. La
-            carga es idéntica por frame en ambos motores. El grid se mide en un
-            iframe nuevo y su montaje queda fuera de los FPS.
+            La misma secuencia aleatoria, semilla 42. El montaje queda fuera de
+            los FPS; el grid completo cabe en el ejecutor, sin virtualización.
           </p>
         </fieldset>
         <label class="memory-option"
           ><input type="checkbox" id="memory" /><span
-            >Medir memoria atribuida
+            >Medir memoria JS + DOM por fases
             <small id="memory-help">Comprobando compatibilidad…</small></span
           ></label
         >
@@ -241,49 +216,42 @@
         </p>
         <div class="action-row">
           <button class="primary" id="run" disabled>
-            <span aria-hidden="true">▶</span> Ejecutar comparación</button
+            ▶ Ejecutar comparación</button
           ><button class="secondary" id="stop" disabled>Detener</button
-          ><span id="run-hint"
-            >Las pruebas se ejecutan al pulsar. Mantén esta pestaña en primer
-            plano.</span
-          >
+          ><span id="run-hint"></span>
         </div>
         <div class="run-progress">
           <progress
             id="progress"
             value="0"
-            max="10"
-            aria-label="Progreso de las muestras"
+            max="6"
+            aria-label="Progreso de muestras"
           ></progress>
           <p id="status" role="status" aria-live="polite">
             No hay una ejecución activa.
           </p>
         </div>
-        <div
-          id="live-stage"
-          class="live-stage"
-          aria-label="Vista del trabajo real"
-        >
+        <div id="live-stage" class="live-stage">
           <div class="live-label">
-            <span class="dot"></span> DOM REAL
+            <span class="dot"></span> VISTA REAL
             <span id="live-engine">El ejecutor aparecerá aquí</span>
           </div>
           <div id="runner-slot">
             <div class="stage-empty">
               <span aria-hidden="true">⌁</span
               ><span
-                >Las 12 ramas compiten.<br />Solo una debe estar activa.</span
+                >El patrón elegido determina<br />qué se construye y qué se
+                mide.</span
               >
             </div>
           </div>
         </div>
       </section>
-
       <section class="results" aria-labelledby="results-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">02 / LOS NÚMEROS, CON CONTEXTO</p>
-            <h2 id="results-title">Dónde se nota la diferencia.</h2>
+            <p class="eyebrow">02 / RESULTADOS DEL CASO</p>
+            <h2 id="results-title">Switch · memoria de ramas grandes</h2>
           </div>
           <div class="export-actions">
             <button id="export-json" class="secondary" disabled>JSON ↓</button
@@ -291,83 +259,74 @@
           </div>
         </div>
         <p class="result-context" id="result-context">
-          Sin mediciones todavía. Las gráficas se rellenarán con resultados
-          reales.
+          Sin mediciones. Elige motores y un patrón.
         </p>
         <div class="verdict" id="verdict">
-          <span class="verdict-icon" aria-hidden="true">↗</span>
+          <span class="verdict-icon" aria-hidden="true">↳</span>
           <div>
-            <b>Elige un rival. Deja hablar al navegador.</b>
+            <b>Elige dos motores y un caso programático.</b>
             <p>
-              Sin una puntuación global: ganar en montaje no implica ganar en
-              fluidez o consumo.
+              Switch se centra en memoria y construcción de vistas. Cada patrón
+              tiene métricas propias.
             </p>
           </div>
         </div>
-        <div class="chart-grid" id="charts" aria-live="off"></div>
-        <div class="details-grid">
-          <article class="panel sample-panel">
-            <div class="small-heading">
-              <h3>Cada muestra cuenta.</h3>
-              <label class="sr-only" for="sample-metric"
-                >Métrica de la gráfica de muestras</label
-              ><select id="sample-metric">
-                <option value="mountMs">Montaje</option>
-                <option value="updateMs">Actualización</option>
-                <option value="switchFirstMs">Switch · primera visita</option>
-                <option value="switchRevisitMs">Switch · revisita</option>
-                <option value="fps">FPS</option>
-                <option value="memoryBytes">Memoria atribuida</option>
-                <option value="memoryMountedBytes">Memoria montada</option>
-                <option value="memoryGrowthBytes">
-                  Memoria tras revisitas
-                </option>
-              </select>
+        <div id="case-results">
+          <div class="chart-grid" id="charts"></div>
+          <div class="details-grid">
+            <article class="panel sample-panel">
+              <div class="small-heading">
+                <h3>Dispersión entre muestras.</h3>
+                <label class="sr-only" for="sample-metric">Métrica</label
+                ><select id="sample-metric"></select>
+              </div>
+              <p class="subtle">
+                Cada punto es una muestra válida del caso seleccionado.
+              </p>
+              <div id="samples-chart" class="sample-chart"></div>
+            </article>
+            <article class="panel bundle-panel">
+              <p class="eyebrow">CÓDIGO DEL CASO</p>
+              <h3>Definiciones y runtime cargados.</h3>
+              <div id="bundle-chart"></div>
+              <p class="subtle">
+                KiB gzip de la entrada y sus módulos compartidos. Representa
+                código descargado para este patrón, no RAM ni tamaño mínimo de
+                la librería. Las otras metodologías no se importan en esta
+                muestra.
+              </p>
+            </article>
+          </div>
+          <details class="panel data-details">
+            <summary>Ver métricas y tiempos secundarios</summary>
+            <div class="table-scroll">
+              <table>
+                <caption>
+                  Mediana, p95 y rango entre muestras. En switch, el tiempo es
+                  secundario.
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Métrica</th>
+                    <th scope="col" id="table-a">A</th>
+                    <th scope="col" id="table-b">B</th>
+                  </tr>
+                </thead>
+                <tbody id="result-table"></tbody>
+              </table>
             </div>
-            <p class="subtle">
-              Valores de cada ronda. Una dispersión alta invita a repetir.
-            </p>
-            <div id="samples-chart" class="sample-chart"></div>
-          </article>
-          <article class="panel bundle-panel">
-            <p class="eyebrow">PESO DEL EXPERIMENTO</p>
-            <h3>Lo que llega al navegador.</h3>
-            <div id="bundle-chart"></div>
-            <p class="subtle">
-              KiB gzip de cada bundle local: runtime + adaptador + las 12 ramas
-              de este experimento. Compresión calculada al construir. No es el
-              tamaño mínimo de la librería ni una medida de red.
-            </p>
-          </article>
+          </details>
         </div>
-        <details class="panel data-details">
-          <summary>Ver datos y dispersión de todas las métricas</summary>
-          <div class="table-scroll">
-            <table>
-              <caption>
-                Mediana, percentil 95 y rango entre muestras válidas por motor
-              </caption>
-              <thead>
-                <tr>
-                  <th scope="col">Métrica</th>
-                  <th scope="col" id="table-a">A</th>
-                  <th scope="col" id="table-b">B</th>
-                </tr>
-              </thead>
-              <tbody id="result-table"></tbody>
-            </table>
-          </div>
-        </details>
       </section>
-
       <section
         class="panel grid-results"
         id="grid-results"
+        hidden
         aria-labelledby="grid-title"
       >
         <div class="section-heading">
           <div>
-            <p class="eyebrow">GRID / ¿HASTA DÓNDE AGUANTA?</p>
+            <p class="eyebrow">GRID / CRECIMIENTO</p>
             <h2 id="grid-title">Más celdas. La misma pantalla.</h2>
           </div>
           <label class="field"
@@ -382,69 +341,49 @@
           >
         </div>
         <p class="section-intro">
-          Un valor y un color por celda, con estado independiente. GTPL usa una
-          instancia por celda; React, estado local; Vue, modelos reactivos por
-          componente; Angular, señales con OnPush; Alpine, un x-data por celda.
-          Un único bucle requestAnimationFrame aplica el mismo lote aleatorio a
+          Estado independiente por celda. GTPL usa una instancia; React, estado
+          local; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un
+          x-data por celda. El mismo bucle aplica el mismo lote aleatorio a
           todos.
         </p>
         <div id="grid-chart" class="sample-chart"></div>
         <div class="table-scroll">
           <table>
             <caption>
-              Medianas por tamaño del grid y motor
+              Medianas por tamaño y motor
             </caption>
             <thead>
               <tr>
                 <th scope="col">Tamaño</th>
-                <th scope="col">Contendiente A</th>
-                <th scope="col">Contendiente B</th>
+                <th scope="col">A</th>
+                <th scope="col">B</th>
               </tr>
             </thead>
             <tbody id="grid-table"></tbody>
           </table>
         </div>
         <p class="subtle">
-          FPS limitados por el refresco de pantalla. Se mide la cadencia de rAF
-          con cambios confirmados y layout; incluye el generador aleatorio común
-          y excluye montaje y validación completa. Los motores más rápidos
-          ejecutan un prefijo más largo de la misma secuencia. El grid completo
-          cabe en el ejecutor, sin virtualización. Memoria y pesos de la sección
-          anterior pertenecen a las pruebas de ramas.
-        </p>
-        <p class="subtle">
-          <a
-            href="https://github.com/garag-lib/GTPL/blob/main/scripts/benchmarks/grid-adapters.mjs"
-            >Adaptadores del grid ↗</a
-          >
-          ·
-          <a
-            href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame"
-            >Sobre requestAnimationFrame ↗</a
-          >
+          Cadencia de rAF con DOM y layout confirmados, limitada por la
+          pantalla. Incluye generación aleatoria; excluye montaje y validación
+          completa. No mide la GPU ni la memoria de este grid.
         </p>
       </section>
       <section class="code-section" aria-labelledby="code-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">03 / TAMBIÉN IMPORTA ESCRIBIRLO</p>
-            <h2 id="code-title">El mismo switch, dos formas.</h2>
+            <p class="eyebrow">03 / PROGRAMAR EL PATRÓN</p>
+            <h2 id="code-title">El caso elegido, en ambos motores.</h2>
           </div>
-          <a
-            href="https://github.com/garag-lib/GTPL/tree/main/scripts/benchmarks"
-            >Fuentes del experimento ↗</a
-          >
         </div>
         <p class="section-intro">
-          Tres estados, un contador y una vista activa. Ejemplos de uso con
-          inicialización y actualización; el código de las gráficas usa las
-          mismas primitivas con 12 ramas y listas de filas. La facilidad de
-          mantenerlo la decides tú.
+          Extractos del patrón seleccionado. Los adaptadores completos y sus
+          plantillas generadas están enlazados abajo. Las líneas describen el
+          extracto; la facilidad de mantenerlo la decides tú.
         </p>
         <div class="code-grid">
           <article class="code-card">
             <div class="code-heading">
-              <h3 id="code-a-title">GTPL</h3>
+              <h3 id="code-a-title">GTPL AOT</h3>
               <span id="code-a-lines"></span>
             </div>
             <pre tabindex="0"><code id="code-a"></code></pre>
@@ -460,144 +399,110 @@
           </article>
         </div>
         <details class="panel source-details">
-          <summary>
-            Inspeccionar las plantillas exactas y los adaptadores ejecutados
-          </summary>
-          <p>
-            Las plantillas generadas se conservan junto a los bundles. Los
-            adaptadores y el proceso de compilación se pueden revisar en el
-            repositorio.
-          </p>
+          <summary>Fuentes del caso y patrón de programación</summary>
           <div id="source-links" class="source-links"></div>
           <pre tabindex="0"><code id="actual-template"></code></pre>
         </details>
-        <aside class="lazy-note">
-          <span aria-hidden="true">↳</span>
-          <div>
-            <h3>Lazy es una hipótesis que se puede comprobar.</h3>
-            <p>
-              <code>g-switch</code>, <code>@switch</code>, las condiciones de
-              React, <code>v-if</code> y <code>x-if</code> permiten construir
-              solo la rama activa. Comparamos esas opciones. No usamos
-              <code>v-show</code> ni <code>x-show</code>, que mantienen el
-              contenido oculto en el DOM. El test distingue el primer acceso de
-              la revisita y comprueba que solo hay una rama conectada.
-            </p>
-            <p>
-              <a href="https://angular.dev/guide/templates/control-flow"
-                >Angular</a
-              >
-              ·
-              <a href="https://react.dev/learn/conditional-rendering">React</a>
-              ·
-              <a href="https://vuejs.org/guide/essentials/conditional.html"
-                >Vue</a
-              >
-              · <a href="https://alpinejs.dev/directives/if">Alpine</a>
-            </p>
-          </div>
-        </aside>
       </section>
-
       <section class="method-section panel" aria-labelledby="method-title">
-        <p class="eyebrow">04 / CÓMO LEER LOS RESULTADOS</p>
-        <h2 id="method-title">Un laboratorio pequeño. Reglas visibles.</h2>
+        <p class="eyebrow">04 / CÓMO INTERPRETARLO</p>
+        <h2 id="method-title">Una pregunta por caso. Límites visibles.</h2>
         <div class="method-grid">
           <article>
             <span>01</span>
-            <h3>Trabajo equivalente</h3>
+            <h3>Switch mide memoria</h3>
             <p>
-              12 ramas declaradas, una activa. Cada fila tiene tres celdas:
-              identificador, etiqueta y contador. Mismos datos, estilos y tamaño
-              de iframe. Se valida el contenido completo tras cada operación y
-              al terminar la animación; una salida incorrecta invalida la
-              muestra.
+              Se importan únicamente los módulos de la variante elegida: 8, 32 o
+              64 ramas, con 128 bloques HTML explícitos por rama. Se parte de
+              active = null y se activa una sola rama. El recorrido por otras
+              ramas es optativo. Los tiempos no determinan el resultado
+              principal.
             </p>
           </article>
           <article>
             <span>02</span>
-            <h3>Tiempo hasta DOM + layout</h3>
+            <h3>Definiciones e instancias</h3>
             <p>
-              Montaje y cambios incluyen la confirmación del DOM y una lectura
-              de layout. Excluyen descarga, importación, calentamiento,
-              comprobación completa y la espera al siguiente repintado. React
-              usa <code>flushSync</code>; Angular, <code>detectChanges</code>.
-              Es coste de render confirmado, no latencia de una interacción ni
-              tiempo hasta píxel pintado.
+              El código, sus literales y las plantillas permanecen cargados. La
+              creación condicional puede evitar nodos y componentes de las ramas
+              no elegidas. Se cuentan los nodos conectados y el contenido inerte
+              de template.content por separado; ese contenido también ocupa
+              memoria.
             </p>
           </article>
           <article>
             <span>03</span>
-            <h3>Compilación explícita</h3>
+            <h3>Memoria JS + DOM</h3>
             <p>
-              GTPL AOT, Vue y Angular se precompilan al construir. React usa el
-              bundle de producción. GTPL JIT compila al montar; Alpine
-              interpreta sus directivas en el navegador. Angular incluye el
-              arranque de la aplicación, sin Zone.js. JavaScript directo es una
-              referencia manual especializada.
+              La API experimental estima todo el entorno relacionado, incluyendo
+              el controlador y los iframes. Se calculan diferencias desde un
+              ejecutor vacío y entre fases, manteniendo quieto el controlador
+              durante la muestra. Así se incluye DOM sin atribución individual,
+              con ruido posible por GC y memoria compartida. No es RAM total de
+              Chrome ni atribución exacta por framework.
             </p>
           </article>
           <article>
             <span>04</span>
-            <h3>Rondas y variación</h3>
+            <h3>For, if y cambios</h3>
             <p>
-              Cada muestra calienta con 20 filas y descarta esa instancia. Se
-              alterna A/B y B/A, eligiendo al azar quién empieza. Se muestran
-              medianas y rangos; actualización resume 10 cambios, switch resume
-              11 primeras visitas y 12 revisitas. El p95 de la tabla se calcula
-              entre muestras, no entre operaciones.
+              For prueba operaciones de lista, cada una con su resultado
+              validado. If compara creación, retirada y reentrada. Estilos,
+              clases y atributos mantienen los mismos elementos. Formularios usa
+              un setter nativo y un evento input, y comprueba que el modelo
+              actualiza todos los campos.
             </p>
           </article>
           <article>
             <span>05</span>
-            <h3>FPS con un límite real</h3>
+            <h3>Versiones y compilación</h3>
             <p>
-              Sobre una vista recién montada, durante 1,2 s se actualizan todas
-              las filas una vez por frame. Los FPS miden cadencia de
-              <code>requestAnimationFrame</code>, limitados por la pantalla y el
-              navegador. El p95 de intervalo refleja pausas; los frames lentos
-              superan 1,5× el intervalo en reposo medido antes de cada muestra.
-              No es una medida de GPU.
+              GTPL AOT, Vue y Angular se precompilan; React usa producción; GTPL
+              JIT compila al montar y Alpine interpreta HTML. React confirma
+              cambios con flushSync y Angular con detectChanges. Las cifras
+              describen estos adaptadores y este dispositivo.
             </p>
           </article>
           <article>
             <span>06</span>
-            <h3>Memoria sin falsa precisión</h3>
+            <h3>Comparación repetida</h3>
             <p>
-              Se usa <code>measureUserAgentSpecificMemory</code> cuando existe y
-              hay aislamiento de origen. Solo se suman bloques atribuidos
-              exclusivamente al iframe; se muestran la memoria de la vista
-              montada, el delta desde el calentamiento y el cambio tras las
-              revisitas. Excluye memoria compartida y no atribuida. El GC no
-              está controlado; el delta puede ser negativo. No equivale a RAM
-              total ni permite declarar un ganador.
+              Orden A/B y B/A alternado. Un iframe nuevo por motor y muestra. El
+              reloj excluye descarga, importación y comprobación completa, y
+              termina con DOM confirmado y lectura de layout. Perder
+              visibilidad, cambiar el viewport o sacar el ejecutor de pantalla
+              interrumpe la muestra.
             </p>
           </article>
         </div>
         <div class="method-footer">
           <p>
-            Usa «Activar medición de memoria» para abrir el laboratorio aislado,
-            también en GitHub Pages, en navegadores compatibles. Puedes usar el
-            servidor local:
-            <code>node scripts/benchmarks/serve.mjs --isolated</code>. Puede
-            tardar bastante más.
+            La memoria puede tardar minutos. Usa «Activar medición de memoria»
+            en un navegador compatible; también puedes ejecutar
+            <code>node scripts/benchmarks/serve.mjs --isolated</code>.
+          </p>
+          <p>
             <a
               href="https://developer.mozilla.org/en-US/docs/Web/API/Performance/measureUserAgentSpecificMemory"
-              >Referencia de la API ↗</a
+              >API y límites de memoria ↗</a
             >
+            ·
+            <a href="https://vuejs.org/guide/essentials/conditional.html"
+              >Vue</a
+            >
+            ·
+            <a href="https://angular.dev/guide/templates/control-flow"
+              >Angular</a
+            >
+            · <a href="https://alpinejs.dev/directives/if">Alpine</a>
           </p>
-          <p id="environment">Detectando entorno…</p>
-          <p>
-            Estos microbenchmarks describen estas implementaciones y este
-            dispositivo. Repite sin otras pestañas ocupadas y compara dentro del
-            mismo navegador; no sustituyen una aplicación completa.
-          </p>
+          <p id="environment"></p>
         </div>
       </section>
     </main>
     <footer class="wrap footer">
       <a class="brand" href="index.html">g. / GTPL</a
-      ><span>Medir también es aprender dónde mejorar.</span
+      ><span>Elegir el patrón cambia la pregunta.</span
       ><a href="#">Volver arriba ↑</a>
     </footer>
     <script type="module" src="benchmarks/app.js"></script>

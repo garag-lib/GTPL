@@ -60,7 +60,7 @@ cp dist/gtpl.global.js docs/gtpl.global.js
 node scripts/benchmarks/build.mjs
 
 echo "==> Committing version bump and compiled assets"
-git add package.json dist docs/gtpl.global.js docs/benchmarks/vendor docs/benchmarks/manifest.json docs/benchmarks/templates.json docs/benchmarks/lab.html
+git add package.json dist docs/gtpl.global.js docs/benchmarks/vendor docs/benchmarks/methods docs/benchmarks/manifest.json docs/benchmarks/templates.json docs/benchmarks/lab.html
 if git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
   git add package-lock.json
 fi

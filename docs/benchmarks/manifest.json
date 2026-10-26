@@ -103,5 +103,2113 @@
       "gzipBytes": 100753,
       "sha256": "3772f3bbc5ed64ded624a353c664a23bde31ef65504a063204017e6737104fe1"
     }
+  },
+  "methods": {
+    "switch-8": {
+      "gtpl": {
+        "file": "benchmarks/methods/switch-8-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-gtpl.js",
+            "bytes": 667834,
+            "gzipBytes": 11946,
+            "sha256": "278d376c42b7688bbcd0d600d5a22e5ce19d60ab5332a9c19c7374ec10d3e2cd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 695504,
+        "gzipBytes": 21557
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/switch-8-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-gtpl-jit.js",
+            "bytes": 391591,
+            "gzipBytes": 10716,
+            "sha256": "9d2983d2d4279da8a73f5884cd5db5885d343d30763b9a3f87355c2d9266c0a7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 432710,
+        "gzipBytes": 24976
+      },
+      "react": {
+        "file": "benchmarks/methods/switch-8-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-react.js",
+            "bytes": 607170,
+            "gzipBytes": 14869,
+            "sha256": "59dd0ade0064e967b6a3c01789abd109d279bfe29a380605e101b41874b28746"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 829188,
+        "gzipBytes": 84227
+      },
+      "vue": {
+        "file": "benchmarks/methods/switch-8-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-vue.js",
+            "bytes": 538971,
+            "gzipBytes": 45056,
+            "sha256": "1e522fa166eadc3e8ee90bc9db7058a295c0b73c5a6baa31a6f858ed506aa1d8"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 597774,
+        "gzipBytes": 68893
+      },
+      "alpine": {
+        "file": "benchmarks/methods/switch-8-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-alpine.js",
+            "bytes": 398023,
+            "gzipBytes": 11214,
+            "sha256": "2773b1d4a96b860976f8613dc0b902f83128fdd141a84988ea04015139b8874e"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 454624,
+        "gzipBytes": 31715
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/switch-8-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-vanilla.js",
+            "bytes": 391533,
+            "gzipBytes": 10680,
+            "sha256": "e1bc0251f4539da7aa68858d051527b25f975e4243e2262a59219109c7644f7e"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 392654,
+        "gzipBytes": 11426
+      },
+      "angular": {
+        "file": "benchmarks/methods/switch-8-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": 8,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-8-angular.js",
+            "bytes": 459620,
+            "gzipBytes": 55891,
+            "sha256": "b0f641d6d0bdeae337815ca749624a9a11d2bbd496336027b12909ba181abb54"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 767392,
+        "gzipBytes": 156488
+      }
+    },
+    "switch-32": {
+      "gtpl": {
+        "file": "benchmarks/methods/switch-32-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-gtpl.js",
+            "bytes": 2675492,
+            "gzipBytes": 45279,
+            "sha256": "853dea9e19181582be839a986de6c3e5763b1a1ad860df66808df97dcd395bbe"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 2703162,
+        "gzipBytes": 54890
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/switch-32-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-gtpl-jit.js",
+            "bytes": 1570651,
+            "gzipBytes": 40672,
+            "sha256": "13da850320df447f5a32c6e9b5ab1927f16576dd0527e03c0d12711fc096fa08"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1611770,
+        "gzipBytes": 54932
+      },
+      "react": {
+        "file": "benchmarks/methods/switch-32-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-react.js",
+            "bytes": 2432428,
+            "gzipBytes": 56846,
+            "sha256": "f8cc41b27244ee827dc5caa3d8054a66860d7a0c74775ecf26dc180516ca60b0"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 2654446,
+        "gzipBytes": 126204
+      },
+      "vue": {
+        "file": "benchmarks/methods/switch-32-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-vue.js",
+            "bytes": 2189208,
+            "gzipBytes": 169743,
+            "sha256": "37728f3dde955431802cf0ef9236ad65de03b3bcb5e1bf9ffb20bc5eb5c184ed"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 2248011,
+        "gzipBytes": 193580
+      },
+      "alpine": {
+        "file": "benchmarks/methods/switch-32-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-alpine.js",
+            "bytes": 1596187,
+            "gzipBytes": 42103,
+            "sha256": "a243c5a8ce858210e37e1a0466d8d4600a42e81806a9eb16c1f6fb8921493c93"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1652788,
+        "gzipBytes": 62604
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/switch-32-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-vanilla.js",
+            "bytes": 1570331,
+            "gzipBytes": 40380,
+            "sha256": "e2572ef4733093ec2ac0b5de4e687fe3dc09e47f37132eb1faec13969e8a5d0c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1571452,
+        "gzipBytes": 41126
+      },
+      "angular": {
+        "file": "benchmarks/methods/switch-32-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": 32,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-32-angular.js",
+            "bytes": 1830944,
+            "gzipBytes": 218499,
+            "sha256": "136ba33299c75dd9386904f7122a2ec6b7f8677c2575ac540e7963e5d33d28de"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 2138716,
+        "gzipBytes": 319096
+      }
+    },
+    "switch-64": {
+      "gtpl": {
+        "file": "benchmarks/methods/switch-64-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-gtpl.js",
+            "bytes": 5353062,
+            "gzipBytes": 89692,
+            "sha256": "4d6c60c656df7a153f94c7a99cccc3dd51a76bb7b406371d92f64fa04c207cd4"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 5380732,
+        "gzipBytes": 99303
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/switch-64-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-gtpl-jit.js",
+            "bytes": 3143419,
+            "gzipBytes": 80470,
+            "sha256": "2aaac74861320b093acee6bdbc7cecbc28dc1adcdf25db0f15d5ed1806394327"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 3184538,
+        "gzipBytes": 94730
+      },
+      "react": {
+        "file": "benchmarks/methods/switch-64-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-react.js",
+            "bytes": 4866796,
+            "gzipBytes": 112861,
+            "sha256": "114d7869427a5eff112e1babf195b75341bf0cd3ad9d29403218dd4ed2fa1aea"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 5088814,
+        "gzipBytes": 182219
+      },
+      "vue": {
+        "file": "benchmarks/methods/switch-64-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-vue.js",
+            "bytes": 4409780,
+            "gzipBytes": 336160,
+            "sha256": "b53fd0176c06bcdd2510c4a5d7e92225fe5b1f8731cfcf9ae58b6515908e911a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 4468583,
+        "gzipBytes": 359997
+      },
+      "alpine": {
+        "file": "benchmarks/methods/switch-64-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-alpine.js",
+            "bytes": 3194427,
+            "gzipBytes": 83105,
+            "sha256": "ee83f5bca36bf816e86baa89ad6d454d1a50708861a31cc0045ba8e58f08bb41"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 3251028,
+        "gzipBytes": 103606
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/switch-64-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-vanilla.js",
+            "bytes": 3142747,
+            "gzipBytes": 79765,
+            "sha256": "7bebb37ba32e7bab407ae21792945151faf56b8f8e25f7f89589da27a9c7df26"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 3143868,
+        "gzipBytes": 80511
+      },
+      "angular": {
+        "file": "benchmarks/methods/switch-64-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": 64,
+        "assets": [
+          {
+            "file": "benchmarks/methods/switch-64-angular.js",
+            "bytes": 3660540,
+            "gzipBytes": 435031,
+            "sha256": "2cc56dd66e4172558fbe92058cbc6419948a9e5a8095ceca8516af57618052d0"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 3968312,
+        "gzipBytes": 535628
+      }
+    },
+    "for": {
+      "gtpl": {
+        "file": "benchmarks/methods/for-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-gtpl.js",
+            "bytes": 844,
+            "gzipBytes": 488,
+            "sha256": "7eeef8ba2cea990ccfb26549fe0fb38bf5d757ff9cd761fc3aeb8649467c2366"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 28514,
+        "gzipBytes": 10099
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/for-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-gtpl-jit.js",
+            "bytes": 589,
+            "gzipBytes": 400,
+            "sha256": "46eade3072f29b48a2bdceda793cf590bdec657db41b4c074b56e6d250db5d11"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 41708,
+        "gzipBytes": 14660
+      },
+      "react": {
+        "file": "benchmarks/methods/for-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-react.js",
+            "bytes": 765,
+            "gzipBytes": 411,
+            "sha256": "3a430821998cfd529d733b98725a44925d0c0e20c4387ed3deac075f5c0da074"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 222783,
+        "gzipBytes": 69769
+      },
+      "vue": {
+        "file": "benchmarks/methods/for-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-vue.js",
+            "bytes": 661,
+            "gzipBytes": 424,
+            "sha256": "f65cb2287f172da22e74b06dbe9cb3943452358c9109556f1fb1b77f3ab40419"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 59464,
+        "gzipBytes": 24261
+      },
+      "alpine": {
+        "file": "benchmarks/methods/for-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-alpine.js",
+            "bytes": 696,
+            "gzipBytes": 453,
+            "sha256": "8f88445e693373fd37bd8a2e0f1382d4e8aa2df16231eb157a25a77fb5fe4a08"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 57297,
+        "gzipBytes": 20954
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/for-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-vanilla.js",
+            "bytes": 684,
+            "gzipBytes": 456,
+            "sha256": "5ba17409498df1be99ea3146d67dfc071d1a57e6a7708a2259472fa20346873f"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1805,
+        "gzipBytes": 1202
+      },
+      "angular": {
+        "file": "benchmarks/methods/for-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/for-angular.js",
+            "bytes": 1604,
+            "gzipBytes": 948,
+            "sha256": "45d2617f0445600b530944acc94612dec2ffa3e079766e956e49fc8734347200"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 309376,
+        "gzipBytes": 101545
+      }
+    },
+    "if": {
+      "gtpl": {
+        "file": "benchmarks/methods/if-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-gtpl.js",
+            "bytes": 83810,
+            "gzipBytes": 2048,
+            "sha256": "980b23aec240242de6b5d7ac575a21c5cc35e387200caa36c3ccd2d14470900b"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 111480,
+        "gzipBytes": 11659
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/if-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-gtpl-jit.js",
+            "bytes": 49332,
+            "gzipBytes": 1861,
+            "sha256": "9bb9efe29dd783117e333ab1273179774b951683de647ebc08479be7f8090a8b"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 90451,
+        "gzipBytes": 16121
+      },
+      "react": {
+        "file": "benchmarks/methods/if-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-react.js",
+            "bytes": 76373,
+            "gzipBytes": 2428,
+            "sha256": "085251639f93b4b46a89716c95c4c5090eadcb7de2ad8643e2b365ce8561a03d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 298391,
+        "gzipBytes": 71786
+      },
+      "vue": {
+        "file": "benchmarks/methods/if-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-vue.js",
+            "bytes": 66743,
+            "gzipBytes": 6362,
+            "sha256": "c9f215e691817e065b601fd39e1423db4ae87a771f67a6d78625d3dc9b244ad9"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 125546,
+        "gzipBytes": 30199
+      },
+      "alpine": {
+        "file": "benchmarks/methods/if-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-alpine.js",
+            "bytes": 50209,
+            "gzipBytes": 1997,
+            "sha256": "51b5b909992b9190bed7fc97d39a60d4ef32c8cd071b4ea53b17390722342e24"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 106810,
+        "gzipBytes": 22498
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/if-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-vanilla.js",
+            "bytes": 49374,
+            "gzipBytes": 1909,
+            "sha256": "0fd3c6cce579481f32ec09d72072a582fce0759fe364a422a81c624d7565a382"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 50495,
+        "gzipBytes": 2655
+      },
+      "angular": {
+        "file": "benchmarks/methods/if-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/if-angular.js",
+            "bytes": 62718,
+            "gzipBytes": 8647,
+            "sha256": "4e009f154c5137531d7bb07ee4c71002838311e6786292d0ce0059206a67a17f"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 370490,
+        "gzipBytes": 109244
+      }
+    },
+    "styles": {
+      "gtpl": {
+        "file": "benchmarks/methods/styles-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-gtpl.js",
+            "bytes": 801,
+            "gzipBytes": 474,
+            "sha256": "171011823bb30f09b9c8f75b2d3c03f0c66660bfbb02f209178d8fc933304f74"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 28471,
+        "gzipBytes": 10085
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/styles-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-gtpl-jit.js",
+            "bytes": 620,
+            "gzipBytes": 404,
+            "sha256": "190ec6c5ed28cf17f9110e9f39c1dfdc5215d6cbbd40dfc73242616675c02ba3"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 41739,
+        "gzipBytes": 14664
+      },
+      "react": {
+        "file": "benchmarks/methods/styles-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-react.js",
+            "bytes": 690,
+            "gzipBytes": 391,
+            "sha256": "69333a78e622a3dae91c70e98416da54d68a0986d4061307d2837e4741ea69f6"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 222708,
+        "gzipBytes": 69749
+      },
+      "vue": {
+        "file": "benchmarks/methods/styles-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-vue.js",
+            "bytes": 585,
+            "gzipBytes": 381,
+            "sha256": "408a7854ad11559f3055bc75cafd1e99c586107504159d3eb3321a149d8e5a03"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 59388,
+        "gzipBytes": 24218
+      },
+      "alpine": {
+        "file": "benchmarks/methods/styles-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-alpine.js",
+            "bytes": 636,
+            "gzipBytes": 429,
+            "sha256": "f4e67ae9941111cbc6839f685ad3b3b7db1c1da259a77b1d73a56ea647f4de9e"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 57237,
+        "gzipBytes": 20930
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/styles-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-vanilla.js",
+            "bytes": 499,
+            "gzipBytes": 356,
+            "sha256": "a2d384d9f80ca4f6fdf0eff1dd8c50ce0572d4f085f46fb0412c9323a02d786c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1620,
+        "gzipBytes": 1102
+      },
+      "angular": {
+        "file": "benchmarks/methods/styles-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/styles-angular.js",
+            "bytes": 1675,
+            "gzipBytes": 956,
+            "sha256": "6b368dbe7656ef6c133d1d20f1f7d311be1cbf6052996a83096305208fe4c4ae"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 309447,
+        "gzipBytes": 101553
+      }
+    },
+    "classes": {
+      "gtpl": {
+        "file": "benchmarks/methods/classes-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-gtpl.js",
+            "bytes": 686,
+            "gzipBytes": 462,
+            "sha256": "38fb695811c284a1b6cd84318cc1387e172ad05aca1976f3d90ed1235cb6f22c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 28356,
+        "gzipBytes": 10073
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/classes-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-gtpl-jit.js",
+            "bytes": 551,
+            "gzipBytes": 378,
+            "sha256": "586ca24e5f42f5a31b03dd1ee2f3cebfeaaf983c86f4c4229bd26c6fd96a9c02"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 41670,
+        "gzipBytes": 14638
+      },
+      "react": {
+        "file": "benchmarks/methods/classes-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-react.js",
+            "bytes": 689,
+            "gzipBytes": 388,
+            "sha256": "3bfb679acf7fb4d601dc3afac0acf12506672be419aa57678f996f648f40a33e"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 222707,
+        "gzipBytes": 69746
+      },
+      "vue": {
+        "file": "benchmarks/methods/classes-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-vue.js",
+            "bytes": 585,
+            "gzipBytes": 381,
+            "sha256": "fe4312800b873108b4a5a47f753ab6b1227217ee4856c495abf17d77d4c2c350"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 59388,
+        "gzipBytes": 24218
+      },
+      "alpine": {
+        "file": "benchmarks/methods/classes-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-alpine.js",
+            "bytes": 640,
+            "gzipBytes": 427,
+            "sha256": "edb565647dccc71b31f84d7573e92ebab97f82fffe74a8aab6cbe509069e833d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 57241,
+        "gzipBytes": 20928
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/classes-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-vanilla.js",
+            "bytes": 505,
+            "gzipBytes": 352,
+            "sha256": "21ca15b5f8a4603d2897ebee23d01048b34ce7e2ade154df17220214b30ee859"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1626,
+        "gzipBytes": 1098
+      },
+      "angular": {
+        "file": "benchmarks/methods/classes-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/classes-angular.js",
+            "bytes": 1556,
+            "gzipBytes": 918,
+            "sha256": "ac9c3646902c490db9d81c1e063f6565b71fd4b9d8f0c1f806742fb736964d48"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 309328,
+        "gzipBytes": 101515
+      }
+    },
+    "attributes": {
+      "gtpl": {
+        "file": "benchmarks/methods/attributes-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-gtpl.js",
+            "bytes": 699,
+            "gzipBytes": 455,
+            "sha256": "1e35d492dd0685b42ae8edc618ff99c8984ac9f6c2e2b1f66d79c771523859db"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 28369,
+        "gzipBytes": 10066
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/attributes-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-gtpl-jit.js",
+            "bytes": 549,
+            "gzipBytes": 378,
+            "sha256": "7bf15328fadf368886e37ecb7e7e6cabbc9d800b4d0056e4b925fa72b43e38fb"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 41668,
+        "gzipBytes": 14638
+      },
+      "react": {
+        "file": "benchmarks/methods/attributes-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-react.js",
+            "bytes": 691,
+            "gzipBytes": 391,
+            "sha256": "53e411736e12b03c0000497ceacb2cf0f7a72e3f4c0782ce573669617f1a1695"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 222709,
+        "gzipBytes": 69749
+      },
+      "vue": {
+        "file": "benchmarks/methods/attributes-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-vue.js",
+            "bytes": 607,
+            "gzipBytes": 397,
+            "sha256": "3553bd047222ede8a74c3fc567a1d582938f2d8f290cbfa3045e6558b88b0299"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 59410,
+        "gzipBytes": 24234
+      },
+      "alpine": {
+        "file": "benchmarks/methods/attributes-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-alpine.js",
+            "bytes": 727,
+            "gzipBytes": 472,
+            "sha256": "66e3320bc2393979a1eb65efb07656f5b78e6e0380bbd55c980c3ce36fdfffde"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 57328,
+        "gzipBytes": 20973
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/attributes-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-vanilla.js",
+            "bytes": 554,
+            "gzipBytes": 387,
+            "sha256": "df57d2ab1c39d880a92e187ed10e921c383178ab26e6dfc76b63d5348a47c1cd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1675,
+        "gzipBytes": 1133
+      },
+      "angular": {
+        "file": "benchmarks/methods/attributes-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/attributes-angular.js",
+            "bytes": 1680,
+            "gzipBytes": 960,
+            "sha256": "1bd1d25239ec0aaf303d6b32a06f19b99372573089835905f05c9392b881deed"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 309452,
+        "gzipBytes": 101557
+      }
+    },
+    "forms": {
+      "gtpl": {
+        "file": "benchmarks/methods/forms-gtpl.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-gtpl.js",
+            "bytes": 777,
+            "gzipBytes": 488,
+            "sha256": "c8244581a73b65351dd0943106a08a9150304795a847ed7b41201fe440f6deac"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 28447,
+        "gzipBytes": 10099
+      },
+      "gtpl-jit": {
+        "file": "benchmarks/methods/forms-gtpl-jit.js",
+        "version": "1.1.8",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-gtpl-jit.js",
+            "bytes": 593,
+            "gzipBytes": 397,
+            "sha256": "54eb859d277e405054e33451a41ccb36fe1bcbfd12110ebf9eff868fb489bb85"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AREOMZ2O.js",
+            "bytes": 13449,
+            "gzipBytes": 4649,
+            "sha256": "588a75c7f26e238993d69586f98663d3785b09630c2b3b2a1983ae9baa210931"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-3D7CAPJD.js",
+            "bytes": 26549,
+            "gzipBytes": 8865,
+            "sha256": "7cae15c8d29b2ce4596bdafba7d042dc93064feec071a1c13fccfff9747cebcd"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 41712,
+        "gzipBytes": 14657
+      },
+      "react": {
+        "file": "benchmarks/methods/forms-react.js",
+        "version": "19.3.1",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-react.js",
+            "bytes": 805,
+            "gzipBytes": 436,
+            "sha256": "8f4661befc9e0b119d81ca6ba2749c94b0c31a1ef1bf21a0e42bf0a864031c07"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
+            "bytes": 220897,
+            "gzipBytes": 68612,
+            "sha256": "e67eceae7b1ad5a3bfe0b2d32a6c33e576a287e31ce56821136fb316894a4e32"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          }
+        ],
+        "bytes": 222823,
+        "gzipBytes": 69794
+      },
+      "vue": {
+        "file": "benchmarks/methods/forms-vue.js",
+        "version": "3.5.44",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-vue.js",
+            "bytes": 730,
+            "gzipBytes": 456,
+            "sha256": "9d3801752065f0b4c939d23ee63cac2b929796be8589fcf344ef8d72350c101f"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
+            "bytes": 57682,
+            "gzipBytes": 23091,
+            "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 59533,
+        "gzipBytes": 24293
+      },
+      "alpine": {
+        "file": "benchmarks/methods/forms-alpine.js",
+        "version": "3.17.5",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-alpine.js",
+            "bytes": 693,
+            "gzipBytes": 447,
+            "sha256": "d63c3815e9d217c860327facd90a2a2c9871e884641b3509a4760b82c3dbc0d8"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
+            "bytes": 55480,
+            "gzipBytes": 19755,
+            "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 57294,
+        "gzipBytes": 20948
+      },
+      "vanilla": {
+        "file": "benchmarks/methods/forms-vanilla.js",
+        "version": "DOM API",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-vanilla.js",
+            "bytes": 658,
+            "gzipBytes": 418,
+            "sha256": "a2283e42b55d6a1119c650d58307d62dce666a67c4dc20d7d923029104d3bec0"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
+            "bytes": 544,
+            "gzipBytes": 385,
+            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 1779,
+        "gzipBytes": 1164
+      },
+      "angular": {
+        "file": "benchmarks/methods/forms-angular.js",
+        "version": "22.2.3",
+        "blocksPerBranch": 128,
+        "declaredCases": null,
+        "assets": [
+          {
+            "file": "benchmarks/methods/forms-angular.js",
+            "bytes": 1777,
+            "gzipBytes": 1018,
+            "sha256": "b71888244fa16458804771c31819488806d5634f43dbf75b6f36aa015e84d278"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
+            "bytes": 307195,
+            "gzipBytes": 100236,
+            "sha256": "4f846389aef6ecf3404ee35ec713dfd679612a09aff468ad31524b250c41566c"
+          },
+          {
+            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
+            "bytes": 577,
+            "gzipBytes": 361,
+            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
+          }
+        ],
+        "bytes": 309549,
+        "gzipBytes": 101615
+      }
+    }
   }
 }

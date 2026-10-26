@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { CASES, templates } from "./templates.mjs";
 import { createGridSources } from "./grid-adapters.mjs";
+import { prepareMethods, bundleMethods } from "./method-adapters.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
@@ -101,6 +102,7 @@ export function createAdapter() { let element; return {
 }; }`,
 };
 const gridSources = await createGridSources({ root, work, GCode });
+const preparedMethods = await prepareMethods({ root, work, GCode });
 
 // Angular's actual AOT compiler; no runtime compiler or development mode in the bundle.
 await writeFile(
@@ -131,7 +133,7 @@ await writeFile(
       ignoreDeprecations: "6.0",
     },
     angularCompilerOptions: { compilationMode: "full", strictTemplates: true },
-    files: ["angular.ts", "grid-angular.ts"],
+    files: ["angular.ts", "grid-angular.ts", ...preparedMethods.angularFiles],
   }),
 );
 execFileSync(
@@ -260,6 +262,17 @@ for (const id of [
     `${id}: ${(bytes.length / 1024).toFixed(1)} KiB (${(gzipSync(bytes).length / 1024).toFixed(1)} KiB gzip)`,
   );
 }
+manifest.methods = await bundleMethods({
+  prepared: preparedMethods,
+  root,
+  work,
+  versions: Object.fromEntries(
+    Object.entries(manifest.frameworks).map(([id, entry]) => [
+      id,
+      entry.version,
+    ]),
+  ),
+});
 await writeFile(
   path.join(root, "docs/benchmarks/manifest.json"),
   JSON.stringify(manifest, null, 2) + "\n",

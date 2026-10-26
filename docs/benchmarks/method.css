@@ -1,0 +1,72 @@
+.bench-block {
+  padding: 8px;
+  margin: 4px;
+  border: 1px solid #ccd9c6;
+  border-radius: 5px;
+  background: #f1f6e8;
+}
+.bench-block h4 {
+  font-size: 13px;
+  margin: 0 0 5px;
+}
+.bench-block p {
+  margin: 0 0 5px;
+  font-size: 11px;
+}
+.bench-block > div {
+  display: flex;
+  gap: 12px;
+}
+.bench-block ul {
+  margin: 4px 0;
+  padding-left: 18px;
+  display: flex;
+  gap: 25px;
+}
+.bench-value {
+  font-variant-numeric: tabular-nums;
+}
+.method-row {
+  display: flex;
+  gap: 16px;
+  padding: 3px 8px;
+  border-bottom: 1px solid #d5ded2;
+}
+.method-row i {
+  font-style: normal;
+}
+.bench-box {
+  display: inline-block;
+  min-height: 14px;
+  padding: 2px;
+  margin: 1px;
+  font-size: 10px;
+  background: #d8f36a;
+  color: #132218;
+  width: 120px;
+}
+.bench-box.tone-a {
+  background: rgb(216, 243, 106);
+  color: rgb(19, 34, 24);
+  width: 120px;
+}
+.bench-box.tone-b {
+  background: rgb(118, 96, 202);
+  color: white;
+  width: 90px;
+}
+.bench-attr {
+  font: 11px system-ui;
+  padding: 4px;
+  margin: 2px;
+}
+.bench-input {
+  width: 110px;
+  margin: 2px;
+  font: 11px system-ui;
+}
+.form-output {
+  display: block;
+  padding: 8px;
+  font: 12px monospace;
+}

@@ -1,5 +1,11 @@
-import { examples } from "./examples.js";
-import { metrics, summarize, comparison } from "./stats.js";
+import { methodExample } from "./method-examples.js";
+import {
+  METHODS,
+  methodMetrics as metrics,
+  selectedMetrics,
+  methodKey,
+} from "./method-catalog.js";
+import { summarize, comparison } from "./stats.js";
 import { gridSizes } from "./grid-workload.js";
 import { renderGridCharts } from "./grid-charts.js";
 
@@ -14,9 +20,12 @@ const engines = {
     name: "React",
     note: "Producción · render confirmado con flushSync",
   },
-  vue: { name: "Vue", note: "Plantilla precompilada · v-if + v-for" },
-  alpine: { name: "Alpine", note: "Directivas HTML · x-if + x-for" },
-  angular: { name: "Angular", note: "AOT · @switch + @for · sin Zone.js" },
+  vue: { name: "Vue", note: "Plantilla precompilada · directivas nativas" },
+  alpine: {
+    name: "Alpine",
+    note: "Directivas HTML · interpretación al montar",
+  },
+  angular: { name: "Angular", note: "AOT · sin Zone.js" },
   vanilla: {
     name: "JavaScript directo",
     note: "Referencia manual · sin runtime de framework",
@@ -24,11 +33,11 @@ const engines = {
 };
 const number = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 2 });
 let manifest,
-  templates,
   runData,
   running = false,
   controller;
 const controls = [...document.querySelectorAll(".arena select, .arena input")];
+const method = () => $("#method").value;
 const pair = () => [$("#engine-a").value, $("#engine-b").value];
 const numeric = (value, metric) =>
   metric.unit === "MiB" ? value / 1024 ** 2 : value;
@@ -74,38 +83,27 @@ function bar(container, label, value, max, metric, rival, pending = false) {
 function renderCharts() {
   const [a, b] = pair();
   $("#charts").replaceChildren();
-  const chartKeys = [
-    "mountMs",
-    "updateMs",
-    "switchFirstMs",
-    "switchRevisitMs",
-    "fps",
-    "memoryBytes",
-    "frameP95Ms",
-    "memoryMountedBytes",
-    "memoryGrowthBytes",
-  ];
-  for (const metric of metrics.filter((metric) =>
-    chartKeys.includes(metric.key),
-  )) {
-    const card = element("article", undefined, "chart-card");
-    const header = element("header");
+  for (const metric of selectedMetrics(method())) {
+    const card = element("article", undefined, "chart-card"),
+      header = element("header");
     header.append(
       element("h3", metric.title),
       element(
         "span",
-        metric.direction === "lower"
-          ? "↓ MENOS"
-          : metric.direction === "higher"
-            ? "↑ MÁS"
-            : "EXPERIMENTAL",
+        metric.kind === "memory"
+          ? "JS+DOM · EXPERIMENTAL"
+          : metric.kind === "count"
+            ? "DOM · VERIFICADO"
+            : metric.direction === "higher"
+              ? "↑ MÁS"
+              : "↓ MENOS",
         "direction",
       ),
     );
     card.append(header, element("p", metric.note, "chart-note"));
     const av = stats(a, metric.key),
-      bv = stats(b, metric.key);
-    const max = Math.max(Math.abs(av?.median ?? 0), Math.abs(bv?.median ?? 0));
+      bv = stats(b, metric.key),
+      max = Math.max(Math.abs(av?.median ?? 0), Math.abs(bv?.median ?? 0));
     bar(
       card,
       engines[a].name,
@@ -116,85 +114,68 @@ function renderCharts() {
       !runData,
     );
     bar(card, engines[b].name, bv?.median ?? null, max, metric, true, !runData);
-    const footer = element("div", undefined, "metric-footer");
-    if (metric.direction === "none") {
-      if (runData && !runData.config.scenarios.some((s) => s !== "grid"))
-        footer.textContent = "La memoria se mide en las pruebas de ramas.";
-      else if (!memorySupported)
-        footer.textContent =
-          "Activa el modo de memoria en un navegador compatible.";
-      else if (!runData) footer.textContent = "Pendiente de medición";
-      else if (!runData.config.memory)
-        footer.textContent = "Medición de memoria desactivada";
-      else if (
-        metric.needsSwitch &&
-        !runData.config.scenarios.includes("switch")
-      )
-        footer.textContent = "Selecciona también el escenario Switch lazy.";
-      else
-        footer.textContent =
-          av || bv
-            ? "Experimental · valores firmados · sin clasificación"
-            : "N/D: memoria no atribuida por el navegador.";
-    } else if (!runData) footer.textContent = "Pendiente de medición";
-    else if (!runData.config.scenarios.includes(metric.scenario))
-      footer.textContent = "Escenario no seleccionado";
+    const foot = element("div", undefined, "metric-footer");
+    if (metric.kind === "memory")
+      foot.textContent = !runData
+        ? "Pendiente · activa memoria para medir MiB"
+        : !runData.config.memory
+          ? "Memoria desactivada; el DOM sí se verifica."
+          : av || bv
+            ? "Deltas del entorno JS+DOM · puede intervenir el GC"
+            : "API no disponible o lectura fallida.";
+    else if (metric.direction === "none")
+      foot.textContent =
+        av || bv
+          ? "Recuento real; incluye plantillas inertes por separado."
+          : "Pendiente de medición";
+    else if (!runData) foot.textContent = "Pendiente de medición";
     else {
       const verdict = comparison(av, bv, metric);
-      footer.textContent = verdict.winner
-        ? `${engines[verdict.winner === "a" ? a : b].name}: ${metric.direction === "higher" ? `${number.format(verdict.ratio)}× la cadencia` : `${number.format((1 - 1 / verdict.ratio) * 100)}% menos tiempo`}${verdict.overlap ? " · rangos solapados" : " · en estas muestras"}`
+      foot.textContent = verdict.winner
+        ? `${engines[verdict.winner === "a" ? a : b].name}: ${metric.direction === "higher" ? number.format(verdict.ratio) + "× la cadencia" : number.format((1 - 1 / verdict.ratio) * 100) + "% menos tiempo"}${verdict.overlap ? " · rangos solapados" : ""}`
         : verdict.text;
-      if (metric.key === "fps" && av && bv) {
-        const idleA = stats(a, "refreshMs"),
-          idleB = stats(b, "refreshMs");
-        if (
-          idleA &&
-          idleB &&
-          (Math.max(idleA.median, idleB.median) > 50 ||
-            Math.max(idleA.median, idleB.median) /
-              Math.min(idleA.median, idleB.median) >
-              1.15)
-        ) {
-          footer.textContent =
-            "Cadencia en reposo limitada o distinta. Repite la prueba.";
-        }
+      if (metric.key === "fps") {
+        const cadenceA = stats(a, "refreshMs")?.median,
+          cadenceB = stats(b, "refreshMs")?.median;
         if (
           [a, b].some((id) =>
             runData.samples[id].some(
               (sample) => sample.result.raw.frameIntervals.length < 12,
             ),
           )
-        ) {
-          footer.textContent =
-            "Menos de 12 frames por muestra; cociente omitido.";
-        }
+        )
+          foot.textContent = "Pocos frames observados; cociente omitido.";
+        else if (
+          cadenceA &&
+          cadenceB &&
+          Math.max(cadenceA, cadenceB) / Math.min(cadenceA, cadenceB) > 1.25
+        )
+          foot.textContent =
+            "Cadencias de reposo diferentes; cociente omitido.";
       }
     }
-    card.append(footer);
+    card.append(foot);
     $("#charts").append(card);
   }
   $("#table-a").textContent = engines[a].name;
   $("#table-b").textContent = engines[b].name;
   $("#result-table").replaceChildren();
-  for (const metric of metrics) {
-    const row = element("tr");
-    const heading = element("th", metric.title);
-    heading.scope = "row";
-    row.append(heading);
+  for (const metric of selectedMetrics(method(), true)) {
+    const row = element("tr"),
+      th = element("th", metric.title);
+    th.scope = "row";
+    row.append(th);
     for (const id of [a, b]) {
-      const summary = stats(id, metric.key);
-      const cell = element(
-        "td",
-        summary ? formatted(summary.median, metric) : "N/D",
-      );
-      if (summary)
-        cell.append(
+      const stat = stats(id, metric.key),
+        td = element("td", stat ? formatted(stat.median, metric) : "N/D");
+      if (stat)
+        td.append(
           element(
             "small",
-            `p95 ${formatted(summary.p95, metric)} · rango ${formatted(summary.min, metric)} – ${formatted(summary.max, metric)} · n=${summary.n}`,
+            `p95 ${formatted(stat.p95, metric)} · rango ${formatted(stat.min, metric)} – ${formatted(stat.max, metric)} · n=${stat.n}`,
           ),
         );
-      row.append(cell);
+      row.append(td);
     }
     $("#result-table").append(row);
   }
@@ -202,16 +183,15 @@ function renderCharts() {
   renderVerdict();
   renderGridCharts({ runData, engines, pair: pair() });
 }
-
 function renderVerdict() {
   const [a, b] = pair();
   const box = $("#verdict");
   const title = box.querySelector("b"),
     description = box.querySelector("p");
   if (!runData) {
-    title.textContent = "Elige un rival. Deja hablar al navegador.";
+    title.textContent = "Elige dos motores y un caso programático.";
     description.textContent =
-      "Sin una puntuación global: ganar en montaje no implica ganar en fluidez o consumo.";
+      "Cada patrón tiene su objetivo: switch se centra en memoria y creación de vistas.";
     return;
   }
   const validA = runData.samples[a].length,
@@ -223,7 +203,7 @@ function renderVerdict() {
       ? `Hay ${runData.errors.length} muestra(s) fallida(s) o interrumpida(s). Consulta el JSON para ver el detalle; no se convierten en ceros.`
       : runData.cancelled
         ? "Ejecución detenida. Se conservan las muestras completas."
-        : "Medianas de esta ejecución. Diferencias pequeñas o rangos solapados necesitan más muestras; no implican una ventaja general.";
+        : "Medianas del caso elegido. Código y plantillas residen en memoria; los recuentos distinguen vista activa y contenido inerte. Los deltas de memoria pueden variar por el GC.";
 }
 
 function renderSamples() {
@@ -231,6 +211,12 @@ function renderSamples() {
   container.replaceChildren();
   const [a, b] = pair(),
     metric = getMetric($("#sample-metric").value);
+  if (!metric) {
+    container.append(
+      element("div", "Selecciona una métrica del caso.", "sample-empty"),
+    );
+    return;
+  }
   const groups = [a, b].map((id) =>
     (runData?.samples[id] ?? []).filter((s) =>
       Number.isFinite(s.result.metrics[metric.key]),
@@ -335,7 +321,32 @@ function renderSamples() {
 }
 
 function renderPair() {
-  const [a, b] = pair();
+  const [a, b] = pair(),
+    spec = METHODS[method()];
+  $("#case-goal").textContent = spec.goal;
+  $("#size-field").hidden = !spec.size;
+  $("#switch-config").hidden = method() !== "switch";
+  $("#grid-config").hidden = method() !== "grid";
+  $("#grid-results").hidden = method() !== "grid";
+  $("#case-results").hidden = method() === "grid";
+  $("#memory").closest("label").hidden = method() === "grid";
+  $("#memory-mode").parentElement.hidden =
+    crossOriginIsolated || method() === "grid";
+  $("#memory").disabled = !memorySupported || method() === "grid";
+  const cases = Number($("#cases").value);
+  $("#active-case").max = cases - 1;
+  if (Number($("#active-case").value) >= cases) $("#active-case").value = 0;
+  $("#results-title").textContent = spec.title;
+  const previousMetric = $("#sample-metric").value;
+  $("#sample-metric").replaceChildren();
+  for (const metric of selectedMetrics(method(), true)) {
+    const option = element("option", metric.title);
+    option.value = metric.key;
+    $("#sample-metric").append(option);
+  }
+  if (selectedMetrics(method(), true).some((m) => m.key === previousMetric))
+    $("#sample-metric").value = previousMetric;
+  const entries = {};
   for (const [side, id] of [
     ["a", a],
     ["b", b],
@@ -343,54 +354,71 @@ function renderPair() {
     const info = manifest?.frameworks[id];
     $(`#engine-${side}-meta`).textContent =
       `${info?.version ?? ""} · ${engines[id].note}`;
+    const example = methodExample(method(), id, cases);
     $(`#code-${side}-title`).textContent = engines[id].name;
-    $(`#code-${side}`).textContent = examples[id].code;
-    $(`#code-${side}-note`).textContent = examples[id].note;
+    $(`#code-${side}`).textContent = example.code;
+    $(`#code-${side}-note`).textContent = example.note;
     $(`#code-${side}-lines`).textContent =
-      `${examples[id].code.split("\n").filter((line) => line.trim()).length} líneas no vacías · ejemplo`;
+      `${example.code.split("\n").filter((s) => s.trim()).length} líneas del extracto`;
+    entries[id] =
+      method() === "grid"
+        ? manifest?.gridFrameworks[id]
+        : manifest?.methods?.[methodKey(method(), cases)]?.[id];
   }
   $("#bundle-chart").replaceChildren();
-  if (manifest) {
-    const metric = { unit: "KiB gzip" };
-    const max = Math.max(
-      ...[a, b].map((id) => manifest.frameworks[id].gzipBytes / 1024),
-    );
-    for (const [index, id] of [a, b].entries())
+  const max = Math.max(
+    ...[a, b].map((id) => (entries[id]?.gzipBytes ?? 0) / 1024),
+  );
+  for (const [index, id] of [a, b].entries())
+    if (entries[id])
       bar(
         $("#bundle-chart"),
         engines[id].name,
-        manifest.frameworks[id].gzipBytes / 1024,
+        entries[id].gzipBytes / 1024,
         max,
-        metric,
+        { unit: "KiB gzip" },
         !!index,
       );
-  }
   const links = $("#source-links");
   links.replaceChildren();
-  for (const id of [a, b]) {
-    const link = element("a", `${engines[id].name} · bundle ejecutado ↗`);
-    link.href = `benchmarks/vendor/${id}.js`;
+  for (const id of [a, b])
+    if (entries[id]) {
+      const link = element("a", `${engines[id].name} · entrada ejecutada ↗`);
+      link.href = entries[id].file;
+      links.append(link);
+    }
+  for (const [file, label] of method() === "grid"
+    ? [["grid-adapters.mjs", "Adaptadores del grid"]]
+    : [
+        ["method-definitions.mjs", "Plantillas completas"],
+        ["method-adapters.mjs", "Adaptadores legibles"],
+      ]) {
+    const link = element("a", label + " ↗");
+    link.href =
+      "https://github.com/garag-lib/GTPL/blob/main/scripts/benchmarks/" + file;
     links.append(link);
   }
-  const build = element("a", "Build y adaptadores legibles ↗");
-  build.href =
-    "https://github.com/garag-lib/GTPL/blob/main/scripts/benchmarks/build.mjs";
-  links.append(build);
-  const sourceId = (id) => (id === "gtpl-jit" ? "gtpl" : id);
-  $("#actual-template").textContent = [a, b]
-    .map(
-      (id) =>
-        `${engines[id].name}\n${templates?.[sourceId(id)] ?? "Render mediante funciones JavaScript. Consulta el adaptador en build.mjs."}`,
-    )
-    .join("\n\n");
+  $("#actual-template").textContent = methodExample(method(), a, cases).code;
   if (!running) $("#run").disabled = !manifest || a === b;
   $("#run-hint").textContent =
     a === b
       ? "Elige dos motores o modos diferentes."
-      : "Las pruebas se ejecutan al pulsar. Mantén esta pestaña en primer plano.";
+      : method() === "switch"
+        ? "La memoria es la medida principal. Los tiempos quedan como datos secundarios."
+        : "Mantén el ejecutor visible mientras se mide.";
+  const query = new URLSearchParams({
+    method: method(),
+    engineA: a,
+    engineB: b,
+    samples: $("#samples").value,
+    cases: String(cases),
+    size: $("#size").value,
+    active: $("#active-case").value,
+    retention: String($("#retention").checked),
+  });
+  $("#memory-mode").href = "benchmarks/isolated.html?" + query;
   renderCharts();
 }
-
 function setRunning(value) {
   running = value;
   controls.forEach((control) => {
@@ -405,7 +433,7 @@ function execute(id, config, signal) {
     const iframe = document.createElement("iframe");
     const token = crypto.randomUUID();
     iframe.title = `Benchmark real de ${engines[id].name}`;
-    iframe.src = `benchmarks/runner.html?engine=${id}&token=${token}${config.mode === "grid" ? "&mode=grid" : ""}`;
+    iframe.src = `benchmarks/runner.html?engine=${id}&token=${token}&mode=${config.mode === "grid" ? "grid" : "method"}`;
     const cleanup = () => {
       clearTimeout(timeout);
       removeEventListener("message", receive);
@@ -451,22 +479,20 @@ async function start() {
   if (running || !manifest) return;
   const [a, b] = pair();
   if (a === b) return;
-  const scenarios = [
-    ...document.querySelectorAll("[name=scenario]:checked"),
-  ].map((input) => input.value);
-  if (!scenarios.length) {
-    $("#status").textContent = "Selecciona al menos un escenario.";
-    return;
-  }
+  const scenarios = [method() === "grid" ? "grid" : "method"];
   if (document.hidden) {
     $("#status").textContent = "Activa esta pestaña para comenzar.";
     return;
   }
   const config = {
+    method: method(),
+    cases: Number($("#cases").value),
+    activeCase: Number($("#active-case").value),
+    retention: $("#retention").checked,
     size: Number($("#size").value),
     count: Number($("#samples").value),
     scenarios,
-    memory: $("#memory").checked,
+    memory: method() !== "grid" && $("#memory").checked,
     grid: {
       columns: Number($("#grid-columns").value),
       rows: Number($("#grid-rows").value),
@@ -487,7 +513,7 @@ async function start() {
   }
   const first = crypto.getRandomValues(new Uint8Array(1))[0] % 2;
   runData = {
-    schema: 1,
+    schema: 2,
     startedAt: new Date().toISOString(),
     engines: [a, b],
     config,
@@ -503,7 +529,7 @@ async function start() {
       crossOriginIsolated,
       timing: "DOM commit + forced layout; excludes import and paint",
       memory:
-        "exclusive URL-attributed delta; shared/unattributed memory excluded; GC uncontrolled",
+        "environment JS+DOM deltas vs empty runner; parent held stable; includes shared/unattributed DOM; GC uncontrolled; exclusive URL bytes also exported",
     },
     samples: { [a]: [], [b]: [] },
     errors: [],
@@ -515,7 +541,7 @@ async function start() {
   $("#progress").value = 0;
   $("#progress").max = config.count * 2;
   $("#result-context").textContent =
-    `${number.format(config.size)} filas × 12 ramas · ${config.count} muestras / motor · ${config.memory ? "memoria experimental activada" : "memoria desactivada"} · ${new Date().toLocaleString("es-ES")}`;
+    `${METHODS[method()].title} · ${method() === "switch" ? config.cases + " ramas × 128 bloques; elegida " + config.activeCase : method() === "if" ? "128 bloques" : method() === "grid" ? "crecimiento X/Y" : config.size + " elementos"} · ${config.count} muestras/motor · memoria ${config.memory ? "activa" : "desactivada"}`;
   $("#live-stage").scrollIntoView({ behavior: "instant", block: "center" });
   const rect = $("#runner-slot").getBoundingClientRect();
   runData.environment.runnerViewport = {
@@ -541,39 +567,11 @@ async function start() {
             throw new Error(
               "Motor omitido tras un fallo anterior en esta ejecución.",
             );
-          const classicScenarios = config.scenarios.filter((s) => s !== "grid");
-          const result = classicScenarios.length
-            ? await execute(
-                id,
-                { ...config, scenarios: classicScenarios },
-                controller.signal,
-              )
-            : {
-                metrics: Object.fromEntries(metrics.map((m) => [m.key, null])),
-                raw: { frameIntervals: [] },
-                validated: true,
-              };
-          if (config.scenarios.includes("grid")) {
-            $("#status").textContent =
-              `${engines[id].name} · grid creciente · muestra ${round + 1}/${config.count}`;
-            const gridResult = await execute(
-              id,
-              { ...config, mode: "grid", scenarios: ["grid"], memory: false },
-              controller.signal,
-            );
-            if (
-              !gridResult.validated ||
-              gridResult.grid.length !== config.grid.levels ||
-              gridResult.grid.some(
-                (point) =>
-                  !point.validated ||
-                  !Number.isFinite(point.fps) ||
-                  point.frames < 1,
-              )
-            )
-              throw new Error("Grid no validado.");
-            result.grid = gridResult.grid;
-          }
+          const result = await execute(
+            id,
+            { ...config, mode: method() === "grid" ? "grid" : "method" },
+            controller.signal,
+          );
           if (
             !result.validated ||
             Object.values(result.metrics).some(
@@ -623,64 +621,83 @@ function download(format) {
   if (format === "json") content = JSON.stringify(runData, null, 2);
   else {
     const columns = [
-      "engine",
-      "version",
-      "round",
-      "rows",
-      "metric",
-      "value",
-      "unit",
-      "source_hash",
-      "started_at",
-      "grid_columns",
-      "grid_rows",
-      "grid_cells",
-    ];
-    const rows = [columns];
+        "engine",
+        "version",
+        "method",
+        "cases",
+        "active_case",
+        "round",
+        "metric",
+        "value",
+        "unit",
+        "phase",
+        "grid_columns",
+        "grid_rows",
+        "grid_cells",
+        "source_hash",
+        "started_at",
+      ],
+      data = [columns];
+    const push = (id, sample, key, value, unit, phase = "", point = {}) =>
+      data.push([
+        id,
+        manifest.frameworks[id].version,
+        runData.config.method,
+        runData.config.cases,
+        runData.config.activeCase,
+        sample.round + 1,
+        key,
+        value ?? "",
+        unit,
+        phase,
+        point.columns ?? "",
+        point.rows ?? "",
+        point.cells ?? "",
+        manifest.gtplSourceHash,
+        runData.startedAt,
+      ]);
     for (const id of runData.engines)
-      for (const sample of runData.samples[id])
-        for (const metric of metrics)
-          rows.push([
+      for (const sample of runData.samples[id]) {
+        for (const metric of selectedMetrics(runData.config.method, true))
+          push(
             id,
-            manifest.frameworks[id].version,
-            sample.round + 1,
-            runData.config.size,
+            sample,
             metric.key,
             Number.isFinite(sample.result.metrics[metric.key])
               ? numeric(sample.result.metrics[metric.key], metric)
-              : "",
+              : null,
             metric.unit,
-            manifest.gtplSourceHash,
-            runData.startedAt,
-            "",
-            "",
-            "",
-          ]);
-    for (const id of runData.engines)
-      for (const sample of runData.samples[id])
+          );
+        for (const snap of sample.result.snapshots ?? []) {
+          push(
+            id,
+            sample,
+            "environmentBytes",
+            snap.memory?.totalBytes,
+            "bytes",
+            snap.phase,
+          );
+          push(
+            id,
+            sample,
+            "exclusiveBytes",
+            snap.memory?.exclusiveBytes,
+            "bytes",
+            snap.phase,
+          );
+          for (const [key, value] of Object.entries(snap.dom))
+            push(id, sample, "dom." + key, value, "nodos", snap.phase);
+        }
         for (const point of sample.result.grid ?? [])
           for (const [key, unit] of [
             ["fps", "fps"],
             ["frameP95Ms", "ms"],
             ["updateMs", "ms"],
             ["updatesPerSecond", "celdas/s"],
-            ["generationMs", "ms"],
           ])
-            rows.push([
-              id,
-              manifest.frameworks[id].version,
-              sample.round + 1,
-              "",
-              `grid.${key}`,
-              point[key],
-              unit,
-              manifest.gtplSourceHash,
-              runData.startedAt,
-              point.columns,
-              point.rows,
-              point.cells,
-            ]);
-    content = rows
+            push(id, sample, "grid." + key, point[key], unit, "", point);
+      }
+    content = data
       .map((row) =>
         row
           .map((value) => `"${String(value).replaceAll('"', '""')}"`)
@@ -695,11 +712,25 @@ function download(format) {
   );
   const link = element("a");
   link.href = url;
-  link.download = `gtpl-vs-${runData.engines.join("-")}-${runData.startedAt.replaceAll(":", "-")}.${format}`;
+  link.download = `gtpl-${runData.config.method}-${runData.engines.join("-")}.${format}`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+const query = new URLSearchParams(location.search);
+if (query.get("method") in METHODS) $("#method").value = query.get("method");
+for (const [id, key] of [
+  ["cases", "cases"],
+  ["size", "size"],
+  ["samples", "samples"],
+  ["engine-a", "engineA"],
+  ["engine-b", "engineB"],
+])
+  if ([...$("#" + id).options].some((o) => o.value === query.get(key)))
+    $("#" + id).value = query.get(key);
+if (query.has("active"))
+  $("#active-case").value = Number(query.get("active")) || 0;
+$("#retention").checked = query.get("retention") === "true";
 const memorySupported =
   crossOriginIsolated &&
   typeof performance.measureUserAgentSpecificMemory === "function";
@@ -711,10 +742,9 @@ if (
   new URLSearchParams(location.search).get("memory") === "1"
 ) {
   $("#memory").checked = true;
-  $("#samples").value = "3";
 }
 $("#memory-help").textContent = memorySupported
-  ? "Modo de memoria activo. Mide la vista montada y el cambio tras revisitas. Puede añadir un minuto por muestra; excluye memoria compartida y RAM del proceso."
+  ? "Modo de memoria activo: deltas del entorno JS+DOM en cada fase; puede tardar varios minutos. Incluye código y plantillas; no mide la RAM total de Chrome."
   : crossOriginIsolated
     ? "Aislamiento activo, pero este navegador no ofrece la API de memoria. Usa una versión compatible de Chrome o Edge."
     : "Abre el modo de memoria para habilitar esta API en Chrome o Edge compatibles, también en GitHub Pages.";
@@ -764,9 +794,6 @@ $("#export-csv").addEventListener("click", () => download("csv"));
 for (const control of controls)
   control.addEventListener("change", () => {
     if (running) return;
-    $("#grid-config").hidden = !document.querySelector(
-      "[name=scenario][value=grid]",
-    ).checked;
     runData = null;
     $("#export-json").disabled = $("#export-csv").disabled = true;
     $("#result-context").textContent =
@@ -777,15 +804,11 @@ for (const control of controls)
 renderPair();
 try {
   const responses = await Promise.all(
-    ["manifest.json", "templates.json"].map((file) =>
-      fetch(`benchmarks/${file}`),
-    ),
+    ["manifest.json"].map((file) => fetch(`benchmarks/${file}`)),
   );
   if (responses.some((response) => !response.ok))
     throw new Error("No se han podido cargar los bundles del experimento.");
-  [manifest, templates] = await Promise.all(
-    responses.map((response) => response.json()),
-  );
+  [manifest] = await Promise.all(responses.map((response) => response.json()));
   $("#engine-state").textContent = "Motores locales · versiones fijadas";
   renderPair();
 } catch (error) {

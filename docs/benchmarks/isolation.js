@@ -19,7 +19,10 @@ try {
           reject(new Error("No se pudo activar el modo de memoria."));
       });
     });
-  location.replace(new URL("./lab.html?memory=1", import.meta.url));
+  const next = new URL("./lab.html", import.meta.url);
+  next.search = location.search;
+  next.searchParams.set("memory", "1");
+  location.replace(next);
 } catch (error) {
   status.textContent = error.message;
 }

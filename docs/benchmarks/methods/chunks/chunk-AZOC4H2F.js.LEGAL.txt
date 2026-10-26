@@ -1,0 +1,26 @@
+Bundled license information:
+
+@angular/core/fesm2022/_effect-chunk.mjs:
+@angular/core/fesm2022/_not_found-chunk.mjs:
+@angular/core/fesm2022/primitives-di.mjs:
+@angular/core/fesm2022/_untracked-chunk.mjs:
+@angular/core/fesm2022/primitives-signals.mjs:
+@angular/core/fesm2022/_pending_tasks-chunk.mjs:
+@angular/core/fesm2022/_attribute-chunk.mjs:
+@angular/core/fesm2022/_debug_node-chunk.mjs:
+@angular/core/fesm2022/_resource-chunk.mjs:
+@angular/core/fesm2022/core.mjs:
+@angular/common/fesm2022/_platform_location-chunk.mjs:
+@angular/common/fesm2022/_location-chunk.mjs:
+@angular/common/fesm2022/_common_module-chunk.mjs:
+@angular/common/fesm2022/_platform_navigation-chunk.mjs:
+@angular/common/fesm2022/_xhr-chunk.mjs:
+@angular/common/fesm2022/common.mjs:
+@angular/platform-browser/fesm2022/_dom_renderer-chunk.mjs:
+@angular/platform-browser/fesm2022/_browser-chunk.mjs:
+@angular/platform-browser/fesm2022/platform-browser.mjs:
+  /**
+   * @license Angular v22.2.3
+   * (c) 2010-2026 Google LLC. https://angular.dev/
+   * License: MIT
+   */

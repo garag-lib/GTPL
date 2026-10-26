@@ -1,20 +1,20 @@
 # Benchmark Lab
 
-Open `../benchmarks.html` through HTTP. The page is linked from `docs/index.html`
-and works as a static GitHub Pages site, including under the `/GTPL/` subpath.
-All runtime assets are local; no CDN requests or build server are required to run it.
-
-From the repository root:
+Open `../benchmarks.html` through HTTP. It is linked from `docs/index.html`
+and works on GitHub Pages, including under `/GTPL/`. Runtime assets are local.
 
 ```sh
 node scripts/benchmarks/serve.mjs
 # http://127.0.0.1:4173/benchmarks.html
 ```
 
-## Rebuild after changing GTPL or the workload
+Choose two engines, then one programming pattern. Each has its own workload,
+code examples and metrics. There is no combined framework score.
 
-Node 24.15+ (or a version supported by the pinned Angular compiler) is required.
-The build dependencies are separate from the library's dependencies.
+## Build and publish
+
+Use Node 24.15+ (or a version supported by the pinned Angular compiler).
+Benchmark dependencies are separate from the library dependencies.
 
 ```sh
 npm ci --prefix scripts/benchmarks
@@ -22,122 +22,142 @@ node scripts/benchmarks/build.mjs
 node --test scripts/benchmarks/*.test.mjs
 ```
 
-Commit the regenerated `vendor/`, `manifest.json`, `templates.json`, and the build
-lockfile when publishing a change. The manifest records versions, SHA-256 of the
-GTPL source tree and each output, and raw/gzip sizes of the actual bundles. These
-sizes include the workload adapter, not just the minimal framework runtime.
-Third-party legal notices are emitted alongside the vendor bundles.
+Commit regenerated `vendor/`, `methods/`, `lab.html`, `manifest.json`,
+`templates.json` and the benchmark lockfile when publishing changes.
+The manifest records versions, GTPL source hash, output SHA-256 and raw/gzip
+sizes. Method sizes include the entry and its transitive shared modules, not
+just the framework runtime. Legal notices accompany generated bundles. Explicit
+switch trees intentionally produce substantial source files; a runner imports
+only the chosen pattern and variant.
 
-`build.mjs` compiles GTPL and Vue templates offline and invokes Angular's real
-AOT compiler. React is bundled in production mode; Angular excludes its runtime
-compiler and Zone.js. GTPL JIT deliberately compiles on every mount. Alpine
-interprets its HTML directives at mount. Framework and transitive versions are
-fixed by `scripts/benchmarks/package-lock.json`.
+`method-definitions.mjs` generates native templates and React render functions.
+`method-adapters.mjs` supplies readable adapters and bundles their modules.
+GTPL AOT and Vue templates are precompiled. Angular uses its real AOT compiler,
+without the runtime compiler or Zone.js. React uses production mode. GTPL JIT
+compiles at mount; Alpine interprets HTML at mount. Dependencies are pinned in
+`scripts/benchmarks/package-lock.json`.
 
-## What is measured
+## Patterns
 
-- Identical data, styles and row structure in all adapters. Twelve conditional
-  branches, one active, N rows, three cells per row. Native wrapper elements,
-  comments and inert template declarations can differ and are reported honestly.
-- Each sample starts with a fresh iframe and imported runtime. A discarded
-  20-row instance warms it before the measured mount. Downloads and module
-  evaluation are excluded; this is not cold navigation performance.
-- Samples alternate A/B and B/A with a random starting engine. One iframe runs
-  at a time at the same viewport size. Frames are visible, never `display:none`.
-- Timing ends when the first/last expected cells exist and layout has been
-  requested. A full row-by-row verification follows, outside the stopwatch.
-  Incorrect output invalidates the sample rather than receiving a zero score.
-- React uses `flushSync`, Angular `detectChanges`, Vue its update queue, and
-  Alpine/GTPL their reactive updates. Timings measure confirmed DOM work and
-  layout, not interactive scheduling latency or time to painted pixels.
-- Updates report the median of 10 counter changes across all rows. Switch
-  reports 11 first visits and 12 revisits independently. All candidates use
-  conditional construction; no CSS show/hide comparison.
-- Fluency measures rAF cadence for 1.2 seconds while all rows update once per
-  frame, on a freshly mounted view. Full verification happens after animation. Display refresh rate limits
-  FPS; p95 intervals and the proportion exceeding 1.5× idle cadence provide
-  context. These are not GPU render FPS or a universal framework throughput score.
-  A quotient is omitted if fewer than 12 frames were observed in a sample or
-  the two engines' idle cadences differ substantially. Raw values remain visible.
-- The chart shows medians between samples, with raw operation timings, frame
-  intervals, run order, errors and environment in JSON. CSV provides one row per
-  engine/sample/metric; absent values remain blank. No results persist or upload.
-- Losing visibility, scrolling the executor out of view or resizing aborts the run; explicit Stop discards the
-  incomplete sample and preserves completed samples. Errors never become zeros.
+| Pattern       | Workload                                                                                                   | Main question                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Switch        | 8/32/64 explicit branches, each with 128 HTML blocks; initially none active, then only the selected branch | Memory of definitions, one active view and inert templates |
+| For           | Update values, append 25%, remove half, reverse, replace identifiers                                       | Native list updates and reconciliation                     |
+| If            | Create, remove, revisit and remove a 128-block view                                                        | Construction cost and memory after hiding                  |
+| Inline styles | Change background, foreground and width on existing elements                                               | Update latency, layout and rAF cadence                     |
+| Classes       | Alternate two CSS classes on existing elements                                                             | Class updates and layout                                   |
+| Attributes    | Change title, data-state, aria-label and text                                                              | Attribute and text bindings                                |
+| Forms         | Native input propagates to the model, all inputs and an output                                             | Bidirectional input-to-view propagation                    |
+| Grid          | Grow both dimensions; update a seeded random subset each frame                                             | Granular state updates as cell count grows                 |
+
+### Switch is primarily a memory experiment
+
+Every branch has explicit titles, paragraphs, reactive values and lists. There
+is no shared `for` that builds the branch from data. Variants have separate
+entries: choosing 8 does not import definitions for 64.
+
+GTPL uses `g-switch`/`g-case`, React a JavaScript switch with render instructions
+inside each selected case, Vue a `v-if`/`v-else-if` chain, Angular `@switch`,
+Alpine `x-if` templates, and vanilla DOM parses only the chosen HTML. All use
+conditional construction. Definitions, source literals and compiled instructions
+still reside in memory when their branch is inactive.
+
+The default never visits other branches. It counts connected elements and 128
+active blocks, and separately traverses `template.content` for inert elements
+and blocks. Inert content is disconnected but its DOM nodes exist. The optional
+retention test visits every branch, removes the view and records another memory
+snapshot. Creation time is secondary, in the table. There is no switch speed
+winner or overall score.
+
+## Measurement and validation
+
+Each engine/sample uses a fresh visible iframe. The selected method module is
+imported after the empty-runner memory baseline and before the mount stopwatch.
+Methods measure the first mount; they do not reuse the old generic suite's
+warm-up tree. Downloads and module evaluation are excluded from timing. Samples
+alternate A/B and B/A, with a randomized starting engine.
+
+React uses `flushSync`, Angular `detectChanges`, Vue its update queue, and
+Alpine/GTPL their native reactive updates. Timed operations wait for the expected
+DOM and request layout. Full validation follows outside the stopwatch. This
+measures confirmed DOM/layout work, not time to painted pixels or interactive
+scheduling latency. Incorrect output rejects the sample.
+
+For takes the median of three operations of each type, resetting the base list
+before each. Styles, classes, attributes and forms measure ten updates, followed
+by rAF cadence for 1.2 seconds. Forms use the prototype's native value setter and
+a bubbling input event to exercise binding. Native wrappers, list semantics and
+inert declarations can differ. React, Vue, Angular and Alpine use keys; GTPL uses
+its native list directive. Complete order and values are validated.
+
+Charts show medians, with p95 and ranges in the table. JSON schema 2 retains
+operation times, intervals, memory breakdowns, DOM snapshots, exact configuration,
+manifest, execution order and errors. CSV has one row per metric or snapshot;
+missing values remain blank. Results are neither uploaded nor persisted. Stop
+preserves completed samples. Losing visibility, resizing or scrolling the
+executor away aborts the run.
 
 ## Memory
 
-Click **Activar medición de memoria** to open the isolated lab, including on
-GitHub Pages. `isolated.html` opts into a first-party service worker scoped only
-to `benchmarks/`. It fetches resources from the network, adds COOP/COEP headers,
-and opens `lab.html`, generated from the same benchmark HTML with a corrected
-asset base (including a fallback for hard refreshes). It does not cache files or results and leaves the documentation
-outside its scope unchanged. HTTPS (or localhost) and a compatible browser are
-required. Unsupported memory APIs remain explicitly **N/D**.
-
-For a compatible browser locally, headers can also be supplied directly:
+Click **Activar medición de memoria** to open the isolated lab, preserving the
+pattern and switch configuration. A first-party service worker scoped only to
+`benchmarks/` adds COOP/COEP headers to network responses, then opens `lab.html`,
+generated from the main HTML with a corrected asset base. The worker does not
+cache files or results. HTTPS/localhost and `measureUserAgentSpecificMemory`
+support are required; unsupported values stay N/D. Alternatively:
 
 ```sh
 node scripts/benchmarks/serve.mjs --isolated
 ```
 
-The runner records snapshots after warm-up, after mount and after switch revisits.
-Charts show memory attributed to the mounted view (including its runtime),
-the change from warm-up, and growth after 23 branch changes.
-It sums only entries whose attributions all point to that runner's exact URL;
-shared/unattributed entries and the parent page are excluded. This is attributed
-memory, not total RAM or retained memory. GC is not controlled, and negative
-deltas are kept. Three measurements may add a minute or more per sample. They run
-outside the timing window. There is deliberately no memory winner or global score.
+Snapshots record the empty runner before import, mounted initial state, active
+view and optionally removed view. Charts use differences of the API's total
+environment bytes, including JS and DOM. The parent holds charts/results stable
+throughout each sample. This includes shared/unattributed DOM costs missed by an
+iframe-URL-only sum. It is an experimental estimate, not exact framework
+attribution or Chrome process RAM. Shared memory and uncontrolled GC introduce
+noise; negative deltas remain visible and memory is never ranked as a winner.
 
-## Check a release
-
-1. Rebuild, run the statistics tests, and serve over HTTP.
-2. Run every engine with 100 rows, all four scenarios and at least 3 samples.
-   Check that samples validate, values are finite, and the console has no errors.
-3. Test 500/1,000 rows, Stop, switching rival/scenarios, same-engine selection,
-   JSON/CSV downloads, and the link from the documentation.
-4. Inspect desktop and 390px mobile widths. Controls, code and charts must fit.
-5. In an isolated compatible browser, enable memory and confirm attributed
-   measurements or explicit N/D; never substitute shared heap estimates.
-
-The lifecycle regression test runs the real compiler and DOM in jsdom. It checks
-that switch branches own their loop rows and release their inherited bindings
-across repeated visits, preventing work and retained memory from accumulating.
-
-Code snippets are illustrative three-state examples, include setup and updates,
-and omit tool configuration. Line counts describe those snippets, not a universal
-measure of programming ease. The benchmark's exact templates and bundles are
-linked on the page; the readable adapters live in `scripts/benchmarks/build.mjs`.
+The full breakdown and bytes exclusively attributed to the iframe URL are also
+exported. Definitions minus baseline estimates runtime/code/template residency;
+active minus definitions estimates activation; active minus baseline estimates
+their combined cost. Retired minus initial can show caches/retention but does not
+prove a leak. API calls may wait tens of seconds and a sample may take minutes.
+Memory reads are outside timed operations. The grid does not measure memory.
 
 ## Growing grid
 
-Select **Grid creciente** to measure an X-by-Y grid at successively larger
-sizes. Both axes grow by the configured step, up to 128 by 128 cells. The
-default changes every cell on every animation frame; 10% and 25% densities
-select a reproducible random subset without replacement. A seeded generator
-uses the same sequence prefix for every engine and level. Every selected cell
-receives a different numeric value, with its CSS color derived from that value.
+Both axes grow by the configured step, up to 128 by 128. By default every cell
+changes each frame; 10%/25% select reproducible subsets without replacement. A
+seeded generator gives each engine the same sequence prefix. Selected values
+change on each update and determine CSS color.
 
-Each cell has independent reactive state: a GTPL instance, a React component
-with local state, a Vue component with its own reactive model, an Angular
-OnPush component reading a signal, or an Alpine x-data scope. Vanilla DOM is a
-manual reference. This isolates granular updates from list reconciliation;
-the original row/switch scenarios still exercise list directives separately.
-The readable adapters are in `scripts/benchmarks/grid-adapters.mjs`.
+Each cell has independent state: a GTPL instance, React local state, Vue reactive
+model, Angular OnPush component with a signal, or Alpine x-data scope. Vanilla
+DOM is a manual reference. This measures granular state; For measures list
+reconciliation separately. Readable adapters: `scripts/benchmarks/grid-adapters.mjs`.
 
-Each engine/sample gets a fresh iframe for the grid, and each size gets a fresh
-component tree after a discarded 4-by-4 warm-up. The complete grid fits inside
-the same visible viewport. Mounting, module loading and full final verification
-are excluded from FPS. One shared rAF loop includes random workload generation,
-state updates, DOM confirmation and layout. The cached first and last changed
-cell references confirm each batch; every cell is checked against the seeded
-model after each level. Incorrect output rejects the sample. JSON retains raw
-frame intervals, update/generator timings, frame counts, checksums and seeds.
-CSV adds `grid.*` metric rows and the exact dimensions.
+Each level uses a fresh tree after a discarded 4-by-4 warm-up. The complete grid
+fits in the same visible executor without virtualization. The rAF loop includes
+random generation, updates, DOM confirmation and layout. Mount, imports and full
+final validation are excluded. Every cell must match the seeded model. JSON
+retains intervals, generator/update timings, frame counts, checksums and seeds.
+CSV includes dimensions and per-level metrics.
 
-The chart compares median FPS, p95 frame interval, updates per second or update
-time against cell count. FPS are capped by display refresh and browser
-scheduling. Samples with few observed frames are labeled as unstable. This is
-rAF cadence, not a direct GPU paint counter. Memory and bundle sizes in the
-original section describe the row/switch workload, not the separate grid bundles.
+FPS are capped by display refresh and browser scheduling. Few observed frames
+are marked unstable. Cadence is not a GPU counter or universal throughput score.
+
+## Check a change
+
+1. Build and run library and benchmark tests.
+2. Exercise all engines/patterns, each switch variant, a nonzero chosen branch,
+   and optional retention. All samples must validate.
+3. Test configuration changes, same-engine selection, Stop and JSON/CSV exports.
+4. Inspect desktop and 390px mobile layouts, including code and charts.
+5. In an isolated compatible browser, verify snapshots or explicit N/D, preserved
+   activation-link parameters and the GitHub Pages subpath.
+
+Examples are excerpts of the selected pattern. Line counts describe that excerpt,
+not a universal measure of programming ease. Complete readable definitions,
+adapters and the executed module are linked on the page. The library lifecycle
+regression checks ownership/destruction of switch/list instances across visits.

@@ -1289,7 +1289,7 @@ button[hidden] {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
-.grid-fields input {
+.grid-fields input:not([type="checkbox"]) {
   width: 100%;
   min-width: 0;
   border: 1px solid var(--line);
@@ -1338,5 +1338,58 @@ button[hidden] {
 @media (max-width: 620px) {
   .grid-results .sample-chart svg {
     min-width: 750px;
+  }
+}
+.case-goal {
+  border-left: 3px solid var(--green);
+  padding: 10px 14px;
+  background: #edf3e6;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 18px 0 24px;
+}
+.method-picker {
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: end;
+}
+.field[hidden],
+.memory-option[hidden],
+#grid-results[hidden],
+#case-results[hidden] {
+  display: none;
+}
+.retention-option {
+  margin: 8px 0 0;
+  align-self: center;
+}
+.source-links {
+  padding-top: 18px;
+}
+.code-heading h3 {
+  white-space: normal;
+}
+.grid-config .memory-option small {
+  line-height: 1.6;
+}
+@media (max-width: 620px) {
+  .method-picker {
+    grid-template-columns: 1fr 1fr;
+  }
+  .method-picker > label:first-child {
+    grid-column: 1/-1;
+  }
+  .code-heading {
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .code-heading span {
+    max-width: 95px;
+    text-align: right;
+  }
+  .hero-foot .local-tag {
+    white-space: normal;
+  }
+  .retention-option {
+    grid-column: 1/-1;
   }
 }
