@@ -1,0 +1,282 @@
+import { build } from "esbuild";
+import { compile } from "@vue/compiler-dom";
+import { transformAsync } from "@babel/core";
+import angularLinker from "@angular/compiler-cli/linker/babel";
+import { JSDOM } from "jsdom";
+import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { CASES, templates } from "./templates.mjs";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(here, "../..");
+const work = path.join(here, "node_modules/.gtpl-build");
+const output = path.join(root, "docs/benchmarks/vendor");
+const normalizeLicense = (text) => text.replace(/\r\n/g, "\n").replace(/[ \t]+$/gm, "");
+await mkdir(work, { recursive: true });
+await mkdir(output, { recursive: true });
+const dom = new JSDOM("<!doctype html>");
+globalThis.window = dom.window;
+globalThis.document = dom.window.document;
+globalThis.DOMParser = dom.window.DOMParser;
+globalThis.Node = dom.window.Node;
+
+await build({
+  entryPoints: [path.join(root, "src/compiler/GCode.ts")],
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  outfile: path.join(work, "compiler.mjs"),
+});
+const { GCode } = await import(path.join(work, "compiler.mjs"));
+const gCode = GCode(templates.gtpl);
+const gImports = `import {GTpl} from ${JSON.stringify(path.join(root, "src/GTpl.ts"))};\nimport {GGenerator as g} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};`;
+const gAdapter = (generator) => `${gImports}
+${generator}
+export function createAdapter() {
+  let app, state;
+  return {
+    async mount(host, data) { state = data; app = new GTpl({root: state, generator: getGenerator()}); app.addTo(host); await app.ready(); },
+    update(tick, active) { state.tick = tick; if (state.active !== active) state.active = active; },
+    destroy() { app?.destroy(); app = state = null; }
+  };
+}`;
+const sources = {
+  gtpl: gAdapter(
+    `const generator = ${gCode}; const getGenerator = () => generator;`,
+  ),
+  "gtpl-jit": gAdapter(
+    `import {GCode} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};\nimport {GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};\nconst getGenerator = () => GCompile(GCode(${JSON.stringify(templates.gtpl)}));`,
+  ),
+  vue: `import {createApp, reactive, nextTick} from 'vue';
+${compile(templates.vue, { mode: "module", prefixIdentifiers: true, hoistStatic: true }).code}
+export function createAdapter() { let app, state; return {
+  mount(host, data) { state = reactive(data); app = createApp({setup: () => state, render}); app.mount(host); },
+  async update(tick, active) { state.tick = tick; state.active = active; await nextTick(); },
+  destroy() { app?.unmount(); app = state = null; }
+}; }`,
+  react: `import {createElement as h} from 'react'; import {createRoot} from 'react-dom/client'; import {flushSync} from 'react-dom';
+function Rows({rows, tick}) { return rows.map(row => h('div', {className:'bench-row', key:row.id, 'data-row':row.id}, h('span',null,row.id),h('b',null,row.label),h('i',null,tick))); }
+function View({rows,tick,active}) { switch(active) { ${Array.from({ length: CASES }, (_, i) => `case ${i}: return h('div',null,h('section',{className:'bench-branch','data-branch':${i},key:${i}},h(Rows,{rows,tick})));`).join("")} default: return null; } }
+export function createAdapter() { let app, state; return {
+  mount(host, data) { state = data; app = createRoot(host); flushSync(() => app.render(h(View, state))); },
+  update(tick, active) { state = {...state,tick,active}; flushSync(() => app.render(h(View, state))); },
+  destroy() { if(app) flushSync(() => app.unmount()); app = state = null; }
+}; }`,
+  alpine: `import Alpine from 'alpinejs';
+window.Alpine = Alpine;
+// Each runner creates one adapter at a time. start() is called only once per document.
+let started = false, state;
+Alpine.data('bench', () => state);
+export function createAdapter() { let element; return {
+  async mount(host,data) { state = data; host.innerHTML = ${JSON.stringify(templates.alpine)}; element = host.firstElementChild;
+    if (!started) { Alpine.start(); started = true; } else Alpine.initTree(element);
+    state = Alpine.$data(element);
+  },
+  update(tick, active) { state.tick = tick; state.active = active; },
+  destroy() { if(element) { Alpine.destroyTree(element); Alpine.mutateDom(() => element.remove()); } element = state = null; }
+}; }`,
+  vanilla: `export function createAdapter() { let host, state, branch, cells; return {
+  mount(target,data) {host=target;state=data;this.update(data.tick,data.active);},
+  update(tick,active) { if(!branch || state.active!==active) {
+    host.replaceChildren(); const wrap=document.createElement('div');branch=document.createElement('section');branch.className='bench-branch';branch.dataset.branch=active;cells=[];
+    for(const row of state.rows) { const div=document.createElement('div');div.className='bench-row';div.dataset.row=row.id;const a=document.createElement('span'),b=document.createElement('b'),c=document.createElement('i');a.textContent=row.id;b.textContent=row.label;c.textContent=tick;div.append(a,b,c);branch.append(div);cells.push(c); }
+    wrap.append(branch);host.append(wrap);
+  } else { for(const cell of cells) cell.textContent=tick; } state.active=active;state.tick=tick; },
+  destroy() {host?.replaceChildren();host=state=branch=cells=null;}
+}; }`,
+};
+
+// Angular's actual AOT compiler; no runtime compiler or development mode in the bundle.
+await writeFile(
+  path.join(work, "angular.ts"),
+  `import {Component, ChangeDetectionStrategy, enableProdMode, provideZonelessChangeDetection} from '@angular/core';
+import {bootstrapApplication} from '@angular/platform-browser';
+enableProdMode();
+@Component({selector:'bench-app',standalone:true,changeDetection:ChangeDetectionStrategy.Default,template:${JSON.stringify(templates.angular)}})
+class Bench { rows: {id:number,label:string}[]=[]; tick=0; active=0; }
+export function createAdapter() { let ref:any, app:any, host:HTMLElement; return {
+  async mount(target:HTMLElement,data:any) {host=target;host.innerHTML='<bench-app></bench-app>'; app=await bootstrapApplication(Bench,{providers:[provideZonelessChangeDetection()]});ref=app.components[0];Object.assign(ref.instance,data);ref.changeDetectorRef.markForCheck();ref.changeDetectorRef.detectChanges();},
+  update(tick:number,active:number) {Object.assign(ref.instance,{tick,active});ref.changeDetectorRef.markForCheck();ref.changeDetectorRef.detectChanges();},
+  destroy() {app?.destroy();host?.replaceChildren();app=ref=host=null;}
+};}`,
+);
+await writeFile(
+  path.join(work, "tsconfig.json"),
+  JSON.stringify({
+    compilerOptions: {
+      target: "ES2022",
+      module: "ES2022",
+      moduleResolution: "bundler",
+      experimentalDecorators: true,
+      skipLibCheck: true,
+      strict: false,
+      outDir: "ng",
+      lib: ["ES2022", "DOM"],
+      ignoreDeprecations: "6.0",
+    },
+    angularCompilerOptions: { compilationMode: "full", strictTemplates: true },
+    files: ["angular.ts"],
+  }),
+);
+execFileSync(
+  process.execPath,
+  [
+    path.join(
+      here,
+      "node_modules/@angular/compiler-cli/bundles/src/bin/ngc.js",
+    ),
+    "-p",
+    path.join(work, "tsconfig.json"),
+  ],
+  { stdio: "inherit" },
+);
+
+const pkg = JSON.parse(await readFile(path.join(here, "package.json"), "utf8"));
+const own = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const manifest = {
+  schema: 1,
+  cases: CASES,
+  gtplSourceHash: "",
+  frameworks: {},
+};
+const srcFiles = execFileSync("git", ["ls-files", "src"], {
+  cwd: root,
+  encoding: "utf8",
+})
+  .trim()
+  .split("\n")
+  .sort();
+const hash = createHash("sha256");
+for (const file of srcFiles)
+  hash.update(file).update(await readFile(path.join(root, file)));
+manifest.gtplSourceHash = hash.digest("hex");
+for (const [id, source] of Object.entries(sources))
+  await writeFile(path.join(work, `${id}.js`), source);
+for (const id of [...Object.keys(sources), "angular"]) {
+  const entry =
+    id === "angular"
+      ? path.join(work, "ng/angular.js")
+      : path.join(work, `${id}.js`);
+  const file = `${id}.js`;
+  await build({
+    entryPoints: [entry],
+    bundle: true,
+    format: "esm",
+    platform: "browser",
+    target: "es2022",
+    minify: true,
+    treeShaking: true,
+    define: {
+      "process.env.NODE_ENV": '"production"',
+      ngDevMode: "false",
+      ngJitMode: "false",
+      __VUE_OPTIONS_API__: "false",
+      __VUE_PROD_DEVTOOLS__: "false",
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "false",
+    },
+    outfile: path.join(output, file),
+    legalComments: "external",
+    nodePaths: [path.join(here, "node_modules")],
+    plugins:
+      id === "angular"
+        ? [
+            {
+              name: "angular-linker",
+              setup(builder) {
+                builder.onLoad(
+                  { filter: /@angular\/.*\.m?js$/ },
+                  async (args) => {
+                    const result = await transformAsync(
+                      await readFile(args.path, "utf8"),
+                      {
+                        filename: args.path,
+                        plugins: [angularLinker],
+                        configFile: false,
+                        babelrc: false,
+                      },
+                    );
+                    return { contents: result.code, loader: "js" };
+                  },
+                );
+              },
+            },
+          ]
+        : [],
+  });
+  const legalFile = path.join(output, `${file}.LEGAL.txt`);
+  try {
+    await writeFile(legalFile, normalizeLicense(await readFile(legalFile, "utf8")));
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  const bytes = await readFile(path.join(output, file));
+  const dependency = {
+    angular: "@angular/core",
+    vue: "@vue/compiler-dom",
+    alpine: "alpinejs",
+    react: "react",
+  }[id];
+  manifest.frameworks[id] = {
+    version: dependency
+      ? pkg.dependencies[dependency]
+      : id.startsWith("gtpl")
+        ? own.version
+        : "DOM API",
+    file: `benchmarks/vendor/${file}`,
+    bytes: bytes.length,
+    gzipBytes: gzipSync(bytes).length,
+    sha256: createHash("sha256").update(bytes).digest("hex"),
+  };
+  console.log(
+    `${id}: ${(bytes.length / 1024).toFixed(1)} KiB (${(gzipSync(bytes).length / 1024).toFixed(1)} KiB gzip)`,
+  );
+}
+await writeFile(
+  path.join(root, "docs/benchmarks/manifest.json"),
+  JSON.stringify(manifest, null, 2) + "\n",
+);
+await writeFile(
+  path.join(root, "docs/benchmarks/templates.json"),
+  JSON.stringify(templates, null, 2) + "\n",
+);
+const runtimePackages = [
+  "@angular/core",
+  "@angular/common",
+  "@angular/platform-browser",
+  "rxjs",
+  "tslib",
+  "react",
+  "react-dom",
+  "scheduler",
+  "vue",
+  "@vue/runtime-core",
+  "@vue/runtime-dom",
+  "@vue/reactivity",
+  "@vue/shared",
+  "alpinejs",
+];
+let licenses = `GTPL\n${await readFile(path.join(root, "LICENSE"), "utf8")}\n${await readFile(path.join(root, "NOTICE"), "utf8")}\n`;
+for (const name of runtimePackages) {
+  const directory = path.join(here, "node_modules", name);
+  let license;
+  for (const file of ["LICENSE", "LICENSE.txt", "LICENSE.md"]) {
+    try {
+      license = await readFile(path.join(directory, file), "utf8");
+      break;
+    } catch {}
+  }
+  if (!license && name === "alpinejs") {
+    // Upstream npm tarball omits its MIT license; retain the exact tagged text.
+    license = await readFile(path.join(here, "licenses/alpinejs.txt"), "utf8");
+  }
+  if (!license) throw new Error(`Missing license for ${name}`);
+  licenses += `\n\n===== ${name} =====\n\n${license}`;
+}
+await writeFile(path.join(output, "LICENSES.txt"), normalizeLicense(licenses));
+console.log(
+  "Static benchmarks built. No CDN or runtime package installation required.",
+);

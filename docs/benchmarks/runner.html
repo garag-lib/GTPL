@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GTPL · ejecución aislada</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 8px;
+        background: #f8fbf7;
+        color: #132218;
+        font:
+          12px system-ui,
+          sans-serif;
+      }
+      bench-app {
+        display: contents;
+      }
+      .bench-row {
+        display: grid;
+        grid-template-columns: 48px 1fr 58px;
+        gap: 8px;
+        min-height: 25px;
+        padding: 4px 8px;
+        border-bottom: 1px solid #dce5dc;
+      }
+      .bench-row:nth-child(even) {
+        background: #edf3ec;
+      }
+      .bench-row span,
+      .bench-row i {
+        font-style: normal;
+        font-variant-numeric: tabular-nums;
+        color: #526757;
+      }
+      .bench-row b {
+        font-weight: 500;
+      }
+      #runner-status {
+        padding: 4px 8px;
+        color: #526757;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="runner-status">Preparando motor…</div>
+    <div id="app" aria-label="Contenido real del benchmark"></div>
+    <script type="module" src="runner.js"></script>
+  </body>
+</html>

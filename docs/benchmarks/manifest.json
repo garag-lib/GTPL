@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "cases": 12,
+  "gtplSourceHash": "b6c1916bed26f70246a37fe18c337cbe56f9d534c3c658e9911187a66099c3df",
+  "frameworks": {
+    "gtpl": {
+      "version": "1.1.7",
+      "file": "benchmarks/vendor/gtpl.js",
+      "bytes": 34149,
+      "gzipBytes": 9170,
+      "sha256": "a02d31b85a14e0a19cf62b0b0083046c1e2889a0b701a460b548a664290c13ec"
+    },
+    "gtpl-jit": {
+      "version": "1.1.7",
+      "file": "benchmarks/vendor/gtpl-jit.js",
+      "bytes": 42717,
+      "gzipBytes": 13398,
+      "sha256": "2f6ab36d5fab259caeedf15120883e2ad3ef1c6496c0a8ffd3389a98c9fb896c"
+    },
+    "vue": {
+      "version": "3.5.44",
+      "file": "benchmarks/vendor/vue.js",
+      "bytes": 59282,
+      "gzipBytes": 22806,
+      "sha256": "48d47348fc90c5cf6f4c0b1a27ce57002840d99281c9ee1d5de8a61b4033c541"
+    },
+    "react": {
+      "version": "19.3.1",
+      "file": "benchmarks/vendor/react.js",
+      "bytes": 224055,
+      "gzipBytes": 69214,
+      "sha256": "a3bfa0a512ed4abdc782baa9f09d4a25142e9d5f49aaae540fa55b3a0f7eb40b"
+    },
+    "alpine": {
+      "version": "3.17.5",
+      "file": "benchmarks/vendor/alpine.js",
+      "bytes": 59135,
+      "gzipBytes": 20164,
+      "sha256": "0c4b7e14a87e006fc92b229efb373a7afa0f2f4f9eafee94e503544ce3e01273"
+    },
+    "vanilla": {
+      "version": "DOM API",
+      "file": "benchmarks/vendor/vanilla.js",
+      "bytes": 704,
+      "gzipBytes": 361,
+      "sha256": "7d5a7715e931199d65c06b337d7289daaa65b63cbfe689a0b4e8edaa0e9f864e"
+    },
+    "angular": {
+      "version": "22.2.3",
+      "file": "benchmarks/vendor/angular.js",
+      "bytes": 312294,
+      "gzipBytes": 100992,
+      "sha256": "5255c4adff96d953ec9738d2f03fa2dd9f61fead3a991c55e1d6d6eabe08aeb3"
+    }
+  }
+}

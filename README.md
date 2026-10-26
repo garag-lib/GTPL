@@ -11,6 +11,10 @@ GTPL provides:
 
 Interactive examples: https://garag-lib.github.io/GTPL/
 
+Interactive benchmarks: https://garag-lib.github.io/GTPL/benchmarks.html
+Compare GTPL with React, Vue, Alpine, Angular and direct DOM using real browser
+measurements. See [benchmark methodology and build instructions](docs/benchmarks/README.md).
+
 ## Installation
 
 ```bash
