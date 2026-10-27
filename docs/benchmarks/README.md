@@ -9,7 +9,7 @@ node scripts/benchmarks/serve.mjs
 ```
 
 Choose two engines, then one programming pattern. Each has its own workload,
-code examples and metrics. There is no combined framework score.
+metrics. There is no combined framework score.
 
 ## Build and publish
 
@@ -166,14 +166,16 @@ are marked unstable. Cadence is not a GPU counter or universal throughput score.
 2. Exercise all engines/patterns, each switch variant, a nonzero chosen branch,
    and optional retention. All samples must validate.
 3. Test configuration changes, same-engine selection, Stop and JSON/CSV exports.
-4. Inspect desktop and 390px mobile layouts, including code and charts.
+4. Inspect desktop and 390px mobile layouts, including progress and charts.
 5. In an isolated compatible browser, verify snapshots or explicit N/D, preserved
    activation-link parameters and the GitHub Pages subpath.
 
-Examples are excerpts of the selected pattern. Line counts describe that excerpt,
-not a universal measure of programming ease. Complete readable definitions,
-adapters and the executed module are linked on the page. The library lifecycle
-regression checks ownership/destruction of switch/list instances across visits.
+The page omits code extracts and compiled-source links: partial examples were
+not complete runnable programs and the extra source panel duplicated only one
+contender. Complete benchmark definitions and adapters remain in
+`scripts/benchmarks/`; the exported manifest identifies every measured asset.
+The library lifecycle regression checks ownership/destruction of switch/list
+instances across visits.
 
 ## Svelte
 
@@ -186,3 +188,9 @@ El adaptador utiliza `mount`, `unmount` y `flushSync` para incluir el trabajo de
 Una comparación de switch de 32/64 ramas puede parecer detenida mientras Chrome resuelve `measureUserAgentSpecificMemory`. La lectura puede tardar varios segundos incluso con el ejecutor vacío. La cabecera de la vista real muestra ahora la fase, el tiempo transcurrido y el límite; la barra permanece indeterminada mientras se espera, sin presentar ese tiempo como progreso porcentual ni como coste de renderizado. Al terminar o detener la ejecución, vuelve al número de muestras completas. El límite y la recuperación sin memoria siguen vigentes: las lecturas ausentes se exportan como N/D, nunca como cero.
 
 El empaquetado fija las condiciones `browser`, `module` y `production`, además de `dev: false` en el compilador de Svelte. Esto resuelve `esm-env` durante el build y desactiva las comprobaciones de desarrollo que antes dependían de un global del navegador.
+
+### Reloj y límite de la muestra completa
+
+El contador acompaña toda la muestra y no se apaga al terminar una lectura: sigue durante la carga del módulo, el montaje, las operaciones y la limpieza. Cada fase aparece identificada junto al ejecutor. Hay dos límites distintos: 30 segundos por lectura de la API y un presupuesto global de 120 segundos para carga/operaciones, más 30 segundos por fase de memoria. Un switch normal dispone de 210 segundos; con retención, o un if, de 240 segundos. Esto da tiempo a todas las lecturas y evita tratar 30 segundos como límite de la prueba entera.
+
+Al agotar el presupuesto global se elimina el iframe, se registra la fase del fallo y se avanza a la siguiente muestra; no se omiten automáticamente todas las rondas de ese motor. El botón Detener cancela también el reloj. Las esperas de lecturas no se cuentan como tiempo de montaje o actualización. Como cualquier temporizador JavaScript, el aviso puede despacharse con retraso si el navegador bloquea su hilo principal durante compilación o GC; el contador usa tiempo transcurrido real al reanudarse.

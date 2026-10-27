@@ -7,7 +7,6 @@ import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { JSDOM } from "jsdom";
 import { methodKeys, methodTemplate, BLOCKS } from "./method-definitions.mjs";
-import { methodExample } from "../../docs/benchmarks/method-examples.js";
 import {
   prepareSvelteState,
   writeSvelteComponent,
@@ -133,7 +132,7 @@ return {mount(target){flushSync(()=>{app=mount(View,{target,props:{state}});});}
     await rm(work, { recursive: true, force: true });
   }
 });
-test("Svelte is selectable on both sides and every method has a native code example", async () => {
+test("Svelte is selectable on both sides of the benchmark", async () => {
   const html = await readFile(
     path.resolve(here, "../../docs/benchmarks.html"),
     "utf8",
@@ -143,19 +142,5 @@ test("Svelte is selectable on both sides and every method has a native code exam
     assert.ok(
       dom.window.document.querySelector(`#${id} option[value="svelte"]`),
     );
-  for (const method of [
-    "switch",
-    "if",
-    "for",
-    "styles",
-    "classes",
-    "attributes",
-    "forms",
-    "grid",
-  ]) {
-    const example = methodExample(method, "svelte", 64);
-    assert.ok(example.code);
-    assert.doesNotMatch(example.code, /undefined/);
-  }
   dom.window.close();
 });

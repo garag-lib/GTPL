@@ -191,6 +191,7 @@ export async function runMethod(
   const metrics = Object.fromEntries(methodMetrics.map((m) => [m.key, null])),
     snapshots = [],
     operations = {};
+  const reportPhase = (phase) => onProgress({ kind: "sample", phase });
   async function record(phase) {
     status.textContent = `${method} · ${phase}${config.memory ? " · leyendo memoria" : ""}`;
     const progress = {
@@ -218,7 +219,9 @@ export async function runMethod(
   // Import after this baseline so template/code residency is included. The
   // parent keeps its results and charts unchanged throughout this sample.
   const baseline = await record("ejecutor vacío");
+  reportPhase("cargando plantilla precompilada");
   const { createAdapter } = await import(`./methods/${key}-${id}.js`);
+  reportPhase("preparando estado del caso");
   const adapter = createAdapter({
     size: method === "switch" || method === "if" ? 0 : size,
   });
@@ -235,6 +238,14 @@ export async function runMethod(
   };
   async function timed(name, operation, predicate, verify) {
     if (document.hidden) throw new Error("La pestaña dejó de estar visible.");
+    reportPhase(
+      {
+        show: "creando vista elegida",
+        hide: "retirando vista",
+        revisit: "recreando vista",
+        visit: "recorriendo ramas",
+      }[name] ?? "actualizando vista",
+    );
     const start = performance.now();
     await operation();
     await waitFor(host, predicate);
@@ -245,6 +256,7 @@ export async function runMethod(
     return elapsed;
   }
   try {
+    reportPhase("montando estado inicial");
     const start = performance.now();
     await adapter.mount(host);
     const initialData = method === "for" ? rows(size) : [];
@@ -435,6 +447,7 @@ export async function runMethod(
       },
     };
   } finally {
+    reportPhase("liberando vista y bindings");
     await adapter.destroy();
     host.replaceChildren();
   }

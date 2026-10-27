@@ -1,5 +1,9 @@
 import { renderMemoryProgress } from "./memory-progress.js";
-import { methodExample } from "./method-examples.js";
+import {
+  createSampleExecutor,
+  SAMPLE_TIMEOUT,
+  sampleTimeoutMs,
+} from "./sample-executor.js";
 import {
   METHODS,
   methodMetrics as metrics,
@@ -386,12 +390,6 @@ function renderPair() {
     const info = manifest?.frameworks[id];
     $(`#engine-${side}-meta`).textContent =
       `${info?.version ?? ""} · ${engines[id].note}`;
-    const example = methodExample(method(), id, cases);
-    $(`#code-${side}-title`).textContent = engines[id].name;
-    $(`#code-${side}`).textContent = example.code;
-    $(`#code-${side}-note`).textContent = example.note;
-    $(`#code-${side}-lines`).textContent =
-      `${example.code.split("\n").filter((s) => s.trim()).length} líneas del extracto`;
     entries[id] =
       method() === "grid"
         ? manifest?.gridFrameworks[id]
@@ -411,26 +409,6 @@ function renderPair() {
         { unit: "KiB gzip" },
         !!index,
       );
-  const links = $("#source-links");
-  links.replaceChildren();
-  for (const id of [a, b])
-    if (entries[id]) {
-      const link = element("a", `${engines[id].name} · entrada ejecutada ↗`);
-      link.href = entries[id].file;
-      links.append(link);
-    }
-  for (const [file, label] of method() === "grid"
-    ? [["grid-adapters.mjs", "Adaptadores del grid"]]
-    : [
-        ["method-definitions.mjs", "Plantillas completas"],
-        ["method-adapters.mjs", "Adaptadores legibles"],
-      ]) {
-    const link = element("a", label + " ↗");
-    link.href =
-      "https://github.com/garag-lib/GTPL/blob/main/scripts/benchmarks/" + file;
-    links.append(link);
-  }
-  $("#actual-template").textContent = methodExample(method(), a, cases).code;
   if (!running) $("#run").disabled = !manifest || a === b;
   $("#run-hint").textContent =
     a === b
@@ -453,7 +431,7 @@ function renderPair() {
     $("#memory-help").textContent =
       method() === "grid"
         ? "El grid no mide memoria."
-        : `${Number($("#samples").value) * 2 * memoryPhaseCount({ method: method(), retention: $("#retention").checked })} lecturas de memoria en total. Cada lectura puede esperar al navegador; límite de ${MEMORY_TIMEOUT_MS / 1000} s. Se mostrará la fase y el tiempo de espera. JS+DOM, no RAM total de Chrome.`;
+        : `${Number($("#samples").value) * 2 * memoryPhaseCount({ method: method(), retention: $("#retention").checked })} lecturas en total. Límite por lectura: ${MEMORY_TIMEOUT_MS / 1000} s. La muestra completa dispone de ${sampleTimeoutMs({ memory: true, method: method(), retention: $("#retention").checked }) / 1000} s, incluyendo carga, renderizado y todas las lecturas. El contador de la muestra no se reinicia entre fases. JS+DOM, no RAM total de Chrome.`;
   renderCharts();
 }
 function setRunning(value) {
@@ -471,24 +449,22 @@ function execute(id, config, signal, onProgress) {
     const token = crypto.randomUUID();
     iframe.title = `Benchmark real de ${engines[id].name}`;
     iframe.src = `benchmarks/runner.html?engine=${id}&token=${token}&mode=${config.mode === "grid" ? "grid" : "method"}`;
-    let heartbeat;
+    let finished = false;
     const cleanup = () => {
-      clearTimeout(timeout);
-      clearInterval(heartbeat);
       removeEventListener("message", receive);
       signal.removeEventListener("abort", abort);
       iframe.remove();
     };
     const finish = (error, result) => {
+      if (finished) return;
+      finished = true;
       cleanup();
       error ? reject(error) : resolve(result);
     };
     const abort = () =>
-      finish(new DOMException("Ejecución detenida.", "AbortError"));
-    const timeout = setTimeout(
-      () => finish(new Error("Tiempo de espera agotado; muestra descartada.")),
-      config.memory ? 240_000 : 120_000,
-    );
+      finish(
+        signal.reason ?? new DOMException("Ejecución detenida.", "AbortError"),
+      );
     const receive = (event) => {
       if (
         event.source !== iframe.contentWindow ||
@@ -497,21 +473,15 @@ function execute(id, config, signal, onProgress) {
         event.data.token !== token
       )
         return;
-      if (event.data.type === "ready")
+      if (event.data.type === "ready") {
+        onProgress?.({ kind: "sample", phase: "ejecutando caso" });
         iframe.contentWindow.postMessage(
           { channel: "gtpl-bench", token, type: "run", config },
           location.origin,
         );
-      if (event.data.type === "result") finish(null, event.data.result);
-      if (event.data.type === "progress" && onProgress) {
-        clearInterval(heartbeat);
-        const progress = event.data.progress,
-          started = performance.now();
-        const update = () =>
-          onProgress({ ...progress, waitedMs: performance.now() - started });
-        update();
-        if (progress.reading) heartbeat = setInterval(update, 1000);
       }
+      if (event.data.type === "result") finish(null, event.data.result);
+      if (event.data.type === "progress") onProgress?.(event.data.progress);
       if (event.data.type === "error")
         finish(
           Object.assign(new Error(event.data.error), {
@@ -606,8 +576,10 @@ async function start() {
   };
   let done = 0;
   const failed = new Set();
-  const executeSample = createMemoryExecutor(execute, (warning) =>
-    runData.memoryWarnings.push({ ...warning, round: Math.floor(done / 2) }),
+  const executeSample = createSampleExecutor(
+    createMemoryExecutor(execute, (warning) =>
+      runData.memoryWarnings.push({ ...warning, round: Math.floor(done / 2) }),
+    ),
   );
   renderCharts();
   try {
@@ -653,9 +625,19 @@ async function start() {
             throw new Error("Resultado inválido.");
           runData.samples[id].push({ round, result });
         } catch (error) {
-          runData.errors.push({ engine: id, round, message: error.message });
+          runData.errors.push({
+            engine: id,
+            round,
+            message: error.message,
+            code: error.code,
+            phase: error.phase,
+            timeoutMs: error.timeoutMs,
+            elapsedMs: error.elapsedMs,
+          });
           if (error.name === "AbortError") throw error;
-          failed.add(id);
+          // A cold import or a delayed browser operation can exhaust one sample
+          // without making the engine invalid for every subsequent round.
+          if (error.code !== SAMPLE_TIMEOUT) failed.add(id);
         }
         done++;
         $("#progress").value = done;

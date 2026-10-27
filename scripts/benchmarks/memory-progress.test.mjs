@@ -52,3 +52,49 @@ test("a pending memory read stays visibly active next to the runner until it set
     dom.window.close();
   }
 });
+
+test("the sample counter keeps advancing between a completed memory read and the next phase", () => {
+  const dom = new JSDOM(
+    '<p id="status"></p><span id="live"></span><progress value="0" max="6"></progress>',
+  );
+  try {
+    const targets = {
+      status: dom.window.document.querySelector("#status"),
+      live: dom.window.document.querySelector("#live"),
+      bar: dom.window.document.querySelector("progress"),
+      completed: 0,
+    };
+    renderMemoryProgress(targets, "Svelte · muestra 1 de 3", {
+      kind: "memory",
+      phase: "ejecutor vacío",
+      index: 1,
+      total: 3,
+      reading: false,
+      sampleElapsedMs: 5000,
+      sampleTimeoutMs: 210000,
+    });
+    assert.match(
+      targets.live.textContent,
+      /muestra: 5 s \/ 210 s.*lectura terminada/,
+    );
+    assert.equal(
+      targets.bar.hasAttribute("value"),
+      false,
+      "the sample is still in flight",
+    );
+    renderMemoryProgress(targets, "Svelte · muestra 1 de 3", {
+      kind: "sample",
+      phase: "cargando plantilla precompilada",
+      sampleElapsedMs: 9000,
+      sampleTimeoutMs: 210000,
+    });
+    assert.match(
+      targets.live.textContent,
+      /muestra: 9 s \/ 210 s.*cargando plantilla/,
+    );
+    assert.doesNotMatch(targets.live.textContent, /undefined/);
+    assert.equal(targets.bar.hasAttribute("value"), false);
+  } finally {
+    dom.window.close();
+  }
+});
