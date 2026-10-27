@@ -180,3 +180,9 @@ regression checks ownership/destruction of switch/list instances across visits.
 Svelte se fija a la versión indicada en `scripts/benchmarks/package.json` y se compila durante el build con `dev: false`, `generate: 'client'` y runes. El compilador no forma parte de los bundles del navegador. Los switch usan cadenas nativas `{#if}/{:else if}` con 8, 32 o 64 árboles explícitos, cada uno con los mismos 128 bloques. Las listas usan claves, los formularios `bind:value` y la cuadrícula un componente por celda.
 
 El adaptador utiliza `mount`, `unmount` y `flushSync` para incluir el trabajo de DOM en cada operación, igual que la confirmación explícita de React/Angular. El ejecutor conserva sus validaciones compartidas de DOM, retirada, actualizaciones y muestras de memoria. Las definiciones HTML de las ramas pueden permanecer cargadas; no se confunden con nodos insertados en la vista. Los tamaños y las dependencias transitivas de cada entrada se registran en el manifest.
+
+### Esperas durante las lecturas de memoria
+
+Una comparación de switch de 32/64 ramas puede parecer detenida mientras Chrome resuelve `measureUserAgentSpecificMemory`. La lectura puede tardar varios segundos incluso con el ejecutor vacío. La cabecera de la vista real muestra ahora la fase, el tiempo transcurrido y el límite; la barra permanece indeterminada mientras se espera, sin presentar ese tiempo como progreso porcentual ni como coste de renderizado. Al terminar o detener la ejecución, vuelve al número de muestras completas. El límite y la recuperación sin memoria siguen vigentes: las lecturas ausentes se exportan como N/D, nunca como cero.
+
+El empaquetado fija las condiciones `browser`, `module` y `production`, además de `dev: false` en el compilador de Svelte. Esto resuelve `esm-env` durante el build y desactiva las comprobaciones de desarrollo que antes dependían de un global del navegador.

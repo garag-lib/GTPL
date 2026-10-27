@@ -1,4 +1,8 @@
-import { writeSvelteComponent, svelteImports } from "./svelte-adapters.mjs";
+import {
+  writeSvelteComponent,
+  svelteImports,
+  productionConditions,
+} from "./svelte-adapters.mjs";
 import { compile } from "@vue/compiler-dom";
 import { build } from "esbuild";
 import { transformAsync } from "@babel/core";
@@ -116,6 +120,7 @@ export async function bundleMethods({ prepared, root, work, versions }) {
     splitting: true,
     format: "esm",
     platform: "browser",
+    conditions: productionConditions,
     target: "es2022",
     minify: true,
     metafile: true,

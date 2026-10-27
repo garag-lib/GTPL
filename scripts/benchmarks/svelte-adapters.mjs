@@ -28,3 +28,6 @@ export async function writeSvelteComponent(work, name, markup, imports = "") {
   return `./${name}.js`;
 }
 export const svelteImports = `import {mount,unmount,flushSync} from 'svelte';import {reactiveState} from './svelte-state.js';`;
+
+// Preserve esbuild's browser/module resolution and make esm-env DEV a constant.
+export const productionConditions = ["browser", "module", "production"];

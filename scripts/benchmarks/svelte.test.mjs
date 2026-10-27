@@ -12,6 +12,7 @@ import {
   prepareSvelteState,
   writeSvelteComponent,
   svelteImports,
+  productionConditions,
 } from "./svelte-adapters.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url));
 test("production Svelte components obey the same method DOM and lifecycle contracts", async () => {
@@ -32,7 +33,9 @@ export function createAdapter(){let state=reactiveState({active:null,visible:fal
 return {mount(target){flushSync(()=>{app=mount(View,{target,props:{state}});});},set(patch){flushSync(()=>Object.assign(state,patch));},destroy(){flushSync(()=>unmount(app));}};}`,
         },
         bundle: true,
+        metafile: true,
         platform: "browser",
+        conditions: productionConditions,
         format: "iife",
         globalName: "adapter",
         write: false,
@@ -41,6 +44,13 @@ return {mount(target){flushSync(()=>{app=mount(View,{target,props:{state}});});}
         define: { "process.env.NODE_ENV": '"production"' },
         logLevel: "silent",
       });
+      assert.equal(
+        Object.keys(result.metafile.inputs).some((file) =>
+          file.endsWith("esm-env/dev-fallback.js"),
+        ),
+        false,
+        "production benchmarks must resolve DEV at build time, not from globals in the browser",
+      );
       const dom = new JSDOM("<main></main><aside></aside>", {
         runScripts: "outside-only",
       });

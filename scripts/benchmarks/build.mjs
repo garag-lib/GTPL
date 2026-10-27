@@ -2,6 +2,7 @@ import {
   prepareSvelteState,
   writeSvelteComponent,
   svelteImports,
+  productionConditions,
 } from "./svelte-adapters.mjs";
 import { build } from "esbuild";
 import { compile } from "@vue/compiler-dom";
@@ -197,6 +198,7 @@ for (const id of [
     bundle: true,
     format: "esm",
     platform: "browser",
+    conditions: productionConditions,
     target: "es2022",
     minify: true,
     treeShaking: true,

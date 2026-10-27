@@ -1,3 +1,4 @@
+import { renderMemoryProgress } from "./memory-progress.js";
 import { methodExample } from "./method-examples.js";
 import {
   METHODS,
@@ -25,7 +26,10 @@ const engines = {
     name: "React",
     note: "Producción · render confirmado con flushSync",
   },
-  svelte: { name: "Svelte", note: "AOT · runes · DOM confirmado con flushSync" },
+  svelte: {
+    name: "Svelte",
+    note: "AOT · runes · DOM confirmado con flushSync",
+  },
   vue: { name: "Vue", note: "Plantilla precompilada · directivas nativas" },
   alpine: {
     name: "Alpine",
@@ -628,18 +632,16 @@ async function start() {
             controller.signal,
             (progress) => {
               const prefix = `${engines[id].name} · muestra ${round + 1} de ${config.count}`;
-              if (progress.kind === "memory-fallback") {
-                $("#progress").value = done;
-                $("#status").textContent =
-                  `${prefix} · API de memoria sin respuesta; ejecutando sin RAM (N/D).`;
-              } else {
-                $("#progress").value =
-                  done +
-                  (progress.index - (progress.reading ? 1 : 0)) /
-                    progress.total;
-                $("#status").textContent =
-                  `${prefix} · memoria ${progress.index}/${progress.total}: ${progress.phase} · ${progress.reading ? `esperando ${Math.floor(progress.waitedMs / 1000)} s (límite ${progress.timeoutMs / 1000} s)` : "lectura terminada"}`;
-              }
+              renderMemoryProgress(
+                {
+                  status: $("#status"),
+                  live: $("#live-engine"),
+                  bar: $("#progress"),
+                  completed: done,
+                },
+                prefix,
+                progress,
+              );
             },
           );
           if (
@@ -674,6 +676,8 @@ async function start() {
         : error.message;
   } finally {
     runData.finishedAt = new Date().toISOString();
+    $("#progress").value = done;
+    $("#progress").setAttribute("aria-valuetext", $("#status").textContent);
     $("#runner-slot").replaceChildren(
       element(
         "div",
