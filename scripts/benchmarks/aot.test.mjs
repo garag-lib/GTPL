@@ -214,6 +214,67 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
         assert.deepEqual(seen, ['directive:B', 'bind:c', 'bind:a', 'directive:SPAN', 'bind:b', 'directive:I', 'directive:MAIN']);
     });
 
+    test('batched list mutations reconcile the final order and retain incremental updates for one row', async () => {
+        let calculations = 0;
+        const rawRows = [{ label: 'c' }, { label: 'b' }, { label: 'a' }];
+        const root = { rows: rawRows, probe(value) { calculations++; return value; } };
+        const view = await mount(evaluate(GCode('<main><div g-for="rows;i;row"><b>{{i}}</b><span>{{return probe(row.label)}}</span></div></main>')), root);
+        const labels = () => [...view.host.querySelectorAll('span')].map(node => node.textContent);
+        const check = () => {
+            assert.deepEqual(labels(), root.rows.map(row => row.label));
+            assert.deepEqual([...view.host.querySelectorAll('b')].map(node => node.textContent), root.rows.map((_, i) => String(i)));
+        };
+        try {
+            const first = view.host.querySelector('div');
+            root.rows[1].label = 'single';
+            await settle(); check();
+            assert.equal(view.host.querySelector('div'), first, 'one row update preserves other DOM');
+            calculations = 0;
+            for (let i = 0; i < 1000; i++) root.rows[1].label = 'burst' + i;
+            await settle(); check();
+            assert.equal(calculations, 1, 'a burst for one row does not recalculate other rows');
+            rawRows[1].label = 'raw refresh';
+            view.app.refresh();
+            await settle(); check();
+            rawRows[0].label = 'raw reassignment';
+            root.rows[0] = rawRows[0];
+            await settle(); check();
+            root.rows.push({ label: 'pushed' }); root.rows.unshift({ label: 'first' }); root.rows.splice(2, 1, { label: 'replacement' });
+            root.rows[1].label = 'changed';
+            await settle(); check();
+            root.rows.reverse(); root.rows.sort((a, b) => a.label.localeCompare(b.label)); root.rows.pop(); root.rows.shift();
+            await settle(); check();
+            root.rows.length = 1;
+            await settle(); check();
+            root.rows = [{ label: 'new' }, { label: 'last' }];
+            root.rows[0].label = 'final'; root.rows.push({ label: 'tail' });
+            await settle(); check();
+            root.rows = [];
+            await settle(); check();
+        } finally { dispose(view); }
+    });
+
+    test('a returned async function is awaited without await in the template formula', async () => {
+        let release;
+        const gate = new Promise(resolve => { release = resolve; });
+        const root = { funcion_asincrona: async () => { await gate; return 'resultado async'; } };
+        const host = document.createElement('div'); document.body.append(host);
+        const app = new GTpl({ root, generator: evaluate(GCode('<p>{{ return funcion_asincrona() }}</p>')) });
+        app.addTo(host);
+        try {
+            let completed = false;
+            const ready = app.ready().then(() => { completed = true; });
+            await settle();
+            assert.equal(completed, false);
+            assert.equal(host.querySelector('p').textContent, '');
+            release(); await ready;
+            assert.equal(host.textContent, 'resultado async');
+            root.funcion_asincrona = async () => 'nuevo resultado';
+            await settle();
+            assert.equal(host.textContent, 'nuevo resultado');
+        } finally { dispose({ app, host }); }
+    });
+
     test('multiple roots, static attributes, styles and async formulas stay reactive', async () => {
         const root = { title: 'one', color: 'red' };
         const view = await mount(evaluate(GCode('head<!--note--><div title="{{title}}" style="color:{{color}};font-weight:bold">{{return await Promise.resolve(title)}}<span class="fixed">tail</span></div>foot')), root);

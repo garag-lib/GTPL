@@ -7,6 +7,60 @@ import { STACK, isStaticType, log } from "./GUtils";
 
 const ElementReferenceIndex = Symbol("ElementReferenceIndex");
 
+interface PendingBindingChange {
+  context: GTpl;
+  type: TypeEventProxyHandler;
+  path?: string[];
+  value?: any;
+  promise?: Promise<void>;
+  resolve?: () => void;
+  reject?: (error: unknown) => void;
+  callers?: Set<GTpl>;
+  reportErrors: boolean;
+  observingErrors?: boolean;
+}
+
+// A binding can subscribe through several inherited contexts. Deduplicate by
+// binding identity across those contexts, while keeping the owning context.
+const pendingBindingChanges = new Map<IBindObject, PendingBindingChange>();
+const currentBindingChanges = new WeakMap<IBindObject, PendingBindingChange>();
+let bindingFlushScheduled = false;
+
+function isPromiseLike(value: any): value is PromiseLike<any> {
+  return value != null && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function';
+}
+
+function cancelBindingChange(bind: IBindObject) {
+  currentBindingChanges.get(bind)?.resolve?.();
+  pendingBindingChanges.delete(bind);
+  currentBindingChanges.delete(bind);
+}
+
+function observeBindingErrors(job: PendingBindingChange) {
+  if (job.reportErrors && job.promise && !job.observingErrors) {
+    job.observingErrors = true;
+    job.promise.catch(error => console.error('[GTPL] Binding update failed:', error));
+  }
+}
+
+function bindingChangePromise(job: PendingBindingChange): Promise<void> {
+  if (!job.promise)
+    job.promise = new Promise<void>((resolve, reject) => { job.resolve = resolve; job.reject = reject; });
+  observeBindingErrors(job);
+  return job.promise;
+}
+
+function finishBindingChange(bind: IBindObject, job: PendingBindingChange, error?: { error: unknown }) {
+  const current = currentBindingChanges.get(bind) === job;
+  if (current) currentBindingChanges.delete(bind);
+  if (error && current && !job.context.isDestroyed && !bind.gtpl?.isDestroyed) {
+    if (job.reject) job.reject(error.error);
+    else if (job.reportErrors) console.error('[GTPL] Binding update failed:', error.error);
+  } else {
+    job.resolve?.();
+  }
+}
+
 const globalCache: any = {
   binitChangeEvents: false,
   changeEventsCount: 0,
@@ -332,75 +386,54 @@ function reduceVar(
   return reduceVar(gtpl, name, result, index);
 }
 
-async function reduceFnc(
+function reduceFnc(
   gtpl: IGtplObject,
   functions: IFunction[],
-  index?: number,
+  index: number = 0,
   initval?: any
-): Promise<any> {
-  if (index == undefined)
-    index = 0;
-  const func = functions[index];
-  const ctx = gtpl.getContext(func.name[0]);
-  const fnc: Function = reduceVar(ctx, func.name);
-  if (fnc) {
-    const arrval: any[] = [];
-    if (func.params) {
-      func.params.forEach((param: IVarOrConst) => {
-        if (param.ct != undefined)
-          arrval.push(param.ct);
-        else if (param.va != undefined)
-          arrval.push(reduceVar(gtpl, param.va));
-      });
+): any {
+  for (; index < functions.length; index++) {
+    if (gtpl.isDestroyed) return;
+    const func = functions[index];
+    const ctx = gtpl.getContext(func.name[0]);
+    const fnc: Function = reduceVar(ctx, func.name);
+    if (fnc) {
+      const args: any[] = [];
+      if (func.params) {
+        for (const param of func.params) {
+          if (param.ct != undefined) args.push(param.ct);
+          else if (param.va != undefined) args.push(reduceVar(gtpl, param.va));
+        }
+      }
+      if (initval != undefined) args.push(initval);
+      initval = fnc.apply(ctx.Root, args);
+      if (isPromiseLike(initval)) {
+        const next = index + 1;
+        return Promise.resolve(initval).then(value => reduceFnc(gtpl, functions, next, value));
+      }
+    } else {
+      STACK('fnc undefined', index, functions);
     }
-    if (initval != undefined)
-      arrval.push(initval);
-    initval = await fnc.apply(ctx.Root, arrval);
-  } else {
-    STACK('fnc undefined', index, functions);
   }
-  index++;
-  if (index >= functions.length)
-    return initval;
-  return await reduceFnc(gtpl, functions, index, initval);
+  return initval;
 }
 
-//---
-
-async function calculateBind(me: IGtplObject, bind: IBindObject, value?: any, extraarguments?: any) {
-  let result: any = undefined;
-  const gtpl = bind.gtpl ? bind.gtpl : me;
-  if (bind.link.formula && bind.link.formula.fnc) {
-    const fnc: Function = bind.link.formula.fnc;
-    const arrval: any[] = [];
-    if (bind.link.formula.vars) {
-      const vars: TplVar[] = bind.link.formula.vars;
-      vars.forEach((key) => {
-        arrval.push(gtpl.getValue(key[0]));
-      });
-    }
-    if (extraarguments) {
-      arrval.push(extraarguments);
-    }
-    result = await fnc.apply(gtpl.Root, arrval);
-  } else {
-    if (bind.link.vorc) {
-      if (bind.link.vorc.va != undefined) {
-        const va = bind.link.vorc.va;
-        if (va.length === 1 && va[0] === 'this') {
-          result = gtpl.Root;
-        } else {
-          result = (value !== undefined) ? value : reduceVar(gtpl, va);
-        }
-        result = value != undefined ? value : reduceVar(gtpl, bind.link.vorc.va);
-      }
-      if (bind.link.vorc.ct != undefined) result = bind.link.vorc.ct;
-    }
-    if (bind.link.functions) {
-      result = await reduceFnc(gtpl, bind.link.functions, 0, result);
-    }
+function calculateBind(me: IGtplObject, bind: IBindObject, value?: any, extraarguments?: any): any {
+  const gtpl = bind.gtpl || me;
+  if (bind.link.formula?.fnc) {
+    const args: any[] = [];
+    if (bind.link.formula.vars)
+      for (const key of bind.link.formula.vars) args.push(gtpl.getValue(key[0]));
+    if (extraarguments) args.push(extraarguments);
+    return bind.link.formula.fnc.apply(gtpl.Root, args);
   }
-  return result;
+  let result: any;
+  if (bind.link.vorc) {
+    if (bind.link.vorc.va != undefined)
+      result = value !== undefined ? value : reduceVar(gtpl, bind.link.vorc.va);
+    if (bind.link.vorc.ct != undefined) result = bind.link.vorc.ct;
+  }
+  return bind.link.functions ? reduceFnc(gtpl, bind.link.functions, 0, result) : result;
 }
 
 //---
@@ -561,6 +594,7 @@ function getBind2Object(
 }
 
 function delBind(gtpl: IGtplObject, bind: IBindObject) {
+  cancelBindingChange(bind);
   if (bind.link.vorc && bind.link.vorc.va) {
     getBind2Object(gtpl, bind.link.vorc.va, bind)?.delete(bind);
   }
@@ -805,51 +839,6 @@ function removeElements(elements: any) {
 
 //---
 
-function iterBind(
-  btree: any,
-  type: TypeEventProxyHandler,
-  path: string[],
-  value?: any,
-  arr: any[] = [],
-  depth: number = 0,            //–– posición actual en `path`
-): any[] {
-  if (!btree) return arr;
-  // 1) Procesar los binds en este nodo
-  if (btree.me) {
-    btree.me.forEach((bind: IBindObject) => {
-      // Para los binds en la raíz (depth=0) pasamos el `value`, 
-      // en niveles inferiores sólo pasamos `undefined`
-      const bindValue = (depth === 0 ? value : undefined);
-      // Copiamos sólo el trozo relevante de `path` a partir de `depth`
-      const subPath = path.slice(depth);
-      arr.push([type, bind, subPath, bindValue]);
-    });
-  }
-  // 2) Recorrer subárboles
-  if (btree.tree) {
-    const keyAtDepth = path[depth];
-    for (const key in btree.tree) {
-      // Si no hay path (depth >= path.length) o coincide la clave, continuamos
-      if (keyAtDepth === undefined || keyAtDepth === key) {
-        // Calculamos el nuevo `value` para la rama:
-        const nextValue =
-          value !== undefined
-            ? (keyAtDepth === undefined ? value : (value as any)[key])
-            : undefined;
-        // Llamada recursiva incrementando `depth`
-        iterBind(
-          btree.tree[key],
-          type,
-          path,
-          nextValue,
-          arr,
-          depth + 1
-        );
-      }
-    }
-  }
-  return arr;
-}
 
 //---
 
@@ -1026,7 +1015,7 @@ function createGTpl(
 
 //---
 
-async function updateTEXTbind(
+function updateTEXTbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1050,7 +1039,7 @@ async function updateTEXTbind(
   return gtpl;
 }
 
-async function updateATTRbind(
+function updateATTRbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1105,7 +1094,7 @@ async function updateATTRbind(
   return gtpl;
 }
 
-async function updateINNERbind(type: TypeEventProxyHandler,
+function updateINNERbind(type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
   result?: any,
@@ -1117,7 +1106,7 @@ async function updateINNERbind(type: TypeEventProxyHandler,
   return gtpl;
 }
 
-async function updateSTYLEbind(
+function updateSTYLEbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1139,7 +1128,7 @@ async function updateSTYLEbind(
   return gtpl;
 }
 
-async function updateIFbind(
+function updateIFbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1169,7 +1158,7 @@ async function updateIFbind(
   return gtpl;
 }
 
-async function updateFORbind(
+function updateFORbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1213,6 +1202,7 @@ async function updateFORbind(
       }
       if (update) {
         const newgtpl = elementos[index];
+        if (toRaw(newgtpl.Root[objindex.target]) === result[index]) return gtpl;
         ppath.shift();
         updateVar(
           ppath,
@@ -1236,6 +1226,7 @@ async function updateFORbind(
     if (type == TypeEventProxyHandler.UNSET) {
       if (ppath.length > 1) {
         const newgtpl = elementos[index];
+        if (toRaw(newgtpl.Root[objindex.target]) === result[index]) return gtpl;
         newgtpl.Root[objindex.target] = result[index];
       } else {
         const newgtpl: IGtplObject = elementos.splice(index, 1)[0];
@@ -1332,7 +1323,8 @@ async function updateSWITCHbind(
   gtpl: IGtplObject,
   bind: IBindObject,
   result?: any,
-  path?: string[]
+  path?: string[],
+  job?: PendingBindingChange
 ) {
   //log('SWITCH', bind, result, path);
   //---
@@ -1357,7 +1349,8 @@ async function updateSWITCHbind(
   if (memValues.has(bind) && memValues.get(bind) === result) {
     return gtpl;
   }
-  memValues.set(bind, result);
+  // Do not cache a selection until its asynchronous case calculation commits.
+  memValues.delete(bind);
   //---
   if (bind.case && bind.case.length) {
     //---
@@ -1393,8 +1386,9 @@ async function updateSWITCHbind(
       //---
       for (let i = 0, n = bind.case.length; i < n; i++) {
         const ca = bind.case[i];
-        const valca = await calculateBind(gtpl, ca);
-        if (gtpl.isDestroyed || bind.gtpl?.isDestroyed) return gtpl;
+        const calculated = calculateBind(gtpl, ca);
+        const valca = isPromiseLike(calculated) ? await calculated : calculated;
+        if (gtpl.isDestroyed || bind.gtpl?.isDestroyed || currentBindingChanges.get(bind) !== job) return gtpl;
         if (valca == result) {
           const gtplcase = createGTpl(
             gtpl,
@@ -1425,10 +1419,11 @@ async function updateSWITCHbind(
     }
   }
   //---
+  memValues.set(bind, result);
   return gtpl;
 }
 
-async function updateISbind(
+function updateISbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1641,7 +1636,7 @@ export class GTpl implements IGtplObject {
       }
     }
     if (privateProperties.getProperty(this, "GenerationFinish")) {
-      this.launchChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind);
+      this.queueChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind, undefined, undefined, true);
     }
   }
 
@@ -1770,7 +1765,7 @@ export class GTpl implements IGtplObject {
     }
     if (this.BindConst) {
       for (let bind of this.BindConst) {
-        this.launchChange(TypeEventProxyHandler.FORCE_REFRESH_CONST, bind);
+        this.queueChange(TypeEventProxyHandler.FORCE_REFRESH_CONST, bind, undefined, undefined, true);
       }
     }
   }
@@ -1809,6 +1804,7 @@ export class GTpl implements IGtplObject {
   }
 
   private trackInitialUpdate(update: Promise<void>, owner: GTpl) {
+    if (this.getGtplRoot().initialRenderSettled && owner.getGtplRoot().initialRenderSettled) return;
     const contexts = new Set<GTpl>();
     const collect = (context: GTpl) => {
       if (context.getGtplRoot().initialRenderSettled) return;
@@ -1893,9 +1889,11 @@ export class GTpl implements IGtplObject {
     const full = pathArr.map(String).join(".");
     if (!full) return;
     const callKey = (key: string) => {
-      const set = this.watchers.get(key);
+      if (this.isDestroyed) return;
+      const set = this.watchers?.get(key);
       if (!set) return;
       for (const cb of set) {
+        if (this.isDestroyed) return;
         try {
           cb({ type, path: full, value, objRef, watch: key });
         } catch (e) {
@@ -1915,23 +1913,23 @@ export class GTpl implements IGtplObject {
   }
 
   eventPRoxy(type: TypeEventProxyHandler, path: PathProxyHandler, value: any, objRef: any) {
-    //log('eventPRoxy', 'event:', type, 'path:', path, 'value:', value, 'objref:', objRef);
-    //---
-    /*
-    const pathCopy: any[] = Array.isArray(path) ? path.slice() : [];
-    const subPath = pathCopy.slice(1);
-    iterBind(this.BindTree[objRef.key], type, subPath as any, value, [], 0)
-      .forEach((args: any) => this.launchChange.apply(this, args));
-    */
-    //---
+    if (this.isDestroyed) return;
     this.emitWatchers(type, path, value, objRef);
-    //---
+    if (this.isDestroyed) return;
     const proxyPath = Array.isArray(path) ? path : [];
-    //---
-    iterBind(this.BindTree[objRef.key], type, proxyPath, value, [], 1).forEach((args: any) =>
-      this.launchChange.apply(this, args)
-    );
-    //---
+    GTpl.queueBindings(this, this.BindTree[objRef.key], type, proxyPath, 1);
+  }
+
+  private static queueBindings(context: GTpl, tree: any, type: TypeEventProxyHandler, path: string[], depth: number) {
+    if (!tree) return;
+    if (tree.me)
+      for (const bind of tree.me) context.queueChange(type, bind, path, undefined, true, depth);
+    if (tree.tree) {
+      const changed = path[depth];
+      for (const key in tree.tree)
+        if (changed === undefined || changed === key)
+          GTpl.queueBindings(context, tree.tree[key], type, path, depth + 1);
+    }
   }
 
   launchChange(
@@ -1940,56 +1938,134 @@ export class GTpl implements IGtplObject {
     path?: string[],
     value?: any
   ): Promise<void> {
-    const update = this.applyChange(type, bind, path, value);
-    this.trackInitialUpdate(update, (bind.gtpl || this) as GTpl);
-    return update;
+    return this.queueChange(type, bind, path, value)!;
   }
 
-  private async applyChange(
+  private queueChange(
     type: TypeEventProxyHandler,
     bind: IBindObject,
     path?: string[],
-    value?: any
-  ) {
-    if (this.checkDestroyed('launchChange')) return;
-    if (BindTypes.EVENT == bind.type)
-      return;
-    let result = await calculateBind(this, bind, value);
-    if (this.isDestroyed || bind.gtpl?.isDestroyed) return;
+    value?: any,
+    automatic: boolean = false,
+    pathOffset: number = 0
+  ): Promise<void> | undefined {
+    if (this.isDestroyed || bind.gtpl?.isDestroyed || bind.type === BindTypes.EVENT)
+      return automatic ? undefined : Promise.resolve();
+    let job = pendingBindingChanges.get(bind);
+    const relativeLength = path ? path.length - pathOffset : 0;
+    if (job) {
+      // A merged list notification must reconcile final rows, not replay a stale
+      // splice/index hint. A single event retains its incremental path.
+      const sameRow = bind.type === BindTypes.FOR && type === TypeEventProxyHandler.SET &&
+        job.type === TypeEventProxyHandler.SET && relativeLength > 0 && job.path?.length &&
+        path![pathOffset] === job.path[0] && /^(0|[1-9]\d*)$/.test(String(path![pathOffset]));
+      if (sameRow) {
+        // Keep the nested hint when every notification concerns row properties:
+        // the row's own proxy subscription already invalidated its bindings.
+        if (job.path!.length === 1 || relativeLength === 1) job.path = [path![pathOffset]];
+      } else {
+        job.type = TypeEventProxyHandler.FORCE_REFRESH_ROOT;
+        job.path = undefined;
+      }
+      job.value = undefined;
+    } else {
+      // Reuse pending jobs, but a request superseding running work gets a new
+      // identity. No numeric revision can be reused after the binding is idle.
+      currentBindingChanges.get(bind)?.resolve?.();
+      job = { context: this, type, path: relativeLength > 0 ? path!.slice(pathOffset) : undefined, value, reportErrors: false };
+      pendingBindingChanges.set(bind, job);
+      currentBindingChanges.set(bind, job);
+    }
+    const owner = (bind.gtpl || this) as GTpl;
+    const initial = !this.getGtplRoot().initialRenderSettled ||
+      (owner !== this && !owner.getGtplRoot().initialRenderSettled);
+    if (!automatic || initial) bindingChangePromise(job);
+    if (initial) {
+      if (!job.callers) job.callers = new Set();
+      if (!job.callers.has(this)) {
+        job.callers.add(this);
+        this.trackInitialUpdate(job.promise!, owner);
+      }
+    }
+    if (automatic && !initial) {
+      job.reportErrors = true;
+      observeBindingErrors(job);
+    }
+    if (!bindingFlushScheduled) {
+      bindingFlushScheduled = true;
+      queueMicrotask(GTpl.flushChanges);
+    }
+    return job.promise;
+  }
+
+  private static flushChanges() {
+    bindingFlushScheduled = false;
+    // Leave unvisited jobs in the map so effects triggered during this flush can
+    // update them in place rather than schedule redundant work for the next one.
+    const bindings = Array.from(pendingBindingChanges.keys());
+    for (const bind of bindings) {
+      const job = pendingBindingChanges.get(bind);
+      if (!job) continue;
+      pendingBindingChanges.delete(bind);
+      if (job.context.isDestroyed || bind.gtpl?.isDestroyed) {
+        finishBindingChange(bind, job);
+        continue;
+      }
+      try {
+        const update = job.context.applyChange(job.type, bind, job.path, job.value, job);
+        if (isPromiseLike(update)) Promise.resolve(update).then(
+          () => finishBindingChange(bind, job), error => finishBindingChange(bind, job, { error }));
+        else finishBindingChange(bind, job);
+      } catch (error) {
+        finishBindingChange(bind, job, { error });
+      }
+    }
+  }
+
+  private applyChange(
+    type: TypeEventProxyHandler,
+    bind: IBindObject,
+    path: string[] | undefined,
+    value: any,
+    job: PendingBindingChange
+  ): void | Promise<void> {
+    const result = calculateBind(this, bind, value);
+    if (isPromiseLike(result))
+      return Promise.resolve(result).then(value => this.applyResult(type, bind, path, value, job));
+    return this.applyResult(type, bind, path, result, job);
+  }
+
+  private applyResult(
+    type: TypeEventProxyHandler,
+    bind: IBindObject,
+    path: string[] | undefined,
+    result: any,
+    job: PendingBindingChange
+  ): void | Promise<void> {
+    if (this.isDestroyed || bind.gtpl?.isDestroyed || currentBindingChanges.get(bind) !== job) return;
     if (bind.type === BindTypes.FOR) {
-      // Replacing a reactive value may revoke the calculated proxy during the
-      // await. Snapshot raw rows before child cleanup can revoke more proxies.
+      // Snapshot raw rows before child cleanup can revoke their old proxies.
       const rows = toRaw(result);
       if (Array.isArray(rows)) result = Array.from(rows, row => toRaw(row));
     }
-    let gtpl: IGtplObject = this;
+    let gtpl: IGtplObject | Promise<IGtplObject> = this;
     switch (bind.type) {
-      case BindTypes.TEXT:
-        gtpl = await updateTEXTbind(type, this, bind, result, path);
-        break;
-      case BindTypes.ATTR:
-        gtpl = await updateATTRbind(type, this, bind, result, path);
-        break;
-      case BindTypes.INNER:
-        gtpl = await updateINNERbind(type, this, bind, result, path);
-        break;
-      case BindTypes.STYLE:
-        gtpl = await updateSTYLEbind(type, this, bind, result, path);
-        break;
+      case BindTypes.TEXT: gtpl = updateTEXTbind(type, this, bind, result, path); break;
+      case BindTypes.ATTR: gtpl = updateATTRbind(type, this, bind, result, path); break;
+      case BindTypes.INNER: gtpl = updateINNERbind(type, this, bind, result, path); break;
+      case BindTypes.STYLE: gtpl = updateSTYLEbind(type, this, bind, result, path); break;
       case BindTypes.IF:
-      case BindTypes.NOTIF:
-        gtpl = await updateIFbind(type, this, bind, result, path);
-        break;
-      case BindTypes.FOR:
-        gtpl = await updateFORbind(type, this, bind, result, path);
-        break;
-      case BindTypes.SWITCH:
-        gtpl = await updateSWITCHbind(type, this, bind, result, path);
-        break;
-      case BindTypes.IS:
-        gtpl = await updateISbind(type, this, bind, result, path);
-        break;
+      case BindTypes.NOTIF: gtpl = updateIFbind(type, this, bind, result, path); break;
+      case BindTypes.FOR: gtpl = updateFORbind(type, this, bind, result, path); break;
+      case BindTypes.SWITCH: gtpl = updateSWITCHbind(type, this, bind, result, path, job); break;
+      case BindTypes.IS: gtpl = updateISbind(type, this, bind, result, path); break;
     }
-    if (!gtpl.isDestroyed) checkRenderElements(gtpl, bind);
+    if (isPromiseLike(gtpl)) {
+      return Promise.resolve(gtpl).then(context => {
+        if (!context.isDestroyed && !this.isDestroyed && !bind.gtpl?.isDestroyed && currentBindingChanges.get(bind) === job)
+          checkRenderElements(context, bind);
+      });
+    }
+    if (!gtpl.isDestroyed && currentBindingChanges.get(bind) === job) checkRenderElements(gtpl, bind);
   }
 }

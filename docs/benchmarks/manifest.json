@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "cases": 12,
-  "gtplSourceHash": "19255d11682e590d7753a6d0334f30f5ccd684068a55b1630c7803881269d911",
+  "gtplSourceHash": "46437d7fd3aaed767c55a0321978eca7451945cc821a7c205c32939ff5e39df9",
   "gtplCompiler": {
     "generator": "GCodeOptimized",
     "options": {
@@ -19,16 +19,16 @@
     "gtpl": {
       "version": "1.1.8",
       "file": "benchmarks/vendor/gtpl.js",
-      "bytes": 36507,
-      "gzipBytes": 9486,
-      "sha256": "0eba061a9cbf9d0374bc91deb5b47e62245c90f654b421d12ffb7e72e92eb8b8"
+      "bytes": 38580,
+      "gzipBytes": 10234,
+      "sha256": "598eb45d0b6e84b76ca258aa38d031960bd81e6f64f94c81d62f0f5ec4c245dc"
     },
     "gtpl-jit": {
       "version": "1.1.8",
       "file": "benchmarks/vendor/gtpl-jit.js",
-      "bytes": 45588,
-      "gzipBytes": 14499,
-      "sha256": "5fb1be092f8f90b0d548082d253dc7551475c042b37a0a50e0d889bb9d0b3cde"
+      "bytes": 47665,
+      "gzipBytes": 15242,
+      "sha256": "412beae7f1022edd37958a975d1c061872543089ea731d6d6f672244824eef75"
     },
     "vue": {
       "version": "3.5.44",
@@ -77,16 +77,16 @@
     "gtpl": {
       "version": "1.1.8",
       "file": "benchmarks/vendor/grid-gtpl.js",
-      "bytes": 26922,
-      "gzipBytes": 9004,
-      "sha256": "766ee47fff8d3a5506aff7fd94bab1292c8bb7ea65d4c480f3dee5afdd664850"
+      "bytes": 28990,
+      "gzipBytes": 9732,
+      "sha256": "1ddcbc2032654890ec677cf38a3c9d479ce930f7bb7bfdeb64082db1e796e378"
     },
     "gtpl-jit": {
       "version": "1.1.8",
       "file": "benchmarks/vendor/grid-gtpl-jit.js",
-      "bytes": 43202,
-      "gzipBytes": 14411,
-      "sha256": "cebca1d0ddf0479e5efdcebc7dd17f60f56966dc2f8cb1a2a1ca24feb66673d3"
+      "bytes": 45279,
+      "gzipBytes": 15160,
+      "sha256": "d6a9008ee3c109c5df38a1ef8c72e0971b059ebe5a7ceb813f0f1e95f1bc0701"
     },
     "react": {
       "version": "19.3.1",
@@ -136,13 +136,13 @@
             "file": "benchmarks/methods/switch-8-gtpl.js",
             "bytes": 750214,
             "gzipBytes": 14294,
-            "sha256": "b367e6312a9ec2e85d5c58dd5ccbac249b021d663dc0c531edadd4db4338c810"
+            "sha256": "e65de8ac812044140356f1f32623d9a8a6da5451cd9dc60fac99b5764669835b"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -157,8 +157,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 778131,
-        "gzipBytes": 24006
+        "bytes": 780193,
+        "gzipBytes": 24740
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-8-gtpl-jit.js",
@@ -170,19 +170,19 @@
             "file": "benchmarks/methods/switch-8-gtpl-jit.js",
             "bytes": 391610,
             "gzipBytes": 10737,
-            "sha256": "f66fddb2fa4f980d42c2a88da243706488e993e281a30b15447e3352b87d062d"
+            "sha256": "3865feaa13fee128adbcbb1dcb3640995d772c18e3a75bde60627bc06f6a30aa"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -197,8 +197,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 435330,
-        "gzipBytes": 26021
+        "bytes": 437392,
+        "gzipBytes": 26756
       },
       "react": {
         "file": "benchmarks/methods/switch-8-react.js",
@@ -404,13 +404,13 @@
             "file": "benchmarks/methods/switch-32-gtpl.js",
             "bytes": 3004642,
             "gzipBytes": 53806,
-            "sha256": "adf3b72c72b1534941789bcdd6db7088f0f7d5a7f575084727231c3d555ef89f"
+            "sha256": "88ab20ad6babe7a6e60736d6c8df87448024b178f13243fe3996bea459d20e48"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -425,8 +425,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3032559,
-        "gzipBytes": 63518
+        "bytes": 3034621,
+        "gzipBytes": 64252
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-32-gtpl-jit.js",
@@ -438,19 +438,19 @@
             "file": "benchmarks/methods/switch-32-gtpl-jit.js",
             "bytes": 1570670,
             "gzipBytes": 40695,
-            "sha256": "8ae53591a40f46e139b11b51d51c1bc0578215bbc5471c61cb87b7120d40676e"
+            "sha256": "5565def780ea9aed04442f46db90255d03998cdb1af38471e160a985f28436fc"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -465,8 +465,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1614390,
-        "gzipBytes": 55979
+        "bytes": 1616452,
+        "gzipBytes": 56714
       },
       "react": {
         "file": "benchmarks/methods/switch-32-react.js",
@@ -672,13 +672,13 @@
             "file": "benchmarks/methods/switch-64-gtpl.js",
             "bytes": 6011234,
             "gzipBytes": 106378,
-            "sha256": "1954f90d59b51902804902248e41b2a24d4db9c8428f2d9b4f8f7ba5fb698fab"
+            "sha256": "064fc196f9c7ee81b4554e13c755979067c64c3bc48b386368a621bc4bba6919"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -693,8 +693,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 6039151,
-        "gzipBytes": 116090
+        "bytes": 6041213,
+        "gzipBytes": 116824
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-64-gtpl-jit.js",
@@ -705,20 +705,20 @@
           {
             "file": "benchmarks/methods/switch-64-gtpl-jit.js",
             "bytes": 3143438,
-            "gzipBytes": 80490,
-            "sha256": "b1993116a0a8adbf96ccfd165e28227e30d6b61bd4380247d06a1dee457b5a27"
+            "gzipBytes": 80489,
+            "sha256": "1ae53ab428678949115b0248a7e465344b4089cfb7da9457a831ca072f034947"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -733,8 +733,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3187158,
-        "gzipBytes": 95774
+        "bytes": 3189220,
+        "gzipBytes": 96508
       },
       "react": {
         "file": "benchmarks/methods/switch-64-react.js",
@@ -940,13 +940,13 @@
             "file": "benchmarks/methods/for-gtpl.js",
             "bytes": 1033,
             "gzipBytes": 586,
-            "sha256": "2ec3d88a9a5dcda5e33909685fe9fa1308aa36d77735616ddb3709785e9d8858"
+            "sha256": "5888ee8484f1224fc4c8fa122f6f9fef3f2f54385d568a76a2499b5805ce8d2a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -961,8 +961,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 28950,
-        "gzipBytes": 10298
+        "bytes": 31012,
+        "gzipBytes": 11032
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/for-gtpl-jit.js",
@@ -973,20 +973,20 @@
           {
             "file": "benchmarks/methods/for-gtpl-jit.js",
             "bytes": 608,
-            "gzipBytes": 414,
-            "sha256": "b421d1caccb191014eebbef97bdeea9981ce2ff9ed6643ff66149ac4ad39a4e5"
+            "gzipBytes": 412,
+            "sha256": "01792d1e1360bafd5bc1b40a7fd9bd85da289a1f6716d2166de936f7b112cca6"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1001,8 +1001,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 44328,
-        "gzipBytes": 15698
+        "bytes": 46390,
+        "gzipBytes": 16431
       },
       "react": {
         "file": "benchmarks/methods/for-react.js",
@@ -1208,13 +1208,13 @@
             "file": "benchmarks/methods/if-gtpl.js",
             "bytes": 94187,
             "gzipBytes": 2518,
-            "sha256": "63657c7220eda26b26e7bde064fdff9da4744b57516d6a50081e8682f9144834"
+            "sha256": "582c6b835ee63b84c0f04f8f63225bedcf827ebe0843e4abf454e05ffb1d0dfa"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1229,8 +1229,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 122104,
-        "gzipBytes": 12230
+        "bytes": 124166,
+        "gzipBytes": 12964
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/if-gtpl-jit.js",
@@ -1242,19 +1242,19 @@
             "file": "benchmarks/methods/if-gtpl-jit.js",
             "bytes": 49351,
             "gzipBytes": 1877,
-            "sha256": "0e3eea8130a1e87311ac4f895d4cba0e1ec70b47418e170760ae38c10b53ac7f"
+            "sha256": "2197da4c01691c98018b64a2f9ab874619c915c7edeb386940032a8d2304ca63"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1269,8 +1269,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 93071,
-        "gzipBytes": 17161
+        "bytes": 95133,
+        "gzipBytes": 17896
       },
       "react": {
         "file": "benchmarks/methods/if-react.js",
@@ -1476,13 +1476,13 @@
             "file": "benchmarks/methods/styles-gtpl.js",
             "bytes": 934,
             "gzipBytes": 549,
-            "sha256": "8beda94b58eeb75fca46fdceba6f155f636bc5f7d52485dc13ff4ea95c626034"
+            "sha256": "e77c7063bba923508ff37b8a605c298a42e205c23ba14f6108e9ae3b62c9d748"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1497,8 +1497,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 28851,
-        "gzipBytes": 10261
+        "bytes": 30913,
+        "gzipBytes": 10995
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/styles-gtpl-jit.js",
@@ -1509,20 +1509,20 @@
           {
             "file": "benchmarks/methods/styles-gtpl-jit.js",
             "bytes": 639,
-            "gzipBytes": 419,
-            "sha256": "169a9a131c2cd0e6adaa32359f327d2b6fd3778b07994ad9d88493a160c57d40"
+            "gzipBytes": 417,
+            "sha256": "e392a67650b74206b8de79d23f74c4db1bb74d932176fcdc5b00b516c7b0a904"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1537,8 +1537,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 44359,
-        "gzipBytes": 15703
+        "bytes": 46421,
+        "gzipBytes": 16436
       },
       "react": {
         "file": "benchmarks/methods/styles-react.js",
@@ -1744,13 +1744,13 @@
             "file": "benchmarks/methods/classes-gtpl.js",
             "bytes": 819,
             "gzipBytes": 538,
-            "sha256": "b997f6e8a416b453dbdb2b773cba560ef037d3bf204aa74b9341fc0e35a95df7"
+            "sha256": "ce4ca3b7353405058d6ef6b15025dda912ec86683bb5830677349ba03c027ede"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1765,8 +1765,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 28736,
-        "gzipBytes": 10250
+        "bytes": 30798,
+        "gzipBytes": 10984
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/classes-gtpl-jit.js",
@@ -1777,20 +1777,20 @@
           {
             "file": "benchmarks/methods/classes-gtpl-jit.js",
             "bytes": 570,
-            "gzipBytes": 392,
-            "sha256": "5fee848f02b0a2f7f6e1f99e0d1612bb5b384df9be86be65b56a6db09ccf03e2"
+            "gzipBytes": 391,
+            "sha256": "8d7391969b54611515cdbfdf4329fee38c40b077a36ae5e08516f8072176ee64"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -1805,8 +1805,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 44290,
-        "gzipBytes": 15676
+        "bytes": 46352,
+        "gzipBytes": 16410
       },
       "react": {
         "file": "benchmarks/methods/classes-react.js",
@@ -2011,14 +2011,14 @@
           {
             "file": "benchmarks/methods/attributes-gtpl.js",
             "bytes": 861,
-            "gzipBytes": 556,
-            "sha256": "2b09b4ef9cfe781f7bb3daa7a36010d64d709c8779db94b926cc785903cf4281"
+            "gzipBytes": 555,
+            "sha256": "21f9db413cc37e44fd19835308b54a3b4517617f02aa80f4aba4d5432126ef29"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -2033,8 +2033,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 28778,
-        "gzipBytes": 10268
+        "bytes": 30840,
+        "gzipBytes": 11001
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/attributes-gtpl-jit.js",
@@ -2045,20 +2045,20 @@
           {
             "file": "benchmarks/methods/attributes-gtpl-jit.js",
             "bytes": 568,
-            "gzipBytes": 392,
-            "sha256": "6e3c4d785a64aafeabfb677603752c91061b6abc8c0240a78a14e22936b2b9f7"
+            "gzipBytes": 391,
+            "sha256": "597fcf5f34de26f7ffcf0dbbefe400c17dce0e510762731b1ad4388c45c65420"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -2073,8 +2073,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 44288,
-        "gzipBytes": 15676
+        "bytes": 46350,
+        "gzipBytes": 16410
       },
       "react": {
         "file": "benchmarks/methods/attributes-react.js",
@@ -2280,13 +2280,13 @@
             "file": "benchmarks/methods/forms-gtpl.js",
             "bytes": 957,
             "gzipBytes": 592,
-            "sha256": "6dbff3f93fa3dded8560691c985a8807d5330be14adda2258c176e4c216351c4"
+            "sha256": "0a54a5f3dda9475fe6760b06c9c5a5d33981642ac6f25acb7d98e3f5b3a7eb51"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -2301,8 +2301,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 28874,
-        "gzipBytes": 10304
+        "bytes": 30936,
+        "gzipBytes": 11038
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/forms-gtpl-jit.js",
@@ -2313,20 +2313,20 @@
           {
             "file": "benchmarks/methods/forms-gtpl-jit.js",
             "bytes": 612,
-            "gzipBytes": 412,
-            "sha256": "5aa467974bd3f16513c48328c2ae10e21a274d23594cea995f492bbd5fe4544c"
+            "gzipBytes": 411,
+            "sha256": "18e971b5aa7743b18723f5c79204c8d25a4c84c553cf0f720b813a8dac03e9da"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-DQCNHCOR.js",
+            "file": "benchmarks/methods/chunks/chunk-VACUUCYZ.js",
             "bytes": 15803,
-            "gzipBytes": 5572,
-            "sha256": "d22bd8e037bd784fd2b3f33cf5cee09ecb654e3d4bc8db7ab9a9d443d607f75b"
+            "gzipBytes": 5573,
+            "sha256": "dc173ef4f22184885eeb95927e3851ae8ad8b151a460536a4a1e6ec814428da3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-K4IB7IFS.js",
-            "bytes": 26796,
-            "gzipBytes": 8966,
-            "sha256": "535e8b15f16ad456880866058c1dc460cc4e935761062cbe7705e3f5a781eb23"
+            "file": "benchmarks/methods/chunks/chunk-3JBEMHH3.js",
+            "bytes": 28858,
+            "gzipBytes": 9700,
+            "sha256": "e6d3bf8ed10f20c9d6030a4deac5eb88d3dba90fe1f787fd00b906f289bf7e98"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LYTJMG6B.js",
@@ -2341,8 +2341,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 44332,
-        "gzipBytes": 15696
+        "bytes": 46394,
+        "gzipBytes": 16430
       },
       "react": {
         "file": "benchmarks/methods/forms-react.js",

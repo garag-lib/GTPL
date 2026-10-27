@@ -756,6 +756,9 @@ function download(format) {
             ["fps", "fps"],
             ["frameP95Ms", "ms"],
             ["updateMs", "ms"],
+            ["dispatchMs", "ms"],
+            ["applyMs", "ms"],
+            ["layoutMs", "ms"],
             ["updatesPerSecond", "celdas/s"],
           ])
             push(id, sample, "grid." + key, point[key], unit, "", point);

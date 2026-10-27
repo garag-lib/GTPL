@@ -365,3 +365,29 @@ test('ready resolves static templates and rejects an already destroyed instance'
   destroyed.destroy();
   await assert.rejects(destroyed.ready(), /destroyed before ready/);
 });
+
+test('an async switch case superseded by another selection cannot create or cache an obsolete branch', async () => {
+  const old = deferred<string>();
+  const root = { selected: 'a' };
+  const created: string[] = [];
+  const app = new GTpl({ root, generator: (ctx: GTpl) => {
+    const mark = new TestNode(8), a = new TestNode(8), b = new TestNode(8);
+    ctx.addBind({ type: BindTypes.SWITCH, mark, link: { vorc: { va: ['selected'] } }, gen: () => [a, b], case: [
+      { type: BindTypes.CASE, mark: a, link: { formula: { vars: [['selected']], fnc(selected: string) { return selected === 'a' ? old.promise : 'a'; } } },
+        gen: (child: GTpl) => { created.push('a'); return [boundText(child, () => 'A')]; } },
+      { type: BindTypes.CASE, mark: b, link: { vorc: { ct: 'b' } },
+        gen: (child: GTpl) => { created.push('b'); return [boundText(child, () => 'B')]; } }
+    ] });
+    return [mark];
+  } });
+  const host = new TestNode(11); app.addTo(host as any);
+  await new Promise(resolve => setImmediate(resolve));
+  root.selected = 'b'; await app.ready();
+  assert.deepEqual(created, ['b']);
+  old.resolve('a'); await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(created, ['b']);
+  root.selected = 'a'; await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(created, ['b', 'a']);
+  assert.equal(app.GtplChilds.size, 1);
+  app.destroy(); assert.equal(host.childNodes.length, 0);
+});

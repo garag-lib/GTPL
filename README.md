@@ -169,6 +169,22 @@ original `g(tag, attrs, children, context)` contract.
 
 See [the comparison and reproduction instructions](docs/benchmarks/imperative-performance.md).
 
+## Reactive update batching
+
+State assignments and `watch()` callbacks are synchronous. DOM bindings are
+queued by binding identity and run in a microtask, so repeated writes in the same
+synchronous task calculate the final state once. Synchronous text, attributes,
+styles and formulas do not allocate update promises after `ready()`; asynchronous
+formulas remain supported and superseded results cannot overwrite newer output.
+
+`ready()` still waits for the initial render and generated children. Call it after
+mounting; it is not a general wait for later updates. A single nested list update
+keeps the row's incremental path. Merged structural changes reconcile the final
+list; explicit `refresh()` continues to refresh changes made outside proxies.
+
+The scheduler and grid measurement protocol are documented in
+[the runtime comparison](docs/benchmarks/scheduler-performance.md).
+
 ## Browser Global Build
 
 If you use the global bundle (`dist/gtpl.global.js`):

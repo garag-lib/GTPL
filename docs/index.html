@@ -750,6 +750,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                 const aot = GCodeOptimized(template.innerHTML, { methodAliases: true });
                 const instance = new GTpl({ root: {}, generator: GCompile(aot) });
                 instance.addTo(renderedContent);
+                instance.ready().catch(error => console.error('GTPL demo failed:', error));
                 //---
                 const codeBlock = template.previousElementSibling.querySelector('code');
                 let content = template.innerHTML;

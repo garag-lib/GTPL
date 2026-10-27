@@ -35,3 +35,32 @@ test("all engines receive an identical deterministic sequence prefix at every de
     }
   }
 });
+
+test('grid completion waits for a delayed middle cell, including its attribute and text', async () => {
+  const { JSDOM } = await import('jsdom');
+  const { waitForGridUpdate } = await import('../../docs/benchmarks/grid-runner.js');
+  const dom = new JSDOM('<main><span data-value="1">1</span><span data-value="0">0</span><span data-value="3">3</span></main>');
+  const previous = globalThis.MutationObserver;
+  globalThis.MutationObserver = dom.window.MutationObserver;
+  try {
+    const host = dom.window.document.querySelector('main');
+    const nodes = [...host.children];
+    const batch = { indices: new Uint32Array([0, 1, 2]), values: new Uint32Array([1, 2, 3]) };
+    let completed = false;
+    const done = waitForGridUpdate(host, nodes, batch).then(() => { completed = true; });
+    await new Promise(resolve => setImmediate(resolve));
+    const resolvedBeforeMiddle = completed;
+    nodes[1].dataset.value = '2';
+    await new Promise(resolve => setImmediate(resolve));
+    const resolvedBeforeText = completed;
+    nodes[1].textContent = '2';
+    await done;
+    assert.equal(resolvedBeforeMiddle, false, 'correct boundary cells cannot hide a pending middle cell');
+    assert.equal(resolvedBeforeText, false, 'both DOM outputs must be current');
+    assert.equal(completed, true);
+  } finally {
+    if (previous === undefined) delete globalThis.MutationObserver;
+    else globalThis.MutationObserver = previous;
+    dom.window.close();
+  }
+});

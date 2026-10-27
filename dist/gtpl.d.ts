@@ -188,8 +188,12 @@ declare class GTpl implements IGtplObject {
     watch(path: string | string[], cb: (info: any) => void): () => void;
     private emitWatchers;
     eventPRoxy(type: TypeEventProxyHandler, path: PathProxyHandler, value: any, objRef: any): void;
+    private static queueBindings;
     launchChange(type: TypeEventProxyHandler, bind: IBindObject, path?: string[], value?: any): Promise<void>;
+    private queueChange;
+    private static flushChanges;
     private applyChange;
+    private applyResult;
 }
 
 declare function css2obj(css: string): Record<string, string>;

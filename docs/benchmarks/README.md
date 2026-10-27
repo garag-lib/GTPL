@@ -201,3 +201,21 @@ El empaquetado fija las condiciones `browser`, `module` y `production`, además 
 El contador acompaña toda la muestra y no se apaga al terminar una lectura: sigue durante la carga del módulo, el montaje, las operaciones y la limpieza. Cada fase aparece identificada junto al ejecutor. Hay dos límites distintos: 30 segundos por lectura de la API y un presupuesto global de 120 segundos para carga/operaciones, más 30 segundos por fase de memoria. Un switch normal dispone de 210 segundos; con retención, o un if, de 240 segundos. Esto da tiempo a todas las lecturas y evita tratar 30 segundos como límite de la prueba entera.
 
 Al agotar el presupuesto global se elimina el iframe, se registra la fase del fallo y se avanza a la siguiente muestra; no se omiten automáticamente todas las rondas de ese motor. El botón Detener cancela también el reloj. Las esperas de lecturas no se cuentan como tiempo de montaje o actualización. Como cualquier temporizador JavaScript, el aviso puede despacharse con retraso si el navegador bloquea su hilo principal durante compilación o GC; el contador usa tiempo transcurrido real al reanudarse.
+
+### Grid timing contract
+
+`updateMs` includes the adapter call, any Promise it returns, confirmation of
+**all cells changed in that batch**, and a forced layout read. It does not stop
+when GTPL finishes assigning state. Vue's `nextTick()` remains part of this same
+interval. `dispatchMs` / `raw.dispatchTimes` separately record only the immediate
+adapter call; they are diagnostics and exclude any later asynchronous work.
+The grid source gives each selected cell a distinct index per frame: batching
+repeated writes cannot by itself reduce that frame's two dynamic value bindings
+per GTPL cell. All selected cells are checked again against the complete model
+at the end of each level.
+
+`applyMs` / `raw.applyTimes` include the call, returned Promise and all modified
+DOM outputs up to the layout read; `layoutMs` / `raw.layoutTimes` measure that
+forced layout read separately. `updateMs` remains the full interval. These phases
+help distinguish runtime work from browser style/layout cost; their independent
+medians need not sum exactly to the median complete interval.

@@ -28,15 +28,16 @@ function verify(nodes, expected) {
     )
       throw new Error(`El grid no coincide en la celda ${i}.`);
 }
-function settled(host, nodes, batch) {
-  const last = batch.indices[batch.indices.length - 1],
-    first = batch.indices[0];
-  const valid = () =>
-    nodes[last].textContent === String(batch.values[batch.values.length - 1]) &&
-    nodes[last].dataset.value ===
-      String(batch.values[batch.values.length - 1]) &&
-    nodes[first].textContent === String(batch.values[0]) &&
-    nodes[first].dataset.value === String(batch.values[0]);
+export function waitForGridUpdate(host, nodes, batch) {
+  // Every selected cell must complete, even if an adapter applies asynchronous
+  // work in a different order. Correct boundary cells alone are insufficient.
+  const valid = () => {
+    for (let i = 0; i < batch.indices.length; i++) {
+      const node = nodes[batch.indices[i]], expected = String(batch.values[i]);
+      if (node.textContent !== expected || node.dataset.value !== expected) return false;
+    }
+    return true;
+  };
   if (valid()) return Promise.resolve();
   return new Promise((resolve, reject) => {
     const observer = new MutationObserver(() => {
@@ -82,7 +83,7 @@ export async function runGrid(config, createAdapter, host, status) {
   const warm = createGridWorkload(16, 100, seed),
     batch = warm.next();
   await adapter.update(batch);
-  await settled(host, [...host.querySelectorAll(".grid-cell")], batch);
+  await waitForGridUpdate(host, [...host.querySelectorAll(".grid-cell")], batch);
   await adapter.destroy();
   host.replaceChildren();
   adapter = null;
@@ -110,6 +111,9 @@ export async function runGrid(config, createAdapter, host, status) {
       const refreshMs = median(idle);
       const intervals = [],
         updates = [],
+        dispatch = [],
+        apply = [],
+        layout = [],
         generation = [];
       const start = await frame();
       previous = start;
@@ -119,10 +123,18 @@ export async function runGrid(config, createAdapter, host, status) {
           batch = work.next();
         generation.push(performance.now() - generationStart);
         const updateStart = performance.now();
-        await adapter.update(batch);
-        await settled(host, nodes, batch);
+        const completion = adapter.update(batch);
+        // Diagnostic only: this can exclude async DOM work. updateMs below is
+        // the comparable metric and includes the complete DOM/layout fence.
+        dispatch.push(performance.now() - updateStart);
+        await completion;
+        await waitForGridUpdate(host, nodes, batch);
+        const domComplete = performance.now();
         void host.offsetHeight;
-        updates.push(performance.now() - updateStart);
+        const layoutComplete = performance.now();
+        apply.push(domComplete - updateStart);
+        layout.push(layoutComplete - domComplete);
+        updates.push(layoutComplete - updateStart);
         const now = await frame();
         intervals.push(now - previous);
         previous = now;
@@ -141,6 +153,9 @@ export async function runGrid(config, createAdapter, host, status) {
         fps: (frames * 1000) / elapsedMs,
         frameP95Ms: p95(intervals),
         updateMs: median(updates),
+        dispatchMs: median(dispatch),
+        applyMs: median(apply),
+        layoutMs: median(layout),
         generationMs: median(generation),
         updatesPerSecond: (frames * work.count * 1000) / elapsedMs,
         refreshMs,
@@ -153,6 +168,9 @@ export async function runGrid(config, createAdapter, host, status) {
         raw: {
           frameIntervals: intervals,
           updateTimes: updates,
+          dispatchTimes: dispatch,
+          applyTimes: apply,
+          layoutTimes: layout,
           generationTimes: generation,
           idleFrameIntervals: idle,
         },
@@ -166,6 +184,12 @@ export async function runGrid(config, createAdapter, host, status) {
   return {
     grid: result,
     metrics: {},
+    timing: {
+      updateMs: "adapter + returned promise + all modified DOM cells + layout",
+      dispatchMs: "immediate adapter call only; excludes deferred work",
+      applyMs: "adapter + returned promise + all modified DOM cells; before layout read",
+      layoutMs: "forced layout read after DOM completion",
+    },
     raw: { frameIntervals: [] },
     validated: true,
   };
