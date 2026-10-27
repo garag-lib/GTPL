@@ -32,7 +32,7 @@ export function createAdapter(){let app,state;return {mount(target,{columns,rows
       `const generator=${GCode(template)};const getGenerator=()=>generator;`,
     ),
     "grid-gtpl-jit": gtpl(
-      `import {GCode} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};import {GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};const getGenerator=()=>GCompile(GCode(${JSON.stringify(template)}));`,
+      `import {GCodeOptimized} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};import {GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};const getGenerator=()=>GCompile(GCodeOptimized(${JSON.stringify(template)},{methodAliases:true}));`,
     ),
     "grid-react": `import {createElement as h,useState,useLayoutEffect} from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';
 function Cell({id,setters}){const [value,setValue]=useState(0);useLayoutEffect(()=>{setters[id]=setValue;return()=>{delete setters[id]};},[id,setters]);return h('span',{className:'grid-cell','data-cell':id,'data-value':value},value);}

@@ -202,8 +202,16 @@ interface GCodeOptions {
     allowEvents?: boolean;
     allowInnerHTML?: boolean;
 }
+interface GCodeOptimizedOptions extends GCodeOptions {
+    /** Short property-key aliases reduce source size but can slow initial rendering. */
+    methodAliases?: boolean;
+}
 declare function GCode(html: string | Node | NodeListOf<ChildNode>): string;
 declare function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptions): string;
+/** Opt-in imperative backend. Requires the current GGenerator runtime helpers. */
+declare function GCodeOptimized(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string;
+/** Safe parsing restrictions with the imperative backend. */
+declare function GCodeOptimizedSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string;
 
 declare const ISPROXY: unique symbol;
 declare const PROXYTARGET: unique symbol;
@@ -221,7 +229,10 @@ declare const _default: {
     GInsertAfterTo: (ele: any[] | Node, childs: Function | any[] | Node, objRoot: IGtplObject) => void;
     GInsertBeforeTo: (ele: any[] | Node, childs: Function | any[] | Node, objRoot: IGtplObject) => void;
     GregisterDirective: (name: string, cls: any) => boolean;
-    GGenerator: (nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject) => any;
+    GGenerator: ((nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject) => any) & {
+        getDocument: () => Document;
+        addAttributes: (attributes: AttrType[], ele: any, objRoot: IGtplObject) => void;
+    };
     GProxy: typeof GProxy;
     unGProxy: typeof unGProxy;
     jit: {
@@ -229,6 +240,8 @@ declare const _default: {
         GCompileSafe: (generator: unknown) => any;
         GCode: typeof GCode;
         GCodeSafe: typeof GCodeSafe;
+        GCodeOptimized: typeof GCodeOptimized;
+        GCodeOptimizedSafe: typeof GCodeOptimizedSafe;
     };
     utils: {
         log: typeof log;

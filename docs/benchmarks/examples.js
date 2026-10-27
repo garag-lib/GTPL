@@ -19,15 +19,15 @@ const state = { tab: 0, count: 0 };
 const app = new gtpl.GTpl({ root: state, generator });
 app.addTo(document.querySelector('#app'));
 await app.ready();`,
-    note: "Plantilla + arranque. view.aot.js es el generador producido en el build con GCode y GGenerator; no se incluye ese paso de herramientas en el recuento.",
+    note: "Plantilla + arranque. view.aot.js es el generador producido en el build con GCodeOptimized(template, { methodAliases: true }) y GGenerator; no se incluye ese paso de herramientas en el recuento.",
   },
   "gtpl-jit": {
     code: `import gtpl from '@mpeliz/gtpl';
-const { GTpl, jit: { GCode, GCompile } } = gtpl;
+const { GTpl, jit: { GCodeOptimized, GCompile } } = gtpl;
 
 const template = \`${gView}\`;
 const state = { tab: 0, count: 0 };
-const generator = GCompile(GCode(template));
+const generator = GCompile(GCodeOptimized(template, { methodAliases: true }));
 const app = new GTpl({ root: state, generator });
 app.addTo(document.querySelector('#app'));
 await app.ready();`,

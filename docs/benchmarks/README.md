@@ -32,6 +32,13 @@ only the chosen pattern and variant.
 
 `method-definitions.mjs` generates native templates and React render functions.
 `method-adapters.mjs` supplies readable adapters and bundles their modules.
+On this branch, every GTPL benchmark (AOT and JIT, methods and grid) uses
+`GCodeOptimized(template, { methodAliases: true })`. The library's default
+compiler behavior is unchanged. `manifest.json` records this under `gtplCompiler`.
+The standalone `aot.mjs prepare` defaults to the same configuration and writes
+`config.json` beside each preparation; use `BACKEND=legacy` for the original
+compiler or `METHOD_ALIASES=0` to compare the imperative backend without aliases.
+
 GTPL AOT, Svelte and Vue templates are precompiled. Angular uses its real AOT compiler,
 without the runtime compiler or Zone.js. React uses production mode. GTPL JIT
 compiles at mount; Alpine interprets HTML at mount. Dependencies are pinned in

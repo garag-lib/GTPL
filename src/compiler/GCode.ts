@@ -11,6 +11,11 @@ export interface GCodeOptions {
     allowInnerHTML?: boolean;
 }
 
+export interface GCodeOptimizedOptions extends GCodeOptions {
+    /** Short property-key aliases reduce source size but can slow initial rendering. */
+    methodAliases?: boolean;
+}
+
 const defaultGCodeOptions: Required<GCodeOptions> = {
     allowFormulas: true,
     allowEvents: true,
@@ -270,18 +275,115 @@ function sb(): IStringBuilder {
     };
 }
 
+// One statement block per render function. Ordinary descendants are concatenated
+// into their enclosing block; only structural bindings retain lazy generators.
+interface ImperativeNode {
+    name: string;
+    statements: string[];
+    eager: boolean;
+}
+
+interface ImperativeBlock {
+    statements: string[];
+    nodes: ImperativeNode[];
+    nextId: () => string;
+    depth: number;
+    methods: Map<string, string> | null;
+}
+
+function imperativeBlock(nextId?: () => string, depth: number = 0, methods: Map<string, string> | null = null): ImperativeBlock {
+    let index = 0;
+    return { statements: [], nodes: [], nextId: nextId ?? (() => `$${depth}_${(index++).toString(36)}`), depth, methods };
+}
+
+const imperativeMethodAliases: Record<string, string> = {
+    createElement: '$e',
+    createTextNode: '$t',
+    createComment: '$c',
+    appendChild: '$a',
+    addAttributes: '$s',
+    addBind: '$b'
+};
+
+function imperativeMethod(block: ImperativeBlock, method: string): string {
+    if (!block.methods) return `.${method}`;
+    const alias = imperativeMethodAliases[method];
+    block.methods.set(method, alias);
+    // Alias the property key, keeping each call's receiver and dynamic lookup.
+    return `[${alias}]`;
+}
+
+function imperativeFunction(block: ImperativeBlock, array: boolean = true): string {
+    const result = array ? `[${block.nodes.map(node => node.name).join(',')}]` : block.nodes[0].name;
+    const statements = block.statements.slice();
+    for (const node of block.nodes)
+        for (const statement of node.statements) statements.push(statement);
+    return `(o)=>{${statements.join('')}return ${result};}`;
+}
+
+function imperativeElement(block: ImperativeBlock, tag: string, attrs: string, children: ImperativeBlock, eager: boolean = false): string {
+    const name = eager ? block.nextId() : children.nextId();
+    const statements: string[] = [];
+    // Legacy array evaluation creates text and static leaves before entering g().
+    // Inline the same schedule, including mixed eager/deferred siblings, without
+    // allocating the legacy child functions or their nested arrays at runtime.
+    for (const child of children.nodes)
+        if (child.eager) statements.push(...child.statements);
+    statements.push(`const ${name}=d${imperativeMethod(block, 'createElement')}(${JSON.stringify(tag)});`);
+    for (const child of children.nodes) {
+        if (!child.eager) {
+            // Blocks reuse local names across siblings without closures. The
+            // depth prefix keeps the parent's reference visible inside a child.
+            statements.push('{', ...child.statements, `${name}${imperativeMethod(block, 'appendChild')}(${child.name});`, '}');
+        } else {
+            statements.push(`${name}${imperativeMethod(block, 'appendChild')}(${child.name});`);
+        }
+    }
+    // Directives can be registered after compilation. Keep their runtime lookup,
+    // and preserve child bindings/directives before the parent's attributes.
+    if (attrs !== '[]')
+        statements.push(`g${imperativeMethod(block, 'addAttributes')}(${attrs},${name},o);`);
+    block.nodes.push({ name, statements, eager });
+    return name;
+}
+
 function NodeList2Function(
     nodes: NodeListOf<ChildNode> | Node[],
     parent?: any,
     headers?: boolean,
     bindSwitch?: null | IBindObject,
-    options: Required<GCodeOptions> = defaultGCodeOptions
+    options: Required<GCodeOptions> = defaultGCodeOptions,
+    imperative?: ImperativeBlock
 ): string {
     //---
     if (gparse == null)
         gparse = new GParse();
     //---
     let parse: IStringBuilder = sb();
+    const emitNode = (tag: string, attrs: string) => {
+        if (!imperative) {
+            parse.addComma(getGen(tag, attrs), ['[']);
+            return;
+        }
+        const name = imperative.nextId();
+        const text = tag === '#text';
+        const literal = !attrs.startsWith('[');
+        const statements = [`const ${name}=d${imperativeMethod(imperative, text ? 'createTextNode' : 'createComment')}(${literal ? attrs : '""'});`];
+        if (!literal) {
+            // The compiler emits a single TEXT binding for an interpolated node.
+            const bind = attrs.slice(1, -2);
+            statements.push(`o${imperativeMethod(imperative, 'addBind')}(${bind},${text ? 'ele' : 'mark'}:${name}});`);
+        }
+        imperative.nodes.push({ name, statements, eager: true });
+    };
+    const emitMarker = (code: string) => {
+        if (!imperative) {
+            parse.add(code);
+            return;
+        }
+        const name = imperative.nextId();
+        imperative.nodes.push({ name, statements: [`const ${name}=${code};`], eager: !parent });
+    };
     //if (headers !== false)
     //    parse = '[';
     //---
@@ -313,9 +415,11 @@ function NodeList2Function(
                         //if (parse != '[')
                         //    parse += ',';
                         //parse += getGen(node.nodeName, JSON.stringify(node.textContent));
-                        parse.addComma(
-                            getGen(node.nodeName, JSON.stringify(node.textContent))
-                            , ['[']);
+                        if (imperative) {
+                            imperativeElement(imperative, node.nodeName, '[]', imperativeBlock(imperative.nextId), true);
+                        } else {
+                            parse.addComma(getGen(node.nodeName, JSON.stringify(node.textContent)), ['[']);
+                        }
                         continue;
                     }
                     //---
@@ -379,6 +483,16 @@ function NodeList2Function(
                     // makes its immediate children execute inside its lazy generator.
                     const conditionalTemplate = ele.nodeName.toLowerCase() == 'template' &&
                         (bind_is || bind_if || bind_case || bind_for || bind_switch);
+                    const structural = bind_is || bind_if || bind_case || bind_for || bind_switch;
+                    const staticLeaf = !bind_tpl && atributos.every(attr => Array.isArray(attr)) &&
+                        Array.from(ele.childNodes).every(child => child.nodeType === NodeTypes.TEXT_NODE &&
+                            !(child.nodeValue || '').includes('{{'));
+                    const eager = !parent || staticLeaf;
+                    const childBlock = imperative
+                        ? structural ? imperativeBlock(undefined, 0, imperative.methods)
+                            : eager ? imperativeBlock(imperative.nextId, imperative.depth, imperative.methods)
+                                : imperativeBlock(undefined, imperative.depth + 1, imperative.methods)
+                        : undefined;
                     if (bind_tpl) {
                         const ct: any = (<any>bind_tpl).link.vorc.ct;
                         const tpl = globalObject.document.getElementById(ct);
@@ -386,14 +500,14 @@ function NodeList2Function(
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
                             const fragment = ele.nodeName.toLowerCase() == 'template' && !conditionalTemplate;
-                            childsnodes = NodeList2Function(childs, conditionalTemplate || (fragment && real === undefined) ? null : real, !fragment, bind_switch, options);
+                            childsnodes = NodeList2Function(childs, conditionalTemplate || (fragment && real === undefined) ? null : real, !fragment, bind_switch, options, childBlock);
                         } else {
                             console.error('template ' + ct + ' undefined.');
                         }
                     } else {
                         real = (ele.nodeName.toLowerCase() == 'template') ? (<any>ele).content : ele;
                         childs = (<any>real).childNodes;
-                        childsnodes = NodeList2Function(childs, conditionalTemplate ? null : real, true, bind_switch, options);
+                        childsnodes = NodeList2Function(childs, conditionalTemplate ? null : real, true, bind_switch, options, childBlock);
                     }
                     //---
                     if (bind_is || bind_if || bind_case || bind_for || bind_switch) {
@@ -442,20 +556,31 @@ function NodeList2Function(
                             //---
                         }
 
+                        let lazyGenerator: string | undefined;
+                        if (imperative && childBlock) {
+                            if (ele.nodeName.toLowerCase() === 'template') {
+                                lazyGenerator = imperativeFunction(childBlock);
+                            } else {
+                                const body = imperativeBlock(childBlock.nextId, childBlock.depth, imperative.methods);
+                                imperativeElement(body, ele.nodeName, attrs, childBlock);
+                                lazyGenerator = imperativeFunction(body, false);
+                            }
+                        }
+
                         if (bind_tpl) {
 
                             if (ele.nodeName.toLowerCase() == 'template') {
 
                                 common.push({
                                     'var': uuid,
-                                    'gen': getFunction(childsnodes, true)
+                                    'gen': lazyGenerator ?? getFunction(childsnodes, true)
                                 });
 
                             } else {
 
                                 common.push({
                                     'var': uuid,
-                                    'gen': getFunction(getGen(ele.nodeName, attrs, childsnodes), true)
+                                    'gen': lazyGenerator ?? getFunction(getGen(ele.nodeName, attrs, childsnodes), true)
                                 });
 
                             }
@@ -464,7 +589,7 @@ function NodeList2Function(
 
                             common.push({
                                 'var': uuid,
-                                'gen': bind_is ? 'null' : (ele.nodeName.toLowerCase() == 'template' ? getFunction(childsnodes, true) : getFunction(getGen(ele.nodeName, attrs, childsnodes), true))
+                                'gen': bind_is ? 'null' : lazyGenerator ?? (ele.nodeName.toLowerCase() == 'template' ? getFunction(childsnodes, true) : getFunction(getGen(ele.nodeName, attrs, childsnodes), true))
                             });
 
                         }
@@ -475,7 +600,7 @@ function NodeList2Function(
                             bind_case.gen = uuid;
                             bind_case.common = common;
 
-                            parse.add(getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), parent));
+                            emitMarker(getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), imperative ? null : parent));
 
                         } else {
 
@@ -506,28 +631,32 @@ function NodeList2Function(
 
                                 // jsonAttr -> solo for
 
-                                parse.add(getFunction(getGen('#comment', '[' + JSON.stringify(bind_for.uid) + ',' + jsonAttr + ']'), parent, common));
+                                emitMarker(getFunction(getGen('#comment', '[' + JSON.stringify(bind_for.uid) + ',' + jsonAttr + ']'), imperative ? null : parent, common));
 
                             } else {
 
                                 // jsonAttr -> solo if, notif, switch, is ...
 
-                                parse.add(getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), parent, common));
+                                emitMarker(getFunction(getGen('#comment', '[' + JSON.stringify(uuid) + ',' + jsonAttr + ']'), imperative ? null : parent, common));
 
                             }
 
                         }
 
                     } else {
-                        if (bind_tpl && ele.nodeName.toLowerCase() == 'template') {
+                        if (imperative && childBlock) {
+                            if (bind_tpl && ele.nodeName.toLowerCase() === 'template') {
+                                imperative.statements.push(...childBlock.statements);
+                                imperative.nodes.push(...childBlock.nodes);
+                            } else {
+                                imperativeElement(imperative, ele.nodeName, Attributes2JSON(atributos), childBlock, eager);
+                            }
+                        } else if (bind_tpl && ele.nodeName.toLowerCase() == 'template') {
                             parse.add(childsnodes);
                         } else {
                             const gen = getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes);
                             // A static leaf needs no child closure. Its enclosing structural
                             // generator still controls when its DOM and directives are created.
-                            const staticLeaf = !bind_tpl && atributos.every(attr => Array.isArray(attr)) &&
-                                Array.from(ele.childNodes).every(child => child.nodeType === NodeTypes.TEXT_NODE &&
-                                    !(child.nodeValue || '').includes('{{'));
                             parse.add(staticLeaf ? gen : getFunction(gen, parent));
                         }
                     }
@@ -546,19 +675,16 @@ function NodeList2Function(
                                 r.forEach((item: string | IObjParsed) => {
                                     //if (parse != '[' && parse != '')
                                     //    parse += ',';
-                                    parse.addCommaOnly(['[']);
                                     if (typeof item == 'string') {
-                                        parse.add(getGen(node.nodeName, JSON.stringify(item)));
+                                        emitNode(node.nodeName, JSON.stringify(item));
                                     } else {
                                         if (containsFormula(item as IObjParsed) && !options.allowFormulas)
                                             throw new Error('Unsafe formula blocked in safe mode');
-                                        parse.add(
-                                            getGen(node.nodeName, Attributes2JSON([{
-                                                type: BindTypes.TEXT,
-                                                prop: 'textContent',
-                                                link: item
-                                            }]))
-                                        );
+                                        emitNode(node.nodeName, Attributes2JSON([{
+                                            type: BindTypes.TEXT,
+                                            prop: 'textContent',
+                                            link: item
+                                        }]));
                                     }
                                 });
                             }
@@ -567,9 +693,7 @@ function NodeList2Function(
                     if (normal) {
                         //if (parse != '[' && parse != '')
                         //    parse += ',';
-                        parse.addComma(
-                            getGen(node.nodeName, JSON.stringify(node.nodeValue))
-                            , ['[']);
+                        emitNode(node.nodeName, JSON.stringify(node.nodeValue));
                     }
                 }
                 break;
@@ -577,15 +701,16 @@ function NodeList2Function(
                 {
                     //if (parse != '[' && parse != '')
                     //    parse += ',';
-                    parse.addComma(
-                        getGen(node.nodeName, JSON.stringify(node.nodeValue))
-                        , ['[']);
+                    emitNode(node.nodeName, JSON.stringify(node.nodeValue));
                 }
                 break;
         }
     };
     //if (headers !== false)
     //   parse += ']';
+    // The imperative caller owns the statement block. Serialize only at render
+    // boundaries, avoiding repeated source generation for ordinary descendants.
+    if (imperative) return '';
     const result = parse.toString(headers !== false ? '[' : '', headers !== false ? ']' : '');
     if (parent === undefined)
         return '(o)=>' + result;
@@ -617,4 +742,27 @@ export function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?:
     } else {
         return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, safeOptions);
     }
+}
+
+/** Opt-in imperative backend. Requires the current GGenerator runtime helpers. */
+export function GCodeOptimized(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string {
+    const block = imperativeBlock(undefined, 0, options?.methodAliases ? new Map() : null);
+    block.statements.push('const d=g.getDocument();');
+    const settings = { ...defaultGCodeOptions, ...options };
+    if (typeof html === 'string') {
+        const doc = new DOMParser().parseFromString(html.trim(), 'text/html');
+        NodeList2Function(doc.body.childNodes, undefined, undefined, undefined, settings, block);
+    } else {
+        NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, settings, block);
+    }
+    if (block.methods?.size) {
+        const aliases = Array.from(block.methods, ([method, alias]) => `${alias}=${JSON.stringify(method)}`);
+        block.statements.push(`const ${aliases.join(',')};`);
+    }
+    return imperativeFunction(block);
+}
+
+/** Safe parsing restrictions with the imperative backend. */
+export function GCodeOptimizedSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string {
+    return GCodeOptimized(html, { allowFormulas: false, allowEvents: false, allowInnerHTML: false, ...options });
 }

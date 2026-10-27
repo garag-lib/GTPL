@@ -47,7 +47,8 @@ await build({
   format: "esm",
   outfile: path.join(work, "compiler.mjs"),
 });
-const { GCode } = await import(path.join(work, "compiler.mjs"));
+const { GCodeOptimized } = await import(path.join(work, "compiler.mjs"));
+const GCode = (html) => GCodeOptimized(html, { methodAliases: true });
 const gCode = GCode(templates.gtpl);
 const gImports = `import {GTpl} from ${JSON.stringify(path.join(root, "src/GTpl.ts"))};\nimport {GGenerator as g} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};`;
 const gAdapter = (generator) => `${gImports}
@@ -73,7 +74,7 @@ export function createAdapter(){let app,state;return {mount(target,data){state=r
     `const generator = ${gCode}; const getGenerator = () => generator;`,
   ),
   "gtpl-jit": gAdapter(
-    `import {GCode} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};\nimport {GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};\nconst getGenerator = () => GCompile(GCode(${JSON.stringify(templates.gtpl)}));`,
+    `import {GCodeOptimized} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};\nimport {GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};\nconst getGenerator = () => GCompile(GCodeOptimized(${JSON.stringify(templates.gtpl)},{methodAliases:true}));`,
   ),
   vue: `import {createApp, reactive, nextTick} from 'vue';
 ${compile(templates.vue, { mode: "module", prefixIdentifiers: true, hoistStatic: true }).code}
@@ -165,6 +166,7 @@ const manifest = {
   schema: 1,
   cases: CASES,
   gtplSourceHash: "",
+  gtplCompiler: { generator: "GCodeOptimized", options: { methodAliases: true } },
   frameworks: {},
   gridFrameworks: {},
 };

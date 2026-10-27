@@ -42,7 +42,7 @@ export function input(host,value){const el=host.querySelector('input');Object.ge
       let source;
       if (id.startsWith("gtpl"))
         source = `${stateImport} import {GTpl} from ${JSON.stringify(path.join(root, "src/GTpl.ts"))};import {GGenerator as g,GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};
-${id === "gtpl-jit" ? `import {GCode} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};const generator=()=>GCompile(GCode(${JSON.stringify(template)}));` : `const compiled=${code};const generator=()=>compiled;`}
+${id === "gtpl-jit" ? `import {GCodeOptimized} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};const generator=()=>GCompile(GCodeOptimized(${JSON.stringify(template)},{methodAliases:true}));` : `const compiled=${code};const generator=()=>compiled;`}
 export function createAdapter({size}){let app,host,state=createState(size);return {async mount(target){host=target;app=new GTpl({root:state,generator:generator()});app.addTo(host);await app.ready();},set(patch){Object.assign(state,patch);},input(value){input(host,value);},destroy(){app?.destroy();app=host=state=null;}};}`;
       if (id === "react")
         source = `${stateImport} import {createElement as h} from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';${reactView(key)}

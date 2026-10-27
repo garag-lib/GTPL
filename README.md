@@ -123,6 +123,8 @@ const { GTpl, GregisterDirective, jit: { GCode, GCompile } } = gtpl;
 
 Main pieces:
 - `GCode(html)`: parses template HTML into generated code string.
+- `GCodeOptimized(html)`: opt-in imperative backend; creates ordinary DOM subtrees directly and keeps lazy generators at structural directives.
+- `GCodeOptimizedSafe(html)`: imperative backend with the same parsing restrictions and options as `GCodeSafe`.
 - `GCompile(code)`: compiles generated code into a render function.
 - `GCodeSafe(html)`: safe parser mode (blocks formulas, inline events, and `g-inner`).
 - `GCompileSafe(generatorFn)`: accepts only precompiled generator functions (no runtime eval).
@@ -133,6 +135,39 @@ Main pieces:
 - `instance.ready()`: waits for initial rendering; mount before awaiting.
 - `instance.destroy()`: removes listeners, bindings, and rendered nodes.
 - `GregisterDirective(name, class)`: register custom directive.
+
+## Imperative compiler (opt-in)
+
+Use the imperative backend with the existing compile and mount APIs:
+
+```ts
+const { GTpl, jit: { GCodeOptimized, GCompile } } = gtpl;
+const generator = GCompile(GCodeOptimized('<div><span>{{name}}</span></div>'));
+const app = new GTpl({ root: { name: 'GTPL' }, generator });
+app.addTo(document.body);
+await app.ready();
+```
+
+`GCode` remains the default/reference backend. Both compilers use the same parser
+and structural directive handling. The imperative backend emits one function for
+ordinary descendants, creates fresh DOM and binding records for each invocation,
+and retains deferred generators for `g-if`, `g-for`, `g-switch` and `g-is`.
+To reduce emitted source size, enable `GCodeOptimized(template, { methodAliases: true })`.
+Repeated method names then use local property-key aliases, for example
+`const $a = "appendChild"; parent[$a](child)`. This preserves each method's
+receiver and avoids adding wrapper functions. This option defaults to `false`:
+it reduces large templates' bytes but slowed initial rendering in our Chrome
+measurements. Attributes still use the runtime directive lookup, including
+directives registered after compilation. Child bindings and directives precede parent attributes.
+
+For AOT, assign the emitted expression to a generator with the current
+`GGenerator` available as `g`, then pass it through `GCompileSafe`. This needs no
+runtime evaluation. The imperative output requires the current runtime's
+`g.getDocument()` and `g.addAttributes()` helpers; a custom `g` supplied to
+`GCompile` must provide those helpers. Existing precompiled generators keep their
+original `g(tag, attrs, children, context)` contract.
+
+See [the comparison and reproduction instructions](docs/benchmarks/imperative-performance.md).
 
 ## Browser Global Build
 

@@ -73,7 +73,25 @@ function processChild(
 }
 
 function appendChildsFromFnc(ele: NodeLike, childs: ChildInput, objRoot: IGtplObject) {
-    processChild(ele, childs, objRoot, (e, c) => e.appendChild(c));
+    // Direct nodes are common for imperative generators and legacy static leaves.
+    // Keep insertBefore/insertAfter on their existing insertion path.
+    let child: any = childs;
+    const stack: any[] = [];
+    while (true) {
+        if (typeof child === 'function') {
+            child = child(objRoot);
+            continue;
+        }
+        if (Array.isArray(child)) {
+            for (let i = child.length - 1; i >= 0; i--)
+                stack.push(child[i]);
+        } else if (child != null) {
+            if (Array.isArray(ele)) ele.push(child);
+            else ele.appendChild(child);
+        }
+        if (stack.length === 0) return;
+        child = stack.pop();
+    }
 }
 
 function insertBeforeFromFnc(ele: NodeLike, childs: ChildInput, objRoot: IGtplObject) {
@@ -192,7 +210,11 @@ function compileSafe(generator: unknown): any {
     return generator;
 }
 
-export const GGenerator = createElement;
+export const GGenerator = Object.assign(createElement, {
+    // Access the active document at render time, as the legacy generator does.
+    getDocument: (): Document => globalObject.document,
+    addAttributes: addArributes
+});
 
 export const GAddTo = appendChildsFromFnc;
 

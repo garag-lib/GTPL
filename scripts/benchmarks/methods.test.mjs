@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import { build } from "esbuild";
 import { fileURLToPath } from "node:url";
+import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import {
   METHODS,
   methodKey,
@@ -86,7 +89,7 @@ test("GTPL style and class benchmarks use supported reactive declarations", asyn
     app = new gtpl.GTpl({
       root: state,
       generator: gtpl.jit.GCompile(
-        gtpl.jit.GCode(methodTemplate("styles", "gtpl")),
+        gtpl.jit.GCodeOptimized(methodTemplate("styles", "gtpl"), { methodAliases: true }),
       ),
     });
     app.addTo(document.querySelector("#app"));
@@ -107,7 +110,7 @@ test("GTPL style and class benchmarks use supported reactive declarations", asyn
     app = new gtpl.GTpl({
       root: classes,
       generator: gtpl.jit.GCompile(
-        gtpl.jit.GCode(methodTemplate("classes", "gtpl")),
+        gtpl.jit.GCodeOptimized(methodTemplate("classes", "gtpl"), { methodAliases: true }),
       ),
     });
     app.addTo(document.querySelector("#app"));
@@ -123,6 +126,39 @@ test("GTPL style and class benchmarks use supported reactive declarations", asyn
     for (const [key, desc] of saved) {
       if (desc) Object.defineProperty(globalThis, key, desc);
       else delete globalThis[key];
+    }
+  }
+});
+
+test("published GTPL benchmarks record optimized aliases and matching bundle checksums", async () => {
+  const docs = new URL("../../docs/", import.meta.url);
+  const manifest = JSON.parse(await readFile(new URL("benchmarks/manifest.json", docs), "utf8"));
+  assert.deepEqual(manifest.gtplCompiler, {
+    generator: "GCodeOptimized",
+    options: { methodAliases: true },
+  });
+  const checked = new Map();
+  const check = async (asset) => {
+    if (checked.has(asset.file)) {
+      assert.deepEqual(asset, checked.get(asset.file));
+      return;
+    }
+    const bytes = await readFile(new URL(asset.file, docs));
+    assert.equal(bytes.length, asset.bytes, asset.file);
+    assert.equal(gzipSync(bytes).length, asset.gzipBytes, asset.file);
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), asset.sha256, asset.file);
+    checked.set(asset.file, asset);
+  };
+  for (const engine of ["gtpl", "gtpl-jit"]) {
+    for (const group of [manifest.frameworks, manifest.gridFrameworks]) {
+      const { file, bytes, gzipBytes, sha256 } = group[engine];
+      await check({ file, bytes, gzipBytes, sha256 });
+    }
+    for (const entries of Object.values(manifest.methods)) {
+      const entry = entries[engine];
+      for (const asset of entry.assets) await check(asset);
+      assert.equal(entry.bytes, entry.assets.reduce((sum, asset) => sum + asset.bytes, 0));
+      assert.equal(entry.gzipBytes, entry.assets.reduce((sum, asset) => sum + asset.gzipBytes, 0));
     }
   }
 });

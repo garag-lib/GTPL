@@ -303,7 +303,7 @@
             <section class="summary-grid">
                 <article class="summary-item">
                     <h3>Pipeline</h3>
-                    <p><span class="kbd">template</span> -> <span class="kbd">GCode</span> -> <span class="kbd">GCompile</span> -> <span class="kbd">GTpl</span></p>
+                    <p><span class="kbd">template</span> -> <span class="kbd">GCodeOptimized</span> -> <span class="kbd">GCompile</span> -> <span class="kbd">GTpl</span></p>
                 </article>
                 <article class="summary-item">
                     <h3>Reactive Core</h3>
@@ -653,9 +653,9 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
             </thead>
             <tbody>
                 <tr>
-                    <td><span class="kbd">gtpl.jit.GCode(html)</span></td>
+                    <td><span class="kbd">gtpl.jit.GCodeOptimized(html, { methodAliases: true })</span></td>
                     <td>Transform template HTML into AOT code string.</td>
-                    <td><span class="kbd">const aot = GCode(template)</span></td>
+                    <td><span class="kbd">const aot = GCodeOptimized(template, { methodAliases: true })</span></td>
                 </tr>
                 <tr>
                     <td><span class="kbd">gtpl.jit.GCompile(aot)</span></td>
@@ -694,7 +694,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-markup.min.js"></script>
     <script>
-        const GCode = gtpl.jit.GCode;
+        const GCodeOptimized = gtpl.jit.GCodeOptimized;
         const GCompile = gtpl.jit.GCompile;
         const GTpl = gtpl.GTpl;
         //---
@@ -747,7 +747,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
             document.querySelectorAll('.code-block > template').forEach((template) => {
                 //---
                 const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
-                const aot = GCode(template.innerHTML);
+                const aot = GCodeOptimized(template.innerHTML, { methodAliases: true });
                 const instance = new GTpl({ root: {}, generator: GCompile(aot) });
                 instance.addTo(renderedContent);
                 //---

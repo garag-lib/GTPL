@@ -2,7 +2,7 @@
 import { GTpl } from "../GTpl";
 import { GGenerator, GCompile, GCompileSafe, GAddTo, GregisterDirective, GInsertAfterTo, GInsertBeforeTo } from "../GGenerator";
 import { STACK, css2obj, log, style2css } from "../GUtils";
-import { GCode, GCodeSafe } from "../compiler/GCode";
+import { GCode, GCodeSafe, GCodeOptimized, GCodeOptimizedSafe } from "../compiler/GCode";
 import { globalObject, passiveSupported } from "../global";
 import { GProxy, isGProxy, ISPROXY, PROXYTARGET, toRaw, unGProxy } from "../GProxy";
 
@@ -19,7 +19,9 @@ export default {
         'GCompile': GCompile,
         'GCompileSafe': GCompileSafe,
         'GCode': GCode,
-        'GCodeSafe': GCodeSafe
+        'GCodeSafe': GCodeSafe,
+        'GCodeOptimized': GCodeOptimized,
+        'GCodeOptimizedSafe': GCodeOptimizedSafe
     },
     'utils': {
         'log': log,
