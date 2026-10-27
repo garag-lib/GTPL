@@ -391,3 +391,90 @@ test('an async switch case superseded by another selection cannot create or cach
   assert.equal(app.GtplChilds.size, 1);
   app.destroy(); assert.equal(host.childNodes.length, 0);
 });
+
+test('a queued child is cancelled before calculating when its parent list removes it in the same batch', async () => {
+  const root = { rows: [{ label: 'old' }], tick: 0 };
+  let calculations = 0;
+  const app = new GTpl({ root, generator: (ctx: GTpl) => [
+    directive(ctx, BindTypes.FOR,
+      { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+      (row: GTpl) => [boundText(row, (tick: number, value: any) => {
+        calculations++;
+        return `${tick}: ${value.label}`;
+      }, [['tick'], ['row']])])
+  ] });
+  const host = new TestNode(11); app.addTo(host as any);
+  try {
+    await app.ready(); calculations = 0;
+    // The inherited dependency queues the child before the parent structure.
+    root.tick = 1;
+    root.rows = [];
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(calculations, 0, 'removed descendants must not evaluate obsolete bindings');
+    assert.equal(app.GtplChilds.size, 0);
+    assert.equal(host.childNodes.filter(node => node.nodeType === 3).length, 0);
+  } finally { app.destroy(); }
+});
+
+test('g-for gives falsy rows their own value and index context', async () => {
+  const root = { rows: [0, false, '', null, undefined] };
+  const app = new GTpl({ root, generator: (ctx: GTpl) => [
+    directive(ctx, BindTypes.FOR,
+      { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+      (row: GTpl) => [boundText(row, (index: number, value: any) => `${index}:${String(value)}`, [['index'], ['row']])])
+  ] });
+  const host = new TestNode(11); app.addTo(host as any);
+  try {
+    await app.ready();
+    assert.deepEqual(host.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent),
+      ['0:0', '1:false', '2:', '3:null', '4:undefined']);
+  } finally { app.destroy(); }
+});
+
+test('nested lists reconcile replacement rows before an already queued descendant reads them', async () => {
+  const root = { rows: [{ items: [{ label: 'old' }] }], tick: 0 };
+  const seen: string[] = [];
+  const app = new GTpl({ root, generator: (ctx: GTpl) => [
+    directive(ctx, BindTypes.FOR,
+      { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+      (row: GTpl) => [directive(row, BindTypes.FOR,
+        { vorc: { va: ['row', 'items'] }, index: { index: 'itemIndex', target: 'item' } },
+        (item: GTpl) => [boundText(item, (tick: number, value: any) => {
+          const text = `${tick}: ${value.label}`;
+          seen.push(text); return text;
+        }, [['tick'], ['item']])])])
+  ] });
+  const host = new TestNode(11); app.addTo(host as any);
+  try {
+    await app.ready(); seen.length = 0;
+    root.tick = 1;
+    root.rows = [{ items: [{ label: 'new' }] }];
+    await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(seen, ['1: new'], 'descendants calculate once with reconciled ancestor data');
+    assert.deepEqual(host.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent), ['1: new']);
+  } finally { app.destroy(); }
+});
+
+test('a switch without a matching case renders empty and can select a later matching value', async () => {
+  const root = { selected: 'missing' };
+  const app = new GTpl({ root, generator: (ctx: GTpl) => {
+    const mark = new TestNode(8), caseMark = new TestNode(8);
+    ctx.addBind({ type: BindTypes.SWITCH, mark,
+      link: { vorc: { va: ['selected'] } }, gen: () => [caseMark],
+      case: [{ type: BindTypes.CASE, mark: caseMark, link: { vorc: { ct: 'a' } },
+        gen: (child: GTpl) => [boundText(child, () => 'A')] }] });
+    return [mark];
+  } });
+  const host = new TestNode(11); app.addTo(host as any);
+  try {
+    await app.ready();
+    assert.equal(host.childNodes.filter(node => node.nodeType === 3).length, 0);
+    root.selected = 'a';
+    await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(host.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent), ['A']);
+    root.selected = 'missing';
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(host.childNodes.filter(node => node.nodeType === 3).length, 0);
+    assert.equal(app.GtplChilds.size, 0);
+  } finally { app.destroy(); }
+});

@@ -25,6 +25,12 @@ interface PendingBindingChange {
 const pendingBindingChanges = new Map<IBindObject, PendingBindingChange>();
 const currentBindingChanges = new WeakMap<IBindObject, PendingBindingChange>();
 let bindingFlushScheduled = false;
+let activeBindingFlush: {
+  queues: IBindObject[][];
+  positions: number[];
+  seen: Set<IBindObject>;
+  depth: number;
+} | undefined;
 
 function isPromiseLike(value: any): value is PromiseLike<any> {
   return value != null && (typeof value === 'object' || typeof value === 'function') && typeof value.then === 'function';
@@ -814,7 +820,7 @@ function collectBindsFromTree(tree: any, out: Set<IBindObject>) {
 
 function removeElements(elements: any) {
   if (Array.isArray(elements)) {
-    elements.forEach((element) => {
+    fragmentNodes(elements).forEach((element) => {
       removeElements(element);
     });
   } else {
@@ -908,13 +914,53 @@ function checkValSelect(parentElement: HTMLElement, childElement: HTMLElement) {
 }
 */
 
+interface FragmentRange {
+  start: Node;
+  end: Node;
+  storage: DocumentFragment;
+  hidden: boolean;
+}
+
+const fragmentRanges = new WeakMap<any[], FragmentRange>();
+
+function prepareFragmentRange(bind: IBindObject) {
+  if (!Array.isArray(bind.ele) || fragmentRanges.has(bind.ele) || bind.type === BindTypes.FOR) return;
+  // A single concrete root already contains every descendant when detached.
+  const onlyRoot = bind.ele.length === 1 ? bind.ele[0] : undefined;
+  if (onlyRoot?.nodeType === 1 || onlyRoot?.nodeType === 3) return;
+  const doc = bind.mark?.ownerDocument || globalObject.document;
+  if (!doc?.createComment || !doc?.createDocumentFragment) return;
+  const start = doc.createComment(''), end = doc.createComment('');
+  // Stable boundaries enclose siblings inserted by nested structural bindings.
+  // Keep the original array identity shared by MarkEle and combined directives.
+  bind.ele.unshift(start);
+  bind.ele.push(end);
+  const storage = doc.createDocumentFragment();
+  bind.ele.forEach((node: Node) => storage.appendChild(node));
+  fragmentRanges.set(bind.ele, { start, end, storage, hidden: true });
+}
+
+function fragmentNodes(elements: any[]): any[] {
+  const range = fragmentRanges.get(elements);
+  if (!range || !range.start.parentNode || range.start.parentNode !== range.end.parentNode) return elements;
+  const nodes: Node[] = [];
+  for (let node: Node | null = range.start; node; node = node.nextSibling) {
+    nodes.push(node);
+    if (node === range.end) return nodes;
+  }
+  return elements;
+}
+
 function show(bind: IBindObject, remove: boolean = true) {
   if (bind.ele) {
     if (Array.isArray(bind.ele)) {
-      bind.ele.forEach((ele) => {
+      prepareFragmentRange(bind);
+      fragmentNodes(bind.ele).forEach((ele) => {
         bind.mark.parentNode.insertBefore(ele, bind.mark);
         //checkValSelect(bind.mark.parentNode, ele);
       });
+      const range = fragmentRanges.get(bind.ele);
+      if (range) range.hidden = false;
     } else {
       bind.mark.parentNode.insertBefore(bind.ele, bind.mark);
       //checkValSelect(bind.mark.parentNode, bind.ele);
@@ -926,10 +972,16 @@ function show(bind: IBindObject, remove: boolean = true) {
 function hide(bind: IBindObject, insert: boolean = true) {
   if (bind.ele) {
     if (Array.isArray(bind.ele)) {
-      if (insert) bind.ele[0].parentNode.insertBefore(bind.mark, bind.ele[0]);
-      bind.ele.forEach((ele) => {
-        ele.remove();
+      const range = fragmentRanges.get(bind.ele);
+      if (range?.hidden) return;
+      const nodes = fragmentNodes(bind.ele);
+      if (insert && nodes[0]?.parentNode) nodes[0].parentNode.insertBefore(bind.mark, nodes[0]);
+      nodes.forEach((ele) => {
+        // A detached parent lets nested lists and conditions keep reconciling.
+        if (range) range.storage.appendChild(ele);
+        else ele.remove();
       });
+      if (range) range.hidden = true;
     } else {
       if (insert) bind.ele.parentNode.insertBefore(bind.mark, bind.ele);
       bind.ele.remove();
@@ -938,6 +990,7 @@ function hide(bind: IBindObject, insert: boolean = true) {
 }
 
 function renderBind(gtpl: IGtplObject, bind: IBindObject, render: boolean) {
+  prepareFragmentRange(bind);
   const index = getElementIndex(gtpl, bind);
   const canrender = checkMarkRender(bind);
   if (render && canrender) {
@@ -947,7 +1000,8 @@ function renderBind(gtpl: IGtplObject, bind: IBindObject, render: boolean) {
       addCheckRenderElement(gtpl, bind);
   } else {
     if (index >= 0) delete gtpl.RenderElements[index];
-    if (bind.ele.parentNode) hide(bind);
+    const element = Array.isArray(bind.ele) ? bind.ele[0] : bind.ele;
+    if (element?.parentNode) hide(bind);
     else if (index >= 0 && searchBind(gtpl, bind))
       addCheckRenderElement(gtpl, bind);
   }
@@ -999,7 +1053,7 @@ function createGTpl(
     parent: bind.gtpl ? bind.gtpl : gtpl,
     generator: bind.gen,
   };
-  if (objindex && elementos && row) {
+  if (objindex && elementos) {
     const obj: any = {};
     obj[objindex.index] = elementos.length;
     obj[objindex.target] = row;
@@ -1412,10 +1466,14 @@ async function updateSWITCHbind(
     //---
   }
   //---
-  if (renderBind(gtpl, bind, bresult)) {
-    if (bresult) {
-      (<any>bind.eles)[0].refresh();
-      show((<any>bind.eles)[0].refCase);
+  const rendered = renderBind(gtpl, bind, bresult);
+  if (bresult && bind.eles?.length) {
+    const child = (<any>bind.eles)[0];
+    // A combined g-if can detach the wrapper while its selection changes.
+    // Populate the case in that detached range before the wrapper is shown.
+    if (rendered || child.refCase.mark.parentNode) {
+      child.refresh();
+      show(child.refCase);
     }
   }
   //---
@@ -1563,6 +1621,7 @@ export class GTpl implements IGtplObject {
   private initialReady?: Promise<void>;
   private initialReject?: (error: unknown) => void;
   private initialRenderSettled = false;
+  private bindingDepth = 0;
 
   constructor(options?: any) {
     //log('constructor', this, options);
@@ -1580,7 +1639,10 @@ export class GTpl implements IGtplObject {
   loadOptions(options?: any) {
     if (options) {
       this.Root = options.root;
-      if (options.parent) this.Parent = options.parent;
+      if (options.parent) {
+        this.Parent = options.parent;
+        this.bindingDepth = (options.parent.bindingDepth || 0) + 1;
+      }
       if (options.context) this.Context = new Set(options.context);
       if (options.generator) {
         this.FncElements = options.generator;
@@ -1841,7 +1903,9 @@ export class GTpl implements IGtplObject {
           return;
         }
         if (bind.ele) {
-          render_arr.push(bind.ele);
+          const range = Array.isArray(bind.ele) ? fragmentRanges.get(bind.ele) : undefined;
+          if (range) range.hidden = false;
+          render_arr.push(Array.isArray(bind.ele) ? fragmentNodes(bind.ele) : bind.ele);
         } else if (bind.eles) {
           bind.eles.forEach((gtpl: IGtplObject) => gtpl.addTo(render_arr));
           render_arr.push(bind.mark);
@@ -1849,7 +1913,7 @@ export class GTpl implements IGtplObject {
       });
       applyFn(ele, render_arr, this);
     } else {
-      applyFn(ele, this.Elements, this);
+      applyFn(ele, fragmentNodes(this.Elements), this);
     }
   }
 
@@ -1991,7 +2055,10 @@ export class GTpl implements IGtplObject {
       job.reportErrors = true;
       observeBindingErrors(job);
     }
-    if (!bindingFlushScheduled) {
+    if (activeBindingFlush && !activeBindingFlush.seen.has(bind)) {
+      GTpl.enqueueFlushBinding(bind, job);
+    }
+    if (!activeBindingFlush && !bindingFlushScheduled) {
       bindingFlushScheduled = true;
       queueMicrotask(GTpl.flushChanges);
     }
@@ -2000,10 +2067,21 @@ export class GTpl implements IGtplObject {
 
   private static flushChanges() {
     bindingFlushScheduled = false;
-    // Leave unvisited jobs in the map so effects triggered during this flush can
-    // update them in place rather than schedule redundant work for the next one.
-    const bindings = Array.from(pendingBindingChanges.keys());
-    for (const bind of bindings) {
+    activeBindingFlush = { queues: [], positions: [], seen: new Set(), depth: 0 };
+    for (const [bind, job] of pendingBindingChanges) GTpl.enqueueFlushBinding(bind, job);
+    // Reconcile ancestors before descendants, including intermediate structures
+    // newly invalidated by a parent's row replacement. Each binding runs at most
+    // once per flush; a self-invalidating effect continues in the next microtask.
+    while (activeBindingFlush.depth < activeBindingFlush.queues.length) {
+      const depth = activeBindingFlush.depth;
+      const queue = activeBindingFlush.queues[depth];
+      const position = activeBindingFlush.positions[depth] || 0;
+      if (!queue || position >= queue.length) {
+        activeBindingFlush.depth++;
+        continue;
+      }
+      const bind = queue[position];
+      activeBindingFlush.positions[depth] = position + 1;
       const job = pendingBindingChanges.get(bind);
       if (!job) continue;
       pendingBindingChanges.delete(bind);
@@ -2020,6 +2098,19 @@ export class GTpl implements IGtplObject {
         finishBindingChange(bind, job, { error });
       }
     }
+    activeBindingFlush = undefined;
+    if (pendingBindingChanges.size && !bindingFlushScheduled) {
+      bindingFlushScheduled = true;
+      queueMicrotask(GTpl.flushChanges);
+    }
+  }
+
+  private static enqueueFlushBinding(bind: IBindObject, job: PendingBindingChange) {
+    const flush = activeBindingFlush!;
+    const depth = ((bind.gtpl || job.context) as GTpl).bindingDepth;
+    (flush.queues[depth] || (flush.queues[depth] = [])).push(bind);
+    flush.seen.add(bind);
+    if (depth < flush.depth) flush.depth = depth;
   }
 
   private applyChange(

@@ -166,6 +166,7 @@ declare class GTpl implements IGtplObject {
     private initialReady?;
     private initialReject?;
     private initialRenderSettled;
+    private bindingDepth;
     constructor(options?: any);
     loadOptions(options?: any): void;
     getValue(key: any): any;
@@ -192,6 +193,7 @@ declare class GTpl implements IGtplObject {
     launchChange(type: TypeEventProxyHandler, bind: IBindObject, path?: string[], value?: any): Promise<void>;
     private queueChange;
     private static flushChanges;
+    private static enqueueFlushBinding;
     private applyChange;
     private applyResult;
 }

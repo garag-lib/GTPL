@@ -89,7 +89,7 @@ function parseAttribute(
         case 'g-for':
             tt = tt || BindTypes.FOR;
         case 'g-inner':
-            if (!options.allowInnerHTML)
+            if (prop === 'g-inner' && !options.allowInnerHTML)
                 throw new Error('Unsafe directive blocked in safe mode: g-inner');
             tt = tt || BindTypes.INNER;
             gparse.setString(`{{${value}}}`);
@@ -488,9 +488,12 @@ function NodeList2Function(
                         Array.from(ele.childNodes).every(child => child.nodeType === NodeTypes.TEXT_NODE &&
                             !(child.nodeValue || '').includes('{{'));
                     const eager = !parent || staticLeaf;
+                    const fragment = bind_tpl && ele.nodeName.toLowerCase() === 'template' && !conditionalTemplate;
                     const childBlock = imperative
                         ? structural ? imperativeBlock(undefined, 0, imperative.methods)
-                            : eager ? imperativeBlock(imperative.nextId, imperative.depth, imperative.methods)
+                            // Included fragments are flattened into this scope. Their
+                            // eager nodes must reserve names from the same allocator.
+                            : eager || fragment ? imperativeBlock(imperative.nextId, imperative.depth, imperative.methods)
                                 : imperativeBlock(undefined, imperative.depth + 1, imperative.methods)
                         : undefined;
                     if (bind_tpl) {
@@ -499,7 +502,6 @@ function NodeList2Function(
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
-                            const fragment = ele.nodeName.toLowerCase() == 'template' && !conditionalTemplate;
                             childsnodes = NodeList2Function(childs, conditionalTemplate || (fragment && real === undefined) ? null : real, !fragment, bind_switch, options, childBlock);
                         } else {
                             console.error('template ' + ct + ' undefined.');
@@ -717,12 +719,16 @@ function NodeList2Function(
     return result;
 }
 
+function parseTemplateNodes(html: string): NodeListOf<ChildNode> {
+    // Without an explicit body, DOMParser puts leading <template> roots in
+    // document.head. Parse all supplied template markup in the same body context.
+    return new DOMParser().parseFromString('<body>' + html.trim(), 'text/html').body.childNodes;
+}
+
 export function GCode(html: string | Node | NodeListOf<ChildNode>): string {
     const options = { ...defaultGCodeOptions };
     if (typeof html == 'string') {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html.trim(), "text/html");
-        return NodeList2Function(doc.body.childNodes, undefined, undefined, undefined, options);
+        return NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, options);
     } else {
         return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, options);
     }
@@ -736,9 +742,7 @@ export function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?:
         ...options
     };
     if (typeof html == 'string') {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html.trim(), "text/html");
-        return NodeList2Function(doc.body.childNodes, undefined, undefined, undefined, safeOptions);
+        return NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, safeOptions);
     } else {
         return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, safeOptions);
     }
@@ -750,8 +754,7 @@ export function GCodeOptimized(html: string | Node | NodeListOf<ChildNode>, opti
     block.statements.push('const d=g.getDocument();');
     const settings = { ...defaultGCodeOptions, ...options };
     if (typeof html === 'string') {
-        const doc = new DOMParser().parseFromString(html.trim(), 'text/html');
-        NodeList2Function(doc.body.childNodes, undefined, undefined, undefined, settings, block);
+        NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, settings, block);
     } else {
         NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, settings, block);
     }

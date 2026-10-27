@@ -176,6 +176,11 @@ queued by binding identity and run in a microtask, so repeated writes in the sam
 synchronous task calculate the final state once. Synchronous text, attributes,
 styles and formulas do not allocate update promises after `ready()`; asynchronous
 formulas remain supported and superseded results cannot overwrite newer output.
+Synchronous ancestor updates reconcile before descendants, including nested lists invalidated
+by replacing an outer row. Removed children cancel their queued bindings before
+calculation; surviving children read the reconciled data in the same batch.
+Asynchronous structural expressions keep existing children active until their
+latest result resolves.
 
 `ready()` still waits for the initial render and generated children. Call it after
 mounting; it is not a general wait for later updates. A single nested list update

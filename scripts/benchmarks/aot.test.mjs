@@ -186,6 +186,154 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
         }
     });
 
+    test('repeated g-tpl fragments share their enclosing scope without sharing nodes or bindings', async () => {
+        const shared = document.createElement('template');
+        shared.id = 'aot-repeated-fragment';
+        shared.innerHTML = '<b>{{title}}</b><i>static</i>tail<!--marker-->';
+        const nested = document.createElement('template');
+        nested.id = 'aot-nested-fragment';
+        nested.innerHTML = '<template g-tpl="aot-repeated-fragment"></template><u>{{title}}</u>';
+        document.body.append(shared, nested);
+        const pair = '<template g-tpl="aot-repeated-fragment"></template><span>{{other}}</span><template g-tpl="aot-repeated-fragment"></template>';
+        const root = { title: 'one', other: 'middle', show: true, rows: [1, 2] };
+        let view;
+        try {
+            const generator = GCompileSafe(evaluate(GCode(`<main>${pair}<template g-tpl="aot-nested-fragment"></template><template g-tpl="aot-nested-fragment"></template><article g-if="show">${pair}</article><div g-for="rows;i;row">${pair}</div></main>`)));
+            view = await mount(generator, root);
+            const check = title => {
+                const bold = [...view.host.querySelectorAll('b')];
+                assert.equal(bold.length, root.show ? 10 : 8);
+                assert.equal(new Set(bold).size, bold.length, 'each include creates fresh elements');
+                assert.ok(bold.every(node => node.textContent === title));
+                assert.ok([...view.host.querySelectorAll('u')].every(node => node.textContent === title));
+                assert.ok([...view.host.querySelectorAll('span')].every(node => node.textContent === root.other));
+                assert.equal(view.host.querySelector('main').firstElementChild.tagName, 'B');
+                assert.match(view.host.querySelector('main').textContent, new RegExp(`^${title}statictail${root.other}${title}statictail`));
+            };
+            check('one');
+            root.title = 'two'; root.other = 'updated';
+            await settle(); check('two');
+            root.show = false;
+            await settle(); check('two');
+            root.show = true;
+            await settle(); check('two');
+        } finally {
+            if (view) dispose(view);
+            shared.remove(); nested.remove();
+        }
+    });
+
+    test('template conditions hide live structural ranges and preserve updates while detached', async () => {
+        const root = { show: true, inner: true, title: 'one', active: 0, rows: [{ label: 'first', status: 'a' }] };
+        const view = await mount(evaluate(GCode('<main><u>before</u><template g-if="show"><strong>{{title}}</strong><template g-if="inner"><div g-for="rows;i;row"><span>{{row.label}}</span><template g-switch="row.status"><b g-case="\'a\'">A</b><b g-case="\'b\'">B</b></template></div></template><i>tail</i></template><template g-if="show" g-switch="active"><em g-case="0">zero</em><em g-case="1">one</em></template><template g-if="show"></template><u>after</u></main>')), root);
+        const checkHidden = () => {
+            assert.equal(view.host.textContent, 'beforeafter');
+            assert.equal(view.host.querySelectorAll('div, strong, i, em').length, 0);
+        };
+        try {
+            assert.equal(view.host.textContent, 'beforeonefirstAtailzeroafter');
+            root.show = false;
+            await settle(); checkHidden();
+            root.title = 'updated'; root.rows[0].label = 'changed'; root.rows[0].status = 'b';
+            root.rows.push({ label: 'new', status: 'a' }); root.active = 1;
+            await settle(); checkHidden();
+            root.show = true;
+            await settle();
+            assert.equal(view.host.textContent, 'beforeupdatedchangedBnewAtailoneafter');
+            for (let i = 0; i < 3; i++) {
+                root.show = false;
+                await settle(); checkHidden();
+                root.inner = false;
+                await settle(); checkHidden();
+                root.show = true;
+                await settle();
+                assert.equal(view.host.textContent, 'beforeupdatedtailoneafter');
+                root.inner = true;
+                await settle();
+                assert.equal(view.host.textContent, 'beforeupdatedchangedBnewAtailoneafter');
+            }
+        } finally { dispose(view); }
+    });
+
+    test('root template ranges move all generated siblings and remove them on destruction', async () => {
+        const root = { show: false, rows: [{ label: 'first', visible: true }, { label: 'second', visible: false }] };
+        const template = document.createElement('template');
+        template.setAttribute('g-if', 'show');
+        template.innerHTML = '<template g-for="rows;i;row"><template g-if="row.visible"><b>{{row.label}}</b></template></template>';
+        const view = await mount(evaluate(GCode(template)), root);
+        try {
+            assert.equal(view.host.querySelectorAll('b').length, 0);
+            root.show = true;
+            await settle();
+            assert.equal(view.host.textContent, 'first');
+            root.show = false;
+            await settle();
+            assert.equal(view.host.querySelectorAll('b').length, 0);
+            root.rows = [{ label: 'replacement', visible: true }, { label: 'last', visible: true }];
+            await settle();
+            assert.equal(view.host.textContent, '');
+            root.show = true;
+            await settle();
+            assert.equal(view.host.textContent, 'replacementlast');
+            const fragment = document.createDocumentFragment();
+            view.app.addTo(fragment);
+            assert.equal(view.host.childNodes.length, 0, 'moving the view leaves no generated siblings behind');
+            assert.equal(fragment.textContent, 'replacementlast');
+            view.host.append(fragment);
+            root.rows[0].visible = false;
+            await settle();
+            assert.equal(view.host.textContent, 'last');
+        } finally { dispose(view); }
+    });
+
+    test('a single concrete template root retains nested list updates while hidden', async () => {
+        const root = { show: true, rows: ['first'] };
+        const view = await mount(evaluate(GCode('<main><template g-if="show"><div><b g-for="rows;i;row">{{row}}</b></div></template></main>')), root);
+        const element = view.host.querySelector('div');
+        try {
+            assert.equal(element.textContent, 'first');
+            root.show = false;
+            await settle();
+            assert.equal(view.host.querySelector('div'), null);
+            root.rows = ['changed', 'new'];
+            await settle();
+            assert.equal(element.textContent, 'changednew');
+            root.show = true;
+            await settle();
+            assert.equal(view.host.querySelector('div'), element);
+            assert.equal(view.host.textContent, 'changednew');
+        } finally { dispose(view); }
+    });
+
+    test('template source strings retain leading template roots, sibling order and safe restrictions', async () => {
+        const rows = '<template g-for="rows;i;row"><b>{{row}}</b></template>';
+        const scenarios = [
+            { html: `<template g-if="show">${rows}</template>`, prefix: '', suffix: '' },
+            { html: `<template g-if="show"><i>first</i></template><template g-if="show">${rows}</template><div>tail</div>`, prefix: 'first', suffix: 'tail' }
+        ];
+        for (const compile of [GCode, GCodeSafe]) {
+            for (const scenario of scenarios) {
+                const root = { show: true, rows: ['one', 'two'] };
+                const view = await mount(GCompileSafe(evaluate(compile(scenario.html))), root);
+                try {
+                    assert.equal(view.host.textContent, `${scenario.prefix}onetwo${scenario.suffix}`);
+                    root.show = false;
+                    await settle();
+                    assert.equal(view.host.textContent, scenario.suffix);
+                    root.rows = ['replacement'];
+                    root.show = true;
+                    await settle();
+                    assert.equal(view.host.textContent, `${scenario.prefix}replacement${scenario.suffix}`);
+                } finally { dispose(view); }
+            }
+        }
+        for (const html of [
+            '<template g-if="show">{{return count + 1}}</template>',
+            '<template g-if="show"><button onclick="{{click()}}">click</button></template>',
+            '<template g-if="show"><b g-inner="content"></b></template>'
+        ]) assert.throws(() => GCodeSafe(html), /Unsafe/);
+    });
+
     test('directives registered after compilation observe completed children before parent attributes', async () => {
         const name = 'aot-order-' + backend;
         const code = GCode(`<main ${name}="{{title}}"><b ${name}="static">{{title}}</b><i>tail</i></main>`);

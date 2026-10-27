@@ -187,6 +187,7 @@
 
         pre {
             background-color: #141b16;
+            color: #e0f0dc;
             border-radius: 0;
             margin: 0;
             overflow-x: auto;
@@ -219,6 +220,16 @@
             color: var(--muted);
             line-height: 1.45;
             margin-bottom: 0.8rem;
+        }
+
+        .table-scroll {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .table-scroll:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 3px;
         }
 
         .api-table {
@@ -266,6 +277,57 @@
             font-size: 0.8rem;
             border: 1px solid #c3d2c5;
             background: #f6fbf6;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.7rem 0;
+        }
+
+        .demo-controls label {
+            display: grid;
+            gap: 0.3rem;
+        }
+
+        .demo-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin: 0.6rem 0;
+        }
+
+        .demo-card h3 {
+            font-weight: 700;
+            margin-bottom: 0.45rem;
+        }
+
+        .demo-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.45rem 0;
+        }
+
+        .demo-badge {
+            border-radius: 999px;
+            padding: 0.15rem 0.55rem;
+            background: #e4f2e6;
+            font-size: 0.85rem;
+        }
+
+        .demo-error {
+            color: #a52d34;
+        }
+
+        .demo-editor {
+            width: 100%;
+            min-height: 6rem;
+            padding: 0.6rem;
+            font: inherit;
         }
 
         @media (max-width: 980px) {
@@ -628,6 +690,200 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
         <div class="rendered-content"></div>
     </div>
     <!-- ##################################################### -->
+    <h2 class="demo-title">Nested release checklist</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{
+                this.projects = [
+                    { name: 'Runtime', open: true, tasks: [
+                        { title: 'Audit nested bindings', status: 'todo' },
+                        { title: 'Add regression coverage', status: 'done' }
+                    ] },
+                    { name: 'Documentation', open: true, tasks: [
+                        { title: 'Ship interactive examples', status: 'todo' }
+                    ] }
+                ];
+                this.loaded = true;
+                return '';
+            }}</div>
+            <template g-if="loaded">
+                <article class="demo-card" g-for="projects;projectIndex;project">
+                    <h3>{{ project.name }}</h3>
+                    <button onclick="{{ project.open = !project.open; }}">Toggle tasks</button>
+                    <template g-if="project.open">
+                        <div class="demo-row" g-for="project.tasks;taskIndex;task">
+                            <span>{{ return taskIndex + 1; }}. {{ task.title }}</span>
+                            <template g-switch="task.status">
+                                <span class="demo-badge" g-case="'todo'">To do</span>
+                                <span class="demo-badge" g-case="'done'">Done</span>
+                            </template>
+                            <button onclick="{{ task.status = task.status === 'todo' ? 'done' : 'todo'; }}">
+                                Toggle status
+                            </button>
+                        </div>
+                    </template>
+                </article>
+                <div class="demo-controls">
+                    <button onclick="{{
+                        this.projects[0].tasks.push({ title: 'Review cleanup', status: 'todo' });
+                    }}">Add runtime task</button>
+                    <button onclick="{{
+                        this.projects[0].tasks = [{ title: 'Replacement task', status: 'done' }];
+                        this.projects[0].open = true;
+                    }}">Replace tasks and open</button>
+                </div>
+            </template>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2 class="demo-title">Searchable catalog with selection</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{
+                this.query = '';
+                this.selected = 'Choose a tool below';
+                this.products = [
+                    { name: 'GTPL runtime', category: 'Library' },
+                    { name: 'GTPLWeb components', category: 'Framework' },
+                    { name: 'Template inspector', category: 'Tooling' }
+                ];
+                this.matching = function(query, products) {
+                    return products.filter(function(product) {
+                        return product.name.toLowerCase().includes(query.toLowerCase());
+                    });
+                };
+                this.count = function(products) { return products.length; };
+                this.choose = function(event, product) { this.selected = product.name; };
+                this.loaded = true;
+                return '';
+            }}</div>
+            <template g-if="loaded">
+                <div class="demo-controls">
+                    <label>Search tools <input type="search" [value]="{{ query }}" /></label>
+                    <button onclick="{{ this.query = ''; }}">Clear search</button>
+                </div>
+                <div class="demo-row" g-for="products:matching(query);productIndex;product">
+                    <button onclick="{{ choose{product} }}">{{ product.name }}</button>
+                    <span class="demo-badge">{{ product.category }}</span>
+                </div>
+                <p g-notif="products:matching(query):count">No matching tools. Try “GTPL”.</p>
+                <p>Selected: <strong>{{ selected }}</strong></p>
+            </template>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2 class="demo-title">Order form with validation and totals</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{
+                this.customer = '';
+                this.quantity = '2';
+                this.delivery = 'standard';
+                this.message = 'Complete your name to prepare an order.';
+                this.validName = function(name) { return name.trim().length > 1; };
+                this.lineTotal = function(quantity) { return Math.max(1, Number(quantity) || 1) * 12.5; };
+                this.currency = function(value) { return '$' + value.toFixed(2); };
+                this.prepare = function() {
+                    this.message = 'Order prepared for ' + this.customer.trim() + ' (' + this.delivery + ').';
+                };
+                this.loaded = true;
+                return '';
+            }}</div>
+            <template g-if="loaded">
+                <div class="demo-controls">
+                    <label>Your name <input type="text" [value]="{{ customer }}" autocomplete="name" /></label>
+                    <label>Units at $12.50 <input type="number" min="1" max="99" [value]="{{ quantity }}" /></label>
+                    <label>Delivery
+                        <select [value]="{{ delivery }}">
+                            <option value="standard">Standard · $0</option>
+                            <option value="express">Express · $5</option>
+                        </select>
+                    </label>
+                </div>
+                <p class="demo-error" g-notif="customer:validName">Enter at least two characters.</p>
+                <p>Items: {{ quantity:lineTotal:currency }}</p>
+                <p>Total: ${{ return (Math.max(1, Number(quantity) || 1) * 12.5 + (delivery === 'express' ? 5 : 0)).toFixed(2); }}</p>
+                <template g-if="customer:validName">
+                    <button onclick="{{ prepare }}">Prepare order</button>
+                </template>
+                <p role="status">{{ message }}</p>
+            </template>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2 class="demo-title">Async results and rapid updates</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{
+                this.term = 'initial';
+                this.lookup = function(term) {
+                    return new Promise(function(resolve) {
+                        setTimeout(function() { resolve('Result: ' + term); }, term === 'slow' ? 800 : 120);
+                    });
+                };
+                this.loaded = true;
+                return '';
+            }}</div>
+            <template g-if="loaded">
+                <p>Requested: <strong>{{ term }}</strong></p>
+                <p role="status">{{ term:lookup }}</p>
+                <div class="demo-controls">
+                    <button onclick="{{ this.term = 'slow'; }}">Slow request · 800 ms</button>
+                    <button onclick="{{ this.term = 'fast'; }}">Fast request · 120 ms</button>
+                    <button onclick="{{
+                        this.term = 'slow';
+                        setTimeout(() => { this.term = 'fast'; }, 40);
+                    }}">Slow, then fast</button>
+                </div>
+                <p>Run “Slow, then fast”: the final result stays “fast” after both requests finish.</p>
+            </template>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
+    <h2 class="demo-title">Element references and a live editor</h2>
+    <div class="code-block">
+        <pre><code class="language-html"></code></pre>
+        <template>
+            <div>{{
+                this.draft = 'Build something small. Make it reactive.';
+                this.wordCount = function(text) { return text.trim() ? text.trim().split(/\s+/).length : 0; };
+                this.loaded = true;
+                return '';
+            }}</div>
+            <template g-if="loaded">
+                <label>Draft
+                    <textarea class="demo-editor" g-bind="editor" [value]="{{ draft }}"></textarea>
+                </label>
+                <p>{{ draft:wordCount }} words · {{ return draft.length; }} characters</p>
+                <div class="demo-controls">
+                    <button onclick="{{ this.editor.focus(); this.editor.select(); }}">Focus and select</button>
+                    <button onclick="{{ this.draft = ''; this.editor.focus(); }}">Clear draft</button>
+                    <button onclick="{{ this.draft = 'Direct DOM. Reactive state. Reusable templates.'; }}">Load sample</button>
+                </div>
+                <p>Live preview: {{ draft }}</p>
+            </template>
+        </template>
+    </div>
+    <div class="rendered-block">
+        <div class="rendered-content"></div>
+    </div>
+    <!-- ##################################################### -->
     <section class="info-card" id="quick-reference">
         <h2 class="doc-title">Quick Reference</h2>
         <p>Template expressions are wrapped in <span class="kbd">{{ ... }}</span>. GTPL supports variables,
@@ -643,6 +899,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
     </section>
     <section class="info-card" id="api-reference">
         <h2 class="doc-title">API Summary</h2>
+        <div class="table-scroll" role="region" aria-label="API summary table" tabindex="0">
         <table class="api-table">
             <thead>
                 <tr>
@@ -684,6 +941,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                 </tr>
             </tbody>
         </table>
+        </div>
         <p>Security note: <span class="kbd">g-inner</span> writes directly to <span class="kbd">innerHTML</span>.
             Use trusted HTML sources only.</p>
     </section>
@@ -710,7 +968,12 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                 'Use template as a transparent container for structural switch/case blocks without adding DOM.',
                 'Iterate arrays with index/value aliases using g-for.',
                 'Reuse DOM fragments with named template blocks and g-tpl.',
-                'Inject HTML directly with g-inner (trusted content only).'
+                'Inject HTML directly with g-inner (trusted content only).',
+                'Combine nested g-for, g-if and g-switch; edit a row, collapse a branch, or replace a whole child list.',
+                'Pass reactive search text into a pipe, render the filtered list, and select a result.',
+                'Combine two-way controls, validation pipes, conditional actions, chained formatting and calculated totals.',
+                'Return promises from a pipe. Newer requests supersede older results, even when the older request finishes last.',
+                'Capture a DOM element with g-bind, control focus, and keep editor text, counts and preview synchronized.'
             ];
 
             const ids = new Map();
@@ -763,7 +1026,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                     : 0;
                 content = lines.map(line => line.slice(minIndent)).join('\n');
                 codeBlock.textContent = content;
-                Prism.highlightElement(codeBlock);
+                window.Prism?.highlightElement(codeBlock);
                 //---
             });
         });
