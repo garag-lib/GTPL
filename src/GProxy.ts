@@ -162,24 +162,45 @@ function getProxyHandler(
       return proxyChild(targetOriginal, val, prop);
     },
     set(target, prop, value, receiver) {
-      if (isGProxy(value)) {
-        value = (value as any)[PROXYTARGET];
-      }
+      value = toRaw(value);
       //---
       const prev = Reflect.get(target, prop, receiver);
-      if (isStaticType(prev) && prev === value) {
-        return true;
+      if (isStaticType(prev) && Object.is(prev, value)) {
+        const own = Reflect.getOwnPropertyDescriptor(target, prop);
+        if (own && 'value' in own && own.writable && receiver === proxyCache.get(targetOriginal)?.proxy)
+          return true;
       }
       //---
+      const previousLength = Array.isArray(target) ? target.length : undefined;
+      const previousKeys = previousLength !== undefined && prop === 'length'
+        && (typeof value !== 'number' || value < previousLength) ? Reflect.ownKeys(target) : undefined;
       const ok = Reflect.set(target, prop, value, receiver);
-      if (ok) {
+      const length = previousLength === undefined ? undefined : target.length;
+      if (ok || (previousLength !== undefined && length !== previousLength)) {
+        const removedKeys = previousKeys?.filter(key => !Reflect.getOwnPropertyDescriptor(target, key));
         const subscriptions = subscriptionsMap.get(targetOriginal)?.slice() ?? [];
         subscriptions.forEach(subscription => subscription.event(
           TypeEventProxyHandler.SET,
           [...subscription.parentPath, prop],
-          value,
+          ok ? value : Reflect.get(target, prop, receiver),
           subscription.objRef
         ));
+        // Indexed writes grow arrays before push() assigns the already-current length.
+        if (prop !== 'length' && previousLength !== undefined && length !== previousLength) {
+          subscriptions.forEach(subscription => subscription.event(
+            TypeEventProxyHandler.SET,
+            [...subscription.parentPath, 'length'],
+            length,
+            subscription.objRef
+          ));
+        }
+        // Array length writes delete indexed properties without entering deleteProperty.
+        removedKeys?.forEach(key => subscriptions.forEach(subscription => subscription.event(
+          TypeEventProxyHandler.UNSET,
+          [...subscription.parentPath, key],
+          undefined,
+          subscription.objRef
+        )));
       }
       return ok;
     },

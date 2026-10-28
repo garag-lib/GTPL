@@ -22,6 +22,42 @@ function fixture(fnc: Function = (value: number) => value, vars = [['value']]) {
   return { app, root, node, get bind() { return bind; }, get writes() { return writes; }, get calculations() { return calculations; }, reset() { writes = calculations = 0; } };
 }
 
+test('array growth updates length-dependent bindings after push and sparse index assignment', async () => {
+  const root = { rows: [] as string[] };
+  const node = { textContent: 0 };
+  const lengths: number[] = [];
+  let calculations = 0;
+  const app = new GTpl({ root, generator: (ctx: GTpl) => {
+    ctx.addBind({ type: BindTypes.TEXT, ele: node, link: { formula: {
+      vars: [['rows', 'length']], fnc(rows: string[]) { calculations++; return rows.length; }
+    } } } as any);
+    return [node];
+  } });
+  try {
+    await app.ready(); calculations = 0;
+    app.watch('rows.length', event => lengths.push(event.value));
+    root.rows.push('first', 'second');
+    assert.equal(root.rows.length, 2);
+    assert.equal(node.textContent, 0, 'DOM waits for the batch');
+    await settle();
+    assert.equal(node.textContent, 2);
+    assert.equal(calculations, 1, 'Multiple growth events calculate the final length once');
+    assert.deepEqual(lengths, [1, 2]);
+    root.rows[0] = 'changed';
+    await settle(); assert.equal(calculations, 1, 'Replacing an existing index preserves length bindings');
+    root.rows[4] = 'sparse';
+    await settle(); assert.equal(node.textContent, 5);
+    root.rows.pop();
+    await settle(); assert.equal(node.textContent, 4);
+    root.rows.splice(1, 2, 'replacement');
+    await settle(); assert.equal(node.textContent, 3);
+    root.rows.length = 0;
+    await settle(); assert.equal(node.textContent, 0);
+  } finally {
+    app.destroy(false);
+  }
+});
+
 test('1000 synchronous changes preserve all state/watch events and calculate/write a binding once', async () => {
   const view = fixture();
   await view.app.ready(); view.reset();
