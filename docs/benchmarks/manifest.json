@@ -17,14 +17,14 @@
       "sha256": "20bd38815e91f698ebace8bff5eb62ab242e23430753f36236a3cf9bb5cbd6fc"
     },
     "gtpl": {
-      "version": "1.1.8",
+      "version": "2.0.0",
       "file": "benchmarks/vendor/gtpl.js",
       "bytes": 40142,
       "gzipBytes": 10753,
       "sha256": "bf3377060f8c250dda2bf2ea5bfbd9926727a79f70b413eeb10147eb4afdbcec"
     },
     "gtpl-jit": {
-      "version": "1.1.8",
+      "version": "2.0.0",
       "file": "benchmarks/vendor/gtpl-jit.js",
       "bytes": 49239,
       "gzipBytes": 15767,
@@ -75,14 +75,14 @@
       "sha256": "4e469fa4ede3e20259a17956517108c8005e007cf0d704f1231c374bbff66ab8"
     },
     "gtpl": {
-      "version": "1.1.8",
+      "version": "2.0.0",
       "file": "benchmarks/vendor/grid-gtpl.js",
       "bytes": 30545,
       "gzipBytes": 10250,
       "sha256": "2afc7b825904c588ba00716a49c90f59e773b7b523e2f3abc1b3a6236eb0da54"
     },
     "gtpl-jit": {
-      "version": "1.1.8",
+      "version": "2.0.0",
       "file": "benchmarks/vendor/grid-gtpl-jit.js",
       "bytes": 46853,
       "gzipBytes": 15686,
@@ -128,7 +128,7 @@
     "switch-8": {
       "gtpl": {
         "file": "benchmarks/methods/switch-8-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": 8,
         "assets": [
@@ -162,7 +162,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-8-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": 8,
         "assets": [
@@ -396,7 +396,7 @@
     "switch-32": {
       "gtpl": {
         "file": "benchmarks/methods/switch-32-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": 32,
         "assets": [
@@ -430,7 +430,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-32-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": 32,
         "assets": [
@@ -664,7 +664,7 @@
     "switch-64": {
       "gtpl": {
         "file": "benchmarks/methods/switch-64-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": 64,
         "assets": [
@@ -698,7 +698,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-64-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": 64,
         "assets": [
@@ -932,7 +932,7 @@
     "for": {
       "gtpl": {
         "file": "benchmarks/methods/for-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -966,7 +966,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/for-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -1200,7 +1200,7 @@
     "if": {
       "gtpl": {
         "file": "benchmarks/methods/if-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -1234,7 +1234,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/if-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -1468,7 +1468,7 @@
     "styles": {
       "gtpl": {
         "file": "benchmarks/methods/styles-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -1502,7 +1502,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/styles-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -1736,7 +1736,7 @@
     "classes": {
       "gtpl": {
         "file": "benchmarks/methods/classes-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -1770,7 +1770,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/classes-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -2004,7 +2004,7 @@
     "attributes": {
       "gtpl": {
         "file": "benchmarks/methods/attributes-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -2038,7 +2038,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/attributes-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -2272,7 +2272,7 @@
     "forms": {
       "gtpl": {
         "file": "benchmarks/methods/forms-gtpl.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
@@ -2306,7 +2306,7 @@
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/forms-gtpl-jit.js",
-        "version": "1.1.8",
+        "version": "2.0.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [

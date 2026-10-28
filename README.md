@@ -203,6 +203,15 @@ If you use the global bundle (`dist/gtpl.global.js`):
 
 ## Releases (Precompiled Builds)
 
+`main` tracks version 2.x. The `1.1.8` branch preserves the final pre-2.0
+`main` commit; the existing `v1.1.8` release tag retains its original commit.
+
+Version 2.0 batches DOM binding updates in a microtask. State assignments and
+`watch()` callbacks remain synchronous; code that reads the DOM immediately after
+a state change must wait for the queued update. See [reactive update batching](#reactive-update-batching)
+for nested bindings and `ready()` semantics. `GCodeOptimized` remains an opt-in
+compiler backend; `GCode` remains the default reference backend.
+
 When a GitHub Release is published, GitHub Actions runs tests, builds `dist/`, and uploads precompiled assets
 (`.zip` and `.tar.gz`) to that release automatically:
 
@@ -212,7 +221,7 @@ To publish a new release:
 
 ```bash
 # single command flow (tests + build + version bump + commit + push + tag push)
-npm run release -- 1.1.8
+npm run release -- 2.0.1
 
 # then publish release in GitHub UI for that tag (workflow triggers on publish)
 ```
