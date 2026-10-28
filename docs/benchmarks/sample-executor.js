@@ -1,3 +1,5 @@
+import { localizedError, t, formatNumber } from "./i18n.js";
+import { localizePhase } from "./progress-labels.js";
 import { MEMORY_TIMEOUT_MS, memoryPhaseCount } from "./memory.js";
 export const SAMPLE_TIMEOUT = "SAMPLE_TIMEOUT";
 export const OPERATION_TIMEOUT_MS = 120_000;
@@ -28,9 +30,7 @@ export function createSampleExecutor(
       const elapsed = () => performance.now() - started;
       const timeoutError = () =>
         Object.assign(
-          new Error(
-            `La muestra superó ${timeoutMs / 1000} s en «${progress.phase}»; se descarta y se continúa.`,
-          ),
+          localizedError(`The sample exceeded ${formatNumber(timeoutMs / 1000, { maximumFractionDigits: 3 })} s during “${localizePhase(progress.phase, "en")}”; discarded, continuing.`, `La muestra superó ${formatNumber(timeoutMs / 1000, { maximumFractionDigits: 3 })} s en «${localizePhase(progress.phase, "es")}»; se descarta y se continúa.`),
           {
             name: "SampleTimeoutError",
             code: SAMPLE_TIMEOUT,
@@ -56,7 +56,7 @@ export function createSampleExecutor(
       const abort = () =>
         finish(
           signal.reason ??
-            new DOMException("Ejecución detenida.", "AbortError"),
+            new DOMException(t("Run stopped.", "Ejecución detenida."), "AbortError"),
         );
       const update = () => {
         if (finished) return;

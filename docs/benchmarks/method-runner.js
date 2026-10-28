@@ -1,3 +1,5 @@
+import { localizedError, t } from "./i18n.js";
+import { localizePhase } from "./progress-labels.js";
 import { methodKey, methodMetrics } from "./method-catalog.js";
 import { readMemory, memoryPhaseCount, MEMORY_TIMEOUT_MS } from "./memory.js";
 export { readMemory } from "./memory.js";
@@ -46,7 +48,7 @@ function waitFor(host, predicate) {
     });
     const timer = setTimeout(() => {
       cleanup();
-      reject(new Error("La salida del caso no se confirmó en 10 s."));
+      reject(localizedError("The case output was not confirmed within 10 s.", "La salida del caso no se confirmó en 10 s."));
     }, 10000);
     const cleanup = () => {
       clearTimeout(timer);
@@ -74,7 +76,7 @@ function verifyHeavy(host, active, tick) {
     !heavyValid(host, active, tick) ||
     host.querySelectorAll(".bench-branch").length !== (active === null ? 0 : 1)
   )
-    throw new Error("Número incorrecto de ramas o bloques.");
+    throw localizedError("Incorrect number of branches or blocks.", "Número incorrecto de ramas o bloques.");
   if (active !== null)
     for (const [index, block] of [
       ...host.querySelectorAll(".bench-block"),
@@ -85,7 +87,7 @@ function verifyHeavy(host, active, tick) {
           `Vista ${active} · bloque ${index}` ||
         block.querySelector(".bench-value").textContent !== String(tick)
       )
-        throw new Error("La rama grande no coincide con el caso elegido.");
+        throw localizedError("The large branch does not match the selected case.", "La rama grande no coincide con el caso elegido.");
 }
 function listValid(host, data) {
   const nodes = host.querySelectorAll(".method-row");
@@ -101,14 +103,14 @@ function listValid(host, data) {
 function verifyList(host, data) {
   const nodes = host.querySelectorAll(".method-row");
   if (nodes.length !== data.length)
-    throw new Error("Lista de longitud incorrecta.");
+    throw localizedError("Incorrect list length.", "Lista de longitud incorrecta.");
   for (let i = 0; i < data.length; i++)
     if (
       nodes[i].dataset.key !== String(data[i].id) ||
       nodes[i].querySelector("b").textContent !== data[i].label ||
       nodes[i].querySelector("i").textContent !== String(data[i].value)
     )
-      throw new Error("La lista no coincide tras la operación.");
+      throw localizedError("The list does not match after the operation.", "La lista no coincide tras la operación.");
 }
 function simpleValid(host, method, state, size) {
   const selector =
@@ -141,9 +143,7 @@ function simpleValid(host, method, state, size) {
 }
 function verifySimple(host, method, state, size) {
   if (!simpleValid(host, method, state, size))
-    throw new Error(
-      "La salida de atributos, estilos o formulario no coincide.",
-    );
+    throw localizedError("Attributes, styles or form output do not match.", "La salida de atributos, estilos o formulario no coincide.");
   const nodes = host.querySelectorAll(
     method === "forms"
       ? ".bench-input"
@@ -165,9 +165,7 @@ function verifySimple(host, method, state, size) {
             ([key, value]) => node.getAttribute(key) !== value,
           )))
     )
-      throw new Error(
-        "Salida parcial: no se actualizaron todos los elementos.",
-      );
+      throw localizedError("Partial output: not all elements were updated.", "Salida parcial: no se actualizaron todos los elementos.");
   }
 }
 export async function runMethod(
@@ -181,19 +179,19 @@ export async function runMethod(
     key = methodKey(method, config.cases),
     size = config.size;
   if (!Number.isInteger(size) || size < 0 || size > 3000)
-    throw new Error("Tamaño de caso inválido.");
+    throw localizedError("Invalid case size.", "Tamaño de caso inválido.");
   const chosen = method === "switch" ? (config.activeCase ?? 0) : 0;
   if (
     method === "switch" &&
     (!Number.isInteger(chosen) || chosen < 0 || chosen >= config.cases)
   )
-    throw new Error("Rama elegida inválida.");
+    throw localizedError("Invalid selected branch.", "Rama elegida inválida.");
   const metrics = Object.fromEntries(methodMetrics.map((m) => [m.key, null])),
     snapshots = [],
     operations = {};
   const reportPhase = (phase) => onProgress({ kind: "sample", phase });
   async function record(phase) {
-    status.textContent = `${method} · ${phase}${config.memory ? " · leyendo memoria" : ""}`;
+    status.textContent = `${method} · ${localizePhase(phase)}${config.memory ? t(" · reading memory", " · leyendo memoria") : ""}`;
     const progress = {
       kind: "memory",
       phase,
@@ -237,7 +235,7 @@ export async function runMethod(
     attrs: { title: "Estado 0", "data-state": "0", "aria-label": "Estado 0" },
   };
   async function timed(name, operation, predicate, verify) {
-    if (document.hidden) throw new Error("La pestaña dejó de estar visible.");
+    if (document.hidden) throw localizedError("The tab is no longer visible.", "La pestaña dejó de estar visible.");
     reportPhase(
       {
         show: "creando vista elegida",
@@ -399,7 +397,7 @@ export async function runMethod(
       let tick = 11;
       do {
         if (document.hidden)
-          throw new Error("La pestaña dejó de estar visible.");
+          throw localizedError("The tab is no longer visible.", "La pestaña dejó de estar visible.");
         const patch = next(tick++);
         Object.assign(state, patch);
         await (method === "forms"

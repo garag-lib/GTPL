@@ -1,3 +1,6 @@
+import { localizedError, t, formatNumber, translateDOM } from "./i18n.js";
+translateDOM();
+document.title = t("GTPL · isolated runner", "GTPL · ejecución aislada");
 const parameters = new URLSearchParams(location.search);
 const id = parameters.get("engine");
 const token = parameters.get("token");
@@ -62,7 +65,7 @@ function settled(size, tick, active) {
     });
     const timeout = setTimeout(() => {
       cleanup();
-      reject(new Error("El DOM no alcanzó el resultado esperado en 10 s."));
+      reject(localizedError("The DOM did not reach the expected result within 10 s.", "El DOM no alcanzó el resultado esperado en 10 s."));
     }, 10_000);
     const cleanup = () => {
       clearTimeout(timeout);
@@ -84,9 +87,7 @@ function verify(size, tick, active) {
     branches[0].dataset.branch !== String(active) ||
     rows.length !== size
   )
-    throw new Error(
-      "Salida no equivalente: número de filas o ramas incorrecto.",
-    );
+    throw localizedError("Non-equivalent output: incorrect number of rows or branches.", "Salida no equivalente: número de filas o ramas incorrecto.");
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     if (
@@ -96,14 +97,12 @@ function verify(size, tick, active) {
       row.children[1].textContent !== `Item ${i}` ||
       row.children[2].textContent !== String(tick)
     )
-      throw new Error(`Salida no equivalente en la fila ${i}.`);
+      throw localizedError(`Non-equivalent output in row ${formatNumber(i)}.`, `Salida no equivalente en la fila ${formatNumber(i)}.`);
   }
 }
 async function timed(operation, size, tick, active) {
   if (document.hidden)
-    throw new Error(
-      "La pestaña dejó de estar visible. Repite la prueba en primer plano.",
-    );
+    throw localizedError("The tab is no longer visible. Repeat the test in the foreground.", "La pestaña dejó de estar visible. Repite la prueba en primer plano.");
   const start = performance.now();
   await operation();
   await settled(size, tick, active);
@@ -158,7 +157,7 @@ async function run(config) {
     !Array.isArray(scenarios) ||
     scenarios.some((x) => !["mount", "update", "switch", "frames"].includes(x))
   )
-    throw new Error("Configuración de benchmark inválida.");
+    throw localizedError("Invalid benchmark configuration.", "Configuración de benchmark inválida.");
   // Warm the runtime with a smaller, discarded instance. Compilation is offline
   // except GTPL JIT / Alpine; their parsing cost remains in each measured mount.
   let adapter = createAdapter();
@@ -170,7 +169,7 @@ async function run(config) {
   host.replaceChildren();
   adapter = null;
   await pause();
-  if (collectMemory) status.textContent = "Memoria · base antes del montaje";
+  if (collectMemory) status.textContent = t("Memory · baseline before mounting", "Memoria · base antes del montaje");
   const baseline = collectMemory ? await memory() : null;
   adapter = createAdapter();
   const values = {
@@ -181,7 +180,7 @@ async function run(config) {
     idleFrameIntervals: [],
   };
   try {
-    status.textContent = "Montaje · 1 rama activa de 12";
+    status.textContent = t("Mount · 1 active branch out of 12", "Montaje · 1 rama activa de 12");
     const mountMs = await timed(
       () => adapter.mount(host, dataFor(size)),
       size,
@@ -189,13 +188,13 @@ async function run(config) {
       0,
     );
     const nodes = domCount();
-    if (collectMemory) status.textContent = "Memoria · vista montada";
+    if (collectMemory) status.textContent = t("Memory · mounted view", "Memoria · vista montada");
     const mountedMemory = collectMemory ? await memory() : null;
     let afterSwitchMemory = null;
     let tick = 0,
       active = 0;
     if (scenarios.includes("update")) {
-      status.textContent = "Actualizando todas las filas";
+      status.textContent = t("Updating every row", "Actualizando todas las filas");
       for (let i = 0; i < 10; i++) {
         tick++;
         values.updates.push(
@@ -205,14 +204,14 @@ async function run(config) {
       }
     }
     if (scenarios.includes("switch")) {
-      status.textContent = "Switch · primera visita a las 11 ramas restantes";
+      status.textContent = t("Switch · first visit to the remaining 11 branches", "Switch · primera visita a las 11 ramas restantes");
       for (active = 1; active < 12; active++) {
         values.switchFirst.push(
           await timed(() => adapter.update(tick, active), size, tick, active),
         );
         await pause();
       }
-      status.textContent = "Switch · segunda visita a las 12 ramas";
+      status.textContent = t("Switch · second visit to all 12 branches", "Switch · segunda visita a las 12 ramas");
       for (active = 0; active < 12; active++) {
         values.switchRevisit.push(
           await timed(() => adapter.update(tick, active), size, tick, active),
@@ -221,7 +220,7 @@ async function run(config) {
       }
       active = 11;
       if (collectMemory) {
-        status.textContent = "Memoria · después de las revisitas del switch";
+        status.textContent = t("Memory · after switch revisits", "Memoria · después de las revisitas del switch");
         afterSwitchMemory = await memory();
       }
     }
@@ -239,7 +238,7 @@ async function run(config) {
       await settled(size, 0, 0);
       tick = active = 0;
       await pause();
-      status.textContent = "Fluidez · actualizaciones al ritmo de la pantalla";
+      status.textContent = t("Frame rate · updates at the display cadence", "Fluidez · actualizaciones al ritmo de la pantalla");
       let previous = await frame();
       const idleStart = previous;
       for (let i = 0; i < 18; i++) {
@@ -262,9 +261,7 @@ async function run(config) {
         values.frameIntervals.push(now - previous);
         previous = now;
         if (document.hidden)
-          throw new Error(
-            "La pestaña dejó de estar visible durante la animación.",
-          );
+          throw localizedError("The tab became hidden during the animation.", "La pestaña dejó de estar visible durante la animación.");
       } while (previous - start < 1200);
       verify(size, tick, active);
       fps = (values.frameIntervals.length * 1000) / (previous - start);
@@ -274,7 +271,7 @@ async function run(config) {
           values.frameIntervals.length) *
         100;
     }
-    status.textContent = "Resultado validado · todas las filas coinciden";
+    status.textContent = t("Result validated · every row matches", "Resultado validado · todas las filas coinciden");
     return {
       metrics: {
         mountMs: scenarios.includes("mount") ? mountMs : null,
@@ -347,6 +344,7 @@ addEventListener("message", async (event) => {
   } catch (error) {
     send("error", {
       error: error.message,
+      translations: error.translations,
       code: error.code,
       phase: error.phase,
       timeoutMs: error.timeoutMs,
@@ -355,7 +353,7 @@ addEventListener("message", async (event) => {
 });
 try {
   if (!allowed.includes(id) || parent === window)
-    throw new Error("Abre este ejecutor desde benchmarks.html.");
+    throw localizedError("Open this runner from benchmarks.html.", "Abre este ejecutor desde benchmarks.html.");
   if (!methodMode)
     ({ createAdapter } = await import(
       `./vendor/${gridMode ? "grid-" : ""}${id}.js`
@@ -363,5 +361,5 @@ try {
   send("ready");
 } catch (error) {
   status.textContent = error.message;
-  send("error", { error: error.message });
+  send("error", { error: error.message, translations: error.translations });
 }

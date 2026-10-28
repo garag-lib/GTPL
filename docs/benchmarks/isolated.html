@@ -3,48 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>GTPL · Activar medición de memoria</title>
+    <title data-i18n-en="GTPL · Enable memory measurement" data-i18n-es="GTPL · Activar medición de memoria">GTPL · Activar medición de memoria</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <style>
-      body {
-        margin: 40px auto;
-        padding: 24px;
-        max-width: 620px;
-        background: #f0f3ed;
-        color: #17291f;
-        font:
-          16px/1.7 system-ui,
-          sans-serif;
-      }
-      h1 {
-        font-size: 28px;
-        line-height: 1.25;
-      }
-      code {
-        font-size: 13px;
-      }
-      a {
-        color: inherit;
-      }
-    </style>
+    <link rel="stylesheet" href="../playground.css" />
+    <style>body { max-width: 680px; margin: 2rem auto; padding: 0 1rem; } .language-control { justify-content: end; } select { font: inherit; padding: .4rem .6rem; border: 1px solid #b8cbbd; border-radius: 6px; background: #fff; color: #132218; }</style>
   </head>
   <body>
-    <h1>Preparando la medición de memoria</h1>
-    <p id="isolation-status" role="status">
-      Activando el aislamiento necesario. El navegador volverá al laboratorio
-      con la medición habilitada.
-    </p>
-    <p>
-      Este modo usa un service worker limitado a la carpeta de benchmarks.
-      Consulta los recursos en la red en cada ejecución; no guarda resultados ni
-      contenido para uso sin conexión.
-    </p>
-    <p>
-      Si el navegador no lo permite, ejecuta
-      <code>node scripts/benchmarks/serve.mjs --isolated</code> desde el
-      repositorio.
-    </p>
-    <a href="../benchmarks.html">← Volver al modo normal</a>
+    <label class="language-control"><span data-i18n-en="Language" data-i18n-es="Idioma">Idioma</span>
+      <select id="language" aria-label="Idioma" data-i18n-aria-label-en="Language" data-i18n-aria-label-es="Idioma"><option value="es">Español</option><option value="en">English</option></select>
+    </label>
+    <main class="info-card">
+      <h1 data-i18n-en="Preparing memory measurement" data-i18n-es="Preparando la medición de memoria">Preparando la medición de memoria</h1>
+      <p id="isolation-status" role="status" data-i18n-en="Enabling the required isolation. The browser will return to the lab with memory measurement enabled." data-i18n-es="Activando el aislamiento necesario. El navegador volverá al laboratorio con la medición habilitada.">Activando el aislamiento necesario. El navegador volverá al laboratorio con la medición habilitada.</p>
+      <p data-i18n-en="This mode uses a service worker scoped to the benchmarks folder. It checks network resources on every run; it does not save results or content for offline use." data-i18n-es="Este modo usa un service worker limitado a la carpeta de benchmarks. Consulta los recursos en la red en cada ejecución; no guarda resultados ni contenido para uso sin conexión.">Este modo usa un service worker limitado a la carpeta de benchmarks. Consulta los recursos en la red en cada ejecución; no guarda resultados ni contenido para uso sin conexión.</p>
+      <p><span data-i18n-en="If the browser cannot enable it, run" data-i18n-es="Si el navegador no lo permite, ejecuta">Si el navegador no lo permite, ejecuta</span> <code>node scripts/benchmarks/serve.mjs --isolated</code> <span data-i18n-en="from the repository." data-i18n-es="desde el repositorio.">desde el repositorio.</span></p>
+      <a id="normal-mode" href="../benchmarks.html" data-i18n-en="← Return to standard mode" data-i18n-es="← Volver al modo normal">← Volver al modo normal</a>
+    </main>
     <script type="module" src="isolation.js"></script>
   </body>
 </html>

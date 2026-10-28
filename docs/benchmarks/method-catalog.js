@@ -1,3 +1,5 @@
+import { localizedError, t } from "./i18n.js";
+
 export const METHODS = {
   switch: {
     title: "Switch · memoria de ramas grandes",
@@ -242,8 +244,77 @@ export function selectedMetrics(method, secondary = false) {
 }
 export function methodKey(method, cases = 32) {
   if (!(method in METHODS) || method === "grid")
-    throw new Error("Caso programático inválido.");
+    throw localizedError("Invalid benchmark case.", "Caso programático inválido.");
   if (method === "switch" && ![8, 32, 64].includes(cases))
-    throw new Error("Número de ramas inválido.");
+    throw localizedError("Invalid branch count.", "Número de ramas inválido.");
   return method === "switch" ? `switch-${cases}` : method;
+}
+
+// Resolve display metadata at read time so completed results can switch language.
+const translations = {
+  "Switch · memoria de ramas grandes": "Switch · large-branch memory",
+  "Memoria como objetivo principal. Muchas ramas declaradas, ninguna visitada y una única vista activa. El recorrido por otras ramas es opcional.": "Memory is the main objective. Many declared branches, none visited and a single active view. Visiting other branches is optional.",
+  "For · operaciones sobre listas": "For · list operations",
+  "Comparar la directiva de lista y su equivalente: actualizar, añadir, quitar, invertir y reemplazar, con el resultado completo validado.": "Compare each list directive and its equivalent: update, append, remove, reverse and replace, with the complete result validated.",
+  "If · crear, ocultar y volver": "If · create, hide and revisit",
+  "Medir primera construcción, retirada y reentrada de un árbol grande. La memoria tras ocultarlo permite observar cachés y retención.": "Measure initial construction, removal and re-entry of a large tree. Memory after hiding it can reveal caching and retention.",
+  "Estilos en línea": "Inline styles",
+  "Cambiar color, fondo y anchura sobre los mismos elementos, sin reconstruir la vista.": "Change color, background and width on the same elements without rebuilding the view.",
+  "Clases CSS": "CSS classes",
+  "Alternar clases CSS sobre los mismos elementos y medir su actualización y layout.": "Toggle CSS classes on the same elements and measure their update and layout.",
+  "Atributos y texto": "Attributes and text",
+  "Actualizar title, data-state, aria-label y texto, manteniendo el mismo árbol.": "Update title, data-state, aria-label and text while retaining the same tree.",
+  "Formulario · enlace bidireccional": "Form · two-way binding",
+  "Escribir mediante un evento input real y comprobar la propagación al modelo, a los demás campos y al output.": "Write through a real input event and verify propagation to the model, the other fields and the output.",
+  "Grid · celdas independientes": "Grid · independent cells",
+  "Aumentar X e Y y aplicar el mismo lote aleatorio por requestAnimationFrame. Se comparan FPS, pausas y actualizaciones por segundo.": "Increase X and Y and apply the same random batch per requestAnimationFrame. Compare FPS, pauses and updates per second.",
+  "Definiciones, sin vista": "Definitions, no active view",
+  "Diferencia del entorno JS+DOM frente al ejecutor vacío: incluye runtime, código, plantillas y su representación inerte.": "JS+DOM environment delta from the empty runner: includes runtime, code, templates and their inert representation.",
+  "Coste de activar una rama": "Branch activation cost",
+  "Diferencia entre una rama activa y todas las ramas declaradas sin vista. Estimación experimental.": "Difference between one active branch and all branches declared with no active view. Experimental estimate.",
+  "Definiciones + vista activa": "Definitions + active view",
+  "Diferencia JS+DOM del entorno frente al ejecutor vacío. No es la RAM total del proceso ni memoria exclusiva del framework.": "JS+DOM environment delta from the empty runner. This is neither total process RAM nor memory exclusive to the framework.",
+  "Tras ocultar o visitar ramas": "After hiding or visiting branches",
+  "Diferencia respecto al estado inicial sin vista, después de retirar contenido. Puede incluir cachés y variación del GC.": "Delta from the initial state with no active view, after removing content. May include caching and GC variation.",
+  "Elementos conectados": "Connected elements",
+  "elementos": "elements",
+  "Elementos presentes en la vista medida; se cuentan también los wrappers propios del motor.": "Elements present in the measured view, including wrappers added by the engine.",
+  "Elementos de plantillas inertes": "Inert template elements",
+  "Contenido de template.content antes de activar una rama. No aparece conectado, pero sus nodos existen.": "Contents of template.content before activating a branch. They are disconnected, but their nodes exist.",
+  "Bloques de la rama elegida": "Blocks in the selected branch",
+  "bloques": "blocks",
+  "Bloques grandes conectados al activar únicamente la rama elegida; la salida esperada es 128.": "Large connected blocks after activating only the selected branch; the expected output is 128.",
+  "Montaje inicial": "Initial mount",
+  "Arranque hasta DOM confirmado y layout. Importación y descarga excluidas.": "Startup through confirmed DOM and layout. Imports and downloads excluded.",
+  "Primera construcción": "Initial construction",
+  "Tiempo secundario: activar la vista pesada por primera vez.": "Secondary timing: activate the heavy view for the first time.",
+  "Retirar la vista": "Remove the view",
+  "Retirar la vista del DOM; cada motor gestiona la destrucción o caché de sus instancias.": "Remove the view from the DOM; each engine handles instance destruction or caching.",
+  "Volver a mostrar": "Show again",
+  "Volver a la misma vista después de retirarla.": "Return to the same view after removing it.",
+  "Actualizar valores": "Update values",
+  "Mediana de actualizaciones equivalentes con DOM y layout confirmados.": "Median of equivalent updates with confirmed DOM and layout.",
+  "Añadir un 25 %": "Append 25%",
+  "Añadir elementos al final de una lista existente.": "Append elements to an existing list.",
+  "Quitar la mitad": "Remove half",
+  "Retirar la mitad de una lista existente.": "Remove half of an existing list.",
+  "Invertir el orden": "Reverse the order",
+  "Invertir una lista. React, Svelte, Vue y Angular conservan claves; GTPL usa su directiva nativa.": "Reverse a list. React, Svelte, Vue and Angular retain keys; GTPL uses its native directive.",
+  "Reemplazar la lista": "Replace the list",
+  "Sustituir todos los elementos por nuevos identificadores.": "Replace every element with new identifiers.",
+  "Input → modelo → vista": "Input → model → view",
+  "Evento input nativo y propagación completa por el enlace bidireccional.": "Native input event and complete propagation through two-way binding.",
+  "Cadencia bajo cambios": "Frame rate under updates",
+  "Cadencia de requestAnimationFrame con actualizaciones confirmadas, limitada por la pantalla.": "requestAnimationFrame cadence with confirmed updates, limited by the display.",
+  "Intervalo de frame p95": "p95 frame interval",
+  "Percentil 95 de los intervalos de rAF de cada muestra.": "95th percentile of the rAF intervals in each sample.",
+  "Intervalo en reposo": "Idle frame interval",
+  "Cadencia de referencia sin cambios.": "Reference cadence with no updates."
+};
+for (const record of [...Object.values(METHODS), ...methodMetrics]) {
+  for (const key of ["title", "goal", "note", "unit"]) {
+    const spanish = record[key];
+    if (!(spanish in translations)) continue;
+    Object.defineProperty(record, key, { enumerable: true, get: () => t(translations[spanish], spanish) });
+  }
 }

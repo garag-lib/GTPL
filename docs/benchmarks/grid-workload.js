@@ -1,3 +1,5 @@
+import { localizedError } from "./i18n.js";
+
 // Shared workload: independent cell state, reproducible sampling without
 // replacement, and the same sequence prefix for every engine at each size.
 export function gridSizes({ columns, rows, step, levels }) {
@@ -9,7 +11,7 @@ export function gridSizes({ columns, rows, step, levels }) {
     levels < 1 ||
     levels > 6
   )
-    throw new Error("Dimensiones del grid inválidas.");
+    throw localizedError("Invalid grid dimensions.", "Dimensiones del grid inválidas.");
   const sizes = Array.from({ length: levels }, (_, i) => ({
     columns: columns + i * step,
     rows: rows + i * step,
@@ -19,15 +21,13 @@ export function gridSizes({ columns, rows, step, levels }) {
       (s) => s.columns > 128 || s.rows > 128 || s.columns * s.rows > 16384,
     )
   )
-    throw new Error(
-      "El último grid supera 128 × 128 celdas. Reduce el crecimiento o los niveles.",
-    );
+    throw localizedError("The final grid exceeds 128 × 128 cells. Reduce growth or levels.", "El último grid supera 128 × 128 celdas. Reduce el crecimiento o los niveles.");
   return sizes;
 }
 
 export function createGridWorkload(total, percent, seed) {
   if (!Number.isInteger(total) || total < 1 || ![10, 25, 100].includes(percent))
-    throw new Error("Carga del grid inválida.");
+    throw localizedError("Invalid grid workload.", "Carga del grid inválida.");
   let state = seed >>> 0;
   const random = () => {
     state = (state + 0x6d2b79f5) >>> 0;

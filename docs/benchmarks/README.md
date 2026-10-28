@@ -11,6 +11,13 @@ node scripts/benchmarks/serve.mjs
 Choose two engines, then one programming pattern. Each has its own workload,
 metrics. There is no combined framework score.
 
+The language selector switches the complete interface between English and Spanish,
+including results, charts and validation messages. Use `?lang=en` or `?lang=es`
+to share a language; the choice is also saved locally. Switching after a run keeps
+its measured data. The selector is disabled during a run to keep the controller
+stable for memory readings. Language changes only the interface, not the measured
+fixtures, operations or validation rules.
+
 ## Build and publish
 
 Use Node 24.15+ (or a version supported by the pinned Angular compiler).

@@ -1,3 +1,4 @@
+import { localizedError, t, formatNumber } from "./i18n.js";
 export const MEMORY_TIMEOUT_MS = 30_000;
 export const MEMORY_TIMEOUT = "MEMORY_TIMEOUT";
 
@@ -16,7 +17,7 @@ export async function readMemory({ timeoutMs = MEMORY_TIMEOUT_MS } = {}) {
     return {
       totalBytes: null,
       status: "unsupported",
-      error: "La API de memoria no está disponible.",
+      error: t("The memory API is unavailable.", "La API de memoria no está disponible."),
     };
   }
   const started = performance.now();
@@ -28,9 +29,7 @@ export async function readMemory({ timeoutMs = MEMORY_TIMEOUT_MS } = {}) {
       ),
       new Promise((resolve, reject) => {
         timer = setTimeout(() => {
-          const error = new Error(
-            `La API de memoria no respondió en ${timeoutMs / 1000} s.`,
-          );
+          const error = localizedError(`The memory API did not respond within ${formatNumber(timeoutMs / 1000, { maximumFractionDigits: 3 })} s.`, `La API de memoria no respondió en ${formatNumber(timeoutMs / 1000, { maximumFractionDigits: 3 })} s.`);
           Object.assign(error, {
             name: "MemoryTimeoutError",
             code: MEMORY_TIMEOUT,
@@ -41,7 +40,7 @@ export async function readMemory({ timeoutMs = MEMORY_TIMEOUT_MS } = {}) {
       }),
     ]);
     if (!Number.isFinite(result.bytes))
-      throw new Error("La API devolvió una lectura de memoria inválida.");
+      throw localizedError("The API returned an invalid memory reading.", "La API devolvió una lectura de memoria inválida.");
     const breakdown = result.breakdown ?? [];
     const exclusive = breakdown.filter(
       (part) =>
@@ -105,6 +104,7 @@ export function createMemoryExecutor(execute, onUnavailable = () => {}) {
         phase: error.phase,
         timeoutMs: error.timeoutMs,
         message: error.message,
+        translations: error.translations,
       };
       onUnavailable(failure);
       return withoutMemory(id, config, signal, onProgress, "timeout");

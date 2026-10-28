@@ -1,3 +1,4 @@
+import { localizedError, t, formatNumber } from "./i18n.js";
 import {
   gridSizes,
   createGridWorkload,
@@ -15,18 +16,18 @@ const p95 = (values) =>
 
 function assertVisible() {
   if (document.hidden)
-    throw new Error("El grid dejó de estar visible; muestra descartada.");
+    throw localizedError("The grid is no longer visible; sample discarded.", "El grid dejó de estar visible; muestra descartada.");
 }
 function verify(nodes, expected) {
   if (nodes.length !== expected.length)
-    throw new Error("El grid tiene un número incorrecto de celdas.");
+    throw localizedError("The grid has an incorrect cell count.", "El grid tiene un número incorrecto de celdas.");
   for (let i = 0; i < nodes.length; i++)
     if (
       nodes[i].dataset.cell !== String(i) ||
       nodes[i].dataset.value !== String(expected[i]) ||
       nodes[i].textContent !== String(expected[i])
     )
-      throw new Error(`El grid no coincide en la celda ${i}.`);
+      throw localizedError(`Grid mismatch in cell ${formatNumber(i)}.`, `El grid no coincide en la celda ${formatNumber(i)}.`);
 }
 export function waitForGridUpdate(host, nodes, batch) {
   // Every selected cell must complete, even if an adapter applies asynchronous
@@ -48,7 +49,7 @@ export function waitForGridUpdate(host, nodes, batch) {
     });
     const timer = setTimeout(() => {
       cleanup();
-      reject(new Error("El grid no confirmó sus cambios en 10 s."));
+      reject(localizedError("The grid did not confirm its updates within 10 s.", "El grid no confirmó sus cambios en 10 s."));
     }, 10000);
     const cleanup = () => {
       observer.disconnect();
@@ -73,7 +74,7 @@ export async function runGrid(config, createAdapter, host, status) {
     durationMs > 5000 ||
     !Number.isInteger(seed)
   )
-    throw new Error("Configuración de animación inválida.");
+    throw localizedError("Invalid animation configuration.", "Configuración de animación inválida.");
   const result = [];
   // Discard a small component tree to warm the engine before its size sweep.
   let adapter = createAdapter();
@@ -93,7 +94,7 @@ export async function runGrid(config, createAdapter, host, status) {
     host.style.setProperty("--grid-cols", size.columns);
     host.style.setProperty("--grid-rows", size.rows);
     adapter = createAdapter();
-    status.textContent = `Grid ${level + 1}/${sizes.length} · ${size.columns} × ${size.rows} · ${cells} celdas · ${percent}% por frame`;
+    status.textContent = t(`Grid ${level + 1}/${sizes.length} · ${size.columns} × ${size.rows} · ${formatNumber(cells)} cells · ${percent}% per frame`, `Grid ${level + 1}/${sizes.length} · ${size.columns} × ${size.rows} · ${formatNumber(cells)} celdas · ${percent}% por frame`);
     try {
       await adapter.mount(host, size);
       const nodes = [...host.querySelectorAll(".grid-cell")];

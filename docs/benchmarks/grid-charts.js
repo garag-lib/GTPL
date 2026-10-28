@@ -1,3 +1,4 @@
+import { t, getLocale } from "./i18n.js";
 import { summarize } from "./stats.js";
 
 export function renderGridCharts({ runData, engines, pair }) {
@@ -7,9 +8,9 @@ export function renderGridCharts({ runData, engines, pair }) {
     key = document.querySelector("#grid-metric").value;
   const definitions = {
     fps: ["FPS", "fps"],
-    frameP95Ms: ["Intervalo de frame p95", "ms"],
-    updatesPerSecond: ["Actualizaciones por segundo", "celdas/s"],
-    updateMs: ["Actualización + DOM + layout", "ms"],
+    frameP95Ms: [t("p95 frame interval", "Intervalo de frame p95"), "ms"],
+    updatesPerSecond: [t("Updates per second", "Actualizaciones por segundo"), t("cells/s", "celdas/s")],
+    updateMs: [t("Update + DOM + layout", "Actualización + DOM + layout"), "ms"],
   };
   const [title, unit] = definitions[key];
   const groups = [a, b].map((id) =>
@@ -22,12 +23,12 @@ export function renderGridCharts({ runData, engines, pair }) {
     const empty = document.createElement("div");
     empty.className = "sample-empty";
     empty.textContent =
-      "Selecciona «Grid creciente» y ejecuta una comparación para ver dónde cae la fluidez.";
+      t("Select Grid and run a comparison to see where frame rate drops.", "Selecciona «Grid creciente» y ejecuta una comparación para ver dónde cae la fluidez.");
     chart.append(empty);
     return;
   }
-  const n = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 1 }),
-    short = new Intl.NumberFormat("es-ES", {
+  const n = new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 1 }),
+    short = new Intl.NumberFormat(getLocale(), {
       notation: "compact",
       maximumFractionDigits: 1,
     });
@@ -72,7 +73,7 @@ export function renderGridCharts({ runData, engines, pair }) {
   node(
     "title",
     {},
-    `${title} frente a celdas totales. Medianas por nivel; consulta la tabla para los valores y las muestras.`,
+    t(`${title} versus total cells. Medians per level; consult the table for values and samples.`, `${title} frente a celdas totales. Medianas por nivel; consulta la tabla para los valores y las muestras.`),
   );
   for (let i = 0; i <= 4; i++) {
     const value = (max * i) / 4;
@@ -99,7 +100,7 @@ export function renderGridCharts({ runData, engines, pair }) {
   node(
     "text",
     { x: (left + width - right) / 2, y: height - 3, "text-anchor": "middle" },
-    "Celdas totales (columnas × filas)",
+    t("Total cells (columns × rows)", "Celdas totales (columnas × filas)"),
   );
   summaries.forEach((points, index) => {
     const valid = points.filter((p) => p.summary);
@@ -139,7 +140,7 @@ export function renderGridCharts({ runData, engines, pair }) {
   legend.className = "sample-legend";
   for (const [index, id] of [a, b].entries()) {
     const span = document.createElement("span");
-    span.textContent = `${engines[id].name} · ${index ? "cuadrado" : "círculo"} · ${groups[index].length} muestra(s)`;
+    span.textContent = t(`${engines[id].name} · ${index ? "square" : "circle"} · ${groups[index].length} sample(s)`, `${engines[id].name} · ${index ? "cuadrado" : "círculo"} · ${groups[index].length} muestra(s)`);
     legend.append(span);
   }
   chart.append(legend);
@@ -147,25 +148,25 @@ export function renderGridCharts({ runData, engines, pair }) {
     const tr = document.createElement("tr"),
       head = document.createElement("th");
     head.scope = "row";
-    head.textContent = `${point.columns} × ${point.rows} · ${n.format(point.cells)} celdas`;
+    head.textContent = t(`${point.columns} × ${point.rows} · ${n.format(point.cells)} cells`, `${point.columns} × ${point.rows} · ${n.format(point.cells)} celdas`);
     tr.append(head);
     for (const [index, id] of [a, b].entries()) {
       const samples = groups[index]
         .map((s) => s.result.grid.find((p) => p.cells === point.cells))
         .filter(Boolean);
       const td = document.createElement("td");
-      if (!samples.length) td.textContent = "N/D";
+      if (!samples.length) td.textContent = t("N/A", "N/D");
       else {
         const value = (k) =>
           n.format(summarize(samples.map((s) => s[k])).median);
         td.textContent = `${engines[id].name}: ${value("fps")} fps`;
         const detail = document.createElement("small");
-        detail.textContent = `p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} celdas/s · n=${samples.length}`;
+        detail.textContent = t(`p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} cells/s · n=${samples.length}`, `p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} celdas/s · n=${samples.length}`);
         td.append(detail);
         if (samples.some((s) => s.frames < 12)) {
           const warning = document.createElement("small");
           warning.textContent =
-            "Menos de 12 frames en una muestra: cadencia poco estable.";
+            t("Fewer than 12 frames in one sample: unstable cadence.", "Menos de 12 frames en una muestra: cadencia poco estable.");
           td.append(warning);
         }
       }

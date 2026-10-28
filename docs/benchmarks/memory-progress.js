@@ -1,3 +1,6 @@
+import { t, formatNumber } from "./i18n.js";
+import { localizePhase } from "./progress-labels.js";
+
 export function renderMemoryProgress(
   { status, live, bar, completed },
   prefix,
@@ -5,15 +8,25 @@ export function renderMemoryProgress(
 ) {
   const activeSample = Number.isFinite(progress.sampleElapsedMs);
   const pendingRead = progress.kind === "memory" && progress.reading;
+  const seconds = (ms) => formatNumber(ms / 1000, { maximumFractionDigits: 3 });
   const clock = activeSample
-    ? ` · muestra: ${Math.floor(progress.sampleElapsedMs / 1000)} s / ${progress.sampleTimeoutMs / 1000} s`
+    ? t(
+        ` · sample: ${formatNumber(Math.floor(progress.sampleElapsedMs / 1000))} s / ${seconds(progress.sampleTimeoutMs)} s`,
+        ` · muestra: ${formatNumber(Math.floor(progress.sampleElapsedMs / 1000))} s / ${seconds(progress.sampleTimeoutMs)} s`,
+      )
     : "";
   const phase =
     progress.kind === "memory-fallback"
-      ? `la API de memoria no responde; ${progress.state === "timeout" ? "repitiendo muestra sin lecturas" : "continuando sin lecturas"}. Memoria: N/D.`
+      ? t(
+          `memory API not responding; ${progress.state === "timeout" ? "retrying sample without readings" : "continuing without readings"}. Memory: N/A.`,
+          `la API de memoria no responde; ${progress.state === "timeout" ? "repitiendo muestra sin lecturas" : "continuando sin lecturas"}. Memoria: N/D.`,
+        )
       : progress.kind === "memory"
-        ? `memoria ${progress.index}/${progress.total}: ${progress.phase} · ${pendingRead ? `esperando ${Math.floor((progress.waitedMs ?? 0) / 1000)} s (límite por lectura ${progress.timeoutMs / 1000} s)` : "lectura terminada"}`
-        : progress.phase;
+        ? t(
+            `memory ${progress.index}/${progress.total}: ${localizePhase(progress.phase)} · ${pendingRead ? `waiting ${formatNumber(Math.floor((progress.waitedMs ?? 0) / 1000))} s (per-reading limit ${seconds(progress.timeoutMs)} s)` : "reading complete"}`,
+            `memoria ${progress.index}/${progress.total}: ${localizePhase(progress.phase)} · ${pendingRead ? `esperando ${formatNumber(Math.floor((progress.waitedMs ?? 0) / 1000))} s (límite por lectura ${seconds(progress.timeoutMs)} s)` : "lectura terminada"}`,
+          )
+        : localizePhase(progress.phase);
   const message = `${prefix}${clock} · ${phase}`;
   status.textContent = live.textContent = message;
   bar.setAttribute("aria-valuetext", message);
