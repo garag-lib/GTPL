@@ -8,8 +8,9 @@ node scripts/benchmarks/serve.mjs
 # http://127.0.0.1:4173/benchmarks.html
 ```
 
-Choose two engines, then one programming pattern. Each has its own workload,
-metrics. There is no combined framework score.
+Choose two engines, then one programming pattern. Each has its own workload and
+metrics. The interactive lab reports them separately; it does not mix timing,
+memory and FPS into a universal framework score.
 
 The language selector switches the complete interface between English and Spanish,
 including results, charts and validation messages. Use `?lang=en` or `?lang=es`
@@ -17,6 +18,33 @@ to share a language; the choice is also saved locally. Switching after a run kee
 its measured data. The selector is disabled during a run to keep the controller
 stable for memory readings. Language changes only the interface, not the measured
 fixtures, operations or validation rules.
+
+## General comparison across engines
+
+The [measured comparison](general-performance.md) separates a six-case DOM latency
+index from grid stress tests and JavaScript heap measurements. Every raw sample,
+version, bundle hash and validation result is retained in
+[general-results.json](general-results.json).
+The descriptive latency index gives each DOM case equal weight, and splits its
+weight equally between mounting and operations. It applies only to those cases;
+memory and grid/FPS remain separate.
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/playwright/index.mjs SAMPLES=5 HEAP_SAMPLES=3 \
+  node scripts/benchmarks/rank.mjs
+node scripts/benchmarks/rank-report.mjs
+```
+
+To recompute the report from the saved data without running Chrome again:
+
+```sh
+node scripts/benchmarks/rank-report.mjs docs/benchmarks/general-results.json /tmp/gtpl-ranking-report
+```
+
+Run it sequentially, without concurrent builds or tests. The runner checks the
+published bundle hashes before measuring. Heap is a separate CDP/forced-GC pass;
+it excludes native DOM memory and must not be called total browser RAM. Grid
+cadence with fewer than twelve frames per sample needs a longer confirmation.
 
 ## Build and publish
 
