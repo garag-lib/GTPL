@@ -4,362 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GTPL</title>
-    <link href="reset.css" rel="stylesheet" />
+    <title>GTPL Documentation Playground</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-        rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #eef2ec;
-            --text: #132218;
-            --muted: #466153;
-            --surface: #f8fbf7;
-            --surface-2: #ffffff;
-            --border: #c8d7c8;
-            --accent: #1e855f;
-            --accent-2: #d8f06f;
-            --shadow: 0 10px 25px rgba(19, 34, 24, 0.08);
-            --radius: 14px;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            color: var(--text);
-            font-family: "Space Grotesk", "Segoe UI", sans-serif;
-            background:
-                radial-gradient(circle at 20% 0%, #f8fff2 0%, transparent 35%),
-                radial-gradient(circle at 100% 0%, #ddf0de 0%, transparent 32%),
-                var(--bg);
-        }
-
-        .hero {
-            max-width: 1200px;
-            margin: 1rem auto;
-            padding: 1.5rem;
-            border-radius: 20px;
-            border: 1px solid #b9cfbc;
-            background: linear-gradient(120deg, #1f2c22 0%, #2f4639 60%, #385544 100%);
-            color: #f5fffb;
-            box-shadow: var(--shadow);
-        }
-
-        .hero h1 {
-            font-size: clamp(1.6rem, 3.2vw, 2.7rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 0.8rem;
-        }
-
-        .hero p {
-            color: #d6efe4;
-            font-size: 1rem;
-            line-height: 1.5;
-            max-width: 70ch;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.65rem;
-            margin-top: 1rem;
-        }
-
-        .hero-actions a {
-            text-decoration: none;
-            border-radius: 999px;
-            padding: 0.4rem 0.9rem;
-            font-weight: 600;
-            border: 1px solid transparent;
-        }
-
-        .hero-actions .btn-primary {
-            color: #182118;
-            background: var(--accent-2);
-        }
-
-        .hero-actions .btn-secondary {
-            color: #effcf2;
-            border-color: #7ea58f;
-        }
-
-        .layout {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 260px minmax(0, 1fr);
-            gap: 1rem;
-            padding: 0 1rem 2rem;
-        }
-
-        .toc {
-            position: sticky;
-            top: 1rem;
-            align-self: start;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            box-shadow: var(--shadow);
-            padding: 1rem;
-        }
-
-        .toc h2 {
-            font-size: 1rem;
-            margin: 0 0 0.75rem;
-        }
-
-        .toc ul {
-            list-style: decimal;
-            padding-left: 1.2rem;
-        }
-
-        .toc li+li {
-            margin-top: 0.45rem;
-        }
-
-        .toc a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 0.92rem;
-        }
-
-        .doc-main {
-            min-width: 0;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.75rem;
-            margin: 0 0 1.2rem;
-        }
-
-        .summary-item {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0.8rem 0.9rem;
-            box-shadow: var(--shadow);
-        }
-
-        .summary-item h3 {
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 0.4rem;
-        }
-
-        .summary-item p {
-            color: var(--muted);
-            font-size: 0.9rem;
-            line-height: 1.35;
-        }
-
-        h2 {
-            font-size: clamp(1.15rem, 2.8vw, 1.8rem);
-            margin: 1.2rem 0 0.45rem;
-            line-height: 1.15;
-        }
-
-        .demo-intro {
-            color: var(--muted);
-            margin-bottom: 0.7rem;
-            line-height: 1.4;
-        }
-
-        .code-block,
-        .rendered-block,
-        .info-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 0.7rem;
-        }
-
-        .code-block {
-            background: #141b16;
-            overflow: hidden;
-        }
-
-        pre {
-            background-color: #141b16;
-            color: #e0f0dc;
-            border-radius: 0;
-            margin: 0;
-            overflow-x: auto;
-        }
-
-        pre {
-            padding: 0.95rem;
-        }
-
-        code {
-            font-family: "IBM Plex Mono", "Courier New", monospace;
-            font-size: 0.88rem;
-        }
-
-        .rendered-block {
-            padding: 1rem;
-            background-color: var(--surface-2);
-        }
-
-        .rendered-content {
-            overflow: auto;
-        }
-
-        .info-card {
-            background: var(--surface);
-            padding: 1rem;
-        }
-
-        .info-card p {
-            color: var(--muted);
-            line-height: 1.45;
-            margin-bottom: 0.8rem;
-        }
-
-        .table-scroll {
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
-        .table-scroll:focus-visible {
-            outline: 3px solid var(--accent);
-            outline-offset: 3px;
-        }
-
-        .api-table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-            font-size: 0.93rem;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .api-table th,
-        .api-table td {
-            padding: 0.65rem;
-            border-bottom: 1px solid #d8e5d7;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .api-table th {
-            font-weight: 700;
-            background: #ecf5eb;
-        }
-
-        .api-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .list {
-            list-style: disc;
-            padding-left: 1.3rem;
-        }
-
-        .list li+li {
-            margin-top: 0.35rem;
-        }
-
-        .kbd {
-            display: inline-block;
-            padding: 0.08rem 0.4rem;
-            border-radius: 6px;
-            font-family: "IBM Plex Mono", monospace;
-            font-size: 0.8rem;
-            border: 1px solid #c3d2c5;
-            background: #f6fbf6;
-        }
-
-        .demo-controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.7rem 0;
-        }
-
-        .demo-controls label {
-            display: grid;
-            gap: 0.3rem;
-        }
-
-        .demo-card {
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.75rem;
-            margin: 0.6rem 0;
-        }
-
-        .demo-card h3 {
-            font-weight: 700;
-            margin-bottom: 0.45rem;
-        }
-
-        .demo-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.45rem 0;
-        }
-
-        .demo-badge {
-            border-radius: 999px;
-            padding: 0.15rem 0.55rem;
-            background: #e4f2e6;
-            font-size: 0.85rem;
-        }
-
-        .demo-error {
-            color: #a52d34;
-        }
-
-        .demo-editor {
-            width: 100%;
-            min-height: 6rem;
-            padding: 0.6rem;
-            font: inherit;
-        }
-
-        @media (max-width: 980px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-
-            .toc {
-                position: static;
-            }
-        }
-    </style>
+    <link href="playground.css" rel="stylesheet" />
 </head>
 
 <body>
     <header class="hero" id="top">
+        <p class="eyebrow">GTPL / DOCUMENTATION</p>
         <h1>GTPL Documentation Playground</h1>
-        <p>GTPL is a TypeScript library for reactive template systems built around Direct DOM and Proxy. Inspired by
-            Vue, Angular AOT, and JSX, it delivers efficient reactive UI updates in a compact 11kB JavaScript
-            package.</p>
-        <div class="hero-actions">
-            <a class="btn-primary" href="https://github.com/garag-lib/GTPL">Repository</a>
-            <a class="btn-secondary" href="https://github.com/garag-lib/GTPL/releases">Releases</a>
-            <a class="btn-secondary" href="benchmarks.html">Benchmark Lab · GTPL vs</a>
-            <a class="btn-secondary" href="#quick-reference">Quick Reference</a>
-            <a class="btn-secondary" href="#api-reference">API Summary</a>
-        </div>
+        <p>Reactive templates with direct DOM updates and Proxy-based state. Explore sixteen working examples,
+            then open the template behind each demo.</p>
+        <nav class="hero-actions" aria-label="Project links">
+            <a class="primary" href="#quick-reference">Get started</a>
+            <a href="https://github.com/garag-lib/GTPL">GitHub</a>
+            <a href="https://github.com/garag-lib/GTPL/releases">Releases</a>
+            <a href="benchmarks.html">Benchmark Lab · GTPL vs</a>
+            <a href="#api-reference">API Summary</a>
+        </nav>
     </header>
     <div class="layout">
         <aside class="toc" aria-label="Table of contents">
-            <h2>Contents</h2>
-            <ul id="toc-list"></ul>
+            <p class="eyebrow">PLAYGROUND INDEX</p>
+            <nav aria-label="Documentation sections"><ol id="toc-list"></ol></nav>
         </aside>
         <main class="doc-main">
             <section class="summary-grid">
@@ -947,6 +614,7 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
     </section>
         </main>
     </div>
+    <footer>GTPL Documentation Playground · Direct DOM, reactive state · Apache-2.0</footer>
     <!-- ##################################################### -->
     <script src="./gtpl.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
@@ -987,11 +655,13 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                     .replace(/(^-|-$)/g, '') || `section-${index + 1}`;
                 const seen = ids.get(base) || 0;
                 ids.set(base, seen + 1);
-                heading.id = seen ? `${base}-${seen + 1}` : base;
+                const target = heading.parentElement.matches('.info-card[id]') ? heading.parentElement : heading;
+                const targetId = seen ? `${base}-${seen + 1}` : base;
+                heading.id = target === heading ? targetId : `${target.id}-title`;
 
                 const li = document.createElement('li');
                 const a = document.createElement('a');
-                a.href = `#${heading.id}`;
+                a.href = `#${target.id}`;
                 a.textContent = label;
                 li.appendChild(a);
                 tocList.appendChild(li);
@@ -1009,7 +679,13 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
 
             document.querySelectorAll('.code-block > template').forEach((template) => {
                 //---
-                const renderedContent = template.parentElement.nextElementSibling.querySelector('.rendered-content');
+                const codeContainer = template.parentElement;
+                const renderedBlock = codeContainer.nextElementSibling;
+                const renderedContent = renderedBlock.querySelector('.rendered-content');
+                const previewLabel = document.createElement('p');
+                previewLabel.className = 'panel-label';
+                previewLabel.textContent = 'LIVE EXAMPLE';
+                renderedBlock.prepend(previewLabel);
                 const aot = GCodeOptimized(template.innerHTML, { methodAliases: true });
                 const instance = new GTpl({ root: {}, generator: GCompile(aot) });
                 instance.addTo(renderedContent);
@@ -1027,8 +703,59 @@ div[custom='value'] { background-color: #ff0; }</code></pre>
                 content = lines.map(line => line.slice(minIndent)).join('\n');
                 codeBlock.textContent = content;
                 window.Prism?.highlightElement(codeBlock);
-                //---
+                const source = document.createElement('details');
+                source.className = 'source';
+                const summary = document.createElement('summary');
+                summary.textContent = 'View complete example source';
+                source.append(summary, codeContainer);
+                renderedBlock.after(source);
             });
+
+            demoHeadings.forEach((heading, index) => {
+                const section = document.createElement('section');
+                section.className = 'demo';
+                section.setAttribute('aria-labelledby', heading.id);
+                heading.dataset.number = String(index + 1).padStart(2, '0');
+                heading.before(section);
+                let element = heading;
+                while (element) {
+                    const next = element.nextElementSibling;
+                    section.append(element);
+                    if (element.matches('details.source')) break;
+                    element = next;
+                }
+            });
+
+            const links = [...tocList.querySelectorAll('a')];
+            let currentLink;
+            let scrollPending = false;
+            const updateCurrentSection = () => {
+                scrollPending = false;
+                let index = 0;
+                allHeadings.forEach((heading, i) => {
+                    if (heading.getBoundingClientRect().top <= 100) index = i;
+                });
+                if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2)
+                    index = allHeadings.length - 1;
+                const link = links[index];
+                if (link === currentLink) return;
+                currentLink?.removeAttribute('aria-current');
+                link.setAttribute('aria-current', 'location');
+                currentLink = link;
+                const menu = tocList.closest('.toc');
+                if (getComputedStyle(menu).position === 'sticky') {
+                    const rect = link.getBoundingClientRect();
+                    const bounds = menu.getBoundingClientRect();
+                    if (rect.top < bounds.top + 16 || rect.bottom > bounds.bottom - 16)
+                        menu.scrollTop += rect.top - bounds.top - menu.clientHeight / 2;
+                }
+            };
+            window.addEventListener('scroll', () => {
+                if (scrollPending) return;
+                scrollPending = true;
+                requestAnimationFrame(updateCurrentSection);
+            }, { passive: true });
+            updateCurrentSection();
         });
     </script>
 </body>
