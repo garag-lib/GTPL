@@ -53,6 +53,10 @@ const engines = {
     get name() { return t("Direct JavaScript", "JavaScript directo"); },
     get note() { return t("Manual reference · no framework runtime", "Referencia manual · sin runtime de framework"); },
   },
+  flutter: {
+    name: "Flutter Web",
+    get note() { return t("Grid only · Dart release · CanvasKit · waits for Flutter frame", "Solo grid · Dart release · CanvasKit · espera al frame de Flutter"); },
+  },
 };
 const number = { format: (value) => formatNumber(value, { maximumFractionDigits: 2 }) };
 let manifest,
@@ -366,6 +370,12 @@ function renderSamples() {
 }
 
 function renderPair() {
+  for (const side of ["a", "b"]) {
+    const select = $(`#engine-${side}`);
+    const flutter = select.querySelector('option[value="flutter"]');
+    flutter.hidden = flutter.disabled = method() !== "grid";
+    if (select.value === "flutter" && method() !== "grid") select.value = side === "a" ? "gtpl" : "react";
+  }
   const [a, b] = pair(),
     spec = METHODS[method()];
   $("#case-goal").textContent = spec.goal;
@@ -396,7 +406,7 @@ function renderPair() {
     ["a", a],
     ["b", b],
   ]) {
-    const info = manifest?.frameworks[id];
+    const info = manifest?.gridFrameworks[id] ?? manifest?.frameworks[id];
     $(`#engine-${side}-meta`).textContent =
       `${info?.version ?? ""} · ${engines[id].note}`;
     entries[id] =
@@ -421,6 +431,8 @@ function renderPair() {
   if (!running) $("#run").disabled = !manifest || a === b;
   write("#run-hint", () => a === b
       ? t("Choose two different engines or modes.", "Elige dos motores o modos diferentes.")
+      : [a, b].includes("flutter")
+        ? t("Flutter waits for its frame; DOM engines confirm DOM + layout. Update times have different boundaries; compare cadence with this distinction.", "Flutter espera a su frame; los motores DOM confirman DOM + layout. Los tiempos de actualización tienen límites distintos; tenlo en cuenta al comparar la cadencia.")
       : method() === "switch"
         ? t("Memory is the primary measure. Timings are secondary data.", "La memoria es la medida principal. Los tiempos quedan como datos secundarios.")
         : t("Keep the runner visible during measurement.", "Mantén el ejecutor visible mientras se mide."));
@@ -706,7 +718,7 @@ function download(format) {
     const push = (id, sample, key, value, unit, phase = "", point = {}) =>
       data.push([
         id,
-        manifest.frameworks[id].version,
+        (manifest.gridFrameworks[id] ?? manifest.frameworks[id]).version,
         runData.config.method,
         runData.config.cases,
         runData.config.activeCase,

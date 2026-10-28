@@ -287,6 +287,14 @@ manifest.methods = await bundleMethods({
     ]),
   ),
 });
+// The optional Flutter build is independent of npm/esbuild. Preserve its
+// published entry when rebuilding the DOM engines without the Flutter SDK.
+try {
+  manifest.gridFrameworks.flutter = JSON.parse(await readFile(
+    path.join(output, 'flutter/manifest.json'), 'utf8'));
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
 await writeFile(
   path.join(root, "docs/benchmarks/manifest.json"),
   JSON.stringify(manifest, null, 2) + "\n",

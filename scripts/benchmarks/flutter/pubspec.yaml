@@ -1,0 +1,12 @@
+name: gtpl_grid_benchmark
+publish_to: none
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+flutter:
+  fonts:
+    - family: BenchmarkMono
+      fonts:
+        - asset: fonts/RobotoMono.ttf

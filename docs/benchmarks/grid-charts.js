@@ -10,7 +10,7 @@ export function renderGridCharts({ runData, engines, pair }) {
     fps: ["FPS", "fps"],
     frameP95Ms: [t("p95 frame interval", "Intervalo de frame p95"), "ms"],
     updatesPerSecond: [t("Updates per second", "Actualizaciones por segundo"), t("cells/s", "celdas/s")],
-    updateMs: [t("Update + DOM + layout", "Actualización + DOM + layout"), "ms"],
+    updateMs: [t("Update completion", "Actualización completada"), "ms"],
   };
   const [title, unit] = definitions[key];
   const groups = [a, b].map((id) =>

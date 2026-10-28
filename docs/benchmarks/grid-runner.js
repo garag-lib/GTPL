@@ -64,6 +64,29 @@ export function waitForGridUpdate(host, nodes, batch) {
   });
 }
 
+// Canvas engines expose values recorded by their cell builders after a frame.
+// These are output snapshots, not a copy of the supplied input model.
+export function verifyGridSnapshot(actual, expected) {
+  if (actual.length !== expected.length)
+    throw localizedError("The grid has an incorrect cell count.", "El grid tiene un número incorrecto de celdas.");
+  for (let i = 0; i < expected.length; i++) {
+    const id = i;
+    if (actual[id] !== expected[i])
+      throw localizedError(`Grid mismatch in cell ${formatNumber(id)}.`, `El grid no coincide en la celda ${formatNumber(id)}.`);
+  }
+}
+function confirmUpdate(adapter, host, nodes, batch) {
+  if (adapter.snapshot) {
+    verifyGridSnapshot(adapter.snapshot(batch.indices), batch.values);
+    return;
+  }
+  return waitForGridUpdate(host, nodes, batch);
+}
+function verifyAdapter(adapter, nodes, expected) {
+  if (adapter.snapshot) verifyGridSnapshot(adapter.snapshot(), expected);
+  else verify(nodes, expected);
+}
+
 export async function runGrid(config, createAdapter, host, status) {
   const sizes = gridSizes(config.grid);
   const { percent, durationMs, seed } = config.grid;
@@ -78,13 +101,15 @@ export async function runGrid(config, createAdapter, host, status) {
   const result = [];
   // Discard a small component tree to warm the engine before its size sweep.
   let adapter = createAdapter();
+  const renderer = adapter.renderer ?? "DOM";
+  const frameDriven = adapter.frameDriven === true;
   host.style.setProperty("--grid-cols", 4);
   host.style.setProperty("--grid-rows", 4);
   await adapter.mount(host, { columns: 4, rows: 4 });
   const warm = createGridWorkload(16, 100, seed),
     batch = warm.next();
   await adapter.update(batch);
-  await waitForGridUpdate(host, [...host.querySelectorAll(".grid-cell")], batch);
+  await confirmUpdate(adapter, host, [...host.querySelectorAll(".grid-cell")], batch);
   await adapter.destroy();
   host.replaceChildren();
   adapter = null;
@@ -99,7 +124,7 @@ export async function runGrid(config, createAdapter, host, status) {
       await adapter.mount(host, size);
       const nodes = [...host.querySelectorAll(".grid-cell")];
       const work = createGridWorkload(cells, percent, (seed + level) >>> 0);
-      verify(nodes, work.expected);
+      verifyAdapter(adapter, nodes, work.expected);
       const idle = [];
       let previous = await frame(),
         idleStart = previous;
@@ -126,21 +151,23 @@ export async function runGrid(config, createAdapter, host, status) {
         const updateStart = performance.now();
         const completion = adapter.update(batch);
         // Diagnostic only: this can exclude async DOM work. updateMs below is
-        // the comparable metric and includes the complete DOM/layout fence.
+        // the complete interval includes the engine's output fence (see timing).
         dispatch.push(performance.now() - updateStart);
         await completion;
-        await waitForGridUpdate(host, nodes, batch);
+        await confirmUpdate(adapter, host, nodes, batch);
         const domComplete = performance.now();
         void host.offsetHeight;
         const layoutComplete = performance.now();
         apply.push(domComplete - updateStart);
         layout.push(layoutComplete - domComplete);
         updates.push(layoutComplete - updateStart);
-        const now = await frame();
+        // Flutter already awaited its scheduled frame. Waiting for another rAF
+        // here would insert an idle frame and artificially halve its cadence.
+        const now = frameDriven ? performance.now() : await frame();
         intervals.push(now - previous);
         previous = now;
       } while (previous - start < durationMs);
-      verify(nodes, work.expected);
+      verifyAdapter(adapter, nodes, work.expected);
       const elapsedMs = previous - start,
         frames = intervals.length;
       result.push({
@@ -166,6 +193,7 @@ export async function runGrid(config, createAdapter, host, status) {
         seed: (seed + level) >>> 0,
         checksum: gridChecksum(work.expected),
         validated: true,
+        renderer,
         raw: {
           frameIntervals: intervals,
           updateTimes: updates,
@@ -186,12 +214,14 @@ export async function runGrid(config, createAdapter, host, status) {
     grid: result,
     metrics: {},
     timing: {
-      updateMs: "adapter + returned promise + all modified DOM cells + layout",
+      updateMs: frameDriven ? "adapter + Flutter endOfFrame + modified widget builder outputs + host layout read; includes frame scheduling" : "adapter + returned promise + all modified DOM cells + layout",
       dispatchMs: "immediate adapter call only; excludes deferred work",
-      applyMs: "adapter + returned promise + all modified DOM cells; before layout read",
-      layoutMs: "forced layout read after DOM completion",
+      applyMs: frameDriven ? "adapter + Flutter endOfFrame + modified widget builder outputs" : "adapter + returned promise + all modified DOM cells; before layout read",
+      layoutMs: frameDriven ? "host DOM layout read only; Flutter layout is included in applyMs" : "forced layout read after DOM completion",
     },
     raw: { frameIntervals: [] },
     validated: true,
+    renderer,
+    timingBoundary: frameDriven ? "Flutter endOfFrame; includes frame scheduling, build/layout/paint submission, not GPU completion" : "DOM confirmed + forced layout; excludes paint",
   };
 }

@@ -122,6 +122,111 @@
       "bytes": 308342,
       "gzipBytes": 100753,
       "sha256": "3772f3bbc5ed64ded624a353c664a23bde31ef65504a063204017e6737104fe1"
+    },
+    "flutter": {
+      "version": "3.47.8",
+      "dartVersion": "3.13.7",
+      "frameworkRevision": "737ba8f885dc774b53b442759999a312c9461e4e",
+      "engineRevision": "cf636b1dfb818dd6a3ff16e390e93b1a036969c8",
+      "renderer": "CanvasKit",
+      "compileTarget": "dart2js",
+      "buildMode": "release",
+      "file": "benchmarks/vendor/grid-flutter.js",
+      "sha256": "9a4fdb6f167c2bc20466a490ddc4727de12dcb78124e7fc65f0ab8352654a9fc",
+      "bytes": 10251403,
+      "gzipBytes": 3677339,
+      "assets": [
+        {
+          "file": "benchmarks/vendor/flutter/FLUTTER-LICENSE.txt",
+          "bytes": 1519,
+          "gzipBytes": 818,
+          "sha256": "a598db94b6290ffbe10b5ecf911057b6a943351c727fdda9e5f2891d68700a20"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/RobotoMono-OFL.txt",
+          "bytes": 4395,
+          "gzipBytes": 1974,
+          "sha256": "50ab8dd54680d3473f649c9db86fece88434d097c7834475c1c72d2f8c429215"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/AssetManifest.bin",
+          "bytes": 57,
+          "gzipBytes": 57,
+          "sha256": "96f5ddd2f0ad3afa83c148515a5d300f99d519ec506a634c3c4774f823899433"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/AssetManifest.bin.json",
+          "bytes": 78,
+          "gzipBytes": 71,
+          "sha256": "778ab73d035593d603b053e324c406ed332f9d5bbc5e01f3cce337512c2a6c65"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/FontManifest.json",
+          "bytes": 147,
+          "gzipBytes": 112,
+          "sha256": "0d89ac18fd8534af05ef2ab3c3c90fd7a64913ea09ac339fc880eacedceff978"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/NOTICES",
+          "bytes": 1277140,
+          "gzipBytes": 98698,
+          "sha256": "b277163068f14258fc28230f2f4dd7d0e6ab695f99859da4d91aa7341dd03164"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/fonts/RobotoMono.ttf",
+          "bytes": 183700,
+          "gzipBytes": 130382,
+          "sha256": "66a80e79d17e4c7cabd162e2916578a4cc08fd19eef6e2a643305eae9c567b2b"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/fonts/fallback/Roboto-Regular.ttf",
+          "bytes": 171676,
+          "gzipBytes": 91869,
+          "sha256": "79e851404657dac2106b3d22ad256d47824a9a5765458edb72c9102a45816d95"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/shaders/ink_sparkle.frag",
+          "bytes": 8890,
+          "gzipBytes": 2022,
+          "sha256": "2dca5ab93d4ec29e963f996f3916320ba60825e9537dfb149a68008c7a16b026"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/assets/shaders/stretch_effect.frag",
+          "bytes": 6737,
+          "gzipBytes": 1348,
+          "sha256": "ab412f07a5b9b50b67a885b24dbe16929738ae28630407d6490c924caf0a3220"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/canvaskit/canvaskit.js",
+          "bytes": 86987,
+          "gzipBytes": 27681,
+          "sha256": "bb559f6080c7d312ac2a912b4abec9f68ff3d3022d4a603c7796b9b31460642b"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/canvaskit/canvaskit.wasm",
+          "bytes": 7284602,
+          "gzipBytes": 2944687,
+          "sha256": "fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/flutter_bootstrap.js",
+          "bytes": 13704,
+          "gzipBytes": 5375,
+          "sha256": "3392cec6679da8524157934913566e80ab3815b6edfea638e196dad8648a03a5"
+        },
+        {
+          "file": "benchmarks/vendor/flutter/main.dart.js",
+          "bytes": 1210263,
+          "gzipBytes": 371500,
+          "sha256": "bc0e0699c77ca1878c1a4f08df73c500a565cc06e776a8e493e3dc1629dac495"
+        },
+        {
+          "file": "benchmarks/vendor/grid-flutter.js",
+          "bytes": 1508,
+          "gzipBytes": 745,
+          "sha256": "9a4fdb6f167c2bc20466a490ddc4727de12dcb78124e7fc65f0ab8352654a9fc"
+        }
+      ]
     }
   },
   "methods": {

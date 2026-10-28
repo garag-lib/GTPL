@@ -36,6 +36,16 @@ test("all engines receive an identical deterministic sequence prefix at every de
   }
 });
 
+test('canvas grid output validation rejects incomplete and stale builder snapshots', async () => {
+  const { verifyGridSnapshot } = await import('../../docs/benchmarks/grid-runner.js');
+  verifyGridSnapshot([1, 2, 3], new Uint32Array([1, 2, 3]));
+  assert.throws(() => verifyGridSnapshot([1, 3], [1, 2, 3]), /cell count|número/);
+  assert.throws(() => verifyGridSnapshot([1, 0, 3], [1, 2, 3]), /cell|celda/);
+  // Sparse batches validate each selected builder, including the middle one.
+  verifyGridSnapshot([9, 7], new Uint32Array([9, 7]));
+  assert.throws(() => verifyGridSnapshot([9, 0, 7], [9, 8, 7]), /cell|celda/);
+});
+
 test('grid completion waits for a delayed middle cell, including its attribute and text', async () => {
   const { JSDOM } = await import('jsdom');
   const { waitForGridUpdate } = await import('../../docs/benchmarks/grid-runner.js');

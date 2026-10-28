@@ -13,6 +13,7 @@ const allowed = [
   "angular",
   "alpine",
   "vanilla",
+  "flutter",
 ];
 const host = document.querySelector("#app");
 const status = document.querySelector("#runner-status");
@@ -354,6 +355,8 @@ addEventListener("message", async (event) => {
 try {
   if (!allowed.includes(id) || parent === window)
     throw localizedError("Open this runner from benchmarks.html.", "Abre este ejecutor desde benchmarks.html.");
+  if (id === "flutter" && !gridMode)
+    throw localizedError("Flutter is available only for Grid.", "Flutter solo está disponible para Grid.");
   if (!methodMode)
     ({ createAdapter } = await import(
       `./vendor/${gridMode ? "grid-" : ""}${id}.js`

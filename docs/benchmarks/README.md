@@ -254,3 +254,39 @@ DOM outputs up to the layout read; `layoutMs` / `raw.layoutTimes` measure that
 forced layout read separately. `updateMs` remains the full interval. These phases
 help distinguish runtime work from browser style/layout cost; their independent
 medians need not sum exactly to the median complete interval.
+
+## Flutter Web (Grid only)
+
+Flutter Web is available on either side only when Grid is selected. The published
+release build uses Flutter **3.47.8**, Dart compiled to JavaScript (`dart2js`) and
+**CanvasKit full**, with the engine, Wasm and fonts served locally. There is no SDK
+or compilation in the browser. Other cases and the general DOM index exclude it.
+
+It runs the same seeded JavaScript workload, densities and size sweep. Each cell
+has an independent `ValueNotifier<int>` and `ValueListenableBuilder`; all cells
+are mounted, without virtualization or a single custom painter. The geometry,
+colour palette, text and clipping follow `grid.css`. A small grid warms the engine
+before measurements; loading, engine initialization and mounting are excluded.
+
+The Flutter update Promise awaits `WidgetsBinding.endOfFrame`. Validation reads
+values recorded by the cell builders, checking the changed batch each frame and
+the whole grid at each level. This confirms widget output after Flutter's frame;
+it is not pixel readback or GPU completion. The DOM engines retain their existing
+DOM mutation + forced layout fence before paint. Consequently Flutter's
+`updateMs` includes frame scheduling and its build/layout/paint submission, while
+DOM timings exclude paint. These boundaries appear in the UI and exported JSON;
+do not interpret the update times as equivalent CPU costs. Flutter cadence uses
+its completed frames without adding a second rAF wait. `layoutMs` is only the
+host element's DOM layout read; Flutter layout is already inside `applyMs`.
+
+Normal npm builds preserve the precompiled Flutter entry without needing its SDK.
+To explicitly rebuild it, temporarily install the pinned SDK and run:
+
+```sh
+FLUTTER_BIN=/absolute/path/flutter/bin/flutter node scripts/benchmarks/build-flutter.mjs
+```
+
+Commit the Dart sources, `pubspec.lock`, adapter, `vendor/flutter/` and updated
+`manifest.json`. The Flutter size includes its application, CanvasKit, fonts and
+notices; the manifest records each asset's size and SHA-256. Sources are in
+`scripts/benchmarks/flutter/`. The SDK can be removed after compilation.

@@ -34,6 +34,7 @@
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
               <option value="svelte">Svelte</option>
+              <option value="flutter" hidden disabled>Flutter Web · Grid</option>
               <option value="vanilla" data-i18n-en="Direct JavaScript" data-i18n-es="JavaScript directo">JavaScript directo</option></select><span id="engine-a-meta" class="engine-meta"></span></label>
           <span class="vs-badge" aria-hidden="true">vs</span>
           <label class="engine-card engine-right"><span class="engine-kicker"><span class="dot rival-dot"></span><span data-i18n-en=" ENGINE B" data-i18n-es=" CONTENDIENTE B"> CONTENDIENTE B</span></span><select id="engine-b" aria-label="Contendiente B" data-i18n-aria-label-en="Engine B" data-i18n-aria-label-es="Contendiente B">
@@ -42,6 +43,7 @@
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
               <option value="svelte">Svelte</option>
+              <option value="flutter" hidden disabled>Flutter Web · Grid</option>
               <option value="gtpl">GTPL · AOT</option>
               <option value="gtpl-jit">GTPL · JIT</option>
               <option value="vanilla" data-i18n-en="Direct JavaScript" data-i18n-es="JavaScript directo">JavaScript directo</option></select><span id="engine-b-meta" class="engine-meta"></span></label>
@@ -188,10 +190,11 @@
               <option value="fps" data-i18n-en="FPS · higher is better" data-i18n-es="FPS · más es mejor">FPS · más es mejor</option>
               <option value="frameP95Ms" data-i18n-en="p95 interval · lower is better" data-i18n-es="Intervalo p95 · menos es mejor">Intervalo p95 · menos es mejor</option>
               <option value="updatesPerSecond" data-i18n-en="Updates per second" data-i18n-es="Actualizaciones por segundo">Actualizaciones por segundo</option>
-              <option value="updateMs" data-i18n-en="Update + DOM + layout" data-i18n-es="Actualización + DOM + layout">Actualización + DOM + layout</option>
+              <option value="updateMs" data-i18n-en="Update completion" data-i18n-es="Actualización completada">Actualización completada</option>
             </select></label>
         </div>
         <p class="section-intro" data-i18n-en="Independent state per cell. GTPL uses one instance; React, local state; Svelte, components with reactive state per cell; Vue, reactive models; Angular, signals with OnPush; Alpine, one x-data per cell. The same loop applies the same random batch to every engine." data-i18n-es="Estado independiente por celda. GTPL usa una instancia; React, estado local; Svelte, componentes con estado reactivo por celda; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un x-data por celda. El mismo bucle aplica el mismo lote aleatorio a todos.">Estado independiente por celda. GTPL usa una instancia; React, estado local; Svelte, componentes con estado reactivo por celda; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un x-data por celda. El mismo bucle aplica el mismo lote aleatorio a todos.</p>
+        <p class="subtle" data-i18n-en="Flutter Web: CanvasKit, one reactive widget per cell. It waits for the Flutter frame (including scheduling); DOM engines confirm mutations and layout before paint. Their update times have different boundaries. FPS is observed cadence, not GPU completion." data-i18n-es="Flutter Web: CanvasKit, un widget reactivo por celda. Espera al frame de Flutter (incluida la planificación); los motores DOM confirman cambios y layout antes de pintar. Sus tiempos de actualización tienen límites distintos. Los FPS son cadencia observada, no finalización de la GPU.">Flutter Web: CanvasKit, un widget reactivo por celda. Espera al frame de Flutter (incluida la planificación); los motores DOM confirman cambios y layout antes de pintar. Sus tiempos de actualización tienen límites distintos. Los FPS son cadencia observada, no finalización de la GPU.</p>
         <div id="grid-chart" class="sample-chart"></div>
         <div class="table-scroll">
           <table>
@@ -206,7 +209,7 @@
             <tbody id="grid-table"></tbody>
           </table>
         </div>
-        <p class="subtle" data-i18n-en="rAF cadence with confirmed DOM and layout, limited by the display. Includes random generation; excludes mounting and full validation. Does not measure GPU performance or the memory of this grid." data-i18n-es="Cadencia de rAF con DOM y layout confirmados, limitada por la pantalla. Incluye generación aleatoria; excluye montaje y validación completa. No mide la GPU ni la memoria de este grid.">Cadencia de rAF con DOM y layout confirmados, limitada por la pantalla. Incluye generación aleatoria; excluye montaje y validación completa. No mide la GPU ni la memoria de este grid.</p>
+        <p class="subtle" data-i18n-en="Observed cadence with confirmed output (DOM + layout, or Flutter frame), limited by the display. Includes random generation; excludes mounting and full validation. Does not measure GPU performance or the memory of this grid." data-i18n-es="Cadencia observada con salida confirmada (DOM + layout o frame de Flutter), limitada por la pantalla. Incluye generación aleatoria; excluye montaje y validación completa. No mide la GPU ni la memoria de este grid.">Cadencia observada con salida confirmada (DOM + layout o frame de Flutter), limitada por la pantalla. Incluye generación aleatoria; excluye montaje y validación completa. No mide la GPU ni la memoria de este grid.</p>
       </section>
       <section class="method-section panel" aria-labelledby="method-title" id="methodology">
         <p class="eyebrow" data-i18n-en="03 / HOW TO INTERPRET RESULTS" data-i18n-es="03 / CÓMO INTERPRETARLO">03 / CÓMO INTERPRETARLO</p>

@@ -19,6 +19,8 @@ const types = {
   ".json": "application/json; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
   ".svg": "image/svg+xml",
+  ".wasm": "application/wasm",
+  ".ttf": "font/ttf",
 };
 const server = createServer(async (request, response) => {
   if (isolated) {
