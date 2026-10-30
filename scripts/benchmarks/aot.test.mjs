@@ -144,6 +144,217 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
         dispose(view);
         tpl.remove();
     });
+    test('g-is retains its row anchor when an external component is destroyed and replaced in the same batch', async () => {
+        const componentGenerator = evaluate(GCode('<strong>{{label}}</strong>'));
+        const components = [];
+        const component = label => {
+            const child = new GTpl({ root: { label }, generator: componentGenerator });
+            components.push(child);
+            return child;
+        };
+        let current = component('initial');
+        const sibling = component('sibling');
+        const root = { rows: [{ node: current.Elements[0] }, { node: sibling.Elements[0] }] };
+        const view = await mount(evaluate(GCode('<div g-for="rows;index;row"><b>before</b><span g-is="row.node"></span><i>after</i></div>')), root);
+        try {
+            const row = view.host.firstElementChild;
+            const anchor = [...row.childNodes].find(node => node.nodeType === 8);
+            assert.ok(anchor, 'g-is keeps an anchor beside the component');
+            for (let step = 0; step < 4; step++) {
+                const oldNode = current.Elements[0];
+                current.destroy();
+                assert.equal(oldNode.parentNode, null);
+                assert.equal(anchor.parentNode, row, 'component destruction preserves the insertion point');
+                current = component(`replacement ${step}`);
+                if (step % 2) root.rows[0] = { node: current.Elements[0] };
+                else root.rows[0].node = current.Elements[0];
+                await settle();
+                assert.deepEqual([...row.children].map(node => node.tagName), ['B', 'STRONG', 'I']);
+                assert.equal(row.textContent, `beforereplacement ${step}after`);
+                assert.equal(view.host.children[1].textContent, 'beforesiblingafter');
+                assert.equal(anchor.parentNode, row);
+            }
+            root.rows = [];
+            await settle();
+            assert.equal(view.host.contains(anchor), false, 'removing the row removes its anchor from the host');
+        } finally {
+            dispose(view);
+            for (const child of components) if (!child.isDestroyed) child.destroy();
+        }
+    });
+    for (const mounted of [false, true]) test(`g-is keeps generated fragments and a shared g-if anchor ${mounted ? 'after' : 'before'} mounting`, async () => {
+        const root = { view: evaluate(GCode('<u>initial</u>')), show: true, rows: ['one', 'two'] };
+        const app = new GTpl({ root, generator: evaluate(GCode('<b>before</b><template g-if="show" g-is="view"></template><i>after</i>')) });
+        const host = document.createElement('div');
+        document.body.append(host);
+        const view = { app, host };
+        if (mounted) app.addTo(host);
+        try {
+            await app.ready();
+            root.view = evaluate(GCode('<u>first</u><u>second</u>'));
+            await settle();
+            if (!mounted) app.addTo(host);
+            assert.equal(host.textContent, 'beforefirstsecondafter');
+            const anchor = [...host.childNodes].find(node => node.nodeType === 8 && app.Elements.includes(node));
+            assert.ok(anchor);
+            root.show = false;
+            await settle();
+            assert.equal(host.textContent, 'beforeafter');
+            root.view = evaluate(GCode('<u g-for="rows;index;row">{{row}}</u>'));
+            await settle();
+            assert.equal(host.textContent, 'beforeafter');
+            root.show = true;
+            await settle();
+            assert.equal(host.textContent, 'beforeonetwoafter');
+            root.view = null;
+            await settle();
+            root.show = false;
+            await settle();
+            root.show = true;
+            await settle();
+            assert.equal(host.textContent, 'beforeafter', 'toggling g-if cannot restore a destroyed component');
+            root.view = () => [];
+            await settle();
+            assert.equal(host.textContent, 'beforeafter');
+            root.view = evaluate(GCode('<u>restored</u>'));
+            await settle();
+            assert.equal(host.textContent, 'beforerestoredafter');
+            assert.equal(anchor.parentNode, host);
+        } finally {
+            dispose(view);
+        }
+    });
+    for (const kind of ['g-is', 'g-switch', 'g-for']) test(`${kind} stops replacement when a child's cleanup destroys its parent`, async () => {
+        const name = `dispose-parent-${backend}-${kind}`;
+        let view, cleanups = 0;
+        lib.GregisterDirective(name, class {
+            constructor(ele, value, ctx) {
+                ctx.onCleanup(() => { cleanups++; view.app.destroy(); });
+            }
+        });
+        const root = { view: evaluate(GCode(`<strong ${name}="">old</strong>`)), selected: 0, rows: ['old'] };
+        const html = kind === 'g-is' ? '<span g-is="view"></span>' : kind === 'g-switch'
+            ? `<template g-switch="selected"><strong g-case="0" ${name}="">old</strong><b g-case="1">replacement</b></template>`
+            : `<strong g-for="rows;i;row" ${name}="">{{row}}</strong>`;
+        view = await mount(evaluate(GCode(html)), root);
+        const messages = [], error = console.error, warn = console.warn;
+        console.error = console.warn = (...args) => messages.push(args);
+        try {
+            if (kind === 'g-is') root.view = evaluate(GCode('<b>replacement</b>'));
+            else if (kind === 'g-switch') root.selected = 1;
+            else root.rows = [];
+            await settle();
+            assert.equal(view.app.isDestroyed, true);
+            assert.equal(cleanups, 1, 'a child is disposed once, including reentrant parent disposal');
+            assert.equal(view.host.childNodes.length, 0);
+            assert.deepEqual(messages, []);
+        } finally {
+            console.error = error;
+            console.warn = warn;
+            if (!view.app.isDestroyed) view.app.destroy();
+            view.host.remove();
+        }
+    });
+    test('g-is replaces a DOM fragment without retaining its old inserted siblings', async () => {
+        const fragment = (label, count = 2) => {
+            const result = document.createDocumentFragment();
+            for (const suffix of ['one', 'two'].slice(0, count)) {
+                const node = document.createElement('u');
+                node.textContent = `${label} ${suffix}`;
+                result.append(node);
+            }
+            return result;
+        };
+        const root = { content: fragment('old') };
+        const view = await mount(evaluate(GCode('<b>before</b><span g-is="content"></span><i>after</i>')), root);
+        try {
+            assert.equal(view.host.textContent, 'beforeold oneold twoafter');
+            for (const [label, count] of [['new', 2], ['single', 1], ['empty', 0]]) {
+                root.content = fragment(label, count);
+                await settle();
+                const expected = ['one', 'two'].slice(0, count).map(suffix => `${label} ${suffix}`).join('');
+                assert.equal(view.host.textContent, `before${expected}after`);
+            }
+            root.content = document.createTextNode('text');
+            await settle();
+            assert.equal(view.host.textContent, 'beforetextafter');
+            root.content = fragment('restored');
+            await settle();
+            assert.equal(view.host.textContent, 'beforerestored onerestored twoafter');
+            root.content = null;
+            await settle();
+            assert.equal(view.host.textContent, 'beforeafter');
+        } finally { dispose(view); }
+    });
+    test('g-is does not create an orphan if removing its DOM node destroys the parent', async () => {
+        const name = `dispose-disconnected-${backend}`;
+        let view;
+        dom.window.customElements.define(name, class extends dom.window.HTMLElement {
+            disconnectedCallback() { view.app.destroy(); }
+        });
+        const node = document.createElement(name);
+        node.textContent = 'old';
+        const root = { content: node };
+        view = await mount(evaluate(GCode('<span g-is="content"></span>')), root);
+        try {
+            root.content = evaluate(GCode('<b>replacement</b>'));
+            await settle();
+            assert.equal(view.app.isDestroyed, true);
+            assert.equal(view.app.GtplChilds.size, 0, 'a destroyed owner cannot acquire a replacement child');
+            assert.equal(view.host.childNodes.length, 0);
+        } finally {
+            if (!view.app.isDestroyed) view.app.destroy();
+            view.host.remove();
+        }
+    });
+    test('nested structural bindings preserve anchors through mixed same-batch replacements and removals', async () => {
+        const render = evaluate(GCode('<u>{{row.label}}</u>'));
+        const alternate = evaluate(GCode('<strong>{{row.label}}</strong>'));
+        const row = (label, type = 'component', content = render) => ({ label, type, content });
+        const root = { visible: true, rows: [row('one'), row('two', 'text')] };
+        const view = await mount(evaluate(GCode('<b>before</b><template g-if="visible"><template g-for="rows;i;row"><template g-switch="row.type"><template g-case="\'component\'"><span g-is="row.content"></span></template><em g-case="\'text\'">{{row.label}}</em></template></template></template><i>after</i>')), root);
+        const messages = [], error = console.error;
+        console.error = (...args) => messages.push(args);
+        const check = async () => {
+            await settle();
+            const expected = root.visible ? root.rows.map(value =>
+                value.type === 'text' || (value.type === 'component' && value.content) ? value.label : '').join('') : '';
+            assert.equal(view.host.textContent, `before${expected}after`);
+            assert.equal(view.host.firstElementChild.tagName, 'B');
+            assert.equal(view.host.lastElementChild.tagName, 'I');
+            assert.deepEqual(messages, []);
+        };
+        try {
+            for (let step = 0; step < 6; step++) {
+                root.rows[0].content = alternate;
+                root.rows[0].label = `old ${step}`;
+                root.rows = [row(`new ${step}`), row(`text ${step}`, 'text')];
+                await check();
+                root.visible = false;
+                root.rows[0].type = 'text';
+                root.rows.push(row(`tail ${step}`));
+                await check();
+                root.rows[0].type = 'component';
+                root.rows[0].content = alternate;
+                root.rows[1].type = null;
+                root.visible = true;
+                await check();
+                root.rows.reverse();
+                root.rows[0].content = null;
+                await check();
+                root.visible = false;
+                root.rows = [];
+                view.app.refresh();
+                await check();
+                root.rows.push(row(`restored ${step}`), row(`last ${step}`, 'text'));
+                root.visible = true;
+                await check();
+            }
+        } finally {
+            console.error = error;
+            dispose(view);
+        }
+    });
     // Observe mutable binding records through the public custom-g seam, independently
     // of the DOM and reactive scheduler.
     if (backend === 'legacy') test('structural binding records remain per invocation with custom g', () => {

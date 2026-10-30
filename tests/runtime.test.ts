@@ -208,3 +208,22 @@ test('unwatch remains safe to call after GTpl.destroy', () => {
   assert.doesNotThrow(unwatch);
   assert.doesNotThrow(unwatch);
 });
+
+test('child cleanup can destroy its parent without disposing the child twice', () => {
+  const parent = new GTpl({ root: {}, generator: () => [] });
+  const child = new GTpl({ parent, generator: () => [] });
+  parent.GtplChilds.add(child);
+  let cleanups = 0, destroyedDuringCleanup = false;
+  child.onCleanup(() => {
+    cleanups++;
+    destroyedDuringCleanup = child.isDestroyed;
+    parent.destroy();
+  });
+
+  assert.doesNotThrow(() => child.destroy());
+  assert.equal(cleanups, 1);
+  assert.equal(destroyedDuringCleanup, true);
+  assert.equal(parent.isDestroyed, true);
+  assert.equal(child.isDestroyed, true);
+  assert.equal(parent.GtplChilds.size, 0);
+});

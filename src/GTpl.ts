@@ -7,6 +7,10 @@ import { STACK, isStaticType, log } from "./GUtils";
 
 const ElementReferenceIndex = Symbol("ElementReferenceIndex");
 
+// g-is content can be destroyed independently of its rendering owner.
+// Keep its insertion point outside that content, including combined g-if binds.
+const persistentMarks = new WeakSet<Node>();
+
 interface PendingBindingChange {
   context: GTpl;
   type: TypeEventProxyHandler;
@@ -852,7 +856,8 @@ function checkMarkEle(gtpl: IGtplObject, bind: IBindObject, bresult: boolean) {
   // si hay varios tipos de bindados a un mismo elemento, if + switch por ejemplo
   // hay que hacer que solo se genere en una ocasión, y el otro coja los elementos
   // generados por el que primero llegue.
-  if (bresult) {
+  // A g-is replacement also changes the content a shared g-if must hide.
+  if (bresult || persistentMarks.has(bind.mark)) {
     const MarkEle = privateProperties.getProperty(gtpl, "MarkEle");
     const memValues = privateProperties.getProperty(gtpl, "memValues");
     if (!bind.ele) {
@@ -965,7 +970,7 @@ function show(bind: IBindObject, remove: boolean = true) {
       bind.mark.parentNode.insertBefore(bind.ele, bind.mark);
       //checkValSelect(bind.mark.parentNode, bind.ele);
     }
-    if (remove) bind.mark.remove();
+    if (remove && !persistentMarks.has(bind.mark)) bind.mark.remove();
   }
 }
 
@@ -975,7 +980,8 @@ function hide(bind: IBindObject, insert: boolean = true) {
       const range = fragmentRanges.get(bind.ele);
       if (range?.hidden) return;
       const nodes = fragmentNodes(bind.ele);
-      if (insert && nodes[0]?.parentNode) nodes[0].parentNode.insertBefore(bind.mark, nodes[0]);
+      if (insert && !bind.mark.parentNode && nodes[0]?.parentNode)
+        nodes[0].parentNode.insertBefore(bind.mark, nodes[0]);
       nodes.forEach((ele) => {
         // A detached parent lets nested lists and conditions keep reconciling.
         if (range) range.storage.appendChild(ele);
@@ -983,7 +989,8 @@ function hide(bind: IBindObject, insert: boolean = true) {
       });
       if (range) range.hidden = true;
     } else {
-      if (insert) bind.ele.parentNode.insertBefore(bind.mark, bind.ele);
+      if (insert && !bind.mark.parentNode && bind.ele.parentNode)
+        bind.ele.parentNode.insertBefore(bind.mark, bind.ele);
       bind.ele.remove();
     }
   }
@@ -1498,6 +1505,8 @@ function updateISbind(
   const memValues = privateProperties.getProperty(gtpl, "memValues");
   if (memValues.has(bind) && memValues.get(bind) == result) return gtpl;
   memValues.set(bind, result);
+  if (!bind.mark.checks) bind.mark.checks = {};
+  bind.mark.checks[bind.type] = bresult;
   //---
   let check = false;
   // si hay bind.eles es que se envió un array/función es que se envió una función generadora.
@@ -1516,19 +1525,29 @@ function updateISbind(
       }
     }
   }
+  // DOM removal and child cleanup can synchronously destroy the owner.
+  if (owner.isDestroyed || gtpl.isDestroyed) return gtpl;
   //---
-  if (!bresult) return gtpl;
+  if (!bresult) {
+    delete bind.ele;
+    privateProperties.getProperty(gtpl, "MarkEle").delete(bind.mark);
+    renderBind(gtpl, bind, false);
+    return gtpl;
+  }
   //---
   if (check && !searchBind(gtpl, bind)) {
     return gtpl;
   }
   //---
-  if (Array.isArray(result) || typeof result == "function") {
+  // Inserting a DocumentFragment empties it. Track its roots like an array
+  // generator so subsequent replacement and disposal still own those nodes.
+  const generator = result.nodeType === 11 ? Array.from(result.childNodes) : result;
+  if (Array.isArray(generator) || typeof generator == "function") {
     const newgtpl = createGTpl(gtpl, {
       link: bind.link,
       type: bind.type,
       gtpl: bind.gtpl,
-      gen: result,
+      gen: generator,
     });
     bind.eles = [newgtpl];
     owner.GtplChilds.add(newgtpl);
@@ -1688,6 +1707,7 @@ export class GTpl implements IGtplObject {
 
   addBind(bind: IBindObject) {
     if (this.checkDestroyed('addBind')) return;
+    if (bind.type === BindTypes.IS && bind.mark) persistentMarks.add(bind.mark);
     if (!checkBindElements(this, bind)) {
       if (!checkBindEvent(this, bind)) {
         if (!checkBindFormula(this, bind)) {
@@ -1717,6 +1737,9 @@ export class GTpl implements IGtplObject {
       return;
     }
 
+    // Cleanup can destroy an ancestor, which visits this child again.
+    this.isDestroyed = true;
+
     if (this.cleanupCallbacks && this.cleanupCallbacks.size > 0) {
       this.cleanupCallbacks.forEach(callback => {
         try {
@@ -1728,11 +1751,11 @@ export class GTpl implements IGtplObject {
       this.cleanupCallbacks.clear();
     }
 
-    this.isDestroyed = true;
-
     // A child can render outside its original insertion marker (g-is/switch).
     // Dispose its rendered roots before clearing its element references.
-    this.GtplChilds.forEach(child => child.destroy(elements));
+    this.GtplChilds.forEach(child => {
+      if (!child.isDestroyed) child.destroy(elements);
+    });
 
     this.GtplChilds.clear();
 
@@ -1906,6 +1929,7 @@ export class GTpl implements IGtplObject {
           const range = Array.isArray(bind.ele) ? fragmentRanges.get(bind.ele) : undefined;
           if (range) range.hidden = false;
           render_arr.push(Array.isArray(bind.ele) ? fragmentNodes(bind.ele) : bind.ele);
+          if (persistentMarks.has(bind.mark)) render_arr.push(bind.mark);
         } else if (bind.eles) {
           bind.eles.forEach((gtpl: IGtplObject) => gtpl.addTo(render_arr));
           render_arr.push(bind.mark);

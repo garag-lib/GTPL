@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { BindTypes } from '../src/GEnums';
+import { BindTypes, TypeEventProxyHandler } from '../src/GEnums';
 import { GTpl } from '../src/GTpl';
 
 function deferred<T>() {
@@ -55,6 +55,94 @@ function directive(app: GTpl, type: BindTypes, link: any, gen: Function) {
   const mark = new TestNode(8);
   app.addBind({ type, mark, link, gen });
   return mark;
+}
+
+test('g-is keeps its row position when its component is destroyed and replaced in one batch', async () => {
+  const component = (label: string) => new GTpl({ root: {}, generator: (ctx: GTpl) => [
+    boundText(ctx, () => label)
+  ] });
+  const old = component('old');
+  const replacement = component('replacement');
+  const root = { rows: [{ render: () => old.Elements[0] }] };
+  let row!: GTpl;
+  let bind: any;
+  let container!: TestNode;
+  const before = new TestNode(3), after = new TestNode(3);
+  const app = new GTpl({ root, generator: (ctx: GTpl) => [
+    directive(ctx, BindTypes.FOR,
+      { vorc: { va: ['rows'] }, index: { index: 'index', target: 'row' } },
+      (child: GTpl) => {
+        row = child;
+        container = new TestNode();
+        const mark = new TestNode(8);
+        bind = { type: BindTypes.IS, mark, link: { formula: {
+          vars: [['row']], fnc: (value: any) => value.render()
+        } } };
+        child.addBind(bind);
+        [before, mark, after].forEach(node => container.appendChild(node));
+        return [container];
+      })
+  ] });
+  const host = new TestNode();
+  app.addTo(host as any);
+  try {
+    await app.ready();
+    const oldNode = old.Elements[0] as any;
+    assert.deepEqual(container.childNodes.filter(node => node.nodeType === 3), [before, oldNode, after]);
+    old.destroy();
+    assert.equal(oldNode.parentNode, null);
+    root.rows[0].render = () => replacement.Elements[0];
+    await row.launchChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind);
+    assert.deepEqual(container.childNodes.filter(node => node.nodeType === 3),
+      [before, replacement.Elements[0], after]);
+  } finally {
+    app.destroy();
+    if (!old.isDestroyed) old.destroy();
+    replacement.destroy();
+  }
+});
+
+for (const mounted of [false, true]) {
+  test(`g-is replaces and clears generated components ${mounted ? 'after' : 'before'} mounting`, async () => {
+    const root = { view: (ctx: GTpl) => [boundText(ctx, () => 'old')] as any };
+    const before = new TestNode(3), after = new TestNode(3);
+    let bind: any;
+    const app = new GTpl({ root, generator: (ctx: GTpl) => {
+      bind = { type: BindTypes.IS, mark: new TestNode(8), link: { vorc: { va: ['view'] } } };
+      ctx.addBind(bind);
+      return [before, bind.mark, after];
+    } });
+    const host = new TestNode();
+    if (mounted) app.addTo(host as any);
+    try {
+      await app.ready();
+      const old = [...app.GtplChilds][0];
+      const oldNode = old.Elements[0];
+      root.view = (ctx: GTpl) => [boundText(ctx, () => 'replacement')];
+      await app.launchChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind);
+      assert.equal(old.isDestroyed, true);
+      assert.equal(oldNode.parentNode, null);
+      if (!mounted) app.addTo(host as any);
+      await new Promise(resolve => setImmediate(resolve));
+      assert.deepEqual(host.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent),
+        ['', 'replacement', '']);
+      assert.equal(bind.mark.parentNode, host);
+      assert.equal(app.GtplChilds.size, 1);
+      root.view = null;
+      await app.launchChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind);
+      assert.deepEqual(host.childNodes.filter(node => node.nodeType === 3), [before, after]);
+      assert.equal(bind.mark.parentNode, host);
+      assert.equal(app.GtplChilds.size, 0);
+      root.view = (ctx: GTpl) => [boundText(ctx, () => 'restored')];
+      await app.launchChange(TypeEventProxyHandler.FORCE_REFRESH_ROOT, bind);
+      await new Promise(resolve => setImmediate(resolve));
+      assert.deepEqual(host.childNodes.filter(node => node.nodeType === 3).map(node => node.textContent),
+        ['', 'restored', '']);
+    } finally {
+      app.destroy();
+      assert.equal(host.childNodes.length, 0);
+    }
+  });
 }
 
 test('a rendered child owns inherited g-for rows and releases ancestor bindings', async () => {
