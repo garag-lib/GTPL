@@ -4,7 +4,7 @@ import test from 'node:test';
 import { BindTypes, TypeEventProxyHandler } from '../src/GEnums';
 import { GTpl } from '../src/GTpl';
 import { css2obj, style2css } from '../src/GUtils';
-import { GCompile, GCompileSafe } from '../src/GGenerator';
+import { GCompile } from '../src/GGenerator';
 import { GProxy, unGProxy, toRaw } from '../src/GProxy';
 
 test('toRaw recovers raw identity after revocation without reviving the proxy', () => {
@@ -134,11 +134,23 @@ test('GCompile builds runtime generator function', () => {
   assert.deepStrictEqual(generator({}), []);
 });
 
-test('GCompileSafe only accepts precompiled generator functions', () => {
-  const precompiled = (o: any) => [o];
-  const generator = GCompileSafe(precompiled);
-  assert.equal(generator, precompiled);
-  assert.throws(() => GCompileSafe('(o)=>[]' as any), /precompiled generator function/);
+test('GTpl accepts precompiled AOT generators directly', async () => {
+  const root = { value: 'initial' };
+  const precompiled = (context: GTpl) => {
+    const node = { textContent: '' };
+    context.addBind({ type: BindTypes.TEXT, ele: node, link: { vorc: { va: ['value'] } } } as any);
+    return [node];
+  };
+  const app = new GTpl({ root, generator: precompiled });
+  const mounted: any[] = [];
+  app.addTo(mounted);
+  await app.ready();
+  assert.equal(app.FncElements, precompiled);
+  assert.equal(mounted[0].textContent, 'initial');
+  root.value = 'updated';
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(mounted[0].textContent, 'updated');
+  app.destroy(false);
 });
 
 test('GTpl.destroy removes DOM event listeners tracked on rendered elements', () => {
@@ -226,4 +238,180 @@ test('child cleanup can destroy its parent without disposing the child twice', (
   assert.equal(parent.isDestroyed, true);
   assert.equal(child.isDestroyed, true);
   assert.equal(parent.GtplChilds.size, 0);
+});
+
+test('replacing or deleting nested proxy branches releases their subscriptions', () => {
+  for (const mutation of ['replace', 'delete', 'truncate']) {
+    const raw: any = mutation === 'truncate' ? [{ child: { value: 1 } }] : { branch: { child: { value: 1 } } };
+    const owner = {};
+    const event = () => {};
+    const proxy: any = GProxy(raw, event, owner, ['root']);
+    const branch = mutation === 'truncate' ? proxy[0] : proxy.branch;
+    const child = branch.child;
+    if (mutation === 'replace') proxy.branch = { child: { value: 2 } };
+    else if (mutation === 'delete') delete proxy.branch;
+    else proxy.length = 0;
+    assert.throws(() => branch.child, TypeError, mutation);
+    assert.throws(() => child.value, TypeError, mutation);
+    unGProxy(proxy, event, owner);
+  }
+});
+
+test('replacing one proxy branch preserves subscriptions through live aliases and owners', () => {
+  const shared = { child: { value: 1 } };
+  const raw = { left: shared, right: shared };
+  const owner = {}, otherOwner = {};
+  const seen: string[] = [];
+  const event = (_type: any, path: any[]) => seen.push(path.join('.'));
+  const proxy = GProxy(raw, event, owner, ['root']);
+  const other = GProxy(shared, event, otherOwner, ['other']);
+  const left = proxy.left.child;
+  assert.equal(left, proxy.right.child);
+  proxy.left = { child: { value: 0 } };
+  seen.length = 0;
+  left.value = 2;
+  assert.deepStrictEqual(seen.sort(), ['other.child.value', 'root.right.child.value']);
+  unGProxy(proxy, event, owner);
+  assert.equal(other.child.value, 2);
+  unGProxy(other, event, otherOwner);
+});
+
+test('unwatch releases its cleanup callback immediately', () => {
+  const gtpl = new GTpl();
+  for (let i = 0; i < 100; i++) {
+    const off = gtpl.watch('value', () => {});
+    off();
+    off();
+  }
+  assert.equal(gtpl.watchers.size, 0);
+  assert.equal(gtpl.cleanupCallbacks.size, 0);
+  gtpl.destroy(false);
+});
+
+test('destroy restores ordinary root properties with their latest raw values', async () => {
+  const root = { value: { name: 'Alice' } };
+  const original = Object.getOwnPropertyDescriptor(root, 'value');
+  const gtpl = new GTpl({ root, generator: () => [] });
+  gtpl.addBind({ type: BindTypes.ATTR, prop: 'title', ele: { title: '' }, link: { vorc: { va: ['value', 'name'] } } } as any);
+  await gtpl.ready();
+  root.value.name = 'Bob';
+  const raw = toRaw(root.value);
+  gtpl.destroy(false);
+  assert.equal(root.value, raw);
+  assert.equal(root.value.name, 'Bob');
+  assert.deepStrictEqual(Object.getOwnPropertyDescriptor(root, 'value'), { ...original, value: raw });
+});
+
+test('synchronous event expressions can cancel default behavior before dispatch returns', () => {
+  const target = new EventTarget();
+  const gtpl = new GTpl({ root: {}, generator: () => [target] });
+  gtpl.addBind({ type: BindTypes.EVENT, prop: 'click', ele: target, link: { formula: { fnc: () => false } } } as any);
+  const event = new Event('click', { cancelable: true });
+  assert.equal(target.dispatchEvent(event), false);
+  assert.equal(event.defaultPrevented, true);
+  gtpl.destroy();
+});
+
+test('destroy unregisters inherited pipe parameter bindings', async () => {
+  const parent = new GTpl({ root: { suffix: '!', format(suffix: string, value: string) { return value + suffix; } }, generator: () => [] });
+  const child = new GTpl({ parent, root: { row: 'a' }, context: ['row'], generator: () => [] });
+  const element = { title: '' };
+  child.addBind({ type: BindTypes.ATTR, prop: 'title', ele: element, link: { vorc: { va: ['row'] }, functions: [{ name: ['format'], params: [{ va: ['suffix'] }] }] } } as any);
+  await child.ready();
+  assert.equal(element.title, 'a!');
+  assert.equal(parent.BindTree.suffix.me.size, 1);
+  child.destroy(false);
+  assert.equal(parent.BindTree.suffix.me.size, 0);
+  parent.destroy(false);
+});
+
+test('destroy releases listeners on descendants even when rendered elements are preserved', () => {
+  let removals = 0;
+  const target = new EventTarget();
+  const remove = target.removeEventListener.bind(target);
+  target.removeEventListener = (...args) => { removals++; remove(...args); };
+  const gtpl = new GTpl({ root: {}, generator: () => [] });
+  gtpl.addBind({ type: BindTypes.EVENT, prop: 'click', ele: target, link: { formula: { fnc: () => false } } } as any);
+  gtpl.destroy(false);
+  assert.equal(removals, 1);
+  assert.equal(target.dispatchEvent(new Event('click', { cancelable: true })), true);
+});
+
+test('destroy never restores a reactive getter from an already destroyed view', async () => {
+  for (const reverse of [false, true]) {
+    const root = { value: { name: 'Alice' } };
+    const apps = [0, 1].map(() => {
+      const app = new GTpl({ root, generator: () => [] });
+      app.addBind({ type: BindTypes.ATTR, prop: 'title', ele: { title: '' }, link: { vorc: { va: ['value', 'name'] } } } as any);
+      return app;
+    });
+    await Promise.all(apps.map(app => app.ready()));
+    if (reverse) apps.reverse();
+    apps.forEach(app => app.destroy(false));
+    assert.equal(root.value.name, 'Alice');
+    assert.equal(Object.getOwnPropertyDescriptor(root, 'value')?.get, undefined);
+  }
+});
+
+test('destroy restores an original accessor and transfers the last value to its setter', async () => {
+  let value = { name: 'Alice' };
+  const root = { get value() { return value; }, set value(next) { value = next; } };
+  const descriptor = Object.getOwnPropertyDescriptor(root, 'value');
+  const app = new GTpl({ root, generator: () => [] });
+  app.addBind({ type: BindTypes.ATTR, prop: 'title', ele: { title: '' }, link: { vorc: { va: ['value', 'name'] } } } as any);
+  await app.ready();
+  root.value = { name: 'Bob' };
+  app.destroy(false);
+  assert.deepStrictEqual(Object.getOwnPropertyDescriptor(root, 'value'), descriptor);
+  assert.equal(root.value.name, 'Bob');
+});
+
+test('array iterator subscriptions are released when their indexed rows are removed', () => {
+  const owner = {}, event = () => {};
+  const proxy = GProxy([{ value: 1 }], event, owner, ['rows']);
+  const row = [...proxy][0];
+  proxy.pop();
+  assert.throws(() => row.value, TypeError);
+  unGProxy(proxy, event, owner);
+});
+
+test('destroy clears owned g-bind and g-binds references', async () => {
+  const first = {}, second = {};
+  const root: any = { selected: null, refs: [] };
+  const app = new GTpl({ root, generator: () => [] });
+  app.addBind({ type: BindTypes.ELE, ele: first, link: { vorc: { va: ['selected'] } } } as any);
+  app.addBind({ type: BindTypes.ELES, ele: first, link: { vorc: { va: ['refs'] } } } as any);
+  app.addBind({ type: BindTypes.ELES, ele: second, link: { vorc: { va: ['refs'] } } } as any);
+  await app.ready();
+  assert.equal(root.selected, first);
+  assert.deepStrictEqual(root.refs, [first, second]);
+  app.destroy(false);
+  assert.equal(root.selected, null);
+  assert.deepStrictEqual(root.refs, []);
+});
+
+test('g-bind cleanup preserves a newer reference assigned to the same path', () => {
+  const first = {}, second = {};
+  const root: any = { selected: null };
+  const app = new GTpl({ root, generator: () => [] });
+  app.addBind({ type: BindTypes.ELE, ele: first, link: { vorc: { va: ['selected'] } } } as any);
+  root.selected = second;
+  app.destroy(false);
+  assert.equal(root.selected, second);
+});
+
+test('a failing original setter does not abort destruction and proxy revocation', async () => {
+  const value = { name: 'Alice' };
+  const root = { get value() { return value; }, set value(_next) { throw new Error('setter failure'); } };
+  const app = new GTpl({ root, generator: () => [] });
+  app.addBind({ type: BindTypes.ATTR, prop: 'title', ele: { title: '' }, link: { vorc: { va: ['value', 'name'] } } } as any);
+  await app.ready();
+  const proxy = root.value;
+  const errors: any[] = [], previous = console.error;
+  console.error = (...args) => { errors.push(args); };
+  try { assert.doesNotThrow(() => app.destroy(false)); } finally { console.error = previous; }
+  assert.equal(errors.length, 1);
+  assert.equal(app.BindDef.size, 0);
+  assert.equal(app.Root, null);
+  assert.throws(() => proxy.name, TypeError);
 });

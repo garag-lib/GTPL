@@ -1,5 +1,5 @@
 /*!
-* @mpeliz/gtpl v2.0.2
+* @mpeliz/gtpl v3.0.0
 * (c) 2024 Manuel Peliz
 * @license Apache-2.0
 * @repository [object Object]
@@ -203,21 +203,13 @@ declare function style2css(prop: string): string;
 declare function log(...args: any[]): void;
 declare function STACK(message: string, ...rest: any[]): void;
 
-interface GCodeOptions {
-    allowFormulas?: boolean;
-    allowEvents?: boolean;
-    allowInnerHTML?: boolean;
-}
-interface GCodeOptimizedOptions extends GCodeOptions {
+interface GCodeOptimizedOptions {
     /** Short property-key aliases reduce source size but can slow initial rendering. */
     methodAliases?: boolean;
 }
 declare function GCode(html: string | Node | NodeListOf<ChildNode>): string;
-declare function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptions): string;
 /** Opt-in imperative backend. Requires the current GGenerator runtime helpers. */
 declare function GCodeOptimized(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string;
-/** Safe parsing restrictions with the imperative backend. */
-declare function GCodeOptimizedSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string;
 
 declare const ISPROXY: unique symbol;
 declare const PROXYTARGET: unique symbol;
@@ -235,7 +227,7 @@ declare const _default: {
     GInsertAfterTo: (ele: any[] | Node, childs: Function | any[] | Node, objRoot: IGtplObject) => void;
     GInsertBeforeTo: (ele: any[] | Node, childs: Function | any[] | Node, objRoot: IGtplObject) => void;
     GregisterDirective: (name: string, cls: any) => boolean;
-    GGenerator: ((nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject) => any) & {
+    GGenerator: ((nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject, namespaceURI?: string) => any) & {
         getDocument: () => Document;
         addAttributes: (attributes: AttrType[], ele: any, objRoot: IGtplObject) => void;
     };
@@ -243,11 +235,8 @@ declare const _default: {
     unGProxy: typeof unGProxy;
     jit: {
         GCompile: (gcode: string, ggenerator?: any) => any;
-        GCompileSafe: (generator: unknown) => any;
         GCode: typeof GCode;
-        GCodeSafe: typeof GCodeSafe;
         GCodeOptimized: typeof GCodeOptimized;
-        GCodeOptimizedSafe: typeof GCodeOptimizedSafe;
     };
     utils: {
         log: typeof log;

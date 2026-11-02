@@ -40,7 +40,7 @@ if (mode === 'prepare') {
     for (const [name, html] of Object.entries(fixtures))
         await save(name + '.js', GCode(html, { methodAliases }));
     // Identical minifier and options for isolated runtime/compiler and full library.
-    for (const [name, source] of Object.entries({ runtime: `export {GTpl} from './src/GTpl'; export {GGenerator,GCompileSafe,GregisterDirective} from './src/GGenerator';`, compiler: `export {GCode,GCodeSafe,GCodeOptimized,GCodeOptimizedSafe} from './src/compiler/GCode';`, full: `export {default} from './src/lib/gtpl';` })) {
+    for (const [name, source] of Object.entries({ runtime: `export {GTpl} from './src/GTpl'; export {GGenerator,GregisterDirective} from './src/GGenerator';`, compiler: `export {GCode,GCodeOptimized} from './src/compiler/GCode';`, full: `export {default} from './src/lib/gtpl';` })) {
         const result = await build({ stdin: { contents: source, resolveDir: process.cwd() }, bundle: true, minify: true, format: 'iife', globalName: 'lib', write: false });
         await save(name + '.js', result.outputFiles[0].text);
     }

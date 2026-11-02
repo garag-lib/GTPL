@@ -124,10 +124,7 @@ const { GTpl, GregisterDirective, jit: { GCode, GCompile } } = gtpl;
 Main pieces:
 - `GCode(html)`: parses template HTML into generated code string.
 - `GCodeOptimized(html)`: opt-in imperative backend; creates ordinary DOM subtrees directly and keeps lazy generators at structural directives.
-- `GCodeOptimizedSafe(html)`: imperative backend with the same parsing restrictions and options as `GCodeSafe`.
 - `GCompile(code)`: compiles generated code into a render function.
-- `GCodeSafe(html)`: safe parser mode (blocks formulas, inline events, and `g-inner`).
-- `GCompileSafe(generatorFn)`: accepts only precompiled generator functions (no runtime eval).
 - `new GTpl({ root, generator })`: creates reactive instance.
 - `instance.addTo(node)`: mounts rendered nodes.
 - `instance.watch(path, cb)`: subscribes to reactive path changes.
@@ -161,8 +158,8 @@ measurements. Attributes still use the runtime directive lookup, including
 directives registered after compilation. Child bindings and directives precede parent attributes.
 
 For AOT, assign the emitted expression to a generator with the current
-`GGenerator` available as `g`, then pass it through `GCompileSafe`. This needs no
-runtime evaluation. The imperative output requires the current runtime's
+`GGenerator` available as `g`, then pass that function directly as
+`new GTpl({ root, generator })`. This needs no runtime evaluation. The imperative output requires the current runtime's
 `g.getDocument()` and `g.addAttributes()` helpers; a custom `g` supplied to
 `GCompile` must provide those helpers. Existing precompiled generators keep their
 original `g(tag, attrs, children, context)` contract.
@@ -203,7 +200,7 @@ If you use the global bundle (`dist/gtpl.global.js`):
 
 ## Releases (Precompiled Builds)
 
-`main` tracks version 2.x. The `1.1.8` branch preserves the final pre-2.0
+`main` tracks version 3.x. The `1.1.8` branch preserves the final pre-2.0
 `main` commit; the existing `v1.1.8` release tag retains its original commit.
 
 Version 2.0 batches DOM binding updates in a microtask. State assignments and
@@ -221,7 +218,7 @@ To publish a new release:
 
 ```bash
 # single command flow (tests + build + version bump + commit + push + tag push)
-npm run release -- 2.0.1
+npm run release -- 3.0.0
 
 # then publish release in GitHub UI for that tag (workflow triggers on publish)
 ```
@@ -249,7 +246,21 @@ Package outputs:
 
 - `g-inner` writes directly to `innerHTML`; use trusted HTML only.
 - JIT compilation executes generated code (`GCompile`), so compile only trusted template sources.
-- Use `GCodeSafe` + `GCompileSafe` when templates are not fully trusted.
+- Templates are executable application code. Neither JIT nor AOT sanitizes HTML,
+  URLs, or JavaScript, and precompiled generators are not sandboxed. Use templates
+  and generators from a trusted source; sanitize untrusted HTML and bound
+  URL/content values separately before rendering them.
+
+## Migrating to 3.0
+
+The former Safe mode has been removed: `GCodeSafe`, `GCodeOptimizedSafe`,
+`GCompileSafe`, and the `allowFormulas`, `allowEvents`, and `allowInnerHTML`
+compiler options are no longer exported or supported.
+
+For trusted templates, use `GCode` or `GCodeOptimized` and compile generated code
+with `GCompile` when using JIT. For AOT, pass the precompiled function directly
+to `new GTpl({ root, generator })`; this continues to work without dynamic
+evaluation. Removing Safe does not make untrusted templates safe to execute.
 
 ## Attribution
 

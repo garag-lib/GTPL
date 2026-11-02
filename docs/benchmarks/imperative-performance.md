@@ -3,8 +3,8 @@
 Implementado el 27 de octubre de 2026 sobre `1965f5b`. Las medidas iniciales
 sin alias se conservan como referencia; la versión actual permite activar alias
 de claves de métodos con `methodAliases: true`, cuya comparación aparece al final
-de este informe. La opción está desactivada por defecto. Se conservan `GCode` y
-`GCodeSafe`; `GCodeOptimized` y `GCodeOptimizedSafe` seleccionan explícitamente el
+de este informe. La opción está desactivada por defecto. `GCode` selecciona el
+backend de referencia y `GCodeOptimized` selecciona explícitamente el
 backend nuevo. En esta rama, los benchmarks públicos AOT y JIT seleccionan explícitamente
 `GCodeOptimized` con `methodAliases: true`; el manifiesto registra esa selección.
 
@@ -176,7 +176,7 @@ intervalos: [imperative-results.json](imperative-results.json).
 - `node --test scripts/benchmarks/*.test.mjs`: 56 pruebas, incluidas 29 del compilador/AOT (backend anterior, imperativo y variante con alias).
 - `npm run build`: ESM, CJS, global, declaraciones y comprobación del paquete.
 - Pruebas compartidas entre ambos backends: listas, condicionales, switches, g-is, g-tpl, notif, aislamiento de nodos y bindings, formularios, eventos, estilos, fórmulas asíncronas, orden de directivas y limpieza.
-- AOT seguro con evaluación dinámica deshabilitada; generadores antiguos; montaje iterativo con 25.000 niveles de arrays/funciones y compilación de 700 hermanos dinámicos.
+- AOT precompilado con evaluación dinámica deshabilitada; generadores antiguos; montaje iterativo con 25.000 niveles de arrays/funciones y compilación de 700 hermanos dinámicos.
 
 Comprobación adicional del bundle global distribuido en Chrome: dos instancias AOT con `Function` deshabilitado, actualización de contexto de fila, cambio de rama y destrucción completa.
 
@@ -184,7 +184,7 @@ Comprobación adicional del bundle global distribuido en Chrome: dos instancias 
 
 La opción `GCodeOptimized(html, { methodAliases: true })` declara los nombres
 repetidos una vez en el render raíz y los captura en las fronteras estructurales
-que los necesitan. También funciona con `GCodeOptimizedSafe`. Por ejemplo:
+que los necesitan. Por ejemplo:
 
 ```js
 const $a = "appendChild", $e = "createElement";

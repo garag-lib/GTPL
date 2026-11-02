@@ -333,3 +333,41 @@ test('GParse should parse all supported expressions', async (t) => {
         });
     }
 });
+
+test('formula dependencies include both sides of conditionals and shared object paths', () => {
+    const parser = new GParse();
+    for (const [code, vars] of [
+        ['return data.a + data.b', [['data']]],
+        ['return data.nested.a + data.nested.b', [['data', 'nested']]],
+        ['return user.first + user.last', [['user']]],
+        ['return flag ? a : b', [['flag'], ['a'], ['b']]],
+        ['return flag ? (nested ? a : b) : c', [['flag'], ['nested'], ['a'], ['b'], ['c']]],
+        ['return catcher + functions', [['catcher'], ['functions']]],
+        ['return `${data.a} ${data.b}`', [['data']]],
+    ] as const) {
+        parser.setString(`{{${code}}}`);
+        assert.equal(parser.check(), true);
+        assert.deepEqual(parser.getResult(), [{ formula: { code, vars } }]);
+    }
+});
+
+test('formula terminators respect strings, comments, templates and nested object braces', () => {
+    const parser = new GParse();
+    for (const code of [
+        'return JSON.stringify({a:{b:1}})',
+        'return "}}" + label',
+        'return `}} ${label}`',
+        'return `nested ${`}} ${label}`}`',
+        '/* }} */ return label',
+        '// }}\nreturn label',
+        'return /}}/.test(label)',
+        'return /[{/]/.test(label)',
+        'return /\\{/.test(label)',
+        'return value / divisor',
+    ]) {
+        parser.setString(`before {{${code}}} after`);
+        assert.equal(parser.check(), true);
+        assert.equal((parser.getResult()[1] as any).formula.code, code);
+        assert.equal(parser.getResult()[2], ' after');
+    }
+});

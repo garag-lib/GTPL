@@ -449,33 +449,78 @@ export class GParse {
 
     }
 
-    searchFormula(i: number): boolean {
+    private startsRegex(): boolean {
+        const before = this.s.substring(0, this.i).trimEnd();
+        return before === '' || /[({\[=,:;!?&|~%^<>*]$/.test(before) ||
+            /(?:^|[^\w.$])(?:return|throw|case|yield|await|typeof|void|delete|in|of|instanceof)$/.test(before) ||
+            /(?:^|[^+])\+$/.test(before) || /(?:^|[^-])-$/.test(before);
+    }
 
-        let temp = this.s.substring(i, this.i);
-
-        while (true) {
-
-            if (this.checkEnd()) {
-
-                this.i++;
-
-                this.r.push({ formula: { code: temp, vars: this.findVars(temp) } });
-
-                temp = '';
-
-                break;
-
-            } else {
-
-                temp += this.s[this.i];
-
-                if (!this.next())
-                    return false;
-
-            }
-
+    private skipRegex(): void {
+        this.i++;
+        let characterClass = false;
+        while (this.i < this.l) {
+            const ch = this.s[this.i++];
+            if (ch === '\\') this.i++;
+            else if (ch === '[') characterClass = true;
+            else if (ch === ']') characterClass = false;
+            else if ((ch === '/' && !characterClass) || ch === '\n') return;
         }
+    }
 
+    searchFormula(i: number): boolean {
+        // Rescan from the start: the tentative variable/pipe parser may already
+        // have consumed braces or quotes belonging to JavaScript source.
+        this.i = i;
+        const skipQuoted = (quote: string) => {
+            this.i++;
+            while (this.i < this.l) {
+                const ch = this.s[this.i++];
+                if (ch === '\\') this.i++;
+                else if (ch === quote) return;
+                else if (quote === '`' && ch === '$' && this.s[this.i] === '{') {
+                    this.i++;
+                    scan(true);
+                }
+            }
+        };
+        const scan = (templateExpression: boolean): boolean => {
+            let braces = 0;
+            while (this.i < this.l) {
+                const ch = this.s[this.i];
+                if (ch === '"' || ch === "'" || ch === '`') {
+                    skipQuoted(ch);
+                    continue;
+                }
+                if (ch === '/' && this.s[this.i + 1] === '/') {
+                    this.i += 2;
+                    while (this.i < this.l && this.s[this.i] !== '\n') this.i++;
+                    continue;
+                }
+                if (ch === '/' && this.s[this.i + 1] === '*') {
+                    this.i += 2;
+                    while (this.i < this.l && this.s.substring(this.i, this.i + 2) !== '*/') this.i++;
+                    this.i += 2;
+                    continue;
+                }
+                if (ch === '/' && this.startsRegex()) {
+                    this.skipRegex();
+                    continue;
+                }
+                if (ch === '{') braces++;
+                else if (ch === '}') {
+                    if (braces > 0) braces--;
+                    else if (templateExpression) { this.i++; return true; }
+                    else if (this.checkEnd()) return true;
+                }
+                this.i++;
+            }
+            return false;
+        };
+        if (!scan(false)) return false;
+        const code = this.s.substring(i, this.i);
+        this.i++;
+        this.r.push({ formula: { code, vars: this.findVars(code) } });
         return true;
     }
 
@@ -493,6 +538,18 @@ export class GParse {
         this.l = codeToParse.length;
         this.i = 0;
         let freeVars: TplVar[] = [];
+        const addFreeVar = (token: TplVar) => {
+            const existing = freeVars.find(v => v[0] === token[0]);
+            if (!existing) {
+                freeVars.push(token);
+                return;
+            }
+            // A formula receives one argument per root. Subscribe to the common
+            // ancestor when it reads multiple branches of that root object.
+            let length = 1;
+            while (length < existing.length && length < token.length && existing[length] === token[length]) length++;
+            existing.length = length;
+        };
         // Pila de ámbitos para registrar variables declaradas localmente
         let ignoreStack: string[][] = [[]];
 
@@ -545,9 +602,7 @@ export class GParse {
                     const expr = this.s.substring(exprStart, this.i - 1);
                     const subVars = this.findVars(expr);
                     subVars.forEach(token => {
-                        if (!isIgnored(token[0]) && !freeVars.some(v => v[0] === token[0])) {
-                            freeVars.push(token);
-                        }
+                        if (!isIgnored(token[0])) addFreeVar(token);
                     });
                 } else if (this.s[this.i] === '`') {
                     this.i++; // saltar el backtick de cierre
@@ -609,7 +664,7 @@ export class GParse {
 
         // Detección especial para la cláusula catch: catch(error)
         const tryParseCatchClause = () => {
-            if (this.s.substr(this.i, 5) === "catch") {
+            if (this.s.substr(this.i, 5) === "catch" && !this.isAN(this.s[this.i + 5])) {
                 this.i += 5; // saltar "catch"
                 skipWhitespace();
                 if (this.s[this.i] === '(') {
@@ -635,7 +690,7 @@ export class GParse {
         // Manejo especial para declaraciones de funciones
         const tryParseFunctionDeclaration = () => {
             // Si se detecta la palabra "function"
-            if (this.s.substr(this.i, 8) === "function") {
+            if (this.s.substr(this.i, 8) === "function" && !this.isAN(this.s[this.i + 8])) {
                 this.i += 8;
                 // Opcionalmente, se puede extraer el nombre de la función
                 skipWhitespace();
@@ -675,13 +730,13 @@ export class GParse {
             const ch = this.s[this.i];
 
             // Procesar cláusula catch para declarar su variable
-            if (this.s.substr(this.i, 5) === "catch") {
+            if (this.s.substr(this.i, 5) === "catch" && !this.isAN(this.s[this.i + 5])) {
                 tryParseCatchClause();
                 continue;
             }
 
             // Procesar declaraciones de función
-            if (this.s.substr(this.i, 8) === "function") {
+            if (this.s.substr(this.i, 8) === "function" && !this.isAN(this.s[this.i + 8])) {
                 tryParseFunctionDeclaration();
                 continue;
             }
@@ -696,6 +751,10 @@ export class GParse {
                 this.i += 2;
                 while (this.i < this.l && !(this.s[this.i] === '*' && this.s[this.i + 1] === '/')) this.i++;
                 this.i += 2;
+                continue;
+            }
+            if (ch === '/' && this.startsRegex()) {
+                this.skipRegex();
                 continue;
             }
             // Saltar literales de cadena
@@ -727,6 +786,7 @@ export class GParse {
             }
 
             // Intentar extraer un token (variable o literal numérico)
+            const tokenStart = this.i;
             const token = extractToken();
             if (token) {
                 // Si el token es palabra clave de declaración, se espera el siguiente token (la variable a declarar)
@@ -748,15 +808,18 @@ export class GParse {
                 // Evitar tokens que formen parte de la sintaxis de un objeto (si le sigue ":")
                 let j = this.i;
                 while (j < this.l && /\s/.test(this.s[j])) { j++; }
-                if (this.s[j] === ':') {
+                let previous = tokenStart - 1;
+                while (previous >= 0 && /\s/.test(this.s[previous])) previous--;
+                if (this.s[j] === ':' && (this.s[previous] === '{' || this.s[previous] === ',')) {
                     continue;
                 }
                 // Si ya se declaró en algún ámbito, se ignora
                 if (isIgnored(token[0])) continue;
+                // A method can read any property of its receiver (for example,
+                // rows.map reads array entries), not only the method property.
+                if (this.s[j] === '(' && token.length > 1) token.pop();
                 // Se agrega a freeVars solo si aún no está incluido
-                if (!freeVars.some(v => v[0] === token[0])) {
-                    freeVars.push(token);
-                }
+                addFreeVar(token);
                 continue;
             }
             // Avanzar un carácter para evitar bucles infinitos

@@ -5,25 +5,14 @@ import { globalObject } from '../global';
 
 let gparse!: GParse;
 
-export interface GCodeOptions {
-    allowFormulas?: boolean;
-    allowEvents?: boolean;
-    allowInnerHTML?: boolean;
-}
-
-export interface GCodeOptimizedOptions extends GCodeOptions {
+export interface GCodeOptimizedOptions {
     /** Short property-key aliases reduce source size but can slow initial rendering. */
     methodAliases?: boolean;
 }
 
-const defaultGCodeOptions: Required<GCodeOptions> = {
-    allowFormulas: true,
-    allowEvents: true,
-    allowInnerHTML: true
-};
-
-function getGen(tag: string, attrs?: string | null, children?: string | null): string {
-    return `g('${tag}',${attrs ?? 'null'},${children ?? 'null'},o)`;
+function getGen(tag: string, attrs?: string | null, children?: string | null, namespace?: string | null): string {
+    const ns = namespace && namespace !== 'http://www.w3.org/1999/xhtml' ? ',' + JSON.stringify(namespace) : '';
+    return `g('${tag}',${attrs ?? 'null'},${children ?? 'null'},o${ns})`;
 }
 
 function getFunction(gen: string, parent?: any, commongen?: any): string {
@@ -58,15 +47,10 @@ function addGen2ObjConditional(bind: IBindObject, uuid: string, bind_for: IBindO
     return { jsonAttr2, jsonAttr };
 }
 
-function containsFormula(parsed: IObjParsed | undefined): boolean {
-    return !!(parsed && parsed.formula);
-}
-
 function parseAttribute(
     atributos: AttrType[],
     prop: string,
-    value: string,
-    options: Required<GCodeOptions>
+    value: string
 ): boolean {
     let tt: null | BindTypes = null;
     switch (prop) {
@@ -89,23 +73,15 @@ function parseAttribute(
         case 'g-for':
             tt = tt || BindTypes.FOR;
         case 'g-inner':
-            if (prop === 'g-inner' && !options.allowInnerHTML)
-                throw new Error('Unsafe directive blocked in safe mode: g-inner');
             tt = tt || BindTypes.INNER;
             gparse.setString(`{{${value}}}`);
             if (gparse.check()) {
                 const single = gparse.getSingleResult();
-                if (containsFormula(single) && !options.allowFormulas)
-                    throw new Error('Unsafe formula blocked in safe mode');
                 const attrObj = {
                     type: tt,
                     link: single
                 };
-                if (tt === BindTypes.IS) {
-                    atributos.unshift(attrObj);
-                } else {
-                    atributos.push(attrObj);
-                }
+                atributos.push(attrObj);
                 return true;
             }
             break;
@@ -130,8 +106,6 @@ function parseAttribute(
                 let r: any = gparse.getResult();
                 if (r && r.length) {
                     if (r.length == 1) {
-                        if (containsFormula(r[0] as IObjParsed) && !options.allowFormulas)
-                            throw new Error('Unsafe formula blocked in safe mode');
                         atributos.push({
                             type: BindTypes.STYLE,
                             prop: 'cssText',
@@ -144,8 +118,6 @@ function parseAttribute(
                         gparse.setString(<string>val);
                         if (gparse.check()) {
                             r = gparse.getSingleResult();
-                            if (containsFormula(r) && !options.allowFormulas)
-                                throw new Error('Unsafe formula blocked in safe mode');
                             atributos.push({
                                 type: BindTypes.STYLE,
                                 prop: key,
@@ -168,10 +140,6 @@ function parseAttribute(
                 const r = gparse.getResult();
                 if (r && r.length == 1) {
                     const isEvent = prop.startsWith('on');
-                    if (isEvent && !options.allowEvents)
-                        throw new Error(`Unsafe event blocked in safe mode: ${prop}`);
-                    if (containsFormula(r[0] as IObjParsed) && !options.allowFormulas)
-                        throw new Error('Unsafe formula blocked in safe mode');
                     const attrObj = {
                         type: isEvent ? BindTypes.EVENT : BindTypes.ATTR,
                         prop: isEvent ? prop.substring(2) : prop,
@@ -298,6 +266,7 @@ function imperativeBlock(nextId?: () => string, depth: number = 0, methods: Map<
 
 const imperativeMethodAliases: Record<string, string> = {
     createElement: '$e',
+    createElementNS: '$n',
     createTextNode: '$t',
     createComment: '$c',
     appendChild: '$a',
@@ -321,7 +290,7 @@ function imperativeFunction(block: ImperativeBlock, array: boolean = true): stri
     return `(o)=>{${statements.join('')}return ${result};}`;
 }
 
-function imperativeElement(block: ImperativeBlock, tag: string, attrs: string, children: ImperativeBlock, eager: boolean = false): string {
+function imperativeElement(block: ImperativeBlock, tag: string, attrs: string, children: ImperativeBlock, eager: boolean = false, namespace?: string | null): string {
     const name = eager ? block.nextId() : children.nextId();
     const statements: string[] = [];
     // Legacy array evaluation creates text and static leaves before entering g().
@@ -329,7 +298,8 @@ function imperativeElement(block: ImperativeBlock, tag: string, attrs: string, c
     // allocating the legacy child functions or their nested arrays at runtime.
     for (const child of children.nodes)
         if (child.eager) statements.push(...child.statements);
-    statements.push(`const ${name}=d${imperativeMethod(block, 'createElement')}(${JSON.stringify(tag)});`);
+    const namespaced = namespace && namespace !== 'http://www.w3.org/1999/xhtml';
+    statements.push(`const ${name}=d${imperativeMethod(block, namespaced ? 'createElementNS' : 'createElement')}(${namespaced ? JSON.stringify(namespace) + ',' : ''}${JSON.stringify(tag)});`);
     for (const child of children.nodes) {
         if (!child.eager) {
             // Blocks reuse local names across siblings without closures. The
@@ -352,7 +322,6 @@ function NodeList2Function(
     parent?: any,
     headers?: boolean,
     bindSwitch?: null | IBindObject,
-    options: Required<GCodeOptions> = defaultGCodeOptions,
     imperative?: ImperativeBlock
 ): string {
     //---
@@ -428,7 +397,7 @@ function NodeList2Function(
                     for (let i = 0, n = ele.attributes.length, ref: NamedNodeMap = ele.attributes; i < n; i++) {
                         const attr = ref.item(i);
                         if (attr) {
-                            if (!parseAttribute(atributos, attr.name, attr.value, options)) {
+                            if (!parseAttribute(atributos, attr.name, attr.value)) {
                                 atributos.push([attr.name, attr.value]);
                             } else if (atributos.length) {
                                 const bind: any = atributos[atributos.length - 1];
@@ -502,14 +471,14 @@ function NodeList2Function(
                         if (tpl) {
                             real = (ele.nodeName.toLowerCase() == 'template') ? parent : ele;
                             childs = (tpl.nodeName.toLowerCase() == 'template') ? (<any>tpl).content.childNodes : [tpl];
-                            childsnodes = NodeList2Function(childs, conditionalTemplate || (fragment && real === undefined) ? null : real, !fragment, bind_switch, options, childBlock);
+                            childsnodes = NodeList2Function(childs, conditionalTemplate || (fragment && real === undefined) ? null : real, !fragment, bind_switch, childBlock);
                         } else {
                             console.error('template ' + ct + ' undefined.');
                         }
                     } else {
                         real = (ele.nodeName.toLowerCase() == 'template') ? (<any>ele).content : ele;
                         childs = (<any>real).childNodes;
-                        childsnodes = NodeList2Function(childs, conditionalTemplate ? null : real, true, bind_switch, options, childBlock);
+                        childsnodes = NodeList2Function(childs, conditionalTemplate ? null : real, true, bind_switch, childBlock);
                     }
                     //---
                     if (bind_is || bind_if || bind_case || bind_for || bind_switch) {
@@ -564,7 +533,7 @@ function NodeList2Function(
                                 lazyGenerator = imperativeFunction(childBlock);
                             } else {
                                 const body = imperativeBlock(childBlock.nextId, childBlock.depth, imperative.methods);
-                                imperativeElement(body, ele.nodeName, attrs, childBlock);
+                                imperativeElement(body, ele.nodeName, attrs, childBlock, false, ele.namespaceURI);
                                 lazyGenerator = imperativeFunction(body, false);
                             }
                         }
@@ -582,7 +551,7 @@ function NodeList2Function(
 
                                 common.push({
                                     'var': uuid,
-                                    'gen': lazyGenerator ?? getFunction(getGen(ele.nodeName, attrs, childsnodes), true)
+                                    'gen': lazyGenerator ?? getFunction(getGen(ele.nodeName, attrs, childsnodes, ele.namespaceURI), true)
                                 });
 
                             }
@@ -591,7 +560,7 @@ function NodeList2Function(
 
                             common.push({
                                 'var': uuid,
-                                'gen': bind_is ? 'null' : lazyGenerator ?? (ele.nodeName.toLowerCase() == 'template' ? getFunction(childsnodes, true) : getFunction(getGen(ele.nodeName, attrs, childsnodes), true))
+                                'gen': bind_is ? 'null' : lazyGenerator ?? (ele.nodeName.toLowerCase() == 'template' ? getFunction(childsnodes, true) : getFunction(getGen(ele.nodeName, attrs, childsnodes, ele.namespaceURI), true))
                             });
 
                         }
@@ -651,12 +620,12 @@ function NodeList2Function(
                                 imperative.statements.push(...childBlock.statements);
                                 imperative.nodes.push(...childBlock.nodes);
                             } else {
-                                imperativeElement(imperative, ele.nodeName, Attributes2JSON(atributos), childBlock, eager);
+                                imperativeElement(imperative, ele.nodeName, Attributes2JSON(atributos), childBlock, eager, ele.namespaceURI);
                             }
                         } else if (bind_tpl && ele.nodeName.toLowerCase() == 'template') {
                             parse.add(childsnodes);
                         } else {
-                            const gen = getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes);
+                            const gen = getGen(ele.nodeName, Attributes2JSON(atributos), childsnodes, ele.namespaceURI);
                             // A static leaf needs no child closure. Its enclosing structural
                             // generator still controls when its DOM and directives are created.
                             parse.add(staticLeaf ? gen : getFunction(gen, parent));
@@ -680,8 +649,6 @@ function NodeList2Function(
                                     if (typeof item == 'string') {
                                         emitNode(node.nodeName, JSON.stringify(item));
                                     } else {
-                                        if (containsFormula(item as IObjParsed) && !options.allowFormulas)
-                                            throw new Error('Unsafe formula blocked in safe mode');
                                         emitNode(node.nodeName, Attributes2JSON([{
                                             type: BindTypes.TEXT,
                                             prop: 'textContent',
@@ -726,25 +693,10 @@ function parseTemplateNodes(html: string): NodeListOf<ChildNode> {
 }
 
 export function GCode(html: string | Node | NodeListOf<ChildNode>): string {
-    const options = { ...defaultGCodeOptions };
     if (typeof html == 'string') {
-        return NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, options);
+        return NodeList2Function(parseTemplateNodes(html));
     } else {
-        return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, options);
-    }
-}
-
-export function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptions): string {
-    const safeOptions: Required<GCodeOptions> = {
-        allowFormulas: false,
-        allowEvents: false,
-        allowInnerHTML: false,
-        ...options
-    };
-    if (typeof html == 'string') {
-        return NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, safeOptions);
-    } else {
-        return NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, safeOptions);
+        return NodeList2Function(html instanceof Node ? [html] : html);
     }
 }
 
@@ -752,20 +704,14 @@ export function GCodeSafe(html: string | Node | NodeListOf<ChildNode>, options?:
 export function GCodeOptimized(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string {
     const block = imperativeBlock(undefined, 0, options?.methodAliases ? new Map() : null);
     block.statements.push('const d=g.getDocument();');
-    const settings = { ...defaultGCodeOptions, ...options };
     if (typeof html === 'string') {
-        NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, settings, block);
+        NodeList2Function(parseTemplateNodes(html), undefined, undefined, undefined, block);
     } else {
-        NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, settings, block);
+        NodeList2Function(html instanceof Node ? [html] : html, undefined, undefined, undefined, block);
     }
     if (block.methods?.size) {
         const aliases = Array.from(block.methods, ([method, alias]) => `${alias}=${JSON.stringify(method)}`);
         block.statements.push(`const ${aliases.join(',')};`);
     }
     return imperativeFunction(block);
-}
-
-/** Safe parsing restrictions with the imperative backend. */
-export function GCodeOptimizedSafe(html: string | Node | NodeListOf<ChildNode>, options?: GCodeOptimizedOptions): string {
-    return GCodeOptimized(html, { allowFormulas: false, allowEvents: false, allowInnerHTML: false, ...options });
 }

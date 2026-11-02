@@ -9,13 +9,16 @@ globalThis.addEventListener = dom.window.addEventListener.bind(dom.window);
 globalThis.removeEventListener = dom.window.removeEventListener.bind(dom.window);
 const output = await build({ entryPoints: ['src/lib/gtpl.ts'], bundle: true, platform: 'node', format: 'esm', write: false, logLevel: 'silent' });
 const { default: lib } = await import(`data:text/javascript;base64,${Buffer.from(output.outputFiles[0].text).toString('base64')}`);
-const { GCompile, GCompileSafe } = lib.jit;
+const { GCompile } = lib.jit;
 const compiler = process.env.AOT_REFERENCE ? await import('../../artifacts/aot/reference/compiler.mjs') : lib.jit;
 const { GTpl, GGenerator: g } = lib;
+nodeTest('removed restricted-mode APIs are absent from the public API', () => {
+    for (const name of ['GCodeSafe', 'GCodeOptimizedSafe', 'GCompileSafe'])
+        assert.equal(Object.hasOwn(lib.jit, name), false);
+});
 for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imperative', 'imperative-aliases']) {
     const test = (name, fn) => nodeTest(`${backend}: ${name}`, fn);
     const GCode = backend === 'legacy' ? compiler.GCode : html => compiler.GCodeOptimized(html, { methodAliases: backend === 'imperative-aliases' });
-    const GCodeSafe = backend === 'legacy' ? compiler.GCodeSafe : html => compiler.GCodeOptimizedSafe(html, { methodAliases: backend === 'imperative-aliases' });
     const settle = async () => {
         for (let i = 0; i < 120; i++)
             await Promise.resolve();
@@ -23,13 +26,68 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
     const evaluate = code => new Function('g', `return ${code}`)(g);
     const mount = async (generator, root) => { const host = document.createElement('div'); document.body.append(host); const app = new GTpl({ generator, root }); app.addTo(host); await app.ready(); return { app, host }; };
     const dispose = ({ app, host }) => { app.destroy(); assert.equal(host.childNodes.length, 0); host.remove(); };
+    test('g-is is independent of the order of ordinary attributes', async () => {
+        for (const html of ['<span g-is="child" title="example"></span>', '<span title="example" g-is="child"></span>']) {
+            const child = document.createElement('b');
+            child.textContent = 'child';
+            const view = await mount(evaluate(GCode(html)), { child });
+            try {
+                assert.equal(view.host.textContent, 'child');
+                assert.equal(view.host.querySelector('b').title, 'example');
+            } finally { dispose(view); }
+        }
+    });
+    test('formulas update every referenced property and both conditional branches', async () => {
+        const root = { data: { a: 1, b: 2 }, flag: true, a: 'first', b: 'second' };
+        const view = await mount(evaluate(GCode('<b>{{return data.a + data.b}}</b><i>{{return flag ? a : b}}</i>')), root);
+        try {
+            assert.equal(view.host.textContent, '3first');
+            root.data.b = 10;
+            root.a = 'updated';
+            await settle();
+            assert.equal(view.host.textContent, '11updated');
+            root.flag = false;
+            root.b = 'last';
+            await settle();
+            assert.equal(view.host.textContent, '11last');
+        } finally { dispose(view); }
+    });
+    test('formula source preserves nested objects and closing delimiters in strings', async () => {
+        const view = await mount(evaluate(GCode('<b>{{return JSON.stringify({a:{b:1}})}}</b><i>{{return "}}" + label}}</i>')), { label: 'ok' });
+        try { assert.equal(view.host.textContent, '{"a":{"b":1}}}}ok'); }
+        finally { dispose(view); }
+    });
+    test('formula method calls track mutations of their receiver', async () => {
+        const root = { rows: [{ label: 'old' }] };
+        const view = await mount(evaluate(GCode('<b>{{return rows.map(row => row.label).join(",")}}</b>')), root);
+        try {
+            assert.equal(view.host.textContent, 'old');
+            root.rows[0].label = 'new';
+            await settle();
+            assert.equal(view.host.textContent, 'new');
+            root.rows.push({ label: 'added' });
+            await settle();
+            assert.equal(view.host.textContent, 'new,added');
+        } finally { dispose(view); }
+    });
+    test('SVG and MathML nodes preserve namespaces including foreignObject HTML children', async () => {
+        const view = await mount(evaluate(GCode('<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/><foreignObject><div>html</div></foreignObject></svg><math><mi>x</mi></math>')), {});
+        try {
+            for (const selector of ['svg', 'circle', 'foreignObject'])
+                assert.equal(view.host.querySelector(selector).namespaceURI, 'http://www.w3.org/2000/svg');
+            assert.equal(view.host.querySelector('foreignObject div').namespaceURI, 'http://www.w3.org/1999/xhtml');
+            for (const selector of ['math', 'mi'])
+                assert.equal(view.host.querySelector(selector).namespaceURI, 'http://www.w3.org/1998/Math/MathML');
+            assert.equal(view.host.querySelector('svg').getAttribute('viewBox'), '0 0 10 10');
+        } finally { dispose(view); }
+    });
     test('same AOT generator isolates nodes, bindings, formulas, events and inherited list contexts', async () => {
         let creations = 0, cleanups = 0;
         lib.GregisterDirective('aot-probe-' + backend, class {
             constructor(ele, value, ctx) { creations++; ctx.onCleanup(() => cleanups++); }
         });
         const code = GCode(`<main g-switch="active"><section g-case="0"><article g-if="show"><template g-for="rows;index;row"><div aot-probe-${backend}="yes"><span aot-probe-${backend}="yes">static</span><input [value]="{{row.label}}"><button onclick="{{click()}}">{{row.label}}:{{return tick + 1}}</button></div></template></article></section><section g-case="1"><i aot-probe-${backend}="yes">{{title}}</i></section></main>`);
-        const generator = GCompileSafe(evaluate(code));
+        const generator = evaluate(code);
         let clicked = 0;
         const roots = [0, 1].map(i => ({ active: 0, show: true, rows: [{ label: 'row' + i }], tick: i, title: 'title' + i, click() { clicked++; } }));
         const a = await mount(generator, roots[0]);
@@ -102,26 +160,26 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
                 dispose(view);
         }
     });
-    test('JIT, safe AOT without dynamic evaluation, and legacy precompiled g contract', async () => {
-        for (const compile of [html => GCompile(GCode(html)), html => evaluate(GCodeSafe(html))]) {
+    test('JIT, AOT without dynamic evaluation, and legacy precompiled g contract', async () => {
+        for (const compile of [html => GCompile(GCode(html)), html => evaluate(GCode(html))]) {
             const view = await mount(compile('<main><b>{{title}}</b></main>'), { show: true, title: 'works' });
             assert.equal(view.host.textContent, 'works');
             dispose(view);
         }
-        const generator = evaluate(GCodeSafe('<b>{{title}}</b>'));
+        const generator = evaluate(GCode('<b>{{title}}</b>'));
         const previous = globalThis.Function;
+        const previousEval = globalThis.eval;
         globalThis.Function = () => { throw Error('dynamic evaluation forbidden'); };
+        globalThis.eval = () => { throw Error('dynamic evaluation forbidden'); };
         try {
-            const view = await mount(GCompileSafe(generator), { title: 'CSP' });
+            const view = await mount(generator, { title: 'CSP' });
             assert.equal(view.host.textContent, 'CSP');
             dispose(view);
         }
         finally {
             globalThis.Function = previous;
+            globalThis.eval = previousEval;
         }
-        for (const html of ['<b>{{return title + 1}}</b>', '<b onclick="{{click()}}"></b>', '<b g-inner="title"></b>'])
-            assert.throws(() => GCodeSafe(html), /Unsafe/);
-        assert.throws(() => GCompileSafe('code'), /precompiled/);
         // Shape emitted by the previous compiler, including nested child functions.
         const old = (o) => [((o) => g('MAIN', [], [((o) => g('B', [], [g('#text', [{ type: 0, prop: 'textContent', link: { vorc: { va: ['title'] } } }], null, o)], o))], o))(o)];
         const view = await mount(old, { title: 'legacy' });
@@ -409,7 +467,7 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
         const root = { title: 'one', other: 'middle', show: true, rows: [1, 2] };
         let view;
         try {
-            const generator = GCompileSafe(evaluate(GCode(`<main>${pair}<template g-tpl="aot-nested-fragment"></template><template g-tpl="aot-nested-fragment"></template><article g-if="show">${pair}</article><div g-for="rows;i;row">${pair}</div></main>`)));
+            const generator = evaluate(GCode(`<main>${pair}<template g-tpl="aot-nested-fragment"></template><template g-tpl="aot-nested-fragment"></template><article g-if="show">${pair}</article><div g-for="rows;i;row">${pair}</div></main>`));
             view = await mount(generator, root);
             const check = title => {
                 const bold = [...view.host.querySelectorAll('b')];
@@ -516,33 +574,26 @@ for (const backend of process.env.AOT_REFERENCE ? ['legacy'] : ['legacy', 'imper
         } finally { dispose(view); }
     });
 
-    test('template source strings retain leading template roots, sibling order and safe restrictions', async () => {
+    test('template source strings retain leading template roots and sibling order', async () => {
         const rows = '<template g-for="rows;i;row"><b>{{row}}</b></template>';
         const scenarios = [
             { html: `<template g-if="show">${rows}</template>`, prefix: '', suffix: '' },
             { html: `<template g-if="show"><i>first</i></template><template g-if="show">${rows}</template><div>tail</div>`, prefix: 'first', suffix: 'tail' }
         ];
-        for (const compile of [GCode, GCodeSafe]) {
-            for (const scenario of scenarios) {
-                const root = { show: true, rows: ['one', 'two'] };
-                const view = await mount(GCompileSafe(evaluate(compile(scenario.html))), root);
-                try {
-                    assert.equal(view.host.textContent, `${scenario.prefix}onetwo${scenario.suffix}`);
-                    root.show = false;
-                    await settle();
-                    assert.equal(view.host.textContent, scenario.suffix);
-                    root.rows = ['replacement'];
-                    root.show = true;
-                    await settle();
-                    assert.equal(view.host.textContent, `${scenario.prefix}replacement${scenario.suffix}`);
-                } finally { dispose(view); }
-            }
+        for (const scenario of scenarios) {
+            const root = { show: true, rows: ['one', 'two'] };
+            const view = await mount(evaluate(GCode(scenario.html)), root);
+            try {
+                assert.equal(view.host.textContent, `${scenario.prefix}onetwo${scenario.suffix}`);
+                root.show = false;
+                await settle();
+                assert.equal(view.host.textContent, scenario.suffix);
+                root.rows = ['replacement'];
+                root.show = true;
+                await settle();
+                assert.equal(view.host.textContent, `${scenario.prefix}replacement${scenario.suffix}`);
+            } finally { dispose(view); }
         }
-        for (const html of [
-            '<template g-if="show">{{return count + 1}}</template>',
-            '<template g-if="show"><button onclick="{{click()}}">click</button></template>',
-            '<template g-if="show"><b g-inner="content"></b></template>'
-        ]) assert.throws(() => GCodeSafe(html), /Unsafe/);
     });
 
     test('directives registered after compilation observe completed children before parent attributes', async () => {

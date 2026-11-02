@@ -111,7 +111,7 @@ function insertAfterFromFnc(ele: NodeLike, childs: ChildInput, objRoot: IGtplObj
     });
 }
 
-function createElement(nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject) {
+function createElement(nodeName: string, attributes: AttrType[], fncChilds: Function, objRoot: IGtplObject, namespaceURI?: string) {
     //console.log('createElement', nodeName, attributes, fncChilds, objRoot);
     let tempvar: any = null;
     switch (nodeName) {
@@ -144,7 +144,9 @@ function createElement(nodeName: string, attributes: AttrType[], fncChilds: Func
             }
             return tempvar;
         default:
-            const ele = globalObject.document.createElement(nodeName);
+            const ele = namespaceURI && namespaceURI !== 'http://www.w3.org/1999/xhtml'
+                ? globalObject.document.createElementNS(namespaceURI, nodeName)
+                : globalObject.document.createElement(nodeName);
             appendChildsFromFnc(ele, fncChilds, objRoot);
             addArributes(attributes, ele, objRoot);
             return ele;
@@ -204,12 +206,6 @@ function compile(gcode: string, ggenerator?: any): any {
     return new Function('g', `return ${gcode};`)(ggenerator ? ggenerator : createElement);
 }
 
-function compileSafe(generator: unknown): any {
-    if (typeof generator !== "function")
-        throw new Error("GCompileSafe expects a precompiled generator function");
-    return generator;
-}
-
 export const GGenerator = Object.assign(createElement, {
     // Access the active document at render time, as the legacy generator does.
     getDocument: (): Document => globalObject.document,
@@ -223,8 +219,6 @@ export const GInsertBeforeTo = insertBeforeFromFnc;
 export const GInsertAfterTo = insertAfterFromFnc;
 
 export const GCompile = compile;
-
-export const GCompileSafe = compileSafe;
 
 export const GregisterDirective = registerDirective;
 

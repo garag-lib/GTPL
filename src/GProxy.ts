@@ -85,6 +85,49 @@ interface ProxySubscription {
 
 const subscriptionsMap = new WeakMap<object, ProxySubscription[]>();
 const subscriptionTargets = new WeakMap<object, Set<object>>();
+interface SubscriptionPath {
+  children: Map<PropertyKey, SubscriptionPath>;
+  targets: Set<object>;
+}
+const subscriptionPaths = new WeakMap<object, Map<EventFunctionProxyHandler, SubscriptionPath>>();
+
+function newSubscriptionPath(): SubscriptionPath {
+  return { children: new Map(), targets: new Set() };
+}
+
+function indexSubscription(target: object, subscription: ProxySubscription): void {
+  if (!isWeakMapKey(subscription.objRef)) return;
+  let events = subscriptionPaths.get(subscription.objRef);
+  if (!events) subscriptionPaths.set(subscription.objRef, events = new Map());
+  let node: SubscriptionPath = events.get(subscription.event) || newSubscriptionPath();
+  events.set(subscription.event, node);
+  for (const part of subscription.parentPath) {
+    let child: SubscriptionPath | undefined = node.children.get(part);
+    if (!child) node.children.set(part, child = newSubscriptionPath());
+    node = child;
+  }
+  node.targets.add(target);
+}
+
+function unindexSubscription(target: object, subscription: ProxySubscription): void {
+  if (!isWeakMapKey(subscription.objRef)) return;
+  const events = subscriptionPaths.get(subscription.objRef);
+  let node = events?.get(subscription.event);
+  if (!node) return;
+  const ancestors: SubscriptionPath[] = [node];
+  for (const part of subscription.parentPath) {
+    node = node.children.get(part);
+    if (!node) return;
+    ancestors.push(node);
+  }
+  node.targets.delete(target);
+  for (let i = ancestors.length - 1; i > 0; i--) {
+    if (ancestors[i].targets.size || ancestors[i].children.size) break;
+    ancestors[i - 1].children.delete(subscription.parentPath[i - 1]);
+  }
+  if (!ancestors[0].targets.size && !ancestors[0].children.size) events!.delete(subscription.event);
+  if (!events!.size) subscriptionPaths.delete(subscription.objRef);
+}
 
 function isWeakMapKey(value: any): value is object {
   return (typeof value === 'object' && value !== null) || typeof value === 'function';
@@ -113,7 +156,9 @@ function addProxySubscription(
     subscription.objRef === objRef &&
     pathsEqual(subscription.parentPath, path)
   )) {
-    subscriptions.push({ event, objRef, parentPath: path });
+    const subscription = { event, objRef, parentPath: path };
+    subscriptions.push(subscription);
+    indexSubscription(target, subscription);
   }
   if (isWeakMapKey(objRef)) {
     let targets = subscriptionTargets.get(objRef);
@@ -153,6 +198,11 @@ function getProxyHandler(
         if (typeof origIter !== 'function')
           return origIter;
         return function* () {
+          if (Array.isArray(target) && origIter === Array.prototype[Symbol.iterator]) {
+            for (let index = 0; index < target.length; index++)
+              yield proxyChild(targetOriginal, target[index], String(index));
+            return;
+          }
           for (const item of origIter.call(target)) {
             yield proxyChild(targetOriginal, item, Symbol.iterator);
           }
@@ -179,6 +229,9 @@ function getProxyHandler(
       if (ok || (previousLength !== undefined && length !== previousLength)) {
         const removedKeys = previousKeys?.filter(key => !Reflect.getOwnPropertyDescriptor(target, key));
         const subscriptions = subscriptionsMap.get(targetOriginal)?.slice() ?? [];
+        if (ok && isWeakMapKey(prev) && toRaw(prev) !== toRaw(Reflect.get(target, prop, receiver)))
+          removeChildSubscriptions(subscriptions, prop);
+        removedKeys?.forEach(key => removeChildSubscriptions(subscriptions, key));
         subscriptions.forEach(subscription => subscription.event(
           TypeEventProxyHandler.SET,
           [...subscription.parentPath, prop],
@@ -205,9 +258,12 @@ function getProxyHandler(
       return ok;
     },
     deleteProperty(target, prop) {
+      const previous = Reflect.getOwnPropertyDescriptor(target, prop);
       const ok = Reflect.deleteProperty(target, prop);
       if (ok) {
         const subscriptions = subscriptionsMap.get(targetOriginal)?.slice() ?? [];
+        if (previous)
+          removeChildSubscriptions(subscriptions, prop);
         subscriptions.forEach(subscription => subscription.event(
           TypeEventProxyHandler.UNSET,
           [...subscription.parentPath, prop],
@@ -232,7 +288,8 @@ function getProxyHandler(
 function removeSubscriptionsFromTarget(
   target: any,
   event: EventFunctionProxyHandler,
-  objRef?: any
+  objRef?: any,
+  pathPrefix?: PathProxyHandler
 ): void {
   if (isGProxy(target)) {
     target = (target as any)[PROXYTARGET];
@@ -242,10 +299,14 @@ function removeSubscriptionsFromTarget(
     return;
   }
   const removed = subscriptions.filter(subscription =>
-    subscription.event === event && (objRef === undefined || subscription.objRef === objRef)
+    subscription.event === event && (objRef === undefined || subscription.objRef === objRef) &&
+    (!pathPrefix || (subscription.parentPath.length >= pathPrefix.length &&
+      pathPrefix.every((part: any, index: number) => subscription.parentPath[index] === part)))
   );
+  if (!removed.length) return;
   const remaining = subscriptions.filter(subscription => !removed.includes(subscription));
   removed.forEach(subscription => {
+    unindexSubscription(target, subscription);
     if (!isWeakMapKey(subscription.objRef))
       return;
     if (remaining.some(item => item.objRef === subscription.objRef))
@@ -268,6 +329,25 @@ function removeSubscriptionsFromTarget(
       }
       proxyCache.delete(target);
     }
+  }
+}
+
+function removeChildSubscriptions(subscriptions: ProxySubscription[], prop: PropertyKey): void {
+  for (const subscription of subscriptions) {
+    if (!isWeakMapKey(subscription.objRef)) continue;
+    const prefix = [...subscription.parentPath, prop];
+    let node = subscriptionPaths.get(subscription.objRef)?.get(subscription.event);
+    for (const part of prefix) node = node?.children.get(part);
+    if (!node) continue;
+    const targets = new Set<object>();
+    const pending = [node];
+    while (pending.length) {
+      const current = pending.pop()!;
+      current.targets.forEach(target => targets.add(target));
+      current.children.forEach(child => pending.push(child));
+    }
+    for (const target of targets)
+      removeSubscriptionsFromTarget(target, subscription.event, subscription.objRef, prefix);
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@mpeliz/gtpl",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -13,9 +13,9 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "types": "./dist/gtpl.d.ts",
       "import": "./dist/gtpl.esm.js",
-      "require": "./dist/gtpl.cjs",
-      "types": "./dist/gtpl.d.ts"
+      "require": "./dist/gtpl.cjs"
     }
   },
   "files": [

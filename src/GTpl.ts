@@ -6,6 +6,14 @@ import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
 
 const ElementReferenceIndex = Symbol("ElementReferenceIndex");
+interface ReactiveDescriptor {
+  original?: PropertyDescriptor;
+  get: () => any;
+  active: boolean;
+  successors?: Set<ReactiveDescriptor>;
+}
+const reactiveDescriptors = new WeakMap<IBindDef, ReactiveDescriptor>();
+const reactiveGetters = new WeakMap<() => any, ReactiveDescriptor>();
 
 // g-is content can be destroyed independently of its rendering owner.
 // Keep its insertion point outside that content, including combined g-if binds.
@@ -479,10 +487,13 @@ function createGetterAndSetter(
   };
   gtpl.BindDef.add(objdef);
   try {
+    const original = Object.getOwnPropertyDescriptor(gtpl.Root, key);
+    // Restoration uses the latest state; retaining the old data value here
+    // would keep replaced payloads alive through overlapping view lifetimes.
+    if (original && 'value' in original) original.value = undefined;
     if (!gtpl.Root.hasOwnProperty(key))
       gtpl.Root[key] = null;
-    Object.defineProperty(gtpl.Root, key, {
-      get: function () {
+    const get = function () {
         if (objdef.pro !== undefined) return objdef.pro;
         if (isStaticType(objdef.val)) return objdef.val;
         objdef.val = toRaw(objdef.val);
@@ -490,7 +501,9 @@ function createGetterAndSetter(
           objdef.key,
         ]);
         return objdef.pro;
-      },
+    };
+    Object.defineProperty(gtpl.Root, key, {
+      get,
       set: function (newval: any) {
         const rawNewValue = toRaw(newval);
         unGProxy(objdef.val, gtpl.BoundEventProxy, objdef);
@@ -520,6 +533,11 @@ function createGetterAndSetter(
         return ret;
       },
     });
+    const descriptor = { original, get, active: true };
+    reactiveDescriptors.set(objdef, descriptor);
+    reactiveGetters.set(get, descriptor);
+    const previous = original?.get && reactiveGetters.get(original.get);
+    if (previous) (previous.successors || (previous.successors = new Set())).add(descriptor);
   } catch (ex) {
     STACK((<any>ex).message, key, gtpl.Root);
   }
@@ -613,6 +631,9 @@ function delBind(gtpl: IGtplObject, bind: IBindObject) {
       getBind2Object(gtpl, va, bind)?.delete(bind);
     });
   }
+  bind.link.functions?.forEach(fnc => fnc.params?.forEach(param => {
+    if (param.va) getBind2Object(gtpl, param.va, bind)?.delete(bind);
+  }));
   if (bind.simetric && bind.ele) {
     const setBindings = simetricAttr.get(bind.ele);
     if (setBindings) {
@@ -668,7 +689,12 @@ function searchBind(gtpl: IGtplObject, bind: IBindObject): boolean {
 
 function checkBindElements(gtpl: IGtplObject, bind: IBindObject): boolean {
   if (bind.type === BindTypes.ELE && bind.link?.vorc?.va && bind.ele) {
-    updateVar(bind.link.vorc.va, gtpl, bind.ele, true);
+    const va = bind.link.vorc.va;
+    updateVar(va, gtpl, bind.ele, true);
+    gtpl.onCleanup(() => {
+      // A later binding may have replaced the reference on the same path.
+      if (reduceVar(gtpl, va) === bind.ele) updateVar(va, gtpl, null);
+    });
     return true;
   }
   if (bind.type === BindTypes.ELES && bind.link?.vorc?.va && bind.ele) {
@@ -680,6 +706,18 @@ function checkBindElements(gtpl: IGtplObject, bind: IBindObject): boolean {
     }
     if (!arr.includes(bind.ele)) {
       arr.push(bind.ele);
+      const collection = toRaw(arr);
+      gtpl.onCleanup(() => {
+        let current = collection;
+        try {
+          const value = reduceVar(gtpl, va);
+          if (toRaw(value) === collection) current = value;
+        } catch {
+          // The containing state path may already have been removed.
+        }
+        const index = current.indexOf(bind.ele);
+        if (index !== -1) current.splice(index, 1);
+      });
     }
     return true;
   }
@@ -693,29 +731,34 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
     const obj = { gtpl: ctx, bind: bind };
     const options: any = { passive: false };
     //---
-    const handler = async function (event: any) {
-      const result = await calculateBind(obj.gtpl, obj.bind, undefined, event);
-      //console.error(result, obj.bind, event);
-      if (typeof result == "function") {
-        if (obj.bind.link.params) {
-          const arrval: any = [];
-          obj.bind.link.params.forEach((param) => {
-            if (param.ct != undefined) arrval.push(param.ct);
-            else if (param.va != undefined)
-              arrval.push(reduceVar(gtpl, param.va));
-          });
-          result.apply(obj.gtpl.Root, [event, ...arrval]);
+    const handler = function (event: any) {
+      const apply = (result: any) => {
+        if (gtpl.isDestroyed || obj.gtpl.isDestroyed) return;
+        if (typeof result == "function") {
+          if (obj.bind.link.params) {
+            const arrval: any = [];
+            obj.bind.link.params.forEach((param) => {
+              if (param.ct != undefined) arrval.push(param.ct);
+              else if (param.va != undefined)
+                arrval.push(reduceVar(gtpl, param.va));
+            });
+            result.apply(obj.gtpl.Root, [event, ...arrval]);
+          } else {
+            result.apply(obj.gtpl.Root, [event]);
+          }
         } else {
-          result.apply(obj.gtpl.Root, [event]);
+          if (result === false) {
+            if (event.preventDefault)
+              event.preventDefault();
+            if (event.stopPropagation)
+              event.stopPropagation();
+          }
         }
-      } else {
-        if (result === false) {
-          if (event.preventDefault)
-            event.preventDefault();
-          if (event.stopPropagation)
-            event.stopPropagation();
-        }
-      }
+      };
+      const result = calculateBind(obj.gtpl, obj.bind, undefined, event);
+      if (isPromiseLike(result))
+        Promise.resolve(result).then(apply).catch(error => console.error('[GTPL] Event handler failed:', error));
+      else apply(result);
     };
     //---
     bind.ele.addEventListener(
@@ -726,10 +769,19 @@ function checkBindEvent(gtpl: IGtplObject, bind: IBindObject): boolean {
     //---
     if (!bind.ele[ElementReferenceIndex])
       bind.ele[ElementReferenceIndex] = [];
-    bind.ele[ElementReferenceIndex].push({
+    const reference = {
       type: bind.prop,
       handler,
       options: passiveSupported ? options : false
+    };
+    bind.ele[ElementReferenceIndex].push(reference);
+    gtpl.onCleanup(() => {
+      bind.ele.removeEventListener(reference.type, reference.handler, reference.options);
+      const references = bind.ele[ElementReferenceIndex];
+      if (!references) return;
+      const index = references.indexOf(reference);
+      if (index !== -1) references.splice(index, 1);
+      if (!references.length) delete bind.ele[ElementReferenceIndex];
     });
     //---
     return true;
@@ -1761,6 +1813,34 @@ export class GTpl implements IGtplObject {
 
     if (this.BindDef) {
       for (const objdef of this.BindDef) {
+        const descriptor = reactiveDescriptors.get(objdef);
+        if (descriptor) {
+          descriptor.active = false;
+          const previous = descriptor.original?.get && reactiveGetters.get(descriptor.original.get);
+          previous?.successors?.delete(descriptor);
+          descriptor.successors?.forEach(successor => {
+            successor.original = descriptor.original;
+            if (previous) (previous.successors || (previous.successors = new Set())).add(successor);
+          });
+          descriptor.successors?.clear();
+        }
+        if (descriptor && this.Root && Object.getOwnPropertyDescriptor(this.Root, objdef.key)?.get === descriptor.get) {
+          let original = descriptor.original;
+          while (original?.get) {
+            const previous = reactiveGetters.get(original.get);
+            if (!previous || previous.active) break;
+            original = previous.original;
+          }
+          try {
+            Object.defineProperty(this.Root, objdef.key, original && !('value' in original)
+              ? original
+              : { configurable: true, enumerable: true, writable: true, ...original, value: toRaw(objdef.val) });
+            if (original?.set) original.set.call(this.Root, toRaw(objdef.val));
+          } catch (error) {
+            console.error('[GTPL] Error restoring reactive property:', error);
+          }
+        }
+        reactiveDescriptors.delete(objdef);
         unGProxy(objdef.val, this.BoundEventProxy, objdef);
       }
       this.BindDef.clear();
@@ -1960,6 +2040,7 @@ export class GTpl implements IGtplObject {
     if (!set) this.watchers.set(key, set = new Set());
     set.add(cb);
     const unwatch = () => {
+      this.cleanupCallbacks.delete(unwatch);
       if (!this.watchers) return;
       const s = this.watchers.get(key);
       if (!s) return;

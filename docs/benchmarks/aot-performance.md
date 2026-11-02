@@ -74,6 +74,10 @@ En switch de 8 ramas la mediana mejora, pero el intervalo de esta tanda incluye 
 
 ## Tamaños exactos
 
+Estas cifras corresponden a las revisiones históricas de este informe, anteriores
+a GTPL 3.0. El script actual ya no incluye las APIs Safe eliminadas en 3.0;
+una medición nueva debe regenerar ambas variantes antes de comparar tamaños.
+
 Bytes del JavaScript minificado, antes de comprimir y con gzip nivel 9. Runtime, compilador y módulo completo usan la misma configuración de esbuild en ambas revisiones. El runtime aislado exporta GTpl, GGenerator, GCompileSafe y GregisterDirective, incluidas sus dependencias transitivas. Las restantes fuentes del runtime tampoco cambian; cualquier selección equivalente de exports conserva su tamaño. No hay dependencias de producción nuevas.
 
 | Artefacto | Referencia sin gzip | Propuesta sin gzip | Referencia gzip | Propuesta gzip |
