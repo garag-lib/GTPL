@@ -91,6 +91,9 @@ interface SubscriptionPath {
   targets: Set<object>;
 }
 const subscriptionPaths = new WeakMap<object, Map<EventFunctionProxyHandler, SubscriptionPath>>();
+const retainedSubscriptionRoots = new WeakSet<SubscriptionPath>();
+const retainedSubscriptionOwners = new WeakSet<object>();
+let replacingProxy = 0;
 
 function newSubscriptionPath(): SubscriptionPath {
   return { children: new Map(), targets: new Set() };
@@ -111,6 +114,10 @@ function subscriptionNode(objRef: object, event: EventFunctionProxyHandler, path
 
 function unindexSubscription(target: object, subscription: ProxySubscription): void {
   if (!isWeakMapKey(subscription.objRef)) return;
+  if (replacingProxy && subscription.node && retainedSubscriptionRoots.has(subscription.node)) {
+    subscription.node.targets.delete(target);
+    return;
+  }
   const events = subscriptionPaths.get(subscription.objRef);
   let node = events?.get(subscription.event);
   if (!node) return;
@@ -122,7 +129,8 @@ function unindexSubscription(target: object, subscription: ProxySubscription): v
   }
   node.targets.delete(target);
   for (let i = ancestors.length - 1; i > 0; i--) {
-    if (ancestors[i].targets.size || ancestors[i].children.size) break;
+    if (ancestors[i].targets.size || ancestors[i].children.size ||
+        (replacingProxy && retainedSubscriptionRoots.has(ancestors[i]))) break;
     ancestors[i - 1].children.delete(subscription.parentPath[i - 1]);
   }
   if (!ancestors[0].targets.size && !ancestors[0].children.size) events!.delete(subscription.event);
@@ -326,7 +334,8 @@ function removeSubscriptionsFromTarget(
   const removeOwnerTarget = (owner: object) => {
     const targets = subscriptionTargets.get(owner);
     targets?.delete(target);
-    if (targets?.size === 0) subscriptionTargets.delete(owner);
+    if (targets?.size === 0 && !(replacingProxy && retainedSubscriptionOwners.has(owner)))
+      subscriptionTargets.delete(owner);
   };
   if (isWeakMapKey(objRef) && !ownerSurvives) removeOwnerTarget(objRef);
   if (removedOwners) {
@@ -390,7 +399,7 @@ function removeProxyHandler(
     const targets = subscriptionTargets.get(objRef);
     if (targets) {
       Array.from(targets).forEach(item => removeSubscriptionsFromTarget(item, event, objRef));
-      if (targets.size === 0)
+      if (targets.size === 0 && !(replacingProxy && retainedSubscriptionOwners.has(objRef)))
         subscriptionTargets.delete(objRef);
       return;
     }
@@ -435,6 +444,44 @@ export function unGProxy<T = any>(
   const raw = toRaw(target);
   removeProxyHandler(raw, event, objRef);
   return raw;
+}
+
+// A reactive property keeps its owner and root path when its value changes.
+// Reuse only the emptied index containers; all old targets/subscriptions still
+// go through normal removal and revocation before the replacement is installed.
+export function replaceGProxy<T>(
+  target: any,
+  event: EventFunctionProxyHandler,
+  objRef: object,
+  key: PropertyKey,
+  replace: () => T
+): T {
+  const root = subscriptionPaths.get(objRef)?.get(event);
+  const node = root?.children.get(key);
+  if (!root || !node || retainedSubscriptionRoots.has(node)) {
+    unGProxy(target, event, objRef);
+    return replace();
+  }
+  const ownerRetained = retainedSubscriptionOwners.has(objRef);
+  retainedSubscriptionRoots.add(node);
+  retainedSubscriptionOwners.add(objRef);
+  replacingProxy++;
+  try {
+    unGProxy(target, event, objRef);
+    return replace();
+  } finally {
+    retainedSubscriptionRoots.delete(node);
+    if (!ownerRetained) retainedSubscriptionOwners.delete(objRef);
+    replacingProxy--;
+    // Static/non-proxyable replacements and throwing setters leave no owner
+    // index behind. Successful object replacements populate these same sets.
+    if (!node.targets.size && !node.children.size && root.children.get(key) === node) {
+      unindexSubscription(target, { event, objRef, parentPath: [key], node });
+    }
+    const targets = subscriptionTargets.get(objRef);
+    if (!ownerRetained && targets?.size === 0)
+      subscriptionTargets.delete(objRef);
+  }
 }
 
 export function toRaw<T = any>(obj: T): T {

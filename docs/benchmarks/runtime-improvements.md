@@ -24,6 +24,12 @@ cambios que eluden el proxy —incluido `Object.defineProperty` sobre datos
 crudos— requieren `refresh()` o una asignación explícita. No se ejecutan getters
 solo para clasificar sus descriptores.
 
+La [integración posterior de listas y atributos](update-implementation.md)
+reutiliza los contenedores del índice de suscripciones al reasignar una fila,
+enumera las claves de `g-attr` sin trampas intermedias y elimina el registro
+reactivo heredado duplicado. Se conserva la clasificación previa para mantener
+rápida la primera edición parcial después de una sustitución completa.
+
 La entrada runtime comparte clases, proxies y registro de directivas con la
 entrada principal dentro de cada formato. No contiene `DOMParser`, `GCompile`
 ni invocaciones a `Function` para compilar código. Hay que distribuir los chunks

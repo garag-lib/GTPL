@@ -1,0 +1,2443 @@
+{
+  "counts": {
+    "append": {
+      "rootSet": 501,
+      "subscriptionRemoved": 501,
+      "proxyRevoked": 501,
+      "subscriptionNodeNew": 1252,
+      "subscriptionAdded": 626,
+      "proxyCreated": 626,
+      "eventPRoxy": 626,
+      "queueChange/5": 1,
+      "applyChange/5": 1,
+      "calculateBind": 1876,
+      "proxyGet": 1876,
+      "ordinaryDataVisit": 2502,
+      "queueChange/0": 1250,
+      "queueChange/7": 625,
+      "applyChange/0": 1250,
+      "applyChange/7": 625,
+      "attributeProperty": 625,
+      "textWrite": 250
+    },
+    "remove": {
+      "rootSet": 251,
+      "subscriptionRemoved": 501,
+      "proxyRevoked": 501,
+      "subscriptionNodeNew": 502,
+      "subscriptionAdded": 251,
+      "proxyCreated": 251,
+      "eventPRoxy": 251,
+      "queueChange/5": 1,
+      "applyChange/5": 1,
+      "calculateBind": 751,
+      "proxyGet": 751,
+      "ordinaryDataVisit": 1002,
+      "queueChange/0": 500,
+      "queueChange/7": 250,
+      "applyChange/0": 500,
+      "textWrite": 250,
+      "applyChange/7": 250,
+      "attributeProperty": 250
+    },
+    "update": {
+      "rootSet": 501,
+      "subscriptionRemoved": 501,
+      "proxyRevoked": 501,
+      "subscriptionNodeNew": 1002,
+      "subscriptionAdded": 501,
+      "proxyCreated": 501,
+      "eventPRoxy": 501,
+      "queueChange/5": 1,
+      "applyChange/5": 1,
+      "calculateBind": 1501,
+      "proxyGet": 1501,
+      "ordinaryDataVisit": 2002,
+      "queueChange/0": 1000,
+      "queueChange/7": 500,
+      "applyChange/0": 1000,
+      "textWrite": 500,
+      "applyChange/7": 500,
+      "attributeProperty": 500
+    },
+    "attrs": {
+      "rootSet": 2,
+      "eventPRoxy": 2,
+      "queueChange/0": 500,
+      "subscriptionRemoved": 1,
+      "subscriptionNodeNew": 2,
+      "subscriptionAdded": 1,
+      "proxyCreated": 1,
+      "queueChange/7": 500,
+      "applyChange/0": 500,
+      "calculateBind": 1000,
+      "textWrite": 500,
+      "applyChange/7": 500,
+      "proxyGet": 2000,
+      "proxyOwnKeys": 500,
+      "proxyDescriptor": 1500,
+      "attributeEntry": 1500,
+      "attributeProperty": 1500
+    },
+    "attrsOnly": {
+      "rootSet": 1,
+      "subscriptionRemoved": 1,
+      "subscriptionNodeNew": 2,
+      "subscriptionAdded": 1,
+      "proxyCreated": 1,
+      "eventPRoxy": 1,
+      "queueChange/7": 500,
+      "applyChange/7": 500,
+      "calculateBind": 500,
+      "proxyGet": 2000,
+      "proxyOwnKeys": 500,
+      "proxyDescriptor": 1500,
+      "attributeEntry": 1500,
+      "attributeProperty": 1500
+    },
+    "textOnly": {
+      "rootSet": 1,
+      "eventPRoxy": 1,
+      "queueChange/0": 500,
+      "applyChange/0": 500,
+      "calculateBind": 500,
+      "textWrite": 500
+    },
+    "attrsNested": {
+      "proxyDescriptor": 1501,
+      "queueChange/7": 1000,
+      "applyChange/7": 500,
+      "calculateBind": 500,
+      "proxyGet": 2000,
+      "proxyOwnKeys": 500,
+      "attributeEntry": 1500,
+      "attributeProperty": 1500
+    },
+    "appendShared": {
+      "rootSet": 501,
+      "subscriptionRemoved": 501,
+      "proxyRevoked": 501,
+      "subscriptionNodeNew": 1252,
+      "subscriptionAdded": 626,
+      "proxyCreated": 626,
+      "eventPRoxy": 626,
+      "queueChange/5": 1,
+      "applyChange/5": 1,
+      "calculateBind": 1876,
+      "proxyGet": 1876,
+      "ordinaryDataVisit": 2502,
+      "queueChange/0": 1250,
+      "queueChange/7": 625,
+      "applyChange/0": 1250,
+      "applyChange/7": 625,
+      "attributeProperty": 625,
+      "textWrite": 250
+    }
+  },
+  "experiments": {
+    "append": {
+      "candidate": "lazy",
+      "rounds": {
+        "plain": [
+          {
+            "round": 0,
+            "dispatchMs": 0.0,
+            "applyMs": 8.650000000372529,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 12.25
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.0,
+            "applyMs": 8.899999998509884,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 12.299999998882413
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.0,
+            "applyMs": 8.599999997764826,
+            "layoutMs": 3.150000000372529,
+            "totalMs": 12.049999998882413
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.0,
+            "applyMs": 8.5,
+            "layoutMs": 3.099999997764826,
+            "totalMs": 11.600000001490116
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.0,
+            "applyMs": 9.75,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 13.149999998509884
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.0,
+            "applyMs": 8.849999999627471,
+            "layoutMs": 3.150000000372529,
+            "totalMs": 12.299999998882413
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.0,
+            "applyMs": 8.949999999254942,
+            "layoutMs": 3.150000000372529,
+            "totalMs": 12.149999998509884
+          }
+        ],
+        "lazy": [
+          {
+            "round": 0,
+            "dispatchMs": 0.0,
+            "applyMs": 8.799999998882413,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 12.049999998882413
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.0,
+            "applyMs": 8.849999999627471,
+            "layoutMs": 3.150000000372529,
+            "totalMs": 12.049999998882413
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.0,
+            "applyMs": 9.299999998882413,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 12.699999999254942
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.0,
+            "applyMs": 9.050000000745058,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 12.150000002235174
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.0,
+            "applyMs": 9.150000000372529,
+            "layoutMs": 3.150000000372529,
+            "totalMs": 12.200000001117587
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.0,
+            "applyMs": 9.0,
+            "layoutMs": 3.199999999254942,
+            "totalMs": 12.149999998509884
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.0,
+            "applyMs": 9.199999999254942,
+            "layoutMs": 3.150000000372529,
+            "totalMs": 12.299999998882413
+          }
+        ]
+      },
+      "medianPairedReductionPercent": 1.219512198261452,
+      "pairedReductionRangePercent": [
+        -5.394190874961113,
+        7.224334581748648
+      ],
+      "medians": {
+        "plain": {
+          "dispatchMs": 0.0,
+          "applyMs": 8.849999999627471,
+          "layoutMs": 3.150000000372529,
+          "totalMs": 12.25
+        },
+        "lazy": {
+          "dispatchMs": 0.0,
+          "applyMs": 9.050000000745058,
+          "layoutMs": 3.199999999254942,
+          "totalMs": 12.150000002235174
+        }
+      }
+    },
+    "remove": {
+      "candidate": "lazy",
+      "rounds": {
+        "plain": [
+          {
+            "round": 0,
+            "dispatchMs": 0.0,
+            "applyMs": 6.950000001117587,
+            "layoutMs": 4.249999998137355,
+            "totalMs": 11.350000001490116
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.09999999962747097,
+            "applyMs": 7.200000001117587,
+            "layoutMs": 4.199999999254942,
+            "totalMs": 11.550000000745058
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 7.100000001490116,
+            "layoutMs": 4.199999999254942,
+            "totalMs": 11.300000000745058
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.0,
+            "applyMs": 7.400000000372529,
+            "layoutMs": 4.25,
+            "totalMs": 11.75
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.04999999888241291,
+            "applyMs": 7.150000000372529,
+            "layoutMs": 4.199999999254942,
+            "totalMs": 11.450000001117587
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.04999999888241291,
+            "applyMs": 7.25,
+            "layoutMs": 4.200000001117587,
+            "totalMs": 11.75
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.04999999888241291,
+            "applyMs": 7.049999998882413,
+            "layoutMs": 4.199999999254942,
+            "totalMs": 11.400000000372529
+          }
+        ],
+        "lazy": [
+          {
+            "round": 0,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 7.299999998882413,
+            "layoutMs": 4.300000000745058,
+            "totalMs": 11.699999999254942
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 6.849999999627471,
+            "layoutMs": 4.300000000745058,
+            "totalMs": 11.450000001117587
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 6.800000000745058,
+            "layoutMs": 4.199999999254942,
+            "totalMs": 10.950000001117587
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 7.300000000745058,
+            "layoutMs": 4.300000000745058,
+            "totalMs": 11.899999998509884
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 7.699999999254942,
+            "layoutMs": 4.549999998882413,
+            "totalMs": 12.449999999254942
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.0,
+            "applyMs": 7.150000000372529,
+            "layoutMs": 4.150000000372529,
+            "totalMs": 11.550000000745058
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 7.199999999254942,
+            "layoutMs": 4.199999999254942,
+            "totalMs": 11.650000000372529
+          }
+        ]
+      },
+      "medianPairedReductionPercent": -1.2765957319990084,
+      "pairedReductionRangePercent": [
+        -8.733624437028364,
+        3.0973451292424237
+      ],
+      "medians": {
+        "plain": {
+          "dispatchMs": 0.04999999888241291,
+          "applyMs": 7.150000000372529,
+          "layoutMs": 4.199999999254942,
+          "totalMs": 11.450000001117587
+        },
+        "lazy": {
+          "dispatchMs": 0.09999999776482582,
+          "applyMs": 7.199999999254942,
+          "layoutMs": 4.300000000745058,
+          "totalMs": 11.650000000372529
+        }
+      }
+    },
+    "update": {
+      "candidate": "lazy",
+      "rounds": {
+        "plain": [
+          {
+            "round": 0,
+            "dispatchMs": 0.0,
+            "applyMs": 5.450000001117587,
+            "layoutMs": 8.300000000745058,
+            "totalMs": 14.0
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.0,
+            "applyMs": 5.700000001117587,
+            "layoutMs": 8.299999998882413,
+            "totalMs": 14.250000001862645
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.0,
+            "applyMs": 5.649999998509884,
+            "layoutMs": 8.300000000745058,
+            "totalMs": 14.049999998882413
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 5.450000001117587,
+            "layoutMs": 8.25,
+            "totalMs": 13.800000000745058
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 5.650000000372529,
+            "layoutMs": 8.100000001490116,
+            "totalMs": 13.950000001117587
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 5.250000001862645,
+            "layoutMs": 8.349999999627471,
+            "totalMs": 13.899999998509884
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.0,
+            "applyMs": 5.699999999254942,
+            "layoutMs": 8.299999998882413,
+            "totalMs": 13.899999998509884
+          }
+        ],
+        "lazy": [
+          {
+            "round": 0,
+            "dispatchMs": 0.04999999888241291,
+            "applyMs": 5.099999999627471,
+            "layoutMs": 8.399999998509884,
+            "totalMs": 13.549999998882413
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.0,
+            "applyMs": 5.150000000372529,
+            "layoutMs": 8.300000000745058,
+            "totalMs": 13.5
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.09999999776482582,
+            "applyMs": 5.25,
+            "layoutMs": 8.25,
+            "totalMs": 13.5
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.10000000149011612,
+            "applyMs": 5.149999998509884,
+            "layoutMs": 8.450000001117587,
+            "totalMs": 13.700000001117587
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.04999999888241291,
+            "applyMs": 5.200000001117587,
+            "layoutMs": 8.299999998882413,
+            "totalMs": 13.950000001117587
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.0,
+            "applyMs": 5.099999999627471,
+            "layoutMs": 8.200000002980232,
+            "totalMs": 13.449999999254942
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.0,
+            "applyMs": 5.5,
+            "layoutMs": 8.299999998882413,
+            "totalMs": 13.799999998882413
+          }
+        ]
+      },
+      "medianPairedReductionPercent": 3.214285722268484,
+      "pairedReductionRangePercent": [
+        0.0,
+        5.263157907120075
+      ],
+      "medians": {
+        "plain": {
+          "dispatchMs": 0.0,
+          "applyMs": 5.649999998509884,
+          "layoutMs": 8.299999998882413,
+          "totalMs": 13.950000001117587
+        },
+        "lazy": {
+          "dispatchMs": 0.04999999888241291,
+          "applyMs": 5.150000000372529,
+          "layoutMs": 8.299999998882413,
+          "totalMs": 13.549999998882413
+        }
+      }
+    },
+    "attrs": {
+      "candidate": "attrs",
+      "rounds": {
+        "plain": [
+          {
+            "round": 0,
+            "dispatchMs": 0.4000000022351742,
+            "applyMs": 5.199999997392297,
+            "layoutMs": 7.099999999627471,
+            "totalMs": 12.950000001117587
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.3999999985098839,
+            "applyMs": 5.149999998509884,
+            "layoutMs": 7.049999998882413,
+            "totalMs": 12.900000000372529
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.3999999985098839,
+            "applyMs": 5.450000001117587,
+            "layoutMs": 7.150000000372529,
+            "totalMs": 13.149999998509884
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.40000000037252903,
+            "applyMs": 5.149999998509884,
+            "layoutMs": 7.0,
+            "totalMs": 12.699999997392297
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.3999999985098839,
+            "applyMs": 5.900000000372529,
+            "layoutMs": 7.25,
+            "totalMs": 13.600000001490116
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.4000000022351742,
+            "applyMs": 5.199999999254942,
+            "layoutMs": 7.199999999254942,
+            "totalMs": 12.750000001862645
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.40000000037252903,
+            "applyMs": 5.549999998882413,
+            "layoutMs": 7.099999999627471,
+            "totalMs": 12.899999998509884
+          }
+        ],
+        "attrs": [
+          {
+            "round": 0,
+            "dispatchMs": 0.40000000037252903,
+            "applyMs": 2.800000000745058,
+            "layoutMs": 7.099999997764826,
+            "totalMs": 10.300000000745058
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.4000000022351742,
+            "applyMs": 2.800000000745058,
+            "layoutMs": 7.150000000372529,
+            "totalMs": 10.599999999627471
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.3999999985098839,
+            "applyMs": 2.799999998882413,
+            "layoutMs": 7.0,
+            "totalMs": 10.200000002980232
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.3999999985098839,
+            "applyMs": 2.849999999627471,
+            "layoutMs": 7.249999998137355,
+            "totalMs": 10.799999998882413
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.40000000037252903,
+            "applyMs": 2.800000002607703,
+            "layoutMs": 7.300000000745058,
+            "totalMs": 10.849999999627471
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.3999999985098839,
+            "applyMs": 2.849999999627471,
+            "layoutMs": 7.149999998509884,
+            "totalMs": 10.499999998137355
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.4000000022351742,
+            "applyMs": 2.699999997392297,
+            "layoutMs": 7.150000000372529,
+            "totalMs": 10.449999999254942
+          }
+        ]
+      },
+      "medianPairedReductionPercent": 18.992248058433713,
+      "pairedReductionRangePercent": [
+        14.960629912598522,
+        22.433460044592668
+      ],
+      "medians": {
+        "plain": {
+          "dispatchMs": 0.40000000037252903,
+          "applyMs": 5.199999999254942,
+          "layoutMs": 7.099999999627471,
+          "totalMs": 12.900000000372529
+        },
+        "attrs": {
+          "dispatchMs": 0.40000000037252903,
+          "applyMs": 2.800000000745058,
+          "layoutMs": 7.150000000372529,
+          "totalMs": 10.499999998137355
+        }
+      }
+    },
+    "attrsNested": {
+      "candidate": "attrs",
+      "rounds": {
+        "plain": [
+          {
+            "round": 0,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 4.75,
+            "layoutMs": 1.199999999254942,
+            "totalMs": 6.050000000745058
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 4.549999998882413,
+            "layoutMs": 1.1000000014901161,
+            "totalMs": 6.049999998882413
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.25,
+            "applyMs": 4.649999998509884,
+            "layoutMs": 1.150000000372529,
+            "totalMs": 6.049999998882413
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.2999999988824129,
+            "applyMs": 4.699999999254942,
+            "layoutMs": 1.200000001117587,
+            "totalMs": 6.249999998137355
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 5.150000000372529,
+            "layoutMs": 1.2499999981373549,
+            "totalMs": 6.75
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 4.799999998882413,
+            "layoutMs": 1.199999999254942,
+            "totalMs": 6.25
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 4.600000001490116,
+            "layoutMs": 1.199999999254942,
+            "totalMs": 6.0
+          }
+        ],
+        "attrs": [
+          {
+            "round": 0,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 1.9000000022351742,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.599999997764826
+          },
+          {
+            "round": 1,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 2.0,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.550000000745058
+          },
+          {
+            "round": 2,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 1.900000000372529,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.599999997764826
+          },
+          {
+            "round": 3,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 1.9000000022351742,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.599999999627471
+          },
+          {
+            "round": 4,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 2.049999998882413,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.700000001117587
+          },
+          {
+            "round": 5,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 2.0,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.650000000372529
+          },
+          {
+            "round": 6,
+            "dispatchMs": 0.30000000074505806,
+            "applyMs": 1.900000000372529,
+            "layoutMs": 1.300000000745058,
+            "totalMs": 3.600000001490116
+          }
+        ]
+      },
+      "medianPairedReductionPercent": 41.32231402643253,
+      "pairedReductionRangePercent": [
+        39.999999975164734,
+        45.18518516862834
+      ],
+      "medians": {
+        "plain": {
+          "dispatchMs": 0.30000000074505806,
+          "applyMs": 4.699999999254942,
+          "layoutMs": 1.199999999254942,
+          "totalMs": 6.050000000745058
+        },
+        "attrs": {
+          "dispatchMs": 0.30000000074505806,
+          "applyMs": 1.9000000022351742,
+          "layoutMs": 1.300000000745058,
+          "totalMs": 3.599999999627471
+        }
+      }
+    }
+  },
+  "profiles": {
+    "append": {
+      "sampledMs": 1335.239999835968,
+      "windowMs": 1343.3000000076295,
+      "selfTop": [
+        [
+          "getBoundingClientRect",
+          24.64
+        ],
+        [
+          "GProxy",
+          12.09
+        ],
+        [
+          "queueChange",
+          5.95
+        ],
+        [
+          "flushChanges",
+          5.89
+        ],
+        [
+          "(garbage collector)",
+          4.88
+        ],
+        [
+          "subscriptionNode",
+          4.03
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          3.52
+        ],
+        [
+          "createElement",
+          3.17
+        ],
+        [
+          "isOrdinaryData",
+          2.88
+        ],
+        [
+          "reduceVar",
+          2.76
+        ],
+        [
+          "createGetterAndSetter",
+          2.29
+        ],
+        [
+          "updateFORbind",
+          2.12
+        ],
+        [
+          "setAttribute",
+          2.11
+        ],
+        [
+          "updateTEXTbind",
+          1.79
+        ],
+        [
+          "",
+          1.6
+        ],
+        [
+          "appendChild",
+          1.48
+        ],
+        [
+          "queueBindings",
+          1.48
+        ],
+        [
+          "get",
+          1.36
+        ],
+        [
+          "getAttribute",
+          1.28
+        ],
+        [
+          "applyResult",
+          1.27
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "flushChanges",
+          69.62
+        ],
+        [
+          "applyResult",
+          55.74
+        ],
+        [
+          "updateFORbind",
+          45.46
+        ],
+        [
+          "set",
+          25.06
+        ],
+        [
+          "globalThis.__run",
+          24.9
+        ],
+        [
+          "getBoundingClientRect",
+          24.64
+        ],
+        [
+          "",
+          16.29
+        ],
+        [
+          "createGTpl",
+          16.26
+        ],
+        [
+          "_GTpl",
+          16.14
+        ],
+        [
+          "GProxy",
+          16.05
+        ],
+        [
+          "loadOptions",
+          13.65
+        ],
+        [
+          "doSet",
+          12.93
+        ],
+        [
+          "appendChildsFromFnc",
+          12.91
+        ],
+        [
+          "a00000",
+          12.36
+        ],
+        [
+          "createElement",
+          12.0
+        ],
+        [
+          "reduceVar",
+          7.96
+        ],
+        [
+          "eventPRoxy",
+          7.67
+        ],
+        [
+          "queueBindings",
+          7.5
+        ],
+        [
+          "queueChange",
+          6.0
+        ],
+        [
+          "get",
+          5.19
+        ],
+        [
+          "(garbage collector)",
+          4.88
+        ],
+        [
+          "removeProxyHandler",
+          4.62
+        ],
+        [
+          "unGProxy",
+          4.56
+        ],
+        [
+          "addBind",
+          4.49
+        ],
+        [
+          "subscriptionNode",
+          4.03
+        ],
+        [
+          "checkBind",
+          3.82
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          3.52
+        ],
+        [
+          "updateATTRbind",
+          3.38
+        ],
+        [
+          "addBind2Object",
+          3.34
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "remove": {
+      "sampledMs": 1265.2160000686645,
+      "windowMs": 1272.899999961853,
+      "selfTop": [
+        [
+          "getBoundingClientRect",
+          32.5
+        ],
+        [
+          "removeChild",
+          8.94
+        ],
+        [
+          "(garbage collector)",
+          7.41
+        ],
+        [
+          "removeElements",
+          6.33
+        ],
+        [
+          "destroy",
+          6.31
+        ],
+        [
+          "",
+          3.99
+        ],
+        [
+          "removeAttribute",
+          3.49
+        ],
+        [
+          "unindexSubscription",
+          2.84
+        ],
+        [
+          "flushChanges",
+          2.54
+        ],
+        [
+          "queueChange",
+          2.48
+        ],
+        [
+          "addProxySubscription",
+          2.3
+        ],
+        [
+          "updateTEXTbind",
+          2.25
+        ],
+        [
+          "getOrCreateProxy",
+          1.98
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          1.4
+        ],
+        [
+          "subscriptionNode",
+          1.39
+        ],
+        [
+          "reduceVar",
+          1.35
+        ],
+        [
+          "updateFORbind",
+          1.18
+        ],
+        [
+          "isOrdinaryData",
+          1.15
+        ],
+        [
+          "queueBindings",
+          0.97
+        ],
+        [
+          "removeProxyHandler",
+          0.94
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "flushChanges",
+          59.35
+        ],
+        [
+          "applyResult",
+          55.15
+        ],
+        [
+          "updateFORbind",
+          49.43
+        ],
+        [
+          "",
+          36.76
+        ],
+        [
+          "destroy",
+          33.01
+        ],
+        [
+          "globalThis.__run",
+          32.96
+        ],
+        [
+          "getBoundingClientRect",
+          32.5
+        ],
+        [
+          "removeElements",
+          18.88
+        ],
+        [
+          "set",
+          13.89
+        ],
+        [
+          "removeChild",
+          8.94
+        ],
+        [
+          "(garbage collector)",
+          7.41
+        ],
+        [
+          "doSet",
+          7.03
+        ],
+        [
+          "GProxy",
+          6.64
+        ],
+        [
+          "removeProxyHandler",
+          6.35
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          4.73
+        ],
+        [
+          "unGProxy",
+          4.24
+        ],
+        [
+          "addProxySubscription",
+          4.02
+        ],
+        [
+          "eventPRoxy",
+          3.6
+        ],
+        [
+          "removeAttribute",
+          3.49
+        ],
+        [
+          "queueBindings",
+          3.48
+        ],
+        [
+          "unindexSubscription",
+          2.84
+        ],
+        [
+          "queueChange",
+          2.5
+        ],
+        [
+          "updateTEXTbind",
+          2.46
+        ],
+        [
+          "getOrCreateProxy",
+          2.09
+        ],
+        [
+          "subscriptionNode",
+          1.73
+        ],
+        [
+          "reduceVar",
+          1.65
+        ],
+        [
+          "collectBindsFromTree",
+          1.41
+        ],
+        [
+          "updateATTRbind",
+          1.23
+        ],
+        [
+          "delBind",
+          1.2
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "update": {
+      "sampledMs": 1388.336,
+      "windowMs": 1395.7,
+      "selfTop": [
+        [
+          "getBoundingClientRect",
+          57.63
+        ],
+        [
+          "queueChange",
+          4.98
+        ],
+        [
+          "updateTEXTbind",
+          4.3
+        ],
+        [
+          "addProxySubscription",
+          3.76
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          3.18
+        ],
+        [
+          "getOrCreateProxy",
+          2.87
+        ],
+        [
+          "applyChange",
+          2.46
+        ],
+        [
+          "updateFORbind",
+          2.29
+        ],
+        [
+          "flushChanges",
+          2.16
+        ],
+        [
+          "subscriptionNode",
+          1.96
+        ],
+        [
+          "queueBindings",
+          1.86
+        ],
+        [
+          "isOrdinaryData",
+          1.75
+        ],
+        [
+          "getAttribute",
+          1.03
+        ],
+        [
+          "reduceVar",
+          0.93
+        ],
+        [
+          "applyResult",
+          0.9
+        ],
+        [
+          "isNonProxyableObject",
+          0.79
+        ],
+        [
+          "updateProperty",
+          0.77
+        ],
+        [
+          "",
+          0.75
+        ],
+        [
+          "get",
+          0.52
+        ],
+        [
+          "doSet",
+          0.51
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "globalThis.__run",
+          58.24
+        ],
+        [
+          "getBoundingClientRect",
+          57.63
+        ],
+        [
+          "flushChanges",
+          41.04
+        ],
+        [
+          "applyChange",
+          38.87
+        ],
+        [
+          "applyResult",
+          34.96
+        ],
+        [
+          "updateFORbind",
+          25.0
+        ],
+        [
+          "set",
+          22.6
+        ],
+        [
+          "doSet",
+          10.82
+        ],
+        [
+          "GProxy",
+          10.16
+        ],
+        [
+          "eventPRoxy",
+          7.16
+        ],
+        [
+          "queueBindings",
+          6.96
+        ],
+        [
+          "addProxySubscription",
+          6.14
+        ],
+        [
+          "queueChange",
+          5.04
+        ],
+        [
+          "updateTEXTbind",
+          4.67
+        ],
+        [
+          "unGProxy",
+          4.23
+        ],
+        [
+          "removeProxyHandler",
+          4.11
+        ],
+        [
+          "",
+          3.86
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          3.18
+        ],
+        [
+          "getOrCreateProxy",
+          3.11
+        ],
+        [
+          "subscriptionNode",
+          2.37
+        ],
+        [
+          "updateATTRbind",
+          2.02
+        ],
+        [
+          "updateProperty",
+          1.8
+        ],
+        [
+          "isOrdinaryData",
+          1.75
+        ],
+        [
+          "reduceVar",
+          1.34
+        ],
+        [
+          "getAttribute",
+          1.03
+        ],
+        [
+          "isNonProxyableObject",
+          0.79
+        ],
+        [
+          "get",
+          0.52
+        ],
+        [
+          "getContext",
+          0.41
+        ],
+        [
+          "(garbage collector)",
+          0.41
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "attrs": {
+      "sampledMs": 1355.0239999084472,
+      "windowMs": 1363.0999999847413,
+      "selfTop": [
+        [
+          "getBoundingClientRect",
+          53.59
+        ],
+        [
+          "updateATTRbind",
+          15.91
+        ],
+        [
+          "updateProperty",
+          7.0
+        ],
+        [
+          "setAttribute",
+          3.77
+        ],
+        [
+          "updateTEXTbind",
+          2.39
+        ],
+        [
+          "ownKeys",
+          1.84
+        ],
+        [
+          "flushChanges",
+          1.56
+        ],
+        [
+          "queueChange",
+          1.52
+        ],
+        [
+          "applyResult",
+          1.38
+        ],
+        [
+          "applyChange",
+          1.28
+        ],
+        [
+          "getOwnPropertyDescriptor",
+          1.26
+        ],
+        [
+          "getValue",
+          1.25
+        ],
+        [
+          "(garbage collector)",
+          1.05
+        ],
+        [
+          "getAttribute",
+          0.93
+        ],
+        [
+          "finishBindingChange",
+          0.79
+        ],
+        [
+          "get",
+          0.59
+        ],
+        [
+          "",
+          0.57
+        ],
+        [
+          "isPromiseLike",
+          0.56
+        ],
+        [
+          "enqueueFlushBinding",
+          0.47
+        ],
+        [
+          "getProperty",
+          0.34
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "globalThis.__run",
+          55.77
+        ],
+        [
+          "getBoundingClientRect",
+          53.59
+        ],
+        [
+          "flushChanges",
+          42.82
+        ],
+        [
+          "applyChange",
+          40.01
+        ],
+        [
+          "applyResult",
+          36.47
+        ],
+        [
+          "updateATTRbind",
+          32.05
+        ],
+        [
+          "updateProperty",
+          11.69
+        ],
+        [
+          "setAttribute",
+          3.77
+        ],
+        [
+          "updateTEXTbind",
+          2.48
+        ],
+        [
+          "set",
+          1.97
+        ],
+        [
+          "ownKeys",
+          1.84
+        ],
+        [
+          "eventPRoxy",
+          1.79
+        ],
+        [
+          "queueBindings",
+          1.78
+        ],
+        [
+          "calculateBind",
+          1.71
+        ],
+        [
+          "queueChange",
+          1.59
+        ],
+        [
+          "reduceVar",
+          1.55
+        ],
+        [
+          "getValue",
+          1.46
+        ],
+        [
+          "getOwnPropertyDescriptor",
+          1.26
+        ],
+        [
+          "(garbage collector)",
+          1.05
+        ],
+        [
+          "",
+          0.95
+        ],
+        [
+          "getAttribute",
+          0.93
+        ],
+        [
+          "finishBindingChange",
+          0.81
+        ],
+        [
+          "isPromiseLike",
+          0.66
+        ],
+        [
+          "get",
+          0.64
+        ],
+        [
+          "enqueueFlushBinding",
+          0.47
+        ],
+        [
+          "checkRenderElements",
+          0.4
+        ],
+        [
+          "getProperty",
+          0.34
+        ],
+        [
+          "has",
+          0.32
+        ],
+        [
+          "(program)",
+          0.28
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "attrsOnly": {
+      "sampledMs": 661.0249999275208,
+      "windowMs": 668.9999999923706,
+      "selfTop": [
+        [
+          "updateATTRbind",
+          32.92
+        ],
+        [
+          "getBoundingClientRect",
+          17.96
+        ],
+        [
+          "updateProperty",
+          13.9
+        ],
+        [
+          "setAttribute",
+          7.16
+        ],
+        [
+          "applyResult",
+          3.7
+        ],
+        [
+          "ownKeys",
+          3.4
+        ],
+        [
+          "getOwnPropertyDescriptor",
+          3.13
+        ],
+        [
+          "flushChanges",
+          2.69
+        ],
+        [
+          "getAttribute",
+          1.9
+        ],
+        [
+          "",
+          1.54
+        ],
+        [
+          "get",
+          1.51
+        ],
+        [
+          "getValue",
+          1.46
+        ],
+        [
+          "(garbage collector)",
+          1.26
+        ],
+        [
+          "applyChange",
+          1.16
+        ],
+        [
+          "finishBindingChange",
+          1.1
+        ],
+        [
+          "queueChange",
+          1.04
+        ],
+        [
+          "isPromiseLike",
+          0.82
+        ],
+        [
+          "has",
+          0.59
+        ],
+        [
+          "globalThis.__run",
+          0.58
+        ],
+        [
+          "(program)",
+          0.57
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "flushChanges",
+          78.07
+        ],
+        [
+          "applyChange",
+          74.02
+        ],
+        [
+          "applyResult",
+          69.95
+        ],
+        [
+          "updateATTRbind",
+          65.81
+        ],
+        [
+          "updateProperty",
+          22.96
+        ],
+        [
+          "globalThis.__run",
+          19.92
+        ],
+        [
+          "getBoundingClientRect",
+          17.96
+        ],
+        [
+          "setAttribute",
+          7.16
+        ],
+        [
+          "ownKeys",
+          3.4
+        ],
+        [
+          "getOwnPropertyDescriptor",
+          3.13
+        ],
+        [
+          "",
+          2.14
+        ],
+        [
+          "getAttribute",
+          1.9
+        ],
+        [
+          "calculateBind",
+          1.87
+        ],
+        [
+          "reduceVar",
+          1.73
+        ],
+        [
+          "getValue",
+          1.51
+        ],
+        [
+          "get",
+          1.51
+        ],
+        [
+          "set",
+          1.29
+        ],
+        [
+          "queueBindings",
+          1.28
+        ],
+        [
+          "eventPRoxy",
+          1.28
+        ],
+        [
+          "(garbage collector)",
+          1.26
+        ],
+        [
+          "isPromiseLike",
+          1.22
+        ],
+        [
+          "finishBindingChange",
+          1.12
+        ],
+        [
+          "queueChange",
+          1.06
+        ],
+        [
+          "has",
+          0.59
+        ],
+        [
+          "(program)",
+          0.57
+        ],
+        [
+          "checkRenderElements",
+          0.29
+        ],
+        [
+          "getContext",
+          0.29
+        ],
+        [
+          "enqueueFlushBinding",
+          0.23
+        ],
+        [
+          "getProperty",
+          0.22
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "textOnly": {
+      "sampledMs": 691.7609998512268,
+      "windowMs": 699.6999999694824,
+      "selfTop": [
+        [
+          "getBoundingClientRect",
+          86.22
+        ],
+        [
+          "updateTEXTbind",
+          4.68
+        ],
+        [
+          "queueChange",
+          1.71
+        ],
+        [
+          "flushChanges",
+          1.46
+        ],
+        [
+          "finishBindingChange",
+          0.87
+        ],
+        [
+          "getValue",
+          0.77
+        ],
+        [
+          "(garbage collector)",
+          0.69
+        ],
+        [
+          "applyChange",
+          0.64
+        ],
+        [
+          "applyResult",
+          0.44
+        ],
+        [
+          "getContext",
+          0.29
+        ],
+        [
+          "getProperty",
+          0.28
+        ],
+        [
+          "enqueueFlushBinding",
+          0.27
+        ],
+        [
+          "(program)",
+          0.26
+        ],
+        [
+          "get",
+          0.23
+        ],
+        [
+          "queueBindings",
+          0.21
+        ],
+        [
+          "reduceVar",
+          0.19
+        ],
+        [
+          "isStaticType",
+          0.17
+        ],
+        [
+          "calculateBind",
+          0.16
+        ],
+        [
+          "rows",
+          0.1
+        ],
+        [
+          "isPromiseLike",
+          0.09
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "globalThis.__run",
+          88.44
+        ],
+        [
+          "getBoundingClientRect",
+          86.22
+        ],
+        [
+          "flushChanges",
+          10.55
+        ],
+        [
+          "applyChange",
+          7.95
+        ],
+        [
+          "applyResult",
+          5.78
+        ],
+        [
+          "updateTEXTbind",
+          5.08
+        ],
+        [
+          "set",
+          2.02
+        ],
+        [
+          "queueBindings",
+          2.0
+        ],
+        [
+          "eventPRoxy",
+          2.0
+        ],
+        [
+          "queueChange",
+          1.82
+        ],
+        [
+          "calculateBind",
+          1.51
+        ],
+        [
+          "reduceVar",
+          1.35
+        ],
+        [
+          "getValue",
+          1.16
+        ],
+        [
+          "finishBindingChange",
+          0.87
+        ],
+        [
+          "(garbage collector)",
+          0.69
+        ],
+        [
+          "get",
+          0.4
+        ],
+        [
+          "getContext",
+          0.29
+        ],
+        [
+          "getProperty",
+          0.28
+        ],
+        [
+          "enqueueFlushBinding",
+          0.27
+        ],
+        [
+          "(program)",
+          0.26
+        ],
+        [
+          "checkRenderElements",
+          0.19
+        ],
+        [
+          "isStaticType",
+          0.17
+        ],
+        [
+          "rows",
+          0.11
+        ],
+        [
+          "isPromiseLike",
+          0.09
+        ],
+        [
+          "",
+          0.05
+        ],
+        [
+          "settle",
+          0.05
+        ],
+        [
+          "getGtplRoot",
+          0.04
+        ],
+        [
+          "evaluate",
+          0.04
+        ],
+        [
+          "queueMicrotask",
+          0.03
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "attrsNested": {
+      "sampledMs": 590.118,
+      "windowMs": 598.6,
+      "selfTop": [
+        [
+          "updateATTRbind",
+          33.55
+        ],
+        [
+          "getBoundingClientRect",
+          20.77
+        ],
+        [
+          "updateProperty",
+          13.97
+        ],
+        [
+          "ownKeys",
+          3.87
+        ],
+        [
+          "applyResult",
+          3.63
+        ],
+        [
+          "getOwnPropertyDescriptor",
+          3.44
+        ],
+        [
+          "flushChanges",
+          3.25
+        ],
+        [
+          "queueChange",
+          1.94
+        ],
+        [
+          "get",
+          1.81
+        ],
+        [
+          "getAttribute",
+          1.79
+        ],
+        [
+          "",
+          1.69
+        ],
+        [
+          "getValue",
+          1.38
+        ],
+        [
+          "(garbage collector)",
+          1.35
+        ],
+        [
+          "applyChange",
+          1.17
+        ],
+        [
+          "finishBindingChange",
+          1.1
+        ],
+        [
+          "isPromiseLike",
+          1.07
+        ],
+        [
+          "(program)",
+          0.67
+        ],
+        [
+          "getContext",
+          0.57
+        ],
+        [
+          "enqueueFlushBinding",
+          0.42
+        ],
+        [
+          "reduceVar",
+          0.4
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "flushChanges",
+          74.21
+        ],
+        [
+          "applyChange",
+          69.43
+        ],
+        [
+          "applyResult",
+          64.55
+        ],
+        [
+          "updateATTRbind",
+          60.37
+        ],
+        [
+          "globalThis.__run",
+          23.7
+        ],
+        [
+          "getBoundingClientRect",
+          20.77
+        ],
+        [
+          "updateProperty",
+          15.75
+        ],
+        [
+          "",
+          4.4
+        ],
+        [
+          "ownKeys",
+          3.87
+        ],
+        [
+          "getOwnPropertyDescriptor",
+          3.44
+        ],
+        [
+          "set",
+          2.4
+        ],
+        [
+          "eventPRoxy",
+          2.31
+        ],
+        [
+          "calculateBind",
+          2.29
+        ],
+        [
+          "queueBindings",
+          2.26
+        ],
+        [
+          "queueChange",
+          1.97
+        ],
+        [
+          "reduceVar",
+          1.97
+        ],
+        [
+          "get",
+          1.81
+        ],
+        [
+          "getAttribute",
+          1.79
+        ],
+        [
+          "getValue",
+          1.57
+        ],
+        [
+          "isPromiseLike",
+          1.53
+        ],
+        [
+          "(garbage collector)",
+          1.35
+        ],
+        [
+          "finishBindingChange",
+          1.12
+        ],
+        [
+          "(program)",
+          0.67
+        ],
+        [
+          "getContext",
+          0.6
+        ],
+        [
+          "enqueueFlushBinding",
+          0.42
+        ],
+        [
+          "checkRenderElements",
+          0.41
+        ],
+        [
+          "has",
+          0.4
+        ],
+        [
+          "getProperty",
+          0.3
+        ],
+        [
+          "now",
+          0.1
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    },
+    "appendShared": {
+      "sampledMs": 1316.7119998588562,
+      "windowMs": 1323.899999988556,
+      "selfTop": [
+        [
+          "getBoundingClientRect",
+          24.23
+        ],
+        [
+          "GProxy",
+          12.17
+        ],
+        [
+          "flushChanges",
+          6.08
+        ],
+        [
+          "queueChange",
+          5.74
+        ],
+        [
+          "(garbage collector)",
+          4.8
+        ],
+        [
+          "subscriptionNode",
+          3.87
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          3.61
+        ],
+        [
+          "isOrdinaryData",
+          3.25
+        ],
+        [
+          "createElement",
+          3.23
+        ],
+        [
+          "createGetterAndSetter",
+          2.57
+        ],
+        [
+          "reduceVar",
+          2.49
+        ],
+        [
+          "updateFORbind",
+          1.88
+        ],
+        [
+          "queueBindings",
+          1.84
+        ],
+        [
+          "",
+          1.67
+        ],
+        [
+          "updateTEXTbind",
+          1.67
+        ],
+        [
+          "applyResult",
+          1.54
+        ],
+        [
+          "setAttribute",
+          1.54
+        ],
+        [
+          "getAttribute",
+          1.4
+        ],
+        [
+          "appendChild",
+          1.27
+        ],
+        [
+          "__publicField",
+          1.25
+        ]
+      ],
+      "inclusiveTop": [
+        [
+          "(root)",
+          100.0
+        ],
+        [
+          "flushChanges",
+          69.94
+        ],
+        [
+          "applyResult",
+          56.85
+        ],
+        [
+          "updateFORbind",
+          45.85
+        ],
+        [
+          "set",
+          25.77
+        ],
+        [
+          "globalThis.__run",
+          24.69
+        ],
+        [
+          "getBoundingClientRect",
+          24.23
+        ],
+        [
+          "",
+          16.56
+        ],
+        [
+          "createGTpl",
+          16.1
+        ],
+        [
+          "GProxy",
+          16.03
+        ],
+        [
+          "_GTpl",
+          16.02
+        ],
+        [
+          "loadOptions",
+          13.52
+        ],
+        [
+          "doSet",
+          13.16
+        ],
+        [
+          "appendChildsFromFnc",
+          12.56
+        ],
+        [
+          "a00000",
+          12.36
+        ],
+        [
+          "createElement",
+          12.02
+        ],
+        [
+          "eventPRoxy",
+          7.94
+        ],
+        [
+          "queueBindings",
+          7.66
+        ],
+        [
+          "reduceVar",
+          6.94
+        ],
+        [
+          "queueChange",
+          5.82
+        ],
+        [
+          "addBind",
+          4.86
+        ],
+        [
+          "(garbage collector)",
+          4.8
+        ],
+        [
+          "removeProxyHandler",
+          4.78
+        ],
+        [
+          "unGProxy",
+          4.74
+        ],
+        [
+          "get",
+          4.46
+        ],
+        [
+          "checkBind",
+          4.11
+        ],
+        [
+          "subscriptionNode",
+          3.87
+        ],
+        [
+          "addBind2Object",
+          3.63
+        ],
+        [
+          "removeSubscriptionsFromTarget",
+          3.61
+        ],
+        [
+          "updateATTRbind",
+          3.36
+        ]
+      ],
+      "note": "Inclusive percentages overlap; profiler and diagnostic fixture differ from ranked benchmark."
+    }
+  }
+}

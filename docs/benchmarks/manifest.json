@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "cases": 12,
-  "gtplSourceHash": "fccbd87988d6742933fb34b22f235a84175b561e9c1bf41d69053eae56c2d653",
+  "gtplSourceHash": "d2ae00a0ce5a34e1a1c18e0abb3d79691c5857d45b12f6b7719af1a6da429d46",
   "gtplCompiler": {
     "generator": "GCodeOptimized",
     "options": {
@@ -17,18 +17,18 @@
       "sha256": "20bd38815e91f698ebace8bff5eb62ab242e23430753f36236a3cf9bb5cbd6fc"
     },
     "gtpl": {
-      "version": "3.0.0",
+      "version": "3.1.0",
       "file": "benchmarks/vendor/gtpl.js",
-      "bytes": 44047,
-      "gzipBytes": 11959,
-      "sha256": "c2295fb38f77d7be3778044fb1aa2da72b39956f8d862ad414a3430c8a303dc7"
+      "bytes": 46441,
+      "gzipBytes": 12907,
+      "sha256": "07ba6bd9f10e7c8fae623c4bf54636cc3f70552a3d8948621f84f1b419e4ef2a"
     },
     "gtpl-jit": {
-      "version": "3.0.0",
+      "version": "3.1.0",
       "file": "benchmarks/vendor/gtpl-jit.js",
-      "bytes": 54062,
-      "gzipBytes": 17315,
-      "sha256": "0503bab575a7aa40104e0a51c34768f9e350304fcfa593466bc5f58016b52f51"
+      "bytes": 56444,
+      "gzipBytes": 18248,
+      "sha256": "8cbc012ab66422308847d84d769115a3cac2391930bd622930a51388bf14e2ba"
     },
     "vue": {
       "version": "3.5.44",
@@ -75,18 +75,18 @@
       "sha256": "4e469fa4ede3e20259a17956517108c8005e007cf0d704f1231c374bbff66ab8"
     },
     "gtpl": {
-      "version": "3.0.0",
+      "version": "3.1.0",
       "file": "benchmarks/vendor/grid-gtpl.js",
-      "bytes": 34451,
-      "gzipBytes": 11455,
-      "sha256": "c5af8606407d2697ea3c36056d3d9d0726453c3c259eaf97d2383c0ced62091d"
+      "bytes": 36844,
+      "gzipBytes": 12402,
+      "sha256": "0b12ee37c4d6dd8fa9ad4d7a967bb47337c1450934e28b166f3a24071e1c02f9"
     },
     "gtpl-jit": {
-      "version": "3.0.0",
+      "version": "3.1.0",
       "file": "benchmarks/vendor/grid-gtpl-jit.js",
-      "bytes": 51676,
-      "gzipBytes": 17224,
-      "sha256": "7bfd7f0bb042bc523679767cb3725e0210cbe52152cfdb145ed59c6984d315d6"
+      "bytes": 54058,
+      "gzipBytes": 18170,
+      "sha256": "13d9b3bc300babf067a0fe51ba36c5ba0fcb59cda0af779314187ea36f64e238"
     },
     "react": {
       "version": "19.3.1",
@@ -233,27 +233,27 @@
     "switch-8": {
       "gtpl": {
         "file": "benchmarks/methods/switch-8-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": 8,
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-gtpl.js",
-            "bytes": 750214,
-            "gzipBytes": 14292,
-            "sha256": "506cebe6797305e13317e23f2d9042fb434144328328aa3484be25d8a95e30ce"
+            "bytes": 750241,
+            "gzipBytes": 14314,
+            "sha256": "dacafe404dde20687b6dc50e134231e4a56430ae8eb5cca506a4316feb4773af"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -262,38 +262,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 785659,
-        "gzipBytes": 26465
+        "bytes": 788179,
+        "gzipBytes": 27471
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-8-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": 8,
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-gtpl-jit.js",
-            "bytes": 391610,
-            "gzipBytes": 10736,
-            "sha256": "5ece0ab32fdf71f8c7b0657281e433efbcf5cbb4ae4a30b66cbdbf2f12ccd876"
+            "bytes": 391637,
+            "gzipBytes": 10753,
+            "sha256": "ad82ed725b333d68e48733c8589656bf2f7dbe43444379683094a1bd8e82c947"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -302,8 +302,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 443783,
-        "gzipBytes": 28792
+        "bytes": 446303,
+        "gzipBytes": 29793
       },
       "react": {
         "file": "benchmarks/methods/switch-8-react.js",
@@ -313,9 +313,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-react.js",
-            "bytes": 607170,
-            "gzipBytes": 14869,
-            "sha256": "59dd0ade0064e967b6a3c01789abd109d279bfe29a380605e101b41874b28746"
+            "bytes": 607336,
+            "gzipBytes": 15004,
+            "sha256": "18f3f214bd3ac1deb72444e2d9a441d153f56384b7e1ca88188b1f6764efcba8"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -330,14 +330,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 829188,
-        "gzipBytes": 84227
+        "bytes": 829462,
+        "gzipBytes": 84409
       },
       "vue": {
         "file": "benchmarks/methods/switch-8-vue.js",
@@ -347,9 +347,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-vue.js",
-            "bytes": 538971,
-            "gzipBytes": 45056,
-            "sha256": "1e522fa166eadc3e8ee90bc9db7058a295c0b73c5a6baa31a6f858ed506aa1d8"
+            "bytes": 539011,
+            "gzipBytes": 45074,
+            "sha256": "66a5e7984cf6775beb63fd6d643dfe6db12be0921838f5878ed5176a0d599799"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -358,10 +358,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -370,8 +370,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 597774,
-        "gzipBytes": 68893
+        "bytes": 597922,
+        "gzipBytes": 68958
       },
       "svelte": {
         "file": "benchmarks/methods/switch-8-svelte.js",
@@ -381,9 +381,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-svelte.js",
-            "bytes": 471682,
-            "gzipBytes": 16139,
-            "sha256": "6ec8488da1b13402680a7fcb58348b0b76791bba0df61e67ca30e39ea65bef29"
+            "bytes": 471722,
+            "gzipBytes": 16156,
+            "sha256": "719da8cb10c8b389b21af63084104a9392122b77fd91c181b563d82a8265d30f"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -392,10 +392,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -404,8 +404,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 537774,
-        "gzipBytes": 41126
+        "bytes": 537922,
+        "gzipBytes": 41190
       },
       "alpine": {
         "file": "benchmarks/methods/switch-8-alpine.js",
@@ -415,9 +415,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-alpine.js",
-            "bytes": 398023,
-            "gzipBytes": 11214,
-            "sha256": "2773b1d4a96b860976f8613dc0b902f83128fdd141a84988ea04015139b8874e"
+            "bytes": 398045,
+            "gzipBytes": 11230,
+            "sha256": "6bb8a420f9004beea512550df44801d2a96293619ceec80399ee2b91644f8222"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -426,10 +426,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -438,8 +438,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 454624,
-        "gzipBytes": 31715
+        "bytes": 454754,
+        "gzipBytes": 31778
       },
       "vanilla": {
         "file": "benchmarks/methods/switch-8-vanilla.js",
@@ -449,15 +449,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-vanilla.js",
-            "bytes": 391533,
-            "gzipBytes": 10680,
-            "sha256": "e1bc0251f4539da7aa68858d051527b25f975e4243e2262a59219109c7644f7e"
+            "bytes": 391681,
+            "gzipBytes": 10787,
+            "sha256": "2d682ef87f963cc0e80183ba2cdb4d06a160fcf8f5fb5fb1237e7ea62ec820a1"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -466,8 +466,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 392654,
-        "gzipBytes": 11426
+        "bytes": 392910,
+        "gzipBytes": 11580
       },
       "angular": {
         "file": "benchmarks/methods/switch-8-angular.js",
@@ -477,9 +477,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-8-angular.js",
-            "bytes": 459620,
-            "gzipBytes": 55891,
-            "sha256": "b0f641d6d0bdeae337815ca749624a9a11d2bbd496336027b12909ba181abb54"
+            "bytes": 459726,
+            "gzipBytes": 55953,
+            "sha256": "4e327721b06f43bd6bbe5693af95a1da5a93d399df08cec6693178339448ed75"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -494,34 +494,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 767392,
-        "gzipBytes": 156488
+        "bytes": 767498,
+        "gzipBytes": 156550
       }
     },
     "switch-32": {
       "gtpl": {
         "file": "benchmarks/methods/switch-32-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": 32,
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-gtpl.js",
-            "bytes": 3004642,
-            "gzipBytes": 53805,
-            "sha256": "6b9532eae06dbbdbc248c5612cd6f8553482086586707e6f41e7f6019fbfc407"
+            "bytes": 3004669,
+            "gzipBytes": 53833,
+            "sha256": "ef97641b78c589309adb4c2dc0ed934fc525313bca17786dff592687df7ad10f"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -530,38 +530,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3040087,
-        "gzipBytes": 65978
+        "bytes": 3042607,
+        "gzipBytes": 66990
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-32-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": 32,
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-gtpl-jit.js",
-            "bytes": 1570670,
-            "gzipBytes": 40693,
-            "sha256": "d32f6c15eb2481e34c8bcd485c96a5c6052dad5a45cd44ea34bd625a0c108a1e"
+            "bytes": 1570697,
+            "gzipBytes": 40716,
+            "sha256": "1c72358f76873a09f13cb854ef4a014c63d20257d17dcbd1fb9cb89aa2975cc3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -570,8 +570,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1622843,
-        "gzipBytes": 58749
+        "bytes": 1625363,
+        "gzipBytes": 59756
       },
       "react": {
         "file": "benchmarks/methods/switch-32-react.js",
@@ -581,9 +581,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-react.js",
-            "bytes": 2432428,
-            "gzipBytes": 56846,
-            "sha256": "f8cc41b27244ee827dc5caa3d8054a66860d7a0c74775ecf26dc180516ca60b0"
+            "bytes": 2432594,
+            "gzipBytes": 56964,
+            "sha256": "a7c8423c35c10b47edd2d98caa7ff93ea672e4205c6850170f66ffbb0f6af38d"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -598,14 +598,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 2654446,
-        "gzipBytes": 126204
+        "bytes": 2654720,
+        "gzipBytes": 126369
       },
       "vue": {
         "file": "benchmarks/methods/switch-32-vue.js",
@@ -615,9 +615,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-vue.js",
-            "bytes": 2189208,
-            "gzipBytes": 169743,
-            "sha256": "37728f3dde955431802cf0ef9236ad65de03b3bcb5e1bf9ffb20bc5eb5c184ed"
+            "bytes": 2189255,
+            "gzipBytes": 169764,
+            "sha256": "c2b2aaa2951914d996193ef6c6d65681294ef2290f762c1e103923811b1d26ef"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -626,10 +626,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -638,8 +638,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 2248011,
-        "gzipBytes": 193580
+        "bytes": 2248166,
+        "gzipBytes": 193648
       },
       "svelte": {
         "file": "benchmarks/methods/switch-32-svelte.js",
@@ -649,9 +649,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-svelte.js",
-            "bytes": 1890572,
-            "gzipBytes": 49376,
-            "sha256": "9e513c701a0b61f12531c3037f56d940d3eee03ccc01c677f74a9b766345f120"
+            "bytes": 1890612,
+            "gzipBytes": 49398,
+            "sha256": "d61314cdd4abad3153b1faaa121d1fae471b579072ee2f9b37411af9a43b86ac"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -660,10 +660,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -672,8 +672,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1956664,
-        "gzipBytes": 74363
+        "bytes": 1956812,
+        "gzipBytes": 74432
       },
       "alpine": {
         "file": "benchmarks/methods/switch-32-alpine.js",
@@ -683,9 +683,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-alpine.js",
-            "bytes": 1596187,
-            "gzipBytes": 42103,
-            "sha256": "a243c5a8ce858210e37e1a0466d8d4600a42e81806a9eb16c1f6fb8921493c93"
+            "bytes": 1596209,
+            "gzipBytes": 42122,
+            "sha256": "d5dada2d430743a134853cb2b326f513811d9e07cfb0c21124948e1f3c5b1cbb"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -694,10 +694,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -706,8 +706,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1652788,
-        "gzipBytes": 62604
+        "bytes": 1652918,
+        "gzipBytes": 62670
       },
       "vanilla": {
         "file": "benchmarks/methods/switch-32-vanilla.js",
@@ -717,15 +717,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-vanilla.js",
-            "bytes": 1570331,
-            "gzipBytes": 40380,
-            "sha256": "e2572ef4733093ec2ac0b5de4e687fe3dc09e47f37132eb1faec13969e8a5d0c"
+            "bytes": 1570479,
+            "gzipBytes": 40495,
+            "sha256": "16ee3fad0f5bf11101bdda39a75f3c814508ac3e9bec6d11e68672feaeea9e5a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -734,8 +734,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1571452,
-        "gzipBytes": 41126
+        "bytes": 1571708,
+        "gzipBytes": 41288
       },
       "angular": {
         "file": "benchmarks/methods/switch-32-angular.js",
@@ -745,9 +745,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-32-angular.js",
-            "bytes": 1830944,
-            "gzipBytes": 218499,
-            "sha256": "136ba33299c75dd9386904f7122a2ec6b7f8677c2575ac540e7963e5d33d28de"
+            "bytes": 1831050,
+            "gzipBytes": 218560,
+            "sha256": "07adda86d2a249aa1dab102fa5108ec3ab9a2d2508fab1880fa04477ab2cf39c"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -762,34 +762,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 2138716,
-        "gzipBytes": 319096
+        "bytes": 2138822,
+        "gzipBytes": 319157
       }
     },
     "switch-64": {
       "gtpl": {
         "file": "benchmarks/methods/switch-64-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": 64,
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-gtpl.js",
-            "bytes": 6011234,
-            "gzipBytes": 106376,
-            "sha256": "c6946d20fcb7d4ff57934e9deac5f0de6e4d112a3e4229634aa23d9f31c013b2"
+            "bytes": 6011261,
+            "gzipBytes": 106406,
+            "sha256": "5c4c31442c1affbc4d0f737f145e62aea9aad42d84b8b2afba73a3fea3748a76"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -798,38 +798,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 6046679,
-        "gzipBytes": 118549
+        "bytes": 6049199,
+        "gzipBytes": 119563
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/switch-64-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": 64,
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-gtpl-jit.js",
-            "bytes": 3143438,
-            "gzipBytes": 80488,
-            "sha256": "759ac362f1ff24b1f636889ebae3f24d7040ece9044ea385420a3369d9781847"
+            "bytes": 3143465,
+            "gzipBytes": 80506,
+            "sha256": "ab0fb8b82645721392a087e5c2a98b3bdb7da398c230e184885dd4fed739553d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -838,8 +838,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3195611,
-        "gzipBytes": 98544
+        "bytes": 3198131,
+        "gzipBytes": 99546
       },
       "react": {
         "file": "benchmarks/methods/switch-64-react.js",
@@ -849,9 +849,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-react.js",
-            "bytes": 4866796,
-            "gzipBytes": 112861,
-            "sha256": "114d7869427a5eff112e1babf195b75341bf0cd3ad9d29403218dd4ed2fa1aea"
+            "bytes": 4866962,
+            "gzipBytes": 112982,
+            "sha256": "37bb811873864b77170cb6bb9b9c8f9c96e4559a8f66345e690f878816692f5f"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -866,14 +866,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 5088814,
-        "gzipBytes": 182219
+        "bytes": 5089088,
+        "gzipBytes": 182387
       },
       "vue": {
         "file": "benchmarks/methods/switch-64-vue.js",
@@ -883,9 +883,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-vue.js",
-            "bytes": 4409780,
-            "gzipBytes": 336160,
-            "sha256": "b53fd0176c06bcdd2510c4a5d7e92225fe5b1f8731cfcf9ae58b6515908e911a"
+            "bytes": 4409827,
+            "gzipBytes": 336184,
+            "sha256": "1ca15d8ad997c2d564f73ccfda956836859592a705e7d543fa85131fd6cd252f"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -894,10 +894,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -906,8 +906,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 4468583,
-        "gzipBytes": 359997
+        "bytes": 4468738,
+        "gzipBytes": 360068
       },
       "svelte": {
         "file": "benchmarks/methods/switch-64-svelte.js",
@@ -917,9 +917,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-svelte.js",
-            "bytes": 3783116,
-            "gzipBytes": 91593,
-            "sha256": "c5654ad709b6b17a9c13dcc1f11b52c81bab048b65c1048b6891c993e66fd65d"
+            "bytes": 3783156,
+            "gzipBytes": 91611,
+            "sha256": "a5d1b9fdd71da1ae81a9a98f5afbe065998ccd99cf076a75e50ec5ea897f8483"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -928,10 +928,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -940,8 +940,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3849208,
-        "gzipBytes": 116580
+        "bytes": 3849356,
+        "gzipBytes": 116645
       },
       "alpine": {
         "file": "benchmarks/methods/switch-64-alpine.js",
@@ -951,9 +951,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-alpine.js",
-            "bytes": 3194427,
-            "gzipBytes": 83105,
-            "sha256": "ee83f5bca36bf816e86baa89ad6d454d1a50708861a31cc0045ba8e58f08bb41"
+            "bytes": 3194449,
+            "gzipBytes": 83123,
+            "sha256": "88318748a726a41fbbcd8b84ef2c45b844fd40f2c918145c4741a3fd670b1c62"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -962,10 +962,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -974,8 +974,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3251028,
-        "gzipBytes": 103606
+        "bytes": 3251158,
+        "gzipBytes": 103671
       },
       "vanilla": {
         "file": "benchmarks/methods/switch-64-vanilla.js",
@@ -985,15 +985,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-vanilla.js",
-            "bytes": 3142747,
-            "gzipBytes": 79765,
-            "sha256": "7bebb37ba32e7bab407ae21792945151faf56b8f8e25f7f89589da27a9c7df26"
+            "bytes": 3142895,
+            "gzipBytes": 79864,
+            "sha256": "0266d957f33483806a5b2ff70a5f2a64d217fe1b6c42629db20dbedcea8c37a6"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1002,8 +1002,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3143868,
-        "gzipBytes": 80511
+        "bytes": 3144124,
+        "gzipBytes": 80657
       },
       "angular": {
         "file": "benchmarks/methods/switch-64-angular.js",
@@ -1013,9 +1013,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/switch-64-angular.js",
-            "bytes": 3660540,
-            "gzipBytes": 435031,
-            "sha256": "2cc56dd66e4172558fbe92058cbc6419948a9e5a8095ceca8516af57618052d0"
+            "bytes": 3660650,
+            "gzipBytes": 435093,
+            "sha256": "e409419355948eaee38f7de38381a07e254dbc904e9517fbb2e14e56989c25aa"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -1030,34 +1030,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 3968312,
-        "gzipBytes": 535628
+        "bytes": 3968422,
+        "gzipBytes": 535690
       }
     },
     "for": {
       "gtpl": {
         "file": "benchmarks/methods/for-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/for-gtpl.js",
-            "bytes": 1033,
-            "gzipBytes": 586,
-            "sha256": "4c5f090319a2c58230ea3e82ceece5683aab039f47cd013a8fe8769fc3e919bf"
+            "bytes": 1060,
+            "gzipBytes": 601,
+            "sha256": "cd9bc5698c6ea19932c45eb917e20c482b15464caec25e6bbad6b33db6df42b1"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1066,38 +1066,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 36478,
-        "gzipBytes": 12759
+        "bytes": 38998,
+        "gzipBytes": 13758
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/for-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/for-gtpl-jit.js",
-            "bytes": 608,
-            "gzipBytes": 413,
-            "sha256": "f50a4fa959639d963d24cb4ee2ff2bcdd9d1f48367dc98c6a9c2fd8bd210571f"
+            "bytes": 635,
+            "gzipBytes": 426,
+            "sha256": "faa9ef6b047c5443bfb7c0ccd696443c33a13cd7b0044d3794e9e86789579cc3"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1106,8 +1106,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 52781,
-        "gzipBytes": 18469
+        "bytes": 55301,
+        "gzipBytes": 19466
       },
       "react": {
         "file": "benchmarks/methods/for-react.js",
@@ -1117,9 +1117,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/for-react.js",
-            "bytes": 765,
-            "gzipBytes": 411,
-            "sha256": "3a430821998cfd529d733b98725a44925d0c0e20c4387ed3deac075f5c0da074"
+            "bytes": 1001,
+            "gzipBytes": 521,
+            "sha256": "4520aa3e2d3b3416dc9dfdceb32d6486339630e0ee46a5e3416ef55165f810ab"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -1134,14 +1134,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 222783,
-        "gzipBytes": 69769
+        "bytes": 223127,
+        "gzipBytes": 69926
       },
       "vue": {
         "file": "benchmarks/methods/for-vue.js",
@@ -1151,9 +1151,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/for-vue.js",
-            "bytes": 661,
-            "gzipBytes": 424,
-            "sha256": "f65cb2287f172da22e74b06dbe9cb3943452358c9109556f1fb1b77f3ab40419"
+            "bytes": 704,
+            "gzipBytes": 436,
+            "sha256": "7c4a9667d4e7c45002ddc0693e89c37ac8f02e090f721900bb81e07bae2867d8"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -1162,10 +1162,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1174,8 +1174,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 59464,
-        "gzipBytes": 24261
+        "bytes": 59615,
+        "gzipBytes": 24320
       },
       "svelte": {
         "file": "benchmarks/methods/for-svelte.js",
@@ -1185,9 +1185,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/for-svelte.js",
-            "bytes": 773,
-            "gzipBytes": 500,
-            "sha256": "bd1ad19de9ef5062adb241b00990d74fdaa4c6481a41467a2549262008d84d5d"
+            "bytes": 807,
+            "gzipBytes": 516,
+            "sha256": "f0920462512c86145e3e979f88d22880dddb2f8b7d8e23873ebe0b630d277313"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -1196,10 +1196,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1208,8 +1208,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 66865,
-        "gzipBytes": 25487
+        "bytes": 67007,
+        "gzipBytes": 25550
       },
       "alpine": {
         "file": "benchmarks/methods/for-alpine.js",
@@ -1219,9 +1219,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/for-alpine.js",
-            "bytes": 696,
-            "gzipBytes": 453,
-            "sha256": "8f88445e693373fd37bd8a2e0f1382d4e8aa2df16231eb157a25a77fb5fe4a08"
+            "bytes": 718,
+            "gzipBytes": 464,
+            "sha256": "0a9e057c237d74698e4b4e9ddf6017c3e3e1c4774f7fbe348045cac2f6b926e3"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -1230,10 +1230,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1242,8 +1242,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 57297,
-        "gzipBytes": 20954
+        "bytes": 57427,
+        "gzipBytes": 21012
       },
       "vanilla": {
         "file": "benchmarks/methods/for-vanilla.js",
@@ -1253,15 +1253,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/for-vanilla.js",
-            "bytes": 684,
-            "gzipBytes": 456,
-            "sha256": "5ba17409498df1be99ea3146d67dfc071d1a57e6a7708a2259472fa20346873f"
+            "bytes": 832,
+            "gzipBytes": 512,
+            "sha256": "2fea1b51fa6d2a28530802effb4bca18a22f50dec3a627d577101278d584ad2b"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1270,8 +1270,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1805,
-        "gzipBytes": 1202
+        "bytes": 2061,
+        "gzipBytes": 1305
       },
       "angular": {
         "file": "benchmarks/methods/for-angular.js",
@@ -1281,9 +1281,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/for-angular.js",
-            "bytes": 1604,
-            "gzipBytes": 948,
-            "sha256": "45d2617f0445600b530944acc94612dec2ffa3e079766e956e49fc8734347200"
+            "bytes": 1715,
+            "gzipBytes": 991,
+            "sha256": "ca4d30e16112198068c0556ee9238ed5192f1d003a0b84365c86740bc2360676"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -1298,34 +1298,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 309376,
-        "gzipBytes": 101545
+        "bytes": 309487,
+        "gzipBytes": 101588
       }
     },
     "if": {
       "gtpl": {
         "file": "benchmarks/methods/if-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/if-gtpl.js",
-            "bytes": 94187,
-            "gzipBytes": 2517,
-            "sha256": "16281510a4b7489beeebc70a89ed493be519614a2052e74948643572e2acdd44"
+            "bytes": 94214,
+            "gzipBytes": 2536,
+            "sha256": "13152d3e3efca457812fa456d5d029104b75957a0a7375a037f51bda397b00b0"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1334,38 +1334,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 129632,
-        "gzipBytes": 14690
+        "bytes": 132152,
+        "gzipBytes": 15693
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/if-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/if-gtpl-jit.js",
-            "bytes": 49351,
-            "gzipBytes": 1876,
-            "sha256": "6f6a5cf377c74ae4ef4cde622f8b8209e559bec050bd87aa0200a52d5e572e59"
+            "bytes": 49378,
+            "gzipBytes": 1891,
+            "sha256": "85e40b7cfcbc4deaefb3f6ae7d4ce9c2ea5b0a6774e0c1d153df56f529af347c"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1374,8 +1374,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 101524,
-        "gzipBytes": 19932
+        "bytes": 104044,
+        "gzipBytes": 20931
       },
       "react": {
         "file": "benchmarks/methods/if-react.js",
@@ -1385,9 +1385,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/if-react.js",
-            "bytes": 76373,
-            "gzipBytes": 2428,
-            "sha256": "085251639f93b4b46a89716c95c4c5090eadcb7de2ad8643e2b365ce8561a03d"
+            "bytes": 76539,
+            "gzipBytes": 2532,
+            "sha256": "11bc2bc79883a21e660be216b3fe82f472c2af3aa8cf3de197f6a15717c355ef"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -1402,14 +1402,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 298391,
-        "gzipBytes": 71786
+        "bytes": 298665,
+        "gzipBytes": 71937
       },
       "vue": {
         "file": "benchmarks/methods/if-vue.js",
@@ -1419,9 +1419,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/if-vue.js",
-            "bytes": 66743,
-            "gzipBytes": 6362,
-            "sha256": "c9f215e691817e065b601fd39e1423db4ae87a771f67a6d78625d3dc9b244ad9"
+            "bytes": 66783,
+            "gzipBytes": 6378,
+            "sha256": "bd502543cac0bb79f5725119a65557af30b5ddb4a22084085e450bc55f9edf8f"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -1430,10 +1430,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1442,8 +1442,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 125546,
-        "gzipBytes": 30199
+        "bytes": 125694,
+        "gzipBytes": 30262
       },
       "svelte": {
         "file": "benchmarks/methods/if-svelte.js",
@@ -1453,9 +1453,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/if-svelte.js",
-            "bytes": 59474,
-            "gzipBytes": 5415,
-            "sha256": "57a103f3207e7e75f548113d4c727ffb01384331889efae0bf6083a11f9b0966"
+            "bytes": 59510,
+            "gzipBytes": 5432,
+            "sha256": "a1cd32334e319dc282096942d3799e09798727a9b1e30f2a8d3909e25b7f86e6"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -1464,10 +1464,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1476,8 +1476,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 125566,
-        "gzipBytes": 30402
+        "bytes": 125710,
+        "gzipBytes": 30466
       },
       "alpine": {
         "file": "benchmarks/methods/if-alpine.js",
@@ -1487,9 +1487,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/if-alpine.js",
-            "bytes": 50209,
-            "gzipBytes": 1997,
-            "sha256": "51b5b909992b9190bed7fc97d39a60d4ef32c8cd071b4ea53b17390722342e24"
+            "bytes": 50231,
+            "gzipBytes": 2013,
+            "sha256": "8961df9c3eac18f83bb6c39543f6145993820a529c6ee1a6f5b53c1f04d8c47d"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -1498,10 +1498,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1510,8 +1510,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 106810,
-        "gzipBytes": 22498
+        "bytes": 106940,
+        "gzipBytes": 22561
       },
       "vanilla": {
         "file": "benchmarks/methods/if-vanilla.js",
@@ -1521,15 +1521,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/if-vanilla.js",
-            "bytes": 49374,
-            "gzipBytes": 1909,
-            "sha256": "0fd3c6cce579481f32ec09d72072a582fce0759fe364a422a81c624d7565a382"
+            "bytes": 49522,
+            "gzipBytes": 1996,
+            "sha256": "d1d1eed65c24c58101ab2ca8209066108b76e5067b1b9f08bb570c12d3ed2db4"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1538,8 +1538,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 50495,
-        "gzipBytes": 2655
+        "bytes": 50751,
+        "gzipBytes": 2789
       },
       "angular": {
         "file": "benchmarks/methods/if-angular.js",
@@ -1549,9 +1549,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/if-angular.js",
-            "bytes": 62718,
-            "gzipBytes": 8647,
-            "sha256": "4e009f154c5137531d7bb07ee4c71002838311e6786292d0ce0059206a67a17f"
+            "bytes": 62824,
+            "gzipBytes": 8703,
+            "sha256": "816e0c110e1e5636d21e2e21d363a1acef4d3a94bf444672b1b30bbce8b5e0d2"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -1566,34 +1566,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 370490,
-        "gzipBytes": 109244
+        "bytes": 370596,
+        "gzipBytes": 109300
       }
     },
     "styles": {
       "gtpl": {
         "file": "benchmarks/methods/styles-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/styles-gtpl.js",
-            "bytes": 934,
-            "gzipBytes": 550,
-            "sha256": "09907047be1caaf86f1738f111430f15d649a48f63dffc56201bb867d01e3964"
+            "bytes": 961,
+            "gzipBytes": 566,
+            "sha256": "bb386b9b1af77be4c0bb6c6e82ae669a51e3a56fe779eeb76eb1e8e34ade6084"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1602,38 +1602,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 36379,
-        "gzipBytes": 12723
+        "bytes": 38899,
+        "gzipBytes": 13723
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/styles-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/styles-gtpl-jit.js",
-            "bytes": 639,
-            "gzipBytes": 418,
-            "sha256": "ca1dfc4086cb4e7c23b3c8843f61a4d63e574a5128784edff3b970a3bda2bce9"
+            "bytes": 666,
+            "gzipBytes": 431,
+            "sha256": "52409c096fea229e7e5a835c3fb7b84091c3be78e34d5f35932e283910f7b452"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1642,8 +1642,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 52812,
-        "gzipBytes": 18474
+        "bytes": 55332,
+        "gzipBytes": 19471
       },
       "react": {
         "file": "benchmarks/methods/styles-react.js",
@@ -1653,9 +1653,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/styles-react.js",
-            "bytes": 690,
-            "gzipBytes": 391,
-            "sha256": "69333a78e622a3dae91c70e98416da54d68a0986d4061307d2837e4741ea69f6"
+            "bytes": 856,
+            "gzipBytes": 483,
+            "sha256": "1b8f7c20a02428a2d068d3353de950703d8009095f3cd1dd6e800c3a23d8d8a9"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -1670,14 +1670,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 222708,
-        "gzipBytes": 69749
+        "bytes": 222982,
+        "gzipBytes": 69888
       },
       "vue": {
         "file": "benchmarks/methods/styles-vue.js",
@@ -1687,9 +1687,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/styles-vue.js",
-            "bytes": 585,
-            "gzipBytes": 381,
-            "sha256": "408a7854ad11559f3055bc75cafd1e99c586107504159d3eb3321a149d8e5a03"
+            "bytes": 623,
+            "gzipBytes": 394,
+            "sha256": "07d97c1466a462b78e5a0b0ca0f361842db496b0e72a9f4eff75d8703b4e7456"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -1698,10 +1698,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1710,8 +1710,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 59388,
-        "gzipBytes": 24218
+        "bytes": 59534,
+        "gzipBytes": 24278
       },
       "svelte": {
         "file": "benchmarks/methods/styles-svelte.js",
@@ -1721,9 +1721,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/styles-svelte.js",
-            "bytes": 742,
-            "gzipBytes": 468,
-            "sha256": "a6c04c16faa7e1ef8830126e6d1cec378e0682fe669da3b33eac57616b892f80"
+            "bytes": 776,
+            "gzipBytes": 482,
+            "sha256": "42dc5a99786cf6f96f800d7629ac6a23d6aa8d2ff72b3143264b07aef3da4b3a"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -1732,10 +1732,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1744,8 +1744,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 66834,
-        "gzipBytes": 25455
+        "bytes": 66976,
+        "gzipBytes": 25516
       },
       "alpine": {
         "file": "benchmarks/methods/styles-alpine.js",
@@ -1755,9 +1755,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/styles-alpine.js",
-            "bytes": 636,
-            "gzipBytes": 429,
-            "sha256": "f4e67ae9941111cbc6839f685ad3b3b7db1c1da259a77b1d73a56ea647f4de9e"
+            "bytes": 663,
+            "gzipBytes": 441,
+            "sha256": "fec9948d4e953db3c38a5ba498e6fab28d07d7ae623bf0e535e0c30b6508d3d3"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -1766,10 +1766,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1778,8 +1778,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 57237,
-        "gzipBytes": 20930
+        "bytes": 57372,
+        "gzipBytes": 20989
       },
       "vanilla": {
         "file": "benchmarks/methods/styles-vanilla.js",
@@ -1789,15 +1789,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/styles-vanilla.js",
-            "bytes": 499,
-            "gzipBytes": 356,
-            "sha256": "a2d384d9f80ca4f6fdf0eff1dd8c50ce0572d4f085f46fb0412c9323a02d786c"
+            "bytes": 647,
+            "gzipBytes": 432,
+            "sha256": "2135b272ab067cda70a386f2b6d81a6f05c4278bc817b218e4b9a41ed59cf465"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1806,8 +1806,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1620,
-        "gzipBytes": 1102
+        "bytes": 1876,
+        "gzipBytes": 1225
       },
       "angular": {
         "file": "benchmarks/methods/styles-angular.js",
@@ -1817,9 +1817,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/styles-angular.js",
-            "bytes": 1675,
-            "gzipBytes": 956,
-            "sha256": "6b368dbe7656ef6c133d1d20f1f7d311be1cbf6052996a83096305208fe4c4ae"
+            "bytes": 1781,
+            "gzipBytes": 998,
+            "sha256": "e6ae1821e6b6ac0b48dc53fbec0b3213f97dd6626c1a7dee74acaa2a9fb21d8d"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -1834,34 +1834,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 309447,
-        "gzipBytes": 101553
+        "bytes": 309553,
+        "gzipBytes": 101595
       }
     },
     "classes": {
       "gtpl": {
         "file": "benchmarks/methods/classes-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/classes-gtpl.js",
-            "bytes": 819,
-            "gzipBytes": 539,
-            "sha256": "6a74e8d388f9bd39e222f6192d5fbd1b62ac6bfc6cf9b6398df49f65ded34128"
+            "bytes": 846,
+            "gzipBytes": 553,
+            "sha256": "0f19ab03b1d431740f94c133259c1dd3ccf75f82ba4ccb38fb436d0a8c48f3cf"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1870,38 +1870,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 36264,
-        "gzipBytes": 12712
+        "bytes": 38784,
+        "gzipBytes": 13710
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/classes-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/classes-gtpl-jit.js",
-            "bytes": 570,
-            "gzipBytes": 391,
-            "sha256": "79711a795309787de79b1e105bc4106881a745a90bee1517f8434589f5f83d02"
+            "bytes": 597,
+            "gzipBytes": 406,
+            "sha256": "d9b935b9f45b31653ce7e476f2ddc0a67d1ebc697505a625a5b408948cf01a64"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1910,8 +1910,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 52743,
-        "gzipBytes": 18447
+        "bytes": 55263,
+        "gzipBytes": 19446
       },
       "react": {
         "file": "benchmarks/methods/classes-react.js",
@@ -1921,9 +1921,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/classes-react.js",
-            "bytes": 689,
-            "gzipBytes": 388,
-            "sha256": "3bfb679acf7fb4d601dc3afac0acf12506672be419aa57678f996f648f40a33e"
+            "bytes": 855,
+            "gzipBytes": 480,
+            "sha256": "50c23e42da18f4a29ddaf558c273ff988d19556fc75e2419295961a06bc4869c"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -1938,14 +1938,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 222707,
-        "gzipBytes": 69746
+        "bytes": 222981,
+        "gzipBytes": 69885
       },
       "vue": {
         "file": "benchmarks/methods/classes-vue.js",
@@ -1955,9 +1955,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/classes-vue.js",
-            "bytes": 585,
-            "gzipBytes": 381,
-            "sha256": "fe4312800b873108b4a5a47f753ab6b1227217ee4856c495abf17d77d4c2c350"
+            "bytes": 628,
+            "gzipBytes": 395,
+            "sha256": "4fca4f52ac1b4352714e87f36a3c9d37b556ac55b63ba081ec98fdf564206976"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -1966,10 +1966,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -1978,8 +1978,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 59388,
-        "gzipBytes": 24218
+        "bytes": 59539,
+        "gzipBytes": 24279
       },
       "svelte": {
         "file": "benchmarks/methods/classes-svelte.js",
@@ -1989,9 +1989,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/classes-svelte.js",
-            "bytes": 641,
-            "gzipBytes": 420,
-            "sha256": "b8996d5f882e304e602dcd637e1cf2fcc8852b4793831580f28fce6770458261"
+            "bytes": 675,
+            "gzipBytes": 433,
+            "sha256": "ec7306c3830ba71c1688e1beb6810ee432a17a32b5bb9b87fb73f3c0dc06d680"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -2000,10 +2000,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2012,8 +2012,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 66733,
-        "gzipBytes": 25407
+        "bytes": 66875,
+        "gzipBytes": 25467
       },
       "alpine": {
         "file": "benchmarks/methods/classes-alpine.js",
@@ -2023,9 +2023,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/classes-alpine.js",
-            "bytes": 640,
-            "gzipBytes": 427,
-            "sha256": "edb565647dccc71b31f84d7573e92ebab97f82fffe74a8aab6cbe509069e833d"
+            "bytes": 667,
+            "gzipBytes": 440,
+            "sha256": "e85d6398d2b714420aa30be4671e04ebd9394646d5d465fffac7d947a2b94a2c"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -2034,10 +2034,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2046,8 +2046,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 57241,
-        "gzipBytes": 20928
+        "bytes": 57376,
+        "gzipBytes": 20988
       },
       "vanilla": {
         "file": "benchmarks/methods/classes-vanilla.js",
@@ -2057,15 +2057,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/classes-vanilla.js",
-            "bytes": 505,
-            "gzipBytes": 352,
-            "sha256": "21ca15b5f8a4603d2897ebee23d01048b34ce7e2ade154df17220214b30ee859"
+            "bytes": 653,
+            "gzipBytes": 428,
+            "sha256": "59599ab936e090ae6a4caec83a92d178e916557c345e6d7cc366838d5ff20028"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2074,8 +2074,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1626,
-        "gzipBytes": 1098
+        "bytes": 1882,
+        "gzipBytes": 1221
       },
       "angular": {
         "file": "benchmarks/methods/classes-angular.js",
@@ -2085,9 +2085,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/classes-angular.js",
-            "bytes": 1556,
-            "gzipBytes": 918,
-            "sha256": "ac9c3646902c490db9d81c1e063f6565b71fd4b9d8f0c1f806742fb736964d48"
+            "bytes": 1662,
+            "gzipBytes": 961,
+            "sha256": "0bf6bbceca4815fefa1c82ebb80a8c7d6260764eda05be502b2017dbd35eecd2"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -2102,34 +2102,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 309328,
-        "gzipBytes": 101515
+        "bytes": 309434,
+        "gzipBytes": 101558
       }
     },
     "attributes": {
       "gtpl": {
         "file": "benchmarks/methods/attributes-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/attributes-gtpl.js",
-            "bytes": 861,
-            "gzipBytes": 555,
-            "sha256": "444a382c32fbf7acd0f872e4356d9dfd81c8080bb7d64d21940b9f20e54aae2b"
+            "bytes": 888,
+            "gzipBytes": 571,
+            "sha256": "78d1259cdad5a3cd210920a5b150d028710f9d61342b85a8ddcd6db82f0d6cb6"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2138,38 +2138,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 36306,
-        "gzipBytes": 12728
+        "bytes": 38826,
+        "gzipBytes": 13728
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/attributes-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/attributes-gtpl-jit.js",
-            "bytes": 568,
-            "gzipBytes": 391,
-            "sha256": "1f0f9ca83515bfc005ea940383fa2abe395ea1fa1620e60f77d2c749dab265e4"
+            "bytes": 595,
+            "gzipBytes": 405,
+            "sha256": "8bbe254455d3255dd3ef4388bc0514bf8653dca5e523874ead6536a832da781f"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2178,8 +2178,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 52741,
-        "gzipBytes": 18447
+        "bytes": 55261,
+        "gzipBytes": 19445
       },
       "react": {
         "file": "benchmarks/methods/attributes-react.js",
@@ -2189,9 +2189,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/attributes-react.js",
-            "bytes": 691,
-            "gzipBytes": 391,
-            "sha256": "53e411736e12b03c0000497ceacb2cf0f7a72e3f4c0782ce573669617f1a1695"
+            "bytes": 857,
+            "gzipBytes": 483,
+            "sha256": "e7190db38f4d4d52f2028d048a1dda03cb034762d8e2a58d07696f307866855e"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -2206,14 +2206,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 222709,
-        "gzipBytes": 69749
+        "bytes": 222983,
+        "gzipBytes": 69888
       },
       "vue": {
         "file": "benchmarks/methods/attributes-vue.js",
@@ -2223,9 +2223,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/attributes-vue.js",
-            "bytes": 607,
-            "gzipBytes": 397,
-            "sha256": "3553bd047222ede8a74c3fc567a1d582938f2d8f290cbfa3045e6558b88b0299"
+            "bytes": 650,
+            "gzipBytes": 411,
+            "sha256": "654849e819b436ffdac70fe000043ef8cf3a706bd15c9eaee15bbd1e8c048a48"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -2234,10 +2234,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2246,8 +2246,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 59410,
-        "gzipBytes": 24234
+        "bytes": 59561,
+        "gzipBytes": 24295
       },
       "svelte": {
         "file": "benchmarks/methods/attributes-svelte.js",
@@ -2257,9 +2257,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/attributes-svelte.js",
-            "bytes": 696,
-            "gzipBytes": 449,
-            "sha256": "1f2be6023dd80fcfe38ffb46f76c2afd07eb1923bd4d66c12953a9464de65c4d"
+            "bytes": 730,
+            "gzipBytes": 463,
+            "sha256": "46a866c75283b02f152d46331908393833710f5485c302d84e735e63051a4695"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -2268,10 +2268,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2280,8 +2280,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 66788,
-        "gzipBytes": 25436
+        "bytes": 66930,
+        "gzipBytes": 25497
       },
       "alpine": {
         "file": "benchmarks/methods/attributes-alpine.js",
@@ -2291,9 +2291,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/attributes-alpine.js",
-            "bytes": 727,
-            "gzipBytes": 472,
-            "sha256": "66e3320bc2393979a1eb65efb07656f5b78e6e0380bbd55c980c3ce36fdfffde"
+            "bytes": 754,
+            "gzipBytes": 485,
+            "sha256": "d029246096e35d417d29c10092eac4d7e20c7aefc0f35de7a1d09998c0bfd93f"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -2302,10 +2302,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2314,8 +2314,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 57328,
-        "gzipBytes": 20973
+        "bytes": 57463,
+        "gzipBytes": 21033
       },
       "vanilla": {
         "file": "benchmarks/methods/attributes-vanilla.js",
@@ -2325,15 +2325,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/attributes-vanilla.js",
-            "bytes": 554,
-            "gzipBytes": 387,
-            "sha256": "df57d2ab1c39d880a92e187ed10e921c383178ab26e6dfc76b63d5348a47c1cd"
+            "bytes": 702,
+            "gzipBytes": 460,
+            "sha256": "32cb947b67a65c27e3094a08630fb606c4d657ee198ad473a2e37edaab77a3ce"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2342,8 +2342,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1675,
-        "gzipBytes": 1133
+        "bytes": 1931,
+        "gzipBytes": 1253
       },
       "angular": {
         "file": "benchmarks/methods/attributes-angular.js",
@@ -2353,9 +2353,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/attributes-angular.js",
-            "bytes": 1680,
-            "gzipBytes": 960,
-            "sha256": "1bd1d25239ec0aaf303d6b32a06f19b99372573089835905f05c9392b881deed"
+            "bytes": 1786,
+            "gzipBytes": 1002,
+            "sha256": "ede2f38849e237bff7b48d457a5934654e39f58d3dbfee9791285b753c0c2ba8"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -2370,34 +2370,34 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 309452,
-        "gzipBytes": 101557
+        "bytes": 309558,
+        "gzipBytes": 101599
       }
     },
     "forms": {
       "gtpl": {
         "file": "benchmarks/methods/forms-gtpl.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/forms-gtpl.js",
-            "bytes": 957,
-            "gzipBytes": 592,
-            "sha256": "faa4d539714514168d53577a6bb6c5d5d37b1640fdd58d2154d4a15afb9b9f8b"
+            "bytes": 984,
+            "gzipBytes": 606,
+            "sha256": "d953c159764277cf2c39f4530317b4af7ae89da665ceb3e7932dbb4936f8e691"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2406,38 +2406,38 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 36402,
-        "gzipBytes": 12765
+        "bytes": 38922,
+        "gzipBytes": 13763
       },
       "gtpl-jit": {
         "file": "benchmarks/methods/forms-gtpl-jit.js",
-        "version": "3.0.0",
+        "version": "3.1.0",
         "blocksPerBranch": 128,
         "declaredCases": null,
         "assets": [
           {
             "file": "benchmarks/methods/forms-gtpl-jit.js",
-            "bytes": 612,
-            "gzipBytes": 411,
-            "sha256": "be1b03033608e5799fe99f61ae11d3db3527578869fca6d45e274e0202629aff"
+            "bytes": 639,
+            "gzipBytes": 424,
+            "sha256": "587f6f8ca4ea1905bf766fac032cc89d932a70c6d86fa6474ff72639027a69ef"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-R5PCWSUE.js",
+            "file": "benchmarks/methods/chunks/chunk-37B4Z7XV.js",
             "bytes": 16728,
             "gzipBytes": 5883,
-            "sha256": "668e95c3d659ec878eeaeea1786d12dc57bbbeb20e86b1b82fc8bafd3166b416"
+            "sha256": "21f900fcfcbc1874969b46940e46bdb5c1047be0532ce38ad2f1cc5f25426984"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-KLC35DGO.js",
-            "bytes": 34324,
-            "gzipBytes": 11427,
-            "sha256": "ed01957e408f09b203031862058359ad7562fdb9e6b1ebf8099e22ef5ae44f00"
+            "file": "benchmarks/methods/chunks/chunk-VEAZ3GE7.js",
+            "bytes": 36709,
+            "gzipBytes": 12364,
+            "sha256": "bf2605707c01672c9244235a23d3d9d2511ae54647d06693731942bd2dc8abf9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2446,8 +2446,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 52785,
-        "gzipBytes": 18467
+        "bytes": 55305,
+        "gzipBytes": 19464
       },
       "react": {
         "file": "benchmarks/methods/forms-react.js",
@@ -2457,9 +2457,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/forms-react.js",
-            "bytes": 805,
-            "gzipBytes": 436,
-            "sha256": "8f4661befc9e0b119d81ca6ba2749c94b0c31a1ef1bf21a0e42bf0a864031c07"
+            "bytes": 971,
+            "gzipBytes": 525,
+            "sha256": "eb4126242fb75363f4c9b3eb759bcb5205fa78ca0a55c95863d8ed430f2fb40f"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-OHC6XAPT.js",
@@ -2474,14 +2474,14 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           }
         ],
-        "bytes": 222823,
-        "gzipBytes": 69794
+        "bytes": 223097,
+        "gzipBytes": 69930
       },
       "vue": {
         "file": "benchmarks/methods/forms-vue.js",
@@ -2491,9 +2491,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/forms-vue.js",
-            "bytes": 730,
-            "gzipBytes": 456,
-            "sha256": "9d3801752065f0b4c939d23ee63cac2b929796be8589fcf344ef8d72350c101f"
+            "bytes": 773,
+            "gzipBytes": 471,
+            "sha256": "1f7379ab772d5d3feaf35617c3bfc5df7a391c41d6d8d3f2937c2c7b14dcee15"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-DY2AXESX.js",
@@ -2502,10 +2502,10 @@
             "sha256": "d71e9e5b0348037ad6e215210d94919e9fed7a9ec531b631d7fd0c015a19228a"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2514,8 +2514,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 59533,
-        "gzipBytes": 24293
+        "bytes": 59684,
+        "gzipBytes": 24355
       },
       "svelte": {
         "file": "benchmarks/methods/forms-svelte.js",
@@ -2525,9 +2525,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/forms-svelte.js",
-            "bytes": 807,
-            "gzipBytes": 507,
-            "sha256": "c0cecbea2b7b3f314401be45e64832fc365e8b9bd0c0f50703759dc95b6eacdd"
+            "bytes": 836,
+            "gzipBytes": 521,
+            "sha256": "bf401c4c5b0cd0ad7bf2bc060df3354c25be36c4cb34f4c9ad10ef695ca96ef2"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-J5AMDVTG.js",
@@ -2536,10 +2536,10 @@
             "sha256": "b8ed61b6f796ae3aca66df3a8b2dff01c2f0831231d2bd0c4c10a5d49f244679"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2548,8 +2548,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 66899,
-        "gzipBytes": 25494
+        "bytes": 67036,
+        "gzipBytes": 25555
       },
       "alpine": {
         "file": "benchmarks/methods/forms-alpine.js",
@@ -2559,9 +2559,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/forms-alpine.js",
-            "bytes": 693,
-            "gzipBytes": 447,
-            "sha256": "d63c3815e9d217c860327facd90a2a2c9871e884641b3509a4760b82c3dbc0d8"
+            "bytes": 720,
+            "gzipBytes": 460,
+            "sha256": "4d9e5041016c88b1f3a75dddd1cc5bb8eeca5d84ad2fdb726f3b3472c5346dc0"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-LDNTNRD7.js",
@@ -2570,10 +2570,10 @@
             "sha256": "46e96c429a6e2ac6f6d6152a823dde3ec2efd81ac90ead78cb22717edfb5995d"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2582,8 +2582,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 57294,
-        "gzipBytes": 20948
+        "bytes": 57429,
+        "gzipBytes": 21008
       },
       "vanilla": {
         "file": "benchmarks/methods/forms-vanilla.js",
@@ -2593,15 +2593,15 @@
         "assets": [
           {
             "file": "benchmarks/methods/forms-vanilla.js",
-            "bytes": 658,
-            "gzipBytes": 418,
-            "sha256": "a2283e42b55d6a1119c650d58307d62dce666a67c4dc20d7d923029104d3bec0"
+            "bytes": 806,
+            "gzipBytes": 490,
+            "sha256": "1f5ced8d10cf616bc453d1123250c43383045383d9eaf850fedc1991fd796fc9"
           },
           {
-            "file": "benchmarks/methods/chunks/chunk-IURVTT6B.js",
-            "bytes": 544,
-            "gzipBytes": 385,
-            "sha256": "ee30f8f98137a1015f36e204a7b72e837077a46ee4cf79a0a389d837aa6ce4f7"
+            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
+            "bytes": 652,
+            "gzipBytes": 432,
+            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
@@ -2610,8 +2610,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 1779,
-        "gzipBytes": 1164
+        "bytes": 2035,
+        "gzipBytes": 1283
       },
       "angular": {
         "file": "benchmarks/methods/forms-angular.js",
@@ -2621,9 +2621,9 @@
         "assets": [
           {
             "file": "benchmarks/methods/forms-angular.js",
-            "bytes": 1777,
-            "gzipBytes": 1018,
-            "sha256": "b71888244fa16458804771c31819488806d5634f43dbf75b6f36aa015e84d278"
+            "bytes": 1883,
+            "gzipBytes": 1060,
+            "sha256": "2f9381dcbc1c71d56cf709c0e3cfdda30be8f06cbab1bd5cd20f15c40d363a7d"
           },
           {
             "file": "benchmarks/methods/chunks/chunk-AZOC4H2F.js",
@@ -2638,8 +2638,8 @@
             "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
           }
         ],
-        "bytes": 309549,
-        "gzipBytes": 101615
+        "bytes": 309655,
+        "gzipBytes": 101657
       }
     }
   }

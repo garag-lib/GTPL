@@ -1,0 +1,57 @@
+{
+  "benchmarkSamples": 570,
+  "benchmarkErrors": 0,
+  "timingSamplesPerEngine": 5,
+  "heapSamplesPerEngine": 3,
+  "toolTestsPassed": 133,
+  "toolTestsFailed": 0,
+  "browserUI": "PASS: desktop/mobile, 24 comparisons, 8/9 engines, ES/EN, 6 live validated samples, higher-is-better bars, isolated lab, stale result rejection, no console errors",
+  "flutterUnchanged": {
+    "verifiedFiles": 25,
+    "sha256": {
+      "scripts/benchmarks/flutter/.gitignore": "7afc9526708d52a5171bf5833221b54ace7abc11d735c8c59a70b3587800d2b7",
+      "scripts/benchmarks/flutter/pubspec.yaml": "ac07121258dbaacb627ed042074fc7104bb50f9854c6652fce13e8b3637b1144",
+      "scripts/benchmarks/flutter/pubspec.lock": "6abc8dfca022a3c199872e1311e51bcb0885c1af82303734f5c2d50a57cbcb1a",
+      "scripts/benchmarks/flutter/lib/main.dart": "944bf7fb84fa10a094a5ccbc956b20759d7fe2b67c163aa1e79f36ba1139e395",
+      "scripts/benchmarks/flutter/web/flutter_bootstrap.js": "7239c2e6631b434de586a707950c8f043b461d1b8d94bb05e8008a98cb00472a",
+      "scripts/benchmarks/flutter/web/index.html": "64e53a79e599ea3980b403a5e0fba4690082837af9eae09b2fc960d7afe6a902",
+      "scripts/benchmarks/flutter/fonts/OFL.txt": "50ab8dd54680d3473f649c9db86fece88434d097c7834475c1c72d2f8c429215",
+      "scripts/benchmarks/flutter/fonts/RobotoMono.ttf": "66a80e79d17e4c7cabd162e2916578a4cc08fd19eef6e2a643305eae9c567b2b",
+      "docs/benchmarks/vendor/flutter/main.dart.js": "bc0e0699c77ca1878c1a4f08df73c500a565cc06e776a8e493e3dc1629dac495",
+      "docs/benchmarks/vendor/flutter/manifest.json": "ca0fd23699afa164d13ebdce82c665a0c0915759a99bd9e9325303049eee6156",
+      "docs/benchmarks/vendor/flutter/FLUTTER-LICENSE.txt": "a598db94b6290ffbe10b5ecf911057b6a943351c727fdda9e5f2891d68700a20",
+      "docs/benchmarks/vendor/flutter/RobotoMono-OFL.txt": "50ab8dd54680d3473f649c9db86fece88434d097c7834475c1c72d2f8c429215",
+      "docs/benchmarks/vendor/flutter/flutter_bootstrap.js": "3392cec6679da8524157934913566e80ab3815b6edfea638e196dad8648a03a5",
+      "docs/benchmarks/vendor/flutter/canvaskit/canvaskit.wasm": "fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3",
+      "docs/benchmarks/vendor/flutter/canvaskit/canvaskit.js": "bb559f6080c7d312ac2a912b4abec9f68ff3d3022d4a603c7796b9b31460642b",
+      "docs/benchmarks/vendor/flutter/assets/AssetManifest.bin": "96f5ddd2f0ad3afa83c148515a5d300f99d519ec506a634c3c4774f823899433",
+      "docs/benchmarks/vendor/flutter/assets/AssetManifest.bin.json": "778ab73d035593d603b053e324c406ed332f9d5bbc5e01f3cce337512c2a6c65",
+      "docs/benchmarks/vendor/flutter/assets/NOTICES": "b277163068f14258fc28230f2f4dd7d0e6ab695f99859da4d91aa7341dd03164",
+      "docs/benchmarks/vendor/flutter/assets/FontManifest.json": "0d89ac18fd8534af05ef2ab3c3c90fd7a64913ea09ac339fc880eacedceff978",
+      "docs/benchmarks/vendor/flutter/assets/shaders/ink_sparkle.frag": "2dca5ab93d4ec29e963f996f3916320ba60825e9537dfb149a68008c7a16b026",
+      "docs/benchmarks/vendor/flutter/assets/shaders/stretch_effect.frag": "ab412f07a5b9b50b67a885b24dbe16929738ae28630407d6490c924caf0a3220",
+      "docs/benchmarks/vendor/flutter/assets/fonts/RobotoMono.ttf": "66a80e79d17e4c7cabd162e2916578a4cc08fd19eef6e2a643305eae9c567b2b",
+      "docs/benchmarks/vendor/flutter/assets/fonts/fallback/Roboto-Regular.ttf": "79e851404657dac2106b3d22ad256d47824a9a5765458edb72c9102a45816d95",
+      "docs/benchmarks/vendor/grid-flutter.js": "9a4fdb6f167c2bc20466a490ddc4727de12dcb78124e7fc65f0ab8352654a9fc",
+      "scripts/benchmarks/build-flutter.mjs": "fc865811790a0a95ea29a9220e5a255ee4283dbaaa357fb8d04bc7d5e95f573c"
+    }
+  },
+  "gtplSourceHash": "d2ae00a0ce5a34e1a1c18e0abb3d79691c5857d45b12f6b7719af1a6da429d46",
+  "uiScreenshots": [
+    "artifacts/benchmark-refresh/page-desktop.png",
+    "artifacts/benchmark-refresh/page-mobile.png"
+  ],
+  "releaseValidation": {
+    "gtpl": "3.1.0",
+    "gtplweb": "2.0.2",
+    "gtplTests": 162,
+    "benchmarkToolTests": 134,
+    "gtplwebTests": 51,
+    "sanmateoNodeTests": 169,
+    "sanmateoBrowser": "Agenda, Compras, Gastronomia, navigation/back/forward; synthetic site production bundle",
+    "sanmateoNativeDOM": "g-for cleanup, replacement, iterator, ready/destroy, dynamic selects",
+    "sanmateoPublished": false,
+    "benchmarkEquivalence": "Same measured source/compiler/runner/assets; GTPL version labels only",
+    "ui": "desktop/mobile, 24 comparisons, six validated live samples, ES/EN and stale results guard"
+  }
+}

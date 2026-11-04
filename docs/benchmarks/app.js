@@ -1,3 +1,5 @@
+import "./overview.js";
+import { efficiencyScore } from "./scores.js";
 import "./navigation.js";
 import { t, getLanguage, formatNumber, setLanguage, translateDOM, onLanguageChange, localizedError, errorMessage } from "./i18n.js";
 import { renderMemoryProgress } from "./memory-progress.js";
@@ -84,7 +86,7 @@ function element(tag, text, className) {
   if (className) result.className = className;
   return result;
 }
-function bar(container, label, value, max, metric, rival, pending = false) {
+function bar(container, label, value, values, metric, rival, pending = false) {
   const row = element("div", undefined, "bar-row");
   const labels = element("div", undefined, "bar-label");
   labels.append(
@@ -96,21 +98,23 @@ function bar(container, label, value, max, metric, rival, pending = false) {
   );
   const track = element("div", undefined, "bar-track");
   const fill = element("div", undefined, `bar-fill${rival ? " rival" : ""}`);
-  // Signed memory deltas are shown as magnitudes with their signed value above.
-  // They are never used to rank engines.
-  fill.style.width =
-    value === null || max <= 0
-      ? "0%"
-      : `${Math.max(0, Math.min(100, (Math.abs(value) / max) * 100))}%`;
-  if (value === null) track.classList.add("empty-bar");
-  track.append(fill);
-  row.append(labels, track);
+  const score = efficiencyScore(value, values, metric.direction);
+  if (score !== null) {
+    fill.style.width = `${score}%`;
+    track.title = `${number.format(score)} / 100`;
+    track.append(fill);
+    row.append(labels, track);
+  } else row.append(labels);
   container.append(row);
 }
 function renderCharts() {
+  $("#results").hidden = !runData;
+  $("#grid-results").hidden = !runData || method() !== "grid";
+  for (const link of document.querySelectorAll('.toc a'))
+    if (link.hash === '#results') link.closest('li').hidden = !runData;
   const [a, b] = pair();
   $("#charts").replaceChildren();
-  for (const metric of selectedMetrics(method())) {
+  for (const metric of selectedMetrics(method()).filter(m => m.kind === "time" || (method() === "switch" && m.kind === "memory"))) {
     const card = element("article", undefined, "chart-card"),
       header = element("header");
     header.append(
@@ -121,16 +125,15 @@ function renderCharts() {
           ? "JS+DOM · EXPERIMENTAL"
           : metric.kind === "count"
             ? t("DOM · VERIFIED", "DOM · VERIFICADO")
-            : metric.direction === "higher"
-              ? t("↑ HIGHER", "↑ MÁS")
-              : t("↓ LOWER", "↓ MENOS"),
+            : t("↑ BETTER", "↑ MEJOR"),
         "direction",
       ),
     );
-    card.append(header, element("p", metric.note, "chart-note"));
+    card.append(header);
+    card.title = metric.note;
     const av = stats(a, metric.key),
       bv = stats(b, metric.key),
-      max = Math.max(Math.abs(av?.median ?? 0), Math.abs(bv?.median ?? 0));
+      values = [av?.median, bv?.median];
     const pending = (id) =>
       !runData ||
       (running &&
@@ -141,7 +144,7 @@ function renderCharts() {
       card,
       engines[a].name,
       av?.median ?? null,
-      max,
+      values,
       metric,
       false,
       pending(a),
@@ -150,7 +153,7 @@ function renderCharts() {
       card,
       engines[b].name,
       bv?.median ?? null,
-      max,
+      values,
       metric,
       true,
       pending(b),
@@ -252,121 +255,17 @@ function renderVerdict() {
         ? t("Run stopped. Completed samples are preserved.", "Ejecución detenida. Se conservan las muestras completas.")
         : runData.memoryWarnings.length
           ? t("The memory API timed out. The comparison continued in fresh runners without memory readings; missing readings are N/A. Export JSON for details.", "La API de memoria superó el límite de espera. La comparación continuó en ejecutores nuevos sin memoria; las lecturas faltantes son N/D. Consulta el JSON para ver el detalle.")
-          : t("Medians for the selected case. Code and templates remain in memory; counts distinguish the active view from inert content. GC may affect memory deltas.", "Medianas del caso elegido. Código y plantillas residen en memoria; los recuentos distinguen vista activa y contenido inerte. Los deltas de memoria pueden variar por el GC.");
+          : t("Validated output · medians · longer bars are better.", "Salida validada · medianas · barra más larga = mejor.");
 }
 
 function renderSamples() {
-  const container = $("#samples-chart");
+  const container = $("#samples-chart"), metric = getMetric($("#sample-metric").value);
   container.replaceChildren();
-  const [a, b] = pair(),
-    metric = getMetric($("#sample-metric").value);
-  if (!metric) {
-    container.append(
-      element("div", t("Select a metric for this case.", "Selecciona una métrica del caso."), "sample-empty"),
-    );
-    return;
+  if (!metric) return;
+  for (const id of pair()) {
+    const values = (runData?.samples[id] ?? []).map(s => s.result.metrics[metric.key]);
+    container.append(element("p", `${engines[id].name}: ${values.length ? values.map(v => formatted(v, metric)).join(" · ") : "—"}`));
   }
-  const groups = [a, b].map((id) =>
-    (runData?.samples[id] ?? []).filter((s) =>
-      Number.isFinite(s.result.metrics[metric.key]),
-    ),
-  );
-  const values = groups.flatMap((samples) =>
-    samples.map((s) => numeric(s.result.metrics[metric.key], metric)),
-  );
-  if (!values.length) {
-    container.append(
-      element(
-        "div",
-        t("Samples will appear here when you run this scenario.", "Las muestras aparecerán aquí al ejecutar este escenario."),
-        "sample-empty",
-      ),
-    );
-    return;
-  }
-  const width = 500,
-    height = 180,
-    left = 64,
-    right = 16,
-    top = 17,
-    bottom = 32;
-  let min = Math.min(0, ...values),
-    max = Math.max(0, ...values);
-  if (min === max) max = min + 1;
-  max += (max - min) * 0.12;
-  const y = (value) =>
-    height - bottom - ((value - min) / (max - min)) * (height - bottom - top);
-  const rounds = runData.config.count;
-  const x = (round) => left + ((round + 0.5) / rounds) * (width - left - right);
-  const ns = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(ns, "svg");
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  svg.setAttribute("role", "img");
-  const title = document.createElementNS(ns, "title");
-  title.textContent = t(`${metric.title} in ${metric.unit}, by round. Full values are available in the results table and JSON export.`, `${metric.title} en ${metric.unit}, por ronda. Los valores completos están en la tabla de resultados y la exportación JSON.`);
-  svg.append(title);
-  const make = (tag, attrs, text) => {
-    const node = document.createElementNS(ns, tag);
-    for (const [key, value] of Object.entries(attrs))
-      node.setAttribute(key, value);
-    if (text !== undefined) node.textContent = text;
-    svg.append(node);
-    return node;
-  };
-  for (let i = 0; i <= 3; i++) {
-    const value = min + ((max - min) / 3) * i;
-    make("line", {
-      x1: left,
-      x2: width - right,
-      y1: y(value),
-      y2: y(value),
-      class: "gridline",
-    });
-    make(
-      "text",
-      { x: left - 9, y: y(value) + 3, "text-anchor": "end" },
-      number.format(value),
-    );
-  }
-  for (let i = 0; i < rounds; i++)
-    make(
-      "text",
-      { x: x(i), y: height - 8, "text-anchor": "middle" },
-      String(i + 1),
-    );
-  make("text", { x: left, y: 9 }, metric.unit);
-  groups.forEach((samples, index) => {
-    for (const sample of samples) {
-      const value = sample.result.metrics[metric.key];
-      const node = make(
-        index ? "rect" : "circle",
-        index
-          ? {
-              x: x(sample.round) + 1,
-              y: y(numeric(value, metric)) - 3,
-              width: 6,
-              height: 6,
-              class: "sample-b",
-            }
-          : {
-              cx: x(sample.round) - 4,
-              cy: y(numeric(value, metric)),
-              r: 3.5,
-              class: "sample-a",
-            },
-      );
-      const tip = document.createElementNS(ns, "title");
-      tip.textContent = `${engines[index ? b : a].name} · ${t("round", "ronda")} ${sample.round + 1}: ${formatted(value, metric)}`;
-      node.append(tip);
-    }
-  });
-  container.append(svg);
-  const legend = element("div", undefined, "sample-legend");
-  legend.append(
-    element("span", `${engines[a].name} · ${t("circle", "círculo")}`),
-    element("span", `${engines[b].name} · ${t("square", "cuadrado")}`),
-  );
-  container.append(legend);
 }
 
 function renderPair() {
@@ -415,17 +314,15 @@ function renderPair() {
         : manifest?.methods?.[methodKey(method(), cases)]?.[id];
   }
   $("#bundle-chart").replaceChildren();
-  const max = Math.max(
-    ...[a, b].map((id) => (entries[id]?.gzipBytes ?? 0) / 1024),
-  );
+  const values = [a, b].map((id) => (entries[id]?.gzipBytes ?? 0) / 1024);
   for (const [index, id] of [a, b].entries())
     if (entries[id])
       bar(
         $("#bundle-chart"),
         engines[id].name,
         entries[id].gzipBytes / 1024,
-        max,
-        { unit: "KiB gzip" },
+        values,
+        { unit: "KiB gzip", direction: "lower" },
         !!index,
       );
   if (!running) $("#run").disabled = !manifest || a === b;
@@ -451,12 +348,13 @@ function renderPair() {
   if (memorySupported)
     write("#memory-help", () => method() === "grid"
         ? t("The grid does not measure memory.", "El grid no mide memoria.")
-        : t(`${Number($("#samples").value) * 2 * memoryPhaseCount({ method: method(), retention: $("#retention").checked })} readings in total. Per-reading limit: ${MEMORY_TIMEOUT_MS / 1000} s. Each complete sample has ${sampleTimeoutMs({ memory: true, method: method(), retention: $("#retention").checked }) / 1000} s, including loading, rendering and all readings. The sample timer does not reset between phases. JS+DOM, not total Chrome RAM.`, `${Number($("#samples").value) * 2 * memoryPhaseCount({ method: method(), retention: $("#retention").checked })} lecturas en total. Límite por lectura: ${MEMORY_TIMEOUT_MS / 1000} s. La muestra completa dispone de ${sampleTimeoutMs({ memory: true, method: method(), retention: $("#retention").checked }) / 1000} s, incluyendo carga, renderizado y todas las lecturas. El contador de la muestra no se reinicia entre fases. JS+DOM, no RAM total de Chrome.`));
+        : t("Experimental JS+DOM deltas · 30 s limit per reading · not total RAM.", "Deltas JS+DOM experimentales · límite de 30 s por lectura · no RAM total."));
   renderCharts();
 }
 function setRunning(value) {
   running = value;
   if ($("#language")) $("#language").disabled = value;
+  for (const control of document.querySelectorAll('#overview select, #overview button')) control.disabled = value;
   controls.forEach((control) => {
     control.disabled = value || (control.id === "memory" && !memorySupported);
   });

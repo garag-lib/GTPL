@@ -1,5 +1,5 @@
 import { BindTypes, TypeEventProxyHandler } from "./GEnums";
-import { GProxy, unGProxy, toRaw } from "./GProxy";
+import { GProxy, unGProxy, replaceGProxy, toRaw } from "./GProxy";
 import { GAddArributes, GAddTo, GInsertAfterTo, GInsertBeforeTo } from "./GGeneratorRuntime";
 import { IFunction, IVarOrConst, IBindDef, TplVar, PathProxyHandler, EventFunctionProxyHandler, IGtplObject, IBindObject, IIndex } from './GEnums';
 import { globalObject, passiveSupported } from "./global";
@@ -551,9 +551,8 @@ function createGetterAndSetter(
       get,
       set: function (newval: any) {
         const rawNewValue = toRaw(newval);
-        unGProxy(objdef.val, gtpl.BoundEventProxy, objdef);
-        objdef.val = rawNewValue;
         const doSet = () => {
+          objdef.val = rawNewValue;
           if (isStaticType(rawNewValue)) {
             delete objdef.pro;
             return objdef.val;
@@ -568,7 +567,7 @@ function createGetterAndSetter(
             return objdef.pro;
           }
         };
-        const ret = doSet();
+        const ret = replaceGProxy(objdef.val, gtpl.BoundEventProxy, objdef, objdef.key, doSet);
         gtpl.eventPRoxy(
           TypeEventProxyHandler.SET,
           [objdef.key],
@@ -596,7 +595,6 @@ function addBind2Object(gtpl: IGtplObject, va: TplVar, bind: IBindObject) {
     const name = va[i];
     if (i == 0) {
       const ctx = gtpl.getContext(name);
-      createGetterAndSetter(ctx, va, bind);
       if (ctx != gtpl) {
         // si se añade el bind a otro contexto, hay que almacenar el contexto original
         bind.gtpl = gtpl;
@@ -615,6 +613,10 @@ function addBind2Object(gtpl: IGtplObject, va: TplVar, bind: IBindObject) {
         addBind2Object(ctx, va, bind);
         return;
       }
+      // Only the owning context registers the reactive property. Registering
+      // before delegating creates a second descriptor/subscription because its
+      // BindTree entry does not exist until the recursive call finishes.
+      createGetterAndSetter(ctx, va, bind);
     }
     if (ref[name] == undefined)
       ref[name] = {};
@@ -1254,7 +1256,9 @@ function updateATTRbind(
         updateProperty(key, null);
       });
       bind.attrs.length = 0;
-      for (let key in result) {
+      // GProxy forwards key/descriptor enumeration unchanged. Avoid those
+      // traps, but keep value reads on the proxy so getters retain their receiver.
+      for (let key in toRaw(result)) {
         bind.attrs.push(key);
         updateProperty(key, result[key]);
       }

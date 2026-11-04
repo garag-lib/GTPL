@@ -45,15 +45,16 @@ const configs = [
   { id: 'grid-64-10', method: 'grid', grid: { columns: 64, rows: 64, step: 1, levels: 1, percent: 10, durationMs, seed: 42 } },
 ].filter(config => !selected || selected.includes(config.id));
 const heapConfigs = configs.filter(config => ['switch', 'for', 'if'].includes(config.method));
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.wasm': 'application/wasm', '.ttf': 'font/ttf', '.woff2': 'font/woff2' };
 const server = createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
     const file = path.resolve(docs, '.' + pathname);
     if (!file.startsWith(docs + path.sep)) throw Error('Invalid path');
     const data = pathname === '/benchmarks/__heap-method-runner.js' ? heapSource : await readFile(file);
+    const contentType = types[path.extname(file)] || 'application/octet-stream';
     response.writeHead(200, {
-      'Content-Type': (types[path.extname(file)] || 'application/octet-stream') + '; charset=utf-8',
+      'Content-Type': contentType.startsWith('text/') || contentType === 'application/json' ? contentType + '; charset=utf-8' : contentType,
       'Cache-Control': 'no-store', 'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp', 'Cross-Origin-Resource-Policy': 'same-origin',
     });
@@ -72,7 +73,7 @@ const record = {
     timing: 'Unmodified published runMethod/runGrid; fresh page per engine/sample; download and module evaluation excluded, GTPL JIT compilation inside mount included; DOM completion, validation and forced layout are the common fence.',
     heap: 'Separate pass. The sole readMemory call is replaced in a virtual module with CDP HeapProfiler.collectGarbage + Runtime.getHeapUsage. usedSize covers V8 JavaScript heap, not native DOM/RSS. Timings from the heap pass are not ranked. Published files are unchanged.',
     heapHook: { originalSHA256: sha(source), instrumentedSHA256: sha(heapSource), replacement: hook + ' -> memory = await globalThis.__benchmarkHeapRead();' },
-    fixtures: `500 rows/elements; if and each switch branch have 128 blocks; switch variants 8/32/64; grid from ${gridStart}, ${gridLevels} levels, step 16 at 100%, base seed ${gridSeed} + level; 64 at 10%, seed 42.`,
+    fixtures: `500 rows/elements; list local edits: 1 and 50 rows, 9 iterations, fresh replacement before each edit, native reactive state (React immutable rows + memo). Full-array operations retained separately. if and each switch branch have 128 blocks; switch variants 8/32/64; grid from ${gridStart}, ${gridLevels} levels, step 16 at 100%, base seed ${gridSeed} + level; 64 at 10%, seed 42.`,
     latencyIndex: 'Six equally weighted DOM cases: for-500, if, styles, classes, attributes, forms. Within each case, mount and operations each have weight 1/2. List operations (update/append/remove/reverse/replace) and conditional operations (show/hide/revisit) are equally weighted within their half. Geometric mean of each median divided by the corresponding vanilla median. Switch memory and grid stress/FPS are reported separately, never mixed into this latency index.',
   },
   scriptSHA256: sha(measurementScriptSource), measurementScriptSource,

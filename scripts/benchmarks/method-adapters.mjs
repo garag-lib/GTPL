@@ -22,11 +22,12 @@ export async function prepareMethods({ root, work, GCode }) {
   await writeFile(
     path.join(work, "method-state.js"),
     `export function createState(size){return {active:null,visible:false,tick:0,rows:Array.from({length:size},(_,id)=>({id,label:'Item '+id,value:0})),items:Array.from({length:size},(_,id)=>({id})),theme:{backgroundColor:'rgb(216, 243, 106)',color:'rgb(19, 34, 24)',width:'120px'},className:'tone-a',attrs:{title:'Estado 0','data-state':'0','aria-label':'Estado 0'},text:'inicial'};}
+export function editRows(state,edits){for(const {index,label,value}of edits)Object.assign(state.rows[index],{label,value});}
 export function input(host,value){const el=host.querySelector('input');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,value);el.dispatchEvent(new Event('input',{bubbles:true}));}`,
   );
   const entries = {},
     angularFiles = [];
-  const stateImport = `import {createState,input} from './method-state.js';`;
+  const stateImport = `import {createState,input,editRows} from './method-state.js';`;
   for (const key of methodKeys) {
     const template = methodTemplate(key, "gtpl"),
       code = GCode(template);
@@ -43,13 +44,13 @@ export function input(host,value){const el=host.querySelector('input');Object.ge
       if (id.startsWith("gtpl"))
         source = `${stateImport} import {GTpl} from ${JSON.stringify(path.join(root, "src/GTpl.ts"))};import {GGenerator as g,GCompile} from ${JSON.stringify(path.join(root, "src/GGenerator.ts"))};
 ${id === "gtpl-jit" ? `import {GCodeOptimized} from ${JSON.stringify(path.join(root, "src/compiler/GCode.ts"))};const generator=()=>GCompile(GCodeOptimized(${JSON.stringify(template)},{methodAliases:true}));` : `const compiled=${code};const generator=()=>compiled;`}
-export function createAdapter({size}){let app,host,state=createState(size);return {async mount(target){host=target;app=new GTpl({root:state,generator:generator()});app.addTo(host);await app.ready();},set(patch){Object.assign(state,patch);},input(value){input(host,value);},destroy(){app?.destroy();app=host=state=null;}};}`;
+export function createAdapter({size}){let app,host,state=createState(size);return {async mount(target){host=target;app=new GTpl({root:state,generator:generator()});app.addTo(host);await app.ready();},set(patch){Object.assign(state,patch);},editRows(edits){editRows(state,edits);},input(value){input(host,value);},destroy(){app?.destroy();app=host=state=null;}};}`;
       if (id === "react")
-        source = `${stateImport} import {createElement as h} from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';${reactView(key)}
-export function createAdapter({size}){let app,host,state=createState(size);function change(patch){state={...state,...patch};app.render(h(View,{...state,change}));}return {mount(target){host=target;app=createRoot(host);flushSync(()=>change({}));},set(patch){flushSync(()=>change(patch));},input(value){flushSync(()=>input(host,value));},destroy(){if(app)flushSync(()=>app.unmount());app=host=state=null;}};}`;
+        source = `${stateImport} import {createElement as h,memo} from 'react';import {createRoot} from 'react-dom/client';import {flushSync} from 'react-dom';${reactView(key)}
+export function createAdapter({size}){let app,host,state=createState(size);function change(patch){state={...state,...patch};app.render(h(View,{...state,change}));}return {mount(target){host=target;app=createRoot(host);flushSync(()=>change({}));},set(patch){flushSync(()=>change(patch));},editRows(edits){const patches=new Map(edits.map(({index,label,value})=>[index,{label,value}]));flushSync(()=>change({rows:state.rows.map((row,index)=>patches.has(index)?{...row,...patches.get(index)}:row)}));},input(value){flushSync(()=>input(host,value));},destroy(){if(app)flushSync(()=>app.unmount());app=host=state=null;}};}`;
       if (id === "vue")
         source = `${stateImport} import {createApp,reactive,nextTick} from 'vue';${compile(methodTemplate(key, "vue"), { mode: "module", prefixIdentifiers: true, hoistStatic: true }).code}
-export function createAdapter({size}){let app,host,state=reactive(createState(size));return {mount(target){host=target;app=createApp({setup:()=>state,render});app.mount(host);},async set(patch){Object.assign(state,patch);await nextTick();},async input(value){input(host,value);await nextTick();},destroy(){app?.unmount();app=host=state=null;}};}`;
+export function createAdapter({size}){let app,host,state=reactive(createState(size));return {mount(target){host=target;app=createApp({setup:()=>state,render});app.mount(host);},async set(patch){Object.assign(state,patch);await nextTick();},async editRows(edits){editRows(state,edits);await nextTick();},async input(value){input(host,value);await nextTick();},destroy(){app?.unmount();app=host=state=null;}};}`;
       if (id === "svelte") {
         const component = await writeSvelteComponent(
           work,
@@ -57,11 +58,11 @@ export function createAdapter({size}){let app,host,state=reactive(createState(si
           methodTemplate(key, "svelte"),
         );
         source = `${stateImport}${svelteImports}import View from '${component}';
-export function createAdapter({size}){let app,host,state=reactiveState(createState(size));return {mount(target){host=target;flushSync(()=>{app=mount(View,{target,props:{state}});});},set(patch){flushSync(()=>Object.assign(state,patch));},input(value){flushSync(()=>input(host,value));},destroy(){if(app)flushSync(()=>unmount(app));app=host=state=null;}};}`;
+export function createAdapter({size}){let app,host,state=reactiveState(createState(size));return {mount(target){host=target;flushSync(()=>{app=mount(View,{target,props:{state}});});},set(patch){flushSync(()=>Object.assign(state,patch));},editRows(edits){flushSync(()=>editRows(state,edits));},input(value){flushSync(()=>input(host,value));},destroy(){if(app)flushSync(()=>unmount(app));app=host=state=null;}};}`;
       }
       if (id === "alpine")
         source = `${stateImport} import Alpine from 'alpinejs';window.Alpine=Alpine;let state;Alpine.data('benchMethod',()=>state);let started=false;
-export function createAdapter({size}){let host,element;state=createState(size);return {mount(target){host=target;Alpine.mutateDom(()=>{host.innerHTML=${JSON.stringify(methodTemplate(key, "alpine"))};});element=host.firstElementChild;if(!started){Alpine.start();started=true;}else Alpine.initTree(element);state=Alpine.$data(element);},set(patch){Object.assign(state,patch);},input(value){input(host,value);},destroy(){if(element){Alpine.destroyTree(element);Alpine.mutateDom(()=>element.remove());}element=host=state=null;}};}`;
+export function createAdapter({size}){let host,element;state=createState(size);return {mount(target){host=target;Alpine.mutateDom(()=>{host.innerHTML=${JSON.stringify(methodTemplate(key, "alpine"))};});element=host.firstElementChild;if(!started){Alpine.start();started=true;}else Alpine.initTree(element);state=Alpine.$data(element);},set(patch){Object.assign(state,patch);},editRows(edits){editRows(state,edits);},input(value){input(host,value);},destroy(){if(element){Alpine.destroyTree(element);Alpine.mutateDom(()=>element.remove());}element=host=state=null;}};}`;
       if (id === "vanilla") source = vanillaSource(key, stateImport);
       const file = path.join(work, `method-${key}-${id}.js`);
       await writeFile(file, source);
@@ -73,7 +74,7 @@ export function createAdapter({size}){let host,element;state=createState(size);r
       path.join(work, file),
       `import {Component,ChangeDetectionStrategy,enableProdMode,provideZonelessChangeDetection} from '@angular/core';import {bootstrapApplication} from '@angular/platform-browser';enableProdMode();
 @Component({selector:${JSON.stringify(selector)},standalone:true,changeDetection:ChangeDetectionStrategy.Default,template:${JSON.stringify(methodTemplate(key, "angular"))}})class View{active:any=null;visible=false;tick=0;rows:any[]=[];items:any[]=[];theme:any={};className='tone-a';attrs:any={};text='inicial';}
-export function createAdapter({size}:any){let app:any,ref:any,host:HTMLElement;const initial={active:null,visible:false,tick:0,rows:Array.from({length:size},(_,id)=>({id,label:'Item '+id,value:0})),items:Array.from({length:size},(_,id)=>({id})),theme:{backgroundColor:'rgb(216, 243, 106)',color:'rgb(19, 34, 24)',width:'120px'},className:'tone-a',attrs:{title:'Estado 0','data-state':'0','aria-label':'Estado 0'},text:'inicial'};const flush=()=>{ref.changeDetectorRef.markForCheck();ref.changeDetectorRef.detectChanges();};return {async mount(target:HTMLElement){host=target;host.innerHTML='<${selector}></${selector}>';app=await bootstrapApplication(View,{providers:[provideZonelessChangeDetection()]});ref=app.components[0];Object.assign(ref.instance,initial);flush();},set(patch:any){Object.assign(ref.instance,patch);flush();},input(value:string){const el=host.querySelector('input');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,value);el.dispatchEvent(new Event('input',{bubbles:true}));flush();},destroy(){app?.destroy();host?.replaceChildren();app=ref=host=null;}};}`,
+export function createAdapter({size}:any){let app:any,ref:any,host:HTMLElement;const initial={active:null,visible:false,tick:0,rows:Array.from({length:size},(_,id)=>({id,label:'Item '+id,value:0})),items:Array.from({length:size},(_,id)=>({id})),theme:{backgroundColor:'rgb(216, 243, 106)',color:'rgb(19, 34, 24)',width:'120px'},className:'tone-a',attrs:{title:'Estado 0','data-state':'0','aria-label':'Estado 0'},text:'inicial'};const flush=()=>{ref.changeDetectorRef.markForCheck();ref.changeDetectorRef.detectChanges();};return {async mount(target:HTMLElement){host=target;host.innerHTML='<${selector}></${selector}>';app=await bootstrapApplication(View,{providers:[provideZonelessChangeDetection()]});ref=app.components[0];Object.assign(ref.instance,initial);flush();},set(patch:any){Object.assign(ref.instance,patch);flush();},editRows(edits:any[]){for(const {index,label,value}of edits)Object.assign(ref.instance.rows[index],{label,value});flush();},input(value:string){const el=host.querySelector('input');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,value);el.dispatchEvent(new Event('input',{bubbles:true}));flush();},destroy(){app?.destroy();host?.replaceChildren();app=ref=host=null;}};}`,
     );
     angularFiles.push(file);
     entries[`${key}-angular`] = path.join(
@@ -107,7 +108,7 @@ function render(){
 for(const el of nodes){${key === "forms" ? `el.value=state.text;` : key === "styles" ? `Object.assign(el.style,state.theme);` : key === "classes" ? `el.className='bench-box '+state.className;` : `for(const [name,value]of Object.entries(state.attrs))el.setAttribute(name,value);el.textContent=state.tick;`}}${key === "forms" ? `host.querySelector('output').textContent=state.text;` : ""}`
   }
 }
-return {mount(target){host=target;render();},set(patch){Object.assign(state,patch);render();},input(value){input(host,value);},destroy(){host?.replaceChildren();byId.clear();nodes=[];host=state=null;}};}`;
+return {mount(target){host=target;render();},set(patch){Object.assign(state,patch);render();},editRows(edits){editRows(state,edits);for(const {index,label,value}of edits){const el=byId.get(state.rows[index].id);el.children[0].textContent=label;el.children[1].textContent=value;}},input(value){input(host,value);},destroy(){host?.replaceChildren();byId.clear();nodes=[];host=state=null;}};}`;
 }
 export async function bundleMethods({ prepared, root, work, versions }) {
   const outdir = path.join(root, "docs/benchmarks/methods");

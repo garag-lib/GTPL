@@ -1,3 +1,4 @@
+import { efficiencyScore } from "./scores.js";
 import { t, getLocale } from "./i18n.js";
 import { summarize } from "./stats.js";
 
@@ -49,8 +50,9 @@ export function renderGridCharts({ runData, engines, pair }) {
     right = 30,
     top = 22,
     bottom = 46;
-  const max =
-    Math.max(1, ...summaries.flat().map((p) => p.summary?.median ?? 0)) * 1.12;
+  const values = summaries.flat().map(p => p.summary?.median);
+  const score = value => efficiencyScore(value, values, ["fps", "updatesPerSecond"].includes(key) ? "higher" : "lower");
+  const max = 100;
   const minCells = first[0].cells,
     maxCells = first.at(-1).cells;
   const x = (cells) =>
@@ -90,7 +92,7 @@ export function renderGridCharts({ runData, engines, pair }) {
       short.format(value),
     );
   }
-  node("text", { x: left, y: 12 }, unit);
+  node("text", { x: left, y: 12 }, t("Score · higher is better", "Índice · más es mejor"));
   for (const point of first)
     node(
       "text",
@@ -103,10 +105,10 @@ export function renderGridCharts({ runData, engines, pair }) {
     t("Total cells (columns × rows)", "Celdas totales (columnas × filas)"),
   );
   summaries.forEach((points, index) => {
-    const valid = points.filter((p) => p.summary);
+    const valid = points.filter((p) => p.summary && score(p.summary.median) !== null);
     node("polyline", {
       points: valid
-        .map((p) => `${x(p.point.cells)},${y(p.summary.median)}`)
+        .map((p) => `${x(p.point.cells)},${y(score(p.summary.median))}`)
         .join(" "),
       fill: "none",
       stroke: index ? "#7660ca" : "#26734b",
@@ -118,14 +120,14 @@ export function renderGridCharts({ runData, engines, pair }) {
         index
           ? {
               x: x(p.point.cells) - 4,
-              y: y(p.summary.median) - 4,
+              y: y(score(p.summary.median)) - 4,
               width: 8,
               height: 8,
               fill: "#7660ca",
             }
           : {
               cx: x(p.point.cells),
-              cy: y(p.summary.median),
+              cy: y(score(p.summary.median)),
               r: 4.5,
               fill: "#26734b",
             },
@@ -159,9 +161,9 @@ export function renderGridCharts({ runData, engines, pair }) {
       else {
         const value = (k) =>
           n.format(summarize(samples.map((s) => s[k])).median);
-        td.textContent = `${engines[id].name}: ${value("fps")} fps`;
+        td.textContent = `${engines[id].name}: ${value(key)} ${unit}`;
         const detail = document.createElement("small");
-        detail.textContent = t(`p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} cells/s · n=${samples.length}`, `p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} celdas/s · n=${samples.length}`);
+        detail.textContent = t(`${value("fps")} fps · p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} cells/s · n=${samples.length}`, `${value("fps")} fps · p95 ${value("frameP95Ms")} ms · ${value("updatesPerSecond")} celdas/s · n=${samples.length}`);
         td.append(detail);
         if (samples.some((s) => s.frames < 12)) {
           const warning = document.createElement("small");

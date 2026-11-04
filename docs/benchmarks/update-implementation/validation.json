@@ -1,0 +1,62 @@
+{
+  "completedAt": "2026-11-04T15:28:53.602196+00:00",
+  "sources": {
+    "src/GTpl.ts": "f5c7556b6ebce357a818205ac6c6afd4091758ab24b4498e910262fe0d266c73",
+    "src/GProxy.ts": "9fc1216044179d2a383333de81d633ecd4f07933cfa2a842d2934da6f77db7b8",
+    "tests/update-optimizations.test.ts": "7836b60ba6a4eb918b41fe9f292dde3d8c93e9e1a6f4335d9ad6eb0cc67fbba3",
+    "scripts/benchmarks/compare-updates.mjs": "9905f44773f056b3c3375818dcba6e60897427aaea5054d240d60ea97bfd7a8f"
+  },
+  "distribution": {
+    "dist/gtpl.cjs": "ea98f79d5310a10b36a20961ad31edfba63e38c4b7bcde39c3203d0d845d028e",
+    "dist/runtime.esm.js": "68391efd01ba8af19a741ce8de7fd499f78aa3fdefcbdfef5afdde75a3ac9ea0",
+    "dist/runtime.cjs": "0796aa8fa2c01afe47365e19e1d5cd791f2c1b05f57f36930f1f9621815687e8",
+    "dist/gtpl.global.js": "86517a84e941a6d2686020913e555203bd25ea4a45d0b685ec6ee88edfa88781",
+    "dist/gtpl.esm.js": "65847f067b4d51f971b3f26a21b6fbb4c71a6bde42780a3fd28cb96ca8168c33",
+    "dist/shared/runtime.esm.js": "7ed5aed07aa9bfa59991f4ad2446bd79ee33493930db7ad22777dd57b8b589eb",
+    "dist/shared/runtime.cjs": "c8607099b0ad0e879c5d83c95c0788f067e080daca08778dc485c84843bb4e50"
+  },
+  "gates": {
+    "GTPL": {
+      "passed": 162,
+      "failed": 0,
+      "logSHA256": "172d3f7c06ae62c409e46597af48c7ed160d2f899d79d42a237bbd5f0ff87ed0"
+    },
+    "benchmarkTools": {
+      "passed": 131,
+      "failed": 0,
+      "logSHA256": "5e7df0106a7a75cdfe3db3f75f82cb1d1d5c263ab36d43f7f1358e5c94f591a2"
+    },
+    "GTPLWeb": {
+      "passed": 51,
+      "failed": 0,
+      "logSHA256": "212f86e10e015454a5fa49f6bb22a74b53251bc9f83405daaac361ee61979467"
+    },
+    "SanmateoClientNode": {
+      "passed": 169,
+      "failed": 0,
+      "logSHA256": "51d03b857d7866f5f657a972f4dc1e713f4ac4a5d008cff5e514d2f278973fb8"
+    }
+  },
+  "totalNodeTests": 513,
+  "otherChecks": [
+    "GTPL TypeScript and production build",
+    "ESM/CJS/runtime package assertions",
+    "GTPLWeb production structured/docs builds and typecheck",
+    "Sanmateo bundle build for synthetic site fixture-client/2028",
+    "Sanmateo g-for, iterator, replacement, ready/destroy and dynamic selects",
+    "Sanmateo browser: Agenda, Compras, Gastronom\u00eda and navigation"
+  ],
+  "consumerSourcesMatchCurrentWorkspace": true,
+  "consumerDependencyResolution": "Both isolated consumers resolve @mpeliz/gtpl to /home/manu/www/garag-lib/GTPL; Sanmateo resolves @mpeliz/gtplweb to the freshly rebuilt isolated GTPLWeb.",
+  "sanmateoFixtureCorrection": {
+    "file": "/home/manu/www/Proyectos/sanmateo/cliente/scripts/test-banner-snapshot.js",
+    "sha256": "7884995692c0b53f28f04096ead3719e8856df3fb3331b8136d31359f4df83bf",
+    "reason": "Provide the real LatestQuery dependency to the extracted AgendaPage VM; reproduced two ReferenceError failures in original project before correction."
+  },
+  "benchmark": {
+    "validMethodSamples": 28,
+    "partialListPages": 14,
+    "partialListOperations": 112,
+    "resultsSHA256": "9c6d7f35c69c7e1150193696d28b25d684b1d23f5eda292eeef053d8cd9a8754"
+  }
+}

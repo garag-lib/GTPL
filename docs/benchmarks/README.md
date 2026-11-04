@@ -8,9 +8,12 @@ node scripts/benchmarks/serve.mjs
 # http://127.0.0.1:4173/benchmarks.html
 ```
 
-Choose two engines, then one programming pattern. Each has its own workload and
-metrics. The interactive lab reports them separately; it does not mix timing,
-memory and FPS into a universal framework score.
+The page opens with saved, validated results for every engine. Select an aspect
+to see its ranking, original units and sample ranges. Live A/B controls follow.
+Every comparison bar now means **longer = better**: 100 × best / measured for
+costs, and 100 × measured / best for FPS. Each test has its own scale; there is
+no universal score. Signed live memory deltas and DOM counts have no ranking bars.
+The summary is hidden when its bundle manifest no longer matches the current build.
 
 The language selector switches the complete interface between English and Spanish,
 including results, charts and validation messages. Use `?lang=en` or `?lang=es`
@@ -21,7 +24,33 @@ fixtures, operations or validation rules.
 
 ## General comparison across engines
 
-The [measured comparison](general-performance.md) separates a six-case DOM latency
+Current overview data: [results/latest.json](results/latest.json), with original
+samples in [results/raw.json](results/raw.json) and
+[results/flutter-raw.json](results/flutter-raw.json). Reproduce it after building:
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/playwright/index.mjs SAMPLES=5 HEAP_SAMPLES=3 \
+  GRID_DURATION_MS=5000 RESULTS=artifacts/benchmark-refresh/results.json \
+  node scripts/benchmarks/rank.mjs
+PLAYWRIGHT_MODULE=/absolute/path/playwright/index.mjs ENGINES=flutter \
+  SAMPLES=5 HEAP_SAMPLES=0 GRID_DURATION_MS=5000 \
+  CASES=grid-16-64-100,grid-64-10 RESULTS=artifacts/benchmark-refresh/flutter.json \
+  node scripts/benchmarks/rank.mjs
+node scripts/benchmarks/publish-results.mjs \
+  artifacts/benchmark-refresh/results.json artifacts/benchmark-refresh/flutter.json
+```
+
+Run sequentially. The runner uses headless Chrome. This uses the existing Flutter build; no Flutter rebuild is
+needed. Publication rejects incomplete samples, failed output, mismatching
+bundles/runners or different Flutter/DOM grid configurations.
+
+For a release that only changes the GTPL version label, pass
+`--allow-gtpl-version-change` to `publish-results.mjs`. This still requires identical
+source/compiler hashes, every asset byte/hash/size and all measured runners.
+Original samples retain their original version labels; the summary discloses the
+verified release equivalence. Any code change requires new measurements.
+
+The older [measured comparison](general-performance.md) separates a six-case DOM latency
 index from grid stress tests and JavaScript heap measurements. Every raw sample,
 version, bundle hash and validation result is retained in
 [general-results.json](general-results.json).
@@ -57,6 +86,17 @@ node scripts/benchmarks/build.mjs
 node --test scripts/benchmarks/*.test.mjs
 ```
 
+With the HTTP server running and saved results present, verify the page:
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/playwright/index.mjs \
+  node scripts/benchmarks/verify-ui.mjs
+```
+
+This checks desktop/mobile layouts, ES/EN, all 24 comparisons, six validated live
+samples, bar direction, the isolated entry page and rejection of stale results.
+Screenshots and the live JSON export are saved under `artifacts/benchmark-refresh/`.
+
 Commit regenerated `vendor/`, `methods/`, `lab.html`, `manifest.json`,
 `templates.json` and the benchmark lockfile when publishing changes.
 The manifest records versions, GTPL source hash, output SHA-256 and raw/gzip
@@ -84,7 +124,7 @@ compiles at mount; Alpine interprets HTML at mount. Dependencies are pinned in
 | Pattern       | Workload                                                                                                   | Main question                                              |
 | ------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | Switch        | 8/32/64 explicit branches, each with 128 HTML blocks; initially none active, then only the selected branch | Memory of definitions, one active view and inert templates |
-| For           | Update values, append 25%, remove half, reverse, replace identifiers                                       | Native list updates and reconciliation                     |
+| For           | Edit one row / 10%; update all values, append 25%, remove half, reverse, replace identifiers               | Local edits and full-list reconciliation, separately      |
 | If            | Create, remove, revisit and remove a 128-block view                                                        | Construction cost and memory after hiding                  |
 | Inline styles | Change background, foreground and width on existing elements                                               | Update latency, layout and rAF cadence                     |
 | Classes       | Alternate two CSS classes on existing elements                                                             | Class updates and layout                                   |
@@ -125,8 +165,18 @@ DOM and request layout. Full validation follows outside the stopwatch. This
 measures confirmed DOM/layout work, not time to painted pixels or interactive
 scheduling latency. Incorrect output rejects the sample.
 
-For takes the median of three operations of each type, resetting the base list
-before each. Styles, classes, attributes and forms measure ten updates, followed
+Local For edits change both text and value in one row or 10% of rows, at spread
+indices. Unchanged objects retain identity. GTPL/Vue/Svelte/Alpine mutate reactive
+rows; Angular mutates rows and detects changes; React replaces affected rows
+immutably and uses memoized row components; vanilla updates just the addressed
+DOM nodes. The median includes nine iterations, each after a full list reset.
+The stopwatch includes native update completion and layout; full verification
+checks every row, including unchanged ones, outside it.
+
+The original full-array For cases remain: three iterations each, resetting the
+base list before each. Append also recreates existing row objects with unchanged
+values; remove and reverse also update values. They are labeled accordingly.
+Styles, classes, attributes and forms measure ten updates, followed
 by rAF cadence for 1.2 seconds. Forms use the prototype's native value setter and
 a bubbling input event to exercise binding. Native wrappers, list semantics and
 inert declarations can differ. React, Svelte, Vue, Angular and Alpine use keys; GTPL uses
@@ -135,7 +185,7 @@ its native list directive. Complete order and values are validated.
 Charts show medians, with p95 and ranges in the table. JSON schema 2 retains
 operation times, intervals, memory breakdowns, DOM snapshots, exact configuration,
 manifest, execution order and errors. CSV has one row per metric or snapshot;
-missing values remain blank. Results are neither uploaded nor persisted. Stop
+missing values remain blank. Live results are neither uploaded nor persisted. Stop
 preserves completed samples. Losing visibility, resizing or scrolling the
 executor away aborts the run.
 

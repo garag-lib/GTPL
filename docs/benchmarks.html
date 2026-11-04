@@ -16,12 +16,17 @@
       <label class="language-picker"><span data-i18n-en="Language" data-i18n-es="Idioma">Idioma</span><select id="language" aria-label="Idioma" data-i18n-aria-label-en="Language" data-i18n-aria-label-es="Idioma"><option value="en">English</option><option value="es" selected="">Español</option></select></label></div>
     </nav>
 
-    <div class="benchmark-shell layout wrap"><aside class="toc"><p class="eyebrow" data-i18n-en="BENCHMARK INDEX" data-i18n-es="ÍNDICE DE BENCHMARKS">ÍNDICE DE BENCHMARKS</p><nav aria-label="Secciones del laboratorio" data-i18n-aria-label-en="Benchmark sections" data-i18n-aria-label-es="Secciones del laboratorio"><ol><li><a href="#configuration" data-i18n-en="Configure comparison" data-i18n-es="Configurar comparación">Configurar comparación</a></li><li><a href="#results" data-i18n-en="Results" data-i18n-es="Resultados">Resultados</a></li><li><a href="#methodology" data-i18n-en="Methodology &amp; limits" data-i18n-es="Metodología y límites">Metodología y límites</a></li></ol></nav></aside><main class="benchmark-main">
+    <div class="benchmark-shell layout wrap"><aside class="toc"><p class="eyebrow" data-i18n-en="BENCHMARK INDEX" data-i18n-es="ÍNDICE DE BENCHMARKS">ÍNDICE DE BENCHMARKS</p><nav aria-label="Secciones del laboratorio" data-i18n-aria-label-en="Benchmark sections" data-i18n-aria-label-es="Secciones del laboratorio"><ol><li><a href="#overview" data-i18n-es="Comparar todas" data-i18n-en="Compare all">Comparar todas</a></li><li><a href="#configuration" data-i18n-en="Try it here" data-i18n-es="Probar aquí">Probar aquí</a></li><li><a href="#results" data-i18n-en="My results" data-i18n-es="Mis resultados">Mis resultados</a></li><li><a href="#methodology" data-i18n-en="Methodology &amp; limits" data-i18n-es="Metodología y límites">Metodología y límites</a></li></ol></nav></aside><main class="benchmark-main"><section id="overview" class="panel overview"><div class="section-heading"><div><p class="eyebrow" data-i18n-es="RESULTADOS MEDIDOS" data-i18n-en="MEASURED RESULTS">RESULTADOS MEDIDOS</p><h2 data-i18n-es="Dónde destaca GTPL. Y dónde no." data-i18n-en="Where GTPL shines. And where it does not.">Dónde destaca GTPL. Y dónde no.</h2></div><a class="secondary" href="#configuration"><span data-i18n-es="Probar en mi equipo ↓" data-i18n-en="Run on my device ↓">Probar en mi equipo ↓</span></a></div>
+<p id="overview-meta" class="subtle" role="status"><span data-i18n-es="Cargando resultados…" data-i18n-en="Loading results…">Cargando resultados…</span></p>
+<div id="overview-highlights" class="overview-highlights"></div>
+<div class="overview-controls"><label class="field" for="overview-metric"><span data-i18n-es="Qué quieres comparar" data-i18n-en="What to compare">Qué quieres comparar</span><select id="overview-metric"></select></label><p class="score-key" data-i18n-es="Barra más larga = mejor · 100 = mejor de esta prueba" data-i18n-en="Longer bar = better · 100 = best in this test">Barra más larga = mejor · 100 = mejor de esta prueba</p></div>
+<div id="overview-ranking" aria-live="polite"></div><p id="overview-note" class="subtle"></p>
+<details class="overview-details"><summary><span data-i18n-es="Datos, versiones y cómo se mide" data-i18n-en="Data, versions and measurement">Datos, versiones y cómo se mide</span></summary><div id="overview-details"></div><p><a href="benchmarks/results/latest.json" download=""><span data-i18n-es="Resumen JSON ↓" data-i18n-en="Summary JSON ↓">Resumen JSON ↓</span></a> · <a href="benchmarks/results/raw.json" download=""><span data-i18n-es="Muestras originales ↓" data-i18n-en="Raw samples ↓">Muestras originales ↓</span></a> · <a href="benchmarks/results/flutter-raw.json" download="">Flutter JSON ↓</a></p></details></section>
       <section class="arena panel" aria-labelledby="arena-title" id="configuration">
         <div class="section-heading">
           <div>
-            <p class="eyebrow" data-i18n-en="01 / ENGINES &amp; CASE" data-i18n-es="01 / MOTORES Y CASO">01 / MOTORES Y CASO</p>
-            <h2 id="arena-title" data-i18n-en="Compare a specific methodology." data-i18n-es="Compara una metodología concreta.">Compara una metodología concreta.</h2>
+            <p class="eyebrow" data-i18n-en="LIVE COMPARISON" data-i18n-es="COMPARACIÓN EN DIRECTO">COMPARACIÓN EN DIRECTO</p>
+            <h2 id="arena-title" data-i18n-en="Try it on your device" data-i18n-es="Pruébalo en tu equipo">Pruébalo en tu equipo</h2>
           </div>
           <span class="chip" id="engine-state" data-i18n-en="Loading engines…" data-i18n-es="Cargando motores…">Cargando motores…</span>
         </div>
@@ -34,7 +39,7 @@
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
               <option value="svelte">Svelte</option>
-              <option value="flutter" hidden disabled>Flutter Web · Grid</option>
+              <option value="flutter" hidden="" disabled="">Flutter Web · Grid</option>
               <option value="vanilla" data-i18n-en="Direct JavaScript" data-i18n-es="JavaScript directo">JavaScript directo</option></select><span id="engine-a-meta" class="engine-meta"></span></label>
           <span class="vs-badge" aria-hidden="true">vs</span>
           <label class="engine-card engine-right"><span class="engine-kicker"><span class="dot rival-dot"></span><span data-i18n-en=" ENGINE B" data-i18n-es=" CONTENDIENTE B"> CONTENDIENTE B</span></span><select id="engine-b" aria-label="Contendiente B" data-i18n-aria-label-en="Engine B" data-i18n-aria-label-es="Contendiente B">
@@ -43,7 +48,7 @@
               <option value="alpine">Alpine</option>
               <option value="angular">Angular</option>
               <option value="svelte">Svelte</option>
-              <option value="flutter" hidden disabled>Flutter Web · Grid</option>
+              <option value="flutter" hidden="" disabled="">Flutter Web · Grid</option>
               <option value="gtpl">GTPL · AOT</option>
               <option value="gtpl-jit">GTPL · JIT</option>
               <option value="vanilla" data-i18n-en="Direct JavaScript" data-i18n-es="JavaScript directo">JavaScript directo</option></select><span id="engine-b-meta" class="engine-meta"></span></label>
@@ -51,7 +56,7 @@
         <div class="config-row method-picker">
           <label class="field"><span data-i18n-en="Benchmark case" data-i18n-es="Caso programático">Caso programático</span><select id="method">
               <option value="switch" data-i18n-en="Switch · large-branch memory" data-i18n-es="Switch · memoria de ramas grandes">Switch · memoria de ramas grandes</option>
-              <option value="for" data-i18n-en="For · lists &amp; reconciliation" data-i18n-es="For · listas y reconciliación">For · listas y reconciliación</option>
+              <option value="for" data-i18n-en="For · lists &amp; reconciliation" data-i18n-es="For · listas y reconciliación" selected="">For · listas y reconciliación</option>
               <option value="if" data-i18n-en="If · creation &amp; removal" data-i18n-es="If · creación y retirada">If · creación y retirada</option>
               <option value="styles" data-i18n-en="Inline styles" data-i18n-es="Estilos en línea">Estilos en línea</option>
               <option value="classes" data-i18n-en="CSS classes" data-i18n-es="Clases CSS">Clases CSS</option>
@@ -71,7 +76,7 @@
               <option value="3000" data-i18n-en="3,000" data-i18n-es="3.000">3.000</option>
             </select></label>
         </div>
-        <p id="case-goal" class="case-goal"></p>
+        <details><summary data-i18n-es="Qué mide este caso" data-i18n-en="What this case measures">Qué mide este caso</summary><p id="case-goal" class="case-goal"></p></details>
         <fieldset id="switch-config" class="grid-config">
           <legend data-i18n-en="Switch · many large branches, only one selected" data-i18n-es="Switch · muchas ramas grandes, solo una elegida">Switch · muchas ramas grandes, solo una elegida</legend>
           <div class="grid-fields">
@@ -81,7 +86,7 @@
                 <option value="64" data-i18n-en="64 × 128 blocks" data-i18n-es="64 × 128 bloques">64 × 128 bloques</option>
               </select></label><label class="field"><span data-i18n-en="Select only this branch" data-i18n-es="Elegir únicamente la rama">Elegir únicamente la rama</span><input id="active-case" type="number" min="0" max="31" value="0"></label><label class="memory-option retention-option"><input id="retention" type="checkbox"><span><span data-i18n-en="Additional retention test" data-i18n-es="Prueba adicional de retención">Prueba adicional de retención</span><small data-i18n-en="Visit branches and remove the view at the end." data-i18n-es="Recorrer ramas y retirar la vista al final.">Recorrer ramas y retirar la vista al final.</small></span></label>
           </div>
-          <p data-i18n-en="These are explicit, distinct HTML trees: each branch contains 128 blocks with headings, text, a reactive value and lists. There is no shared for loop inside the switch. Measurement starts without a view, then activates only the selected branch. Code and definitions are loaded in both states." data-i18n-es="Son árboles HTML explícitos y distintos: cada rama contiene 128 bloques con títulos, texto, un dato reactivo y listas. No se usa un for compartido dentro del switch. Primero se mide sin ninguna vista; después se activa solamente la rama elegida. El código y las definiciones están cargados en ambos estados.">Son árboles HTML explícitos y distintos: cada rama contiene 128 bloques con títulos, texto, un dato reactivo y listas. No se usa un for compartido dentro del switch. Primero se mide sin ninguna vista; después se activa solamente la rama elegida. El código y las definiciones están cargados en ambos estados.</p>
+
         </fieldset>
         <fieldset id="grid-config" class="grid-config" hidden="">
           <legend data-i18n-en="Grid · independent state per cell" data-i18n-es="Grid · estado independiente por celda">Grid · estado independiente por celda</legend>
@@ -102,12 +107,12 @@
                 <option value="5000">5 s</option>
               </select></label>
           </div>
-          <p data-i18n-en="The same random sequence, seed 42. Mounting is excluded from FPS; the whole grid fits inside the runner, without virtualization." data-i18n-es="La misma secuencia aleatoria, semilla 42. El montaje queda fuera de los FPS; el grid completo cabe en el ejecutor, sin virtualización.">La misma secuencia aleatoria, semilla 42. El montaje queda fuera de los FPS; el grid completo cabe en el ejecutor, sin virtualización.</p>
+
         </fieldset>
-        <label class="memory-option"><input type="checkbox" id="memory"><span><span data-i18n-en="Measure JS + DOM memory by phase " data-i18n-es="Medir memoria JS + DOM por fases ">Medir memoria JS + DOM por fases </span><small id="memory-help" data-i18n-en="Checking support…" data-i18n-es="Comprobando compatibilidad…">Comprobando compatibilidad…</small></span></label>
-        <p class="memory-activation">
+        <details class="advanced-options"><summary data-i18n-es="Medir memoria JS+DOM (experimental)" data-i18n-en="Measure JS+DOM memory (experimental)">Medir memoria JS+DOM (experimental)</summary><label class="memory-option"><input type="checkbox" id="memory"><span><span data-i18n-en="Measure JS + DOM memory by phase " data-i18n-es="Medir memoria JS + DOM por fases ">Medir memoria JS + DOM por fases </span><small id="memory-help" data-i18n-en="Checking support…" data-i18n-es="Comprobando compatibilidad…">Comprobando compatibilidad…</small></span></label><p class="memory-activation">
           <a id="memory-mode" class="secondary" href="benchmarks/isolated.html" data-i18n-en="Enable memory measurement ↗" data-i18n-es="Activar medición de memoria ↗">Activar medición de memoria ↗</a>
-        </p>
+        </p></details>
+
         <div class="action-row">
           <button class="primary" id="run" disabled="" data-i18n-en="▶ Run comparison" data-i18n-es="▶ Ejecutar comparación">▶ Ejecutar comparación</button><button class="secondary" id="stop" disabled="" data-i18n-en="Stop" data-i18n-es="Detener">Detener</button><span id="run-hint"></span>
         </div>
@@ -146,22 +151,22 @@
         </div>
         <div id="case-results">
           <div class="chart-grid" id="charts"></div>
-          <div class="details-grid">
+          <details class="panel data-details"><summary data-i18n-es="Muestras y descarga de código" data-i18n-en="Samples and code download">Muestras y descarga de código</summary><div class="details-grid">
             <article class="panel sample-panel">
               <div class="small-heading">
-                <h3 data-i18n-en="Spread between samples." data-i18n-es="Dispersión entre muestras.">Dispersión entre muestras.</h3>
+                <h3 data-i18n-en="Values per sample" data-i18n-es="Valores por muestra">Valores por muestra</h3>
                 <label class="sr-only" for="sample-metric" data-i18n-en="Metric" data-i18n-es="Métrica">Métrica</label><select id="sample-metric"></select>
               </div>
-              <p class="subtle" data-i18n-en="Each point is a valid sample of the selected case." data-i18n-es="Cada punto es una muestra válida del caso seleccionado.">Cada punto es una muestra válida del caso seleccionado.</p>
+              <p class="subtle" data-i18n-en="Original values, without normalization." data-i18n-es="Datos originales, sin normalizar.">Datos originales, sin normalizar.</p>
               <div id="samples-chart" class="sample-chart"></div>
             </article>
             <article class="panel bundle-panel">
               <p class="eyebrow" data-i18n-en="CASE CODE" data-i18n-es="CÓDIGO DEL CASO">CÓDIGO DEL CASO</p>
               <h3 data-i18n-en="Loaded definitions and runtime." data-i18n-es="Definiciones y runtime cargados.">Definiciones y runtime cargados.</h3>
               <div id="bundle-chart"></div>
-              <p class="subtle" data-i18n-en="Gzipped KiB of the entry point and its shared modules. This represents code downloaded for this pattern, not RAM or the minimum library size. Other methodologies are not imported for this sample." data-i18n-es="KiB gzip de la entrada y sus módulos compartidos. Representa código descargado para este patrón, no RAM ni tamaño mínimo de la librería. Las otras metodologías no se importan en esta muestra.">KiB gzip de la entrada y sus módulos compartidos. Representa código descargado para este patrón, no RAM ni tamaño mínimo de la librería. Las otras metodologías no se importan en esta muestra.</p>
+              <p class="subtle" data-i18n-en="Entry + shared modules in gzip; includes this test’s template." data-i18n-es="Entrada + módulos compartidos en gzip; incluye la plantilla del caso.">Entrada + módulos compartidos en gzip; incluye la plantilla del caso.</p>
             </article>
-          </div>
+          </div></details>
           <details class="panel data-details">
             <summary data-i18n-en="View metrics and secondary timings" data-i18n-es="Ver métricas y tiempos secundarios">Ver métricas y tiempos secundarios</summary>
             <div class="table-scroll">
@@ -186,16 +191,16 @@
             <p class="eyebrow" data-i18n-en="GRID / GROWTH" data-i18n-es="GRID / CRECIMIENTO">GRID / CRECIMIENTO</p>
             <h2 id="grid-title" data-i18n-en="More cells. The same screen." data-i18n-es="Más celdas. La misma pantalla.">Más celdas. La misma pantalla.</h2>
           </div>
-          <label class="field"><span data-i18n-en="Vertical axis" data-i18n-es="Eje vertical">Eje vertical</span><select id="grid-metric">
-              <option value="fps" data-i18n-en="FPS · higher is better" data-i18n-es="FPS · más es mejor">FPS · más es mejor</option>
-              <option value="frameP95Ms" data-i18n-en="p95 interval · lower is better" data-i18n-es="Intervalo p95 · menos es mejor">Intervalo p95 · menos es mejor</option>
-              <option value="updatesPerSecond" data-i18n-en="Updates per second" data-i18n-es="Actualizaciones por segundo">Actualizaciones por segundo</option>
-              <option value="updateMs" data-i18n-en="Update completion" data-i18n-es="Actualización completada">Actualización completada</option>
+          <label class="field"><span data-i18n-en="Compare" data-i18n-es="Comparar">Comparar</span><select id="grid-metric">
+              <option value="fps" data-i18n-en="Smoothness (FPS)" data-i18n-es="Fluidez (FPS)">Fluidez (FPS)</option>
+              <option value="frameP95Ms" data-i18n-en="Consistency (p95)" data-i18n-es="Regularidad (p95)">Regularidad (p95)</option>
+              <option value="updatesPerSecond" data-i18n-en="Work per second" data-i18n-es="Trabajo por segundo">Trabajo por segundo</option>
+              <option value="updateMs" data-i18n-en="Update speed" data-i18n-es="Rapidez de actualización">Rapidez de actualización</option>
             </select></label>
         </div>
-        <p class="section-intro" data-i18n-en="Independent state per cell. GTPL uses one instance; React, local state; Svelte, components with reactive state per cell; Vue, reactive models; Angular, signals with OnPush; Alpine, one x-data per cell. The same loop applies the same random batch to every engine." data-i18n-es="Estado independiente por celda. GTPL usa una instancia; React, estado local; Svelte, componentes con estado reactivo por celda; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un x-data por celda. El mismo bucle aplica el mismo lote aleatorio a todos.">Estado independiente por celda. GTPL usa una instancia; React, estado local; Svelte, componentes con estado reactivo por celda; Vue, modelos reactivos; Angular, señales con OnPush; Alpine, un x-data por celda. El mismo bucle aplica el mismo lote aleatorio a todos.</p>
-        <p class="subtle" data-i18n-en="Flutter Web: CanvasKit, one reactive widget per cell. It waits for the Flutter frame (including scheduling); DOM engines confirm mutations and layout before paint. Their update times have different boundaries. FPS is observed cadence, not GPU completion." data-i18n-es="Flutter Web: CanvasKit, un widget reactivo por celda. Espera al frame de Flutter (incluida la planificación); los motores DOM confirman cambios y layout antes de pintar. Sus tiempos de actualización tienen límites distintos. Los FPS son cadencia observada, no finalización de la GPU.">Flutter Web: CanvasKit, un widget reactivo por celda. Espera al frame de Flutter (incluida la planificación); los motores DOM confirman cambios y layout antes de pintar. Sus tiempos de actualización tienen límites distintos. Los FPS son cadencia observada, no finalización de la GPU.</p>
-        <div id="grid-chart" class="sample-chart"></div>
+
+
+        <p class="subtle" data-i18n-es="Barra o curva más alta = mejor. Flutter incluye espera al frame; DOM mide cambios + layout." data-i18n-en="Higher bar or curve = better. Flutter includes the frame wait; DOM measures changes + layout.">Barra o curva más alta = mejor. Flutter incluye espera al frame; DOM mide cambios + layout.</p><div id="grid-chart" class="sample-chart"></div>
         <div class="table-scroll">
           <table>
             <caption data-i18n-en="Medians by size and engine" data-i18n-es="Medianas por tamaño y motor">Medianas por tamaño y motor</caption>
@@ -209,64 +214,22 @@
             <tbody id="grid-table"></tbody>
           </table>
         </div>
-        <p class="subtle" data-i18n-en="Observed cadence with confirmed output (DOM + layout, or Flutter frame), limited by the display. Includes random generation; excludes mounting and full validation. Does not measure GPU performance or the memory of this grid." data-i18n-es="Cadencia observada con salida confirmada (DOM + layout o frame de Flutter), limitada por la pantalla. Incluye generación aleatoria; excluye montaje y validación completa. No mide la GPU ni la memoria de este grid.">Cadencia observada con salida confirmada (DOM + layout o frame de Flutter), limitada por la pantalla. Incluye generación aleatoria; excluye montaje y validación completa. No mide la GPU ni la memoria de este grid.</p>
+
       </section>
-      <section class="method-section panel" aria-labelledby="method-title" id="methodology">
-        <p class="eyebrow" data-i18n-en="03 / HOW TO INTERPRET RESULTS" data-i18n-es="03 / CÓMO INTERPRETARLO">03 / CÓMO INTERPRETARLO</p>
-        <h2 id="method-title" data-i18n-en="One question per case. Visible limits." data-i18n-es="Una pregunta por caso. Límites visibles.">Una pregunta por caso. Límites visibles.</h2>
-        <div class="method-grid">
-          <article>
-            <span>01</span>
-            <h3 data-i18n-en="Switch measures memory" data-i18n-es="Switch mide memoria">Switch mide memoria</h3>
-            <p data-i18n-en="Only the modules for the selected variant are imported: 8, 32 or 64 branches, each containing 128 explicit HTML blocks. Starting from active = null, only one branch is activated. Visiting other branches is optional. Timings do not determine the primary result." data-i18n-es="Se importan únicamente los módulos de la variante elegida: 8, 32 o 64 ramas, con 128 bloques HTML explícitos por rama. Se parte de active = null y se activa una sola rama. El recorrido por otras ramas es optativo. Los tiempos no determinan el resultado principal.">Se importan únicamente los módulos de la variante elegida: 8, 32 o 64 ramas, con 128 bloques HTML explícitos por rama. Se parte de active = null y se activa una sola rama. El recorrido por otras ramas es optativo. Los tiempos no determinan el resultado principal.</p>
-          </article>
-          <article>
-            <span>02</span>
-            <h3 data-i18n-en="Definitions and instances" data-i18n-es="Definiciones e instancias">Definiciones e instancias</h3>
-            <p data-i18n-en="Code, literals and templates remain loaded. Conditional creation may avoid nodes and components for unselected branches. Connected nodes and inert template.content are counted separately; that content also occupies memory." data-i18n-es="El código, sus literales y las plantillas permanecen cargados. La creación condicional puede evitar nodos y componentes de las ramas no elegidas. Se cuentan los nodos conectados y el contenido inerte de template.content por separado; ese contenido también ocupa memoria.">El código, sus literales y las plantillas permanecen cargados. La creación condicional puede evitar nodos y componentes de las ramas no elegidas. Se cuentan los nodos conectados y el contenido inerte de template.content por separado; ese contenido también ocupa memoria.</p>
-          </article>
-          <article>
-            <span>03</span>
-            <h3 data-i18n-en="JS + DOM memory" data-i18n-es="Memoria JS + DOM">Memoria JS + DOM</h3>
-            <p data-i18n-en="The experimental API estimates the entire related environment, including the controller and iframes. Differences are calculated from an empty runner and between phases. Charts stay stable during the sample while only status text updates. This includes DOM without individual attribution, with possible noise from GC and shared memory. It is neither total Chrome RAM nor exact attribution per framework." data-i18n-es="La API experimental estima todo el entorno relacionado, incluyendo el controlador y los iframes. Se calculan diferencias desde un ejecutor vacío y entre fases, manteniendo las gráficas estables durante la muestra y actualizando solo el texto de estado. Así se incluye DOM sin atribución individual, con ruido posible por GC y memoria compartida. No es RAM total de Chrome ni atribución exacta por framework.">La API experimental estima todo el entorno relacionado, incluyendo el controlador y los iframes. Se calculan diferencias desde un ejecutor vacío y entre fases, manteniendo las gráficas estables durante la muestra y actualizando solo el texto de estado. Así se incluye DOM sin atribución individual, con ruido posible por GC y memoria compartida. No es RAM total de Chrome ni atribución exacta por framework.</p>
-          </article>
-          <article>
-            <span>04</span>
-            <h3 data-i18n-en="For, if and updates" data-i18n-es="For, if y cambios">For, if y cambios</h3>
-            <p data-i18n-en="For tests list operations, validating each result. If compares creation, removal and re-entry. Styles, classes and attributes retain the same elements. Forms uses a native setter and an input event, then checks that the model updates every field." data-i18n-es="For prueba operaciones de lista, cada una con su resultado validado. If compara creación, retirada y reentrada. Estilos, clases y atributos mantienen los mismos elementos. Formularios usa un setter nativo y un evento input, y comprueba que el modelo actualiza todos los campos.">For prueba operaciones de lista, cada una con su resultado validado. If compara creación, retirada y reentrada. Estilos, clases y atributos mantienen los mismos elementos. Formularios usa un setter nativo y un evento input, y comprueba que el modelo actualiza todos los campos.</p>
-          </article>
-          <article>
-            <span>05</span>
-            <h3 data-i18n-en="Versions and compilation" data-i18n-es="Versiones y compilación">Versiones y compilación</h3>
-            <p data-i18n-en="GTPL AOT, Svelte, Vue and Angular are precompiled; React uses production mode; GTPL JIT compiles at mount time and Alpine interprets HTML. React confirms updates with flushSync, Svelte also uses flushSync, and Angular uses detectChanges. These figures describe these adapters and this device." data-i18n-es="GTPL AOT, Svelte, Vue y Angular se precompilan; React usa producción; GTPL JIT compila al montar y Alpine interpreta HTML. React confirma cambios con flushSync, Svelte también usa flushSync y Angular con detectChanges. Las cifras describen estos adaptadores y este dispositivo.">GTPL AOT, Svelte, Vue y Angular se precompilan; React usa producción; GTPL JIT compila al montar y Alpine interpreta HTML. React confirma cambios con flushSync, Svelte también usa flushSync y Angular con detectChanges. Las cifras describen estos adaptadores y este dispositivo.</p>
-          </article>
-          <article>
-            <span>06</span>
-            <h3 data-i18n-en="Repeated comparison" data-i18n-es="Comparación repetida">Comparación repetida</h3>
-            <p data-i18n-en="Alternating A/B and B/A order. A fresh iframe per engine and sample. Timing excludes download, import and full validation; it ends after DOM confirmation and a layout read. Losing visibility, changing the viewport or moving the runner off screen interrupts the sample." data-i18n-es="Orden A/B y B/A alternado. Un iframe nuevo por motor y muestra. El reloj excluye descarga, importación y comprobación completa, y termina con DOM confirmado y lectura de layout. Perder visibilidad, cambiar el viewport o sacar el ejecutor de pantalla interrumpe la muestra.">Orden A/B y B/A alternado. Un iframe nuevo por motor y muestra. El reloj excluye descarga, importación y comprobación completa, y termina con DOM confirmado y lectura de layout. Perder visibilidad, cambiar el viewport o sacar el ejecutor de pantalla interrumpe la muestra.</p>
-          </article>
-        </div>
-        <div class="method-footer">
-          <p class="note" data-i18n-en="Language changes only the interface. Benchmark templates, workloads, validation and stored measurements are unchanged." data-i18n-es="El idioma solo cambia la interfaz. Las plantillas, cargas de trabajo, validaciones y mediciones guardadas no cambian.">El idioma solo cambia la interfaz. Las plantillas, cargas de trabajo, validaciones y mediciones guardadas no cambian.</p>
-          <p><span data-i18n-en=" Each reading may wait for the browser. The phase and elapsed time are shown, with a 30-second limit per reading. If there is no response, that runner closes and comparison continues in a fresh one without memory readings; missing data is shown as N/A. Use “Enable memory measurement” in a compatible browser, or run " data-i18n-es=" Cada lectura puede esperar al navegador. Se muestra la fase y el tiempo transcurrido, con un límite de 30 segundos por lectura. Si no responde, se cierra ese ejecutor y la comparación continúa en uno nuevo sin memoria; los datos faltantes quedan como N/D. Usa «Activar medición de memoria» en un navegador compatible; también puedes ejecutar "> Cada lectura puede esperar al navegador. Se muestra la fase y el tiempo transcurrido, con un límite de 30 segundos por lectura. Si no responde, se cierra ese ejecutor y la comparación continúa en uno nuevo sin memoria; los datos faltantes quedan como N/D. Usa «Activar medición de memoria» en un navegador compatible; también puedes ejecutar </span><code>node scripts/benchmarks/serve.mjs --isolated</code>.
-          </p>
-          <p>
-            <a href="https://developer.mozilla.org/en-US/docs/Web/API/Performance/measureUserAgentSpecificMemory" data-i18n-en="Memory API and limits ↗" data-i18n-es="API y límites de memoria ↗">API y límites de memoria ↗</a>
-            ·
-            <a href="https://vuejs.org/guide/essentials/conditional.html">Vue</a>
-            ·
-            <a href="https://angular.dev/guide/templates/control-flow">Angular</a>
-            · <a href="https://alpinejs.dev/directives/if">Alpine</a>
-            · <a href="https://svelte.dev/docs/svelte/if">Svelte</a>
-          </p>
-          <p id="environment"></p>
-        </div>
-      </section>
+      <section class="method-section panel" aria-labelledby="method-title" id="methodology"><h2 id="method-title" data-i18n-es="Cómo se mide" data-i18n-en="How it is measured">Cómo se mide</h2><ul>
+<li data-i18n-es="Mismo trabajo y salida completa validada para todos." data-i18n-en="Same workload and fully validated output for every engine.">Mismo trabajo y salida completa validada para todos.</li>
+<li data-i18n-es="Listas: edición local y reemplazo completo se miden por separado. React usa filas con memo." data-i18n-en="Lists: local edits and full replacement measured separately. React uses memoized rows.">Listas: edición local y reemplazo completo se miden por separado. React usa filas con memo.</li>
+<li data-i18n-es="Tiempo: cambios + DOM confirmado + layout. Sin descarga ni importación. JIT sí incluye compilar al montar." data-i18n-en="Timing: updates + confirmed DOM + layout. Download and import excluded. JIT includes compilation at mount.">Tiempo: cambios + DOM confirmado + layout. Sin descarga ni importación. JIT sí incluye compilar al montar.</li>
+<li data-i18n-es="Medianas, orden alternado y contexto nuevo por muestra. Las diferencias pequeñas pueden ser ruido." data-i18n-en="Medians, alternating order and a fresh context per sample. Small differences may be noise.">Medianas, orden alternado y contexto nuevo por muestra. Las diferencias pequeñas pueden ser ruido.</li>
+<li data-i18n-es="Memoria publicada: heap JS tras GC; excluye memoria nativa del DOM. La opción en directo usa otra API: deltas JS+DOM experimentales." data-i18n-en="Published memory: JS heap after GC; excludes native DOM memory. The live option uses a different API: experimental JS+DOM deltas.">Memoria publicada: heap JS tras GC; excluye memoria nativa del DOM. La opción en directo usa otra API: deltas JS+DOM experimentales.</li>
+<li data-i18n-es="Flutter: build original, solo grid. Su tiempo incluye esperar al frame." data-i18n-en="Flutter: original build, grid only. Its timing includes waiting for a frame.">Flutter: build original, solo grid. Su tiempo incluye esperar al frame.</li>
+</ul><p id="environment" class="subtle"></p></section>
     </main></div>
     <footer class="wrap footer">
       <a class="brand" href="index.html">g. / GTPL</a><span data-i18n-en="Choosing the pattern changes the question." data-i18n-es="Elegir el patrón cambia la pregunta.">Elegir el patrón cambia la pregunta.</span><a href="#" data-i18n-en="Back to top ↑" data-i18n-es="Volver arriba ↑">Volver arriba ↑</a>
     </footer>
     <script type="module" src="benchmarks/app.js"></script>
+
 
 
 </body></html>

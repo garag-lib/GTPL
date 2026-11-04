@@ -1,0 +1,4565 @@
+{
+  "samples": 7,
+  "startedAt": "2026-11-04T15:20:14.643Z",
+  "browser": "156.0.8078.79",
+  "protocol": "Alternating paired fresh contexts. Original prepared AOT generator and unmodified method runner. Both source trees bundled as standalone minified ESM. Separate partial-list diagnostic measures JavaScript completion, excluding layout; validates all labels and watcher counts.",
+  "sourceHashes": {
+    "baseline": "7eefc948934307e40bebf32bb1ec84af1f4fb8440b2cf18889ce6673077ddd2e",
+    "candidate": "f5c7556b6ebce357a818205ac6c6afd4091758ab24b4498e910262fe0d266c73"
+  },
+  "proxyHashes": {
+    "baseline": "0aada20fac34807963ce72c32491d6223b586c933005e6bdca3d92ad6e01e75b",
+    "candidate": "9fc1216044179d2a383333de81d633ecd4f07933cfa2a842d2934da6f77db7b8"
+  },
+  "runnerSHA256": "1094503181a7be15efa60062614568456c3ca8c009ecd74b63c8909477a814ce",
+  "bundleHashes": {
+    "baseline": {
+      "for": "dc02a548ad218c81775cbd4e81fad3663d6841ef84a06dda67dbe651f51295e8",
+      "attributes": "2f13c66a703a5710f5c0fc9f9dbec906f3bc83642f559dec527e9a16995f4433"
+    },
+    "candidate": {
+      "for": "c32552afb1e40efba71c92ff18c7d618be6f131a2afd8c56114299fb2b6e564b",
+      "attributes": "a22be21c3dc46e62ee450eb3aaa304093bb1c26d95155cb9deddc0d288b122c3"
+    }
+  },
+  "results": [
+    {
+      "sample": 0,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 74.80000000074506,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 21.5,
+          "appendMs": 18.300000000745058,
+          "removeMs": 14.199999999254942,
+          "reverseMs": 21.800000000745058,
+          "replaceMs": 22.100000001490116,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            22.899999998509884,
+            21.5,
+            18.200000002980232
+          ],
+          "appendMs": [
+            28.199999999254942,
+            18.300000000745058,
+            18.199999999254942
+          ],
+          "removeMs": [
+            14.599999997764826,
+            14.199999999254942,
+            11.199999999254942
+          ],
+          "reverseMs": [
+            28.099999997764826,
+            21,
+            21.800000000745058
+          ],
+          "replaceMs": [
+            24.400000002235174,
+            22.100000001490116,
+            22.099999997764826
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 0,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 69.5,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 18.599999997764826,
+          "appendMs": 18.699999999254942,
+          "removeMs": 14.199999999254942,
+          "reverseMs": 20.900000002235174,
+          "replaceMs": 20.399999998509884,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.900000002235174,
+            18.400000002235174,
+            18.599999997764826
+          ],
+          "appendMs": [
+            27.300000000745058,
+            18.699999999254942,
+            17.899999998509884
+          ],
+          "removeMs": [
+            15.899999998509884,
+            14.199999999254942,
+            10.5
+          ],
+          "reverseMs": [
+            21.399999998509884,
+            19.399999998509884,
+            20.900000002235174
+          ],
+          "replaceMs": [
+            21,
+            20.399999998509884,
+            19.199999999254942
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 0,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 45.600000001490116,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 16.199999999254942,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 56.661944837930164,
+          "frameP95Ms": 33.299999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            23.399999998509884,
+            19.400000002235174,
+            17.600000001490116,
+            17.600000001490116,
+            15.699999999254942,
+            16.699999999254942,
+            15.699999999254942,
+            15.100000001490116,
+            14.199999999254942,
+            13.199999999254942
+          ],
+          "frameIntervals": [
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            33.299999999999955,
+            16.799999999999955,
+            16.600000000000136,
+            16.59999999999991,
+            16.799999999999955,
+            16.600000000000136,
+            33.299999999999955,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 0,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 43.20000000298023,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 12.699999999254942,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.1861898890259,
+          "frameP95Ms": 16.799999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            17.300000000745058,
+            14.699999999254942,
+            13.300000000745058,
+            14.299999997019768,
+            12,
+            12.5,
+            12.199999999254942,
+            12.5,
+            12.899999998509884,
+            10.699999999254942
+          ],
+          "frameIntervals": [
+            16.600000000000023,
+            33.30000000000001,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.800000000000068,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000023,
+            16.800000000000068,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.700000000000045,
+            16.5,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 43.900000002235174,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 13.000000001862645,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.166666666666664,
+          "frameP95Ms": 16.799999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            16.700000002980232,
+            14.600000001490116,
+            13.5,
+            13.300000000745058,
+            12.700000002980232,
+            12.900000002235174,
+            12.699999999254942,
+            12.899999998509884,
+            13.100000001490116,
+            11.800000000745058
+          ],
+          "frameIntervals": [
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000136,
+            16.59999999999991,
+            16.799999999999955,
+            16.5,
+            16.799999999999955,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.799999999999955,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 44.19999999925494,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 16.09999999962747,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 56.71543646227191,
+          "frameP95Ms": 33.299999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            21,
+            19.699999999254942,
+            16.099999997764826,
+            16.399999998509884,
+            15.699999999254942,
+            16.200000002980232,
+            16.100000001490116,
+            16,
+            13.700000002980232,
+            12.800000000745058
+          ],
+          "frameIntervals": [
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.600000000000023,
+            33.39999999999998,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            33.299999999999955,
+            16.59999999999991,
+            16.600000000000136,
+            16.799999999999955,
+            16.700000000000045,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.800000000000182,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 69.90000000223517,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 19.199999999254942,
+          "appendMs": 18.399999998509884,
+          "removeMs": 14.5,
+          "reverseMs": 19.399999998509884,
+          "replaceMs": 20.600000001490116,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.399999998509884,
+            18.300000000745058,
+            19.199999999254942
+          ],
+          "appendMs": [
+            30.100000001490116,
+            18.399999998509884,
+            17.100000001490116
+          ],
+          "removeMs": [
+            15.699999999254942,
+            14.5,
+            10.399999998509884
+          ],
+          "reverseMs": [
+            21.600000001490116,
+            19.300000000745058,
+            19.399999998509884
+          ],
+          "replaceMs": [
+            20.600000001490116,
+            25.199999999254942,
+            19.899999998509884
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 1,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 69.90000000223517,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 21,
+          "appendMs": 19,
+          "removeMs": 14.100000001490116,
+          "reverseMs": 19.600000001490116,
+          "replaceMs": 21.399999998509884,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            21,
+            21.699999999254942,
+            20.799999997019768
+          ],
+          "appendMs": [
+            28,
+            18.5,
+            19
+          ],
+          "removeMs": [
+            15,
+            14.100000001490116,
+            10.600000001490116
+          ],
+          "reverseMs": [
+            25.399999998509884,
+            19,
+            19.600000001490116
+          ],
+          "replaceMs": [
+            21.900000002235174,
+            20.399999998509884,
+            21.399999998509884
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 63.600000001490116,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 20.399999998509884,
+          "appendMs": 18.699999999254942,
+          "removeMs": 14.600000001490116,
+          "reverseMs": 20.399999998509884,
+          "replaceMs": 22.100000001490116,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.399999998509884,
+            23.600000001490116,
+            19.600000001490116
+          ],
+          "appendMs": [
+            29.100000001490116,
+            18.699999999254942,
+            18.5
+          ],
+          "removeMs": [
+            14.800000000745058,
+            14.600000001490116,
+            10.199999999254942
+          ],
+          "reverseMs": [
+            25.899999998509884,
+            19.399999998509884,
+            20.399999998509884
+          ],
+          "replaceMs": [
+            22.399999998509884,
+            20.300000000745058,
+            22.100000001490116
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 69.19999999925494,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 19.800000000745058,
+          "appendMs": 18.399999998509884,
+          "removeMs": 13.900000002235174,
+          "reverseMs": 19.800000000745058,
+          "replaceMs": 21.699999999254942,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            19.800000000745058,
+            18,
+            20
+          ],
+          "appendMs": [
+            29.199999999254942,
+            18.399999998509884,
+            17.699999999254942
+          ],
+          "removeMs": [
+            15.600000001490116,
+            13.900000002235174,
+            10.199999999254942
+          ],
+          "reverseMs": [
+            21.5,
+            19.600000001490116,
+            19.800000000745058
+          ],
+          "replaceMs": [
+            21.699999999254942,
+            23.5,
+            18.899999998509884
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 43.400000002235174,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 16.15000000037253,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 55.833333333333336,
+          "frameP95Ms": 33.399999999999864,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            22,
+            19.699999999254942,
+            16.200000002980232,
+            16.399999998509884,
+            15.600000001490116,
+            16.700000002980232,
+            16.099999997764826,
+            14.199999999254942,
+            14.300000000745058,
+            13
+          ],
+          "frameIntervals": [
+            16.700000000000045,
+            33.299999999999955,
+            33.39999999999998,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            33.39999999999998,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999818,
+            33.40000000000009,
+            16.59999999999991,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            33.399999999999864,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 2,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 43.80000000074506,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 12.850000001490116,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.166666666666664,
+          "frameP95Ms": 16.700000000000045,
+          "refreshMs": 16.650000000000006
+        },
+        "raw": {
+          "updateMs": [
+            19.200000002980232,
+            14.5,
+            13,
+            13.5,
+            12.700000002980232,
+            13.800000000745058,
+            12.099999997764826,
+            12.5,
+            11.699999999254942,
+            10.400000002235174
+          ],
+          "frameIntervals": [
+            16.69999999999999,
+            33.400000000000034,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 38.399999998509884,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 13.050000000745058,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.166666666666664,
+          "frameP95Ms": 16.700000000000045,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            16.399999998509884,
+            15.199999999254942,
+            13.5,
+            13.699999999254942,
+            13,
+            13,
+            12.100000001490116,
+            12.5,
+            13.100000001490116,
+            12.300000000745058
+          ],
+          "frameIntervals": [
+            16.69999999999999,
+            33.30000000000007,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.799999999999955,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 49,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 16,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 56.715436462271896,
+          "frameP95Ms": 33.299999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            23.100000001490116,
+            19.100000001490116,
+            16.099999997764826,
+            16.400000002235174,
+            15.900000002235174,
+            16.400000002235174,
+            15.199999999254942,
+            14.300000000745058,
+            14,
+            13.699999999254942
+          ],
+          "frameIntervals": [
+            16.600000000000023,
+            33.39999999999998,
+            33.30000000000007,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            33.30000000000007,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000136,
+            33.299999999999955,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 69.80000000074506,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 19.600000001490116,
+          "appendMs": 18.800000000745058,
+          "removeMs": 14.099999997764826,
+          "reverseMs": 20,
+          "replaceMs": 21.600000001490116,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20,
+            18.600000001490116,
+            19.600000001490116
+          ],
+          "appendMs": [
+            27.300000000745058,
+            18.800000000745058,
+            17.900000002235174
+          ],
+          "removeMs": [
+            15.600000001490116,
+            14.099999997764826,
+            10.300000000745058
+          ],
+          "reverseMs": [
+            21.199999999254942,
+            19.600000001490116,
+            20
+          ],
+          "replaceMs": [
+            21.600000001490116,
+            23.399999998509884,
+            18.699999999254942
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 3,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 70.5,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 21,
+          "appendMs": 18.300000000745058,
+          "removeMs": 14.5,
+          "reverseMs": 19.299999997019768,
+          "replaceMs": 21.5,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            22.100000001490116,
+            21,
+            20
+          ],
+          "appendMs": [
+            28.5,
+            17.900000002235174,
+            18.300000000745058
+          ],
+          "removeMs": [
+            15.099999997764826,
+            14.5,
+            10.099999997764826
+          ],
+          "reverseMs": [
+            25.800000000745058,
+            19.199999999254942,
+            19.299999997019768
+          ],
+          "replaceMs": [
+            22.100000001490116,
+            21.400000002235174,
+            21.5
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 64.80000000074506,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 20.800000000745058,
+          "appendMs": 19.800000000745058,
+          "removeMs": 13.699999999254942,
+          "reverseMs": 19.600000001490116,
+          "replaceMs": 22,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            22.300000000745058,
+            20.800000000745058,
+            20.599999997764826
+          ],
+          "appendMs": [
+            28,
+            18.199999999254942,
+            19.800000000745058
+          ],
+          "removeMs": [
+            15.800000000745058,
+            13.699999999254942,
+            10.100000001490116
+          ],
+          "reverseMs": [
+            25.5,
+            19.600000001490116,
+            19.200000002980232
+          ],
+          "replaceMs": [
+            22,
+            20.599999997764826,
+            22.100000001490116
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 65.69999999925494,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 20.399999998509884,
+          "appendMs": 18.399999998509884,
+          "removeMs": 14.199999999254942,
+          "reverseMs": 20.5,
+          "replaceMs": 21.400000002235174,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            22.599999997764826,
+            18.300000000745058,
+            20.399999998509884
+          ],
+          "appendMs": [
+            27.600000001490116,
+            18.399999998509884,
+            17.100000001490116
+          ],
+          "removeMs": [
+            15.699999999254942,
+            14.199999999254942,
+            10.100000001490116
+          ],
+          "reverseMs": [
+            21.199999999254942,
+            18.699999999254942,
+            20.5
+          ],
+          "replaceMs": [
+            21.599999997764826,
+            21.400000002235174,
+            19.899999998509884
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 48.5,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 15.800000000745058,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 56.71543646227191,
+          "frameP95Ms": 33.299999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            22.199999999254942,
+            18.800000000745058,
+            14.899999998509884,
+            16.100000001490116,
+            15.800000000745058,
+            16.300000000745058,
+            15.800000000745058,
+            13.199999999254942,
+            14.600000001490116,
+            13.5
+          ],
+          "frameIntervals": [
+            16.600000000000023,
+            33.299999999999955,
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            33.399999999999864,
+            16.700000000000045,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            33.299999999999955,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.799999999999955,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.799999999999955,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.59999999999991,
+            16.799999999999955,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 4,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 42.5,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 12.900000000372529,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.166666666666664,
+          "frameP95Ms": 16.799999999999955,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            17.199999999254942,
+            14.800000000745058,
+            13,
+            13.5,
+            12.800000000745058,
+            13.099999997764826,
+            12.800000000745058,
+            12.699999999254942,
+            11.400000002235174,
+            10.600000001490116
+          ],
+          "frameIntervals": [
+            16.80000000000001,
+            33.299999999999955,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991,
+            16.799999999999955,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 42,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 13.050000000745058,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.166666666666664,
+          "frameP95Ms": 16.800000000000068,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            17.100000001490116,
+            14.300000000745058,
+            13.100000001490116,
+            13.300000000745058,
+            12.5,
+            13.300000000745058,
+            12.900000002235174,
+            13,
+            11.899999998509884,
+            10.900000002235174
+          ],
+          "frameIntervals": [
+            16.69999999999999,
+            33.39999999999998,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.800000000000068,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.800000000000068,
+            16.600000000000023,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.699999999999818,
+            16.800000000000182,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 45.600000001490116,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 15.800000000745058,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 56.71543646227191,
+          "frameP95Ms": 33.19999999999993,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            21.800000000745058,
+            19.099999997764826,
+            16.200000002980232,
+            15.5,
+            15.5,
+            16.200000002980232,
+            16.100000001490116,
+            14.399999998509884,
+            14.199999999254942,
+            13.300000000745058
+          ],
+          "frameIntervals": [
+            16.700000000000045,
+            33.39999999999998,
+            33.19999999999993,
+            16.700000000000045,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.800000000000068,
+            16.600000000000023,
+            16.59999999999991,
+            33.40000000000009,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            33.40000000000009,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.699999999999818
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 76.90000000223517,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 19.900000002235174,
+          "appendMs": 19.300000000745058,
+          "removeMs": 14.5,
+          "reverseMs": 20,
+          "replaceMs": 20.399999998509884,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.100000001490116,
+            18.300000000745058,
+            19.900000002235174
+          ],
+          "appendMs": [
+            27.399999998509884,
+            19.300000000745058,
+            17.399999998509884
+          ],
+          "removeMs": [
+            16.399999998509884,
+            14.5,
+            10.599999997764826
+          ],
+          "reverseMs": [
+            22.5,
+            18.600000001490116,
+            20
+          ],
+          "replaceMs": [
+            20.800000000745058,
+            20.399999998509884,
+            20
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 5,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 71.60000000149012,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 20.599999997764826,
+          "appendMs": 19,
+          "removeMs": 13.799999997019768,
+          "reverseMs": 19.199999999254942,
+          "replaceMs": 22.300000000745058,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.599999997764826,
+            21.800000000745058,
+            19.900000002235174
+          ],
+          "appendMs": [
+            27.199999999254942,
+            17.599999997764826,
+            19
+          ],
+          "removeMs": [
+            15.100000001490116,
+            13.799999997019768,
+            10.100000001490116
+          ],
+          "reverseMs": [
+            25.5,
+            19,
+            19.199999999254942
+          ],
+          "replaceMs": [
+            22.300000000745058,
+            20.199999999254942,
+            22.600000001490116
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "method": "for",
+      "variant": "baseline",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 70.10000000149012,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 20.800000000745058,
+          "appendMs": 19.199999999254942,
+          "removeMs": 14.300000000745058,
+          "reverseMs": 19.300000000745058,
+          "replaceMs": 21,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.800000000745058,
+            21.800000000745058,
+            19.699999999254942
+          ],
+          "appendMs": [
+            27.400000002235174,
+            17.400000002235174,
+            19.199999999254942
+          ],
+          "removeMs": [
+            14.900000002235174,
+            14.300000000745058,
+            10.200000002980232
+          ],
+          "reverseMs": [
+            24.799999997019768,
+            19.100000001490116,
+            19.300000000745058
+          ],
+          "replaceMs": [
+            22.699999999254942,
+            20.5,
+            21
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "method": "for",
+      "variant": "candidate",
+      "result": {
+        "method": "for",
+        "key": "for",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 1501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 70.19999999925494,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 20.300000000745058,
+          "appendMs": 18.399999998509884,
+          "removeMs": 15.199999999254942,
+          "reverseMs": 19.899999998509884,
+          "replaceMs": 21,
+          "inputMs": null,
+          "fps": null,
+          "frameP95Ms": null,
+          "refreshMs": null
+        },
+        "raw": {
+          "updateMs": [
+            20.800000000745058,
+            18.5,
+            20.300000000745058
+          ],
+          "appendMs": [
+            27,
+            18.399999998509884,
+            18
+          ],
+          "removeMs": [
+            15.699999999254942,
+            15.199999999254942,
+            10.200000002980232
+          ],
+          "reverseMs": [
+            22,
+            18.800000000745058,
+            19.899999998509884
+          ],
+          "replaceMs": [
+            21,
+            23.5,
+            18.699999999254942
+          ],
+          "frameIntervals": []
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "lista tras operaciones",
+            "dom": {
+              "elements": 1501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "method": "attributes",
+      "variant": "baseline",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 45.30000000074506,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 15.75,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 56.72009864364981,
+          "frameP95Ms": 33.299999999999955,
+          "refreshMs": 16.650000000000006
+        },
+        "raw": {
+          "updateMs": [
+            25.100000001490116,
+            19.399999998509884,
+            15.699999999254942,
+            16,
+            14.799999997019768,
+            15.800000000745058,
+            16.300000000745058,
+            15.199999999254942,
+            14.5,
+            13.300000000745058
+          ],
+          "frameIntervals": [
+            16.600000000000023,
+            33.299999999999955,
+            16.700000000000045,
+            33.39999999999998,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.699999999999932,
+            16.600000000000023,
+            16.700000000000045,
+            16.699999999999932,
+            33.30000000000007,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.59999999999991,
+            33.40000000000009,
+            16.59999999999991,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.799999999999955,
+            16.59999999999991,
+            16.600000000000136,
+            16.799999999999955,
+            16.5,
+            16.700000000000045,
+            16.799999999999955,
+            16.5,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.59999999999991
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    },
+    {
+      "sample": 6,
+      "method": "attributes",
+      "variant": "candidate",
+      "result": {
+        "method": "attributes",
+        "key": "attributes",
+        "metrics": {
+          "definitionBytes": null,
+          "activationBytes": null,
+          "activeBytes": null,
+          "retainedBytes": null,
+          "activeElements": 501,
+          "inertElements": null,
+          "constructedBlocks": null,
+          "mountMs": 44.30000000074506,
+          "showMs": null,
+          "hideMs": null,
+          "revisitMs": null,
+          "updateMs": 12.750000001862645,
+          "appendMs": null,
+          "removeMs": null,
+          "reverseMs": null,
+          "replaceMs": null,
+          "inputMs": null,
+          "fps": 59.181325004109816,
+          "frameP95Ms": 16.700000000000045,
+          "refreshMs": 16.69999999999999
+        },
+        "raw": {
+          "updateMs": [
+            18,
+            14.799999997019768,
+            12.900000002235174,
+            13,
+            12.400000002235174,
+            12.200000002980232,
+            12.100000001490116,
+            12.600000001490116,
+            13,
+            11
+          ],
+          "frameIntervals": [
+            16.69999999999999,
+            33.30000000000007,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000023,
+            16.799999999999955,
+            16.600000000000023,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.600000000000023,
+            16.699999999999932,
+            16.700000000000045,
+            16.59999999999991,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.700000000000045,
+            16.600000000000136,
+            16.699999999999818,
+            16.600000000000136,
+            16.700000000000045,
+            16.799999999999955,
+            16.59999999999991,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045,
+            16.700000000000045,
+            16.59999999999991,
+            16.700000000000045
+          ]
+        },
+        "snapshots": [
+          {
+            "phase": "ejecutor vacío",
+            "dom": {
+              "elements": 0,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "definiciones y estado inicial",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          },
+          {
+            "phase": "vista tras actualizaciones",
+            "dom": {
+              "elements": 501,
+              "branches": 0,
+              "blocks": 0,
+              "inertElements": 0,
+              "inertBlocks": 0
+            },
+            "memory": null
+          }
+        ],
+        "validated": true,
+        "workload": {
+          "declaredCases": 1,
+          "blocksPerBranch": null,
+          "chosenBranch": 0,
+          "retention": false,
+          "memoryMethod": "environment deltas (JS + DOM), parent held stable; GC uncontrolled"
+        }
+      }
+    }
+  ],
+  "partialLists": [
+    {
+      "sample": 0,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.1000000014901161,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.29999999701976776,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 0,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.0999999977648258,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.29999999701976776,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.8999999985098839,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.30000000074505806,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.30000000074505806,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.2000000029802322,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.5,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.20000000298023224,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.199999999254942,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.30000000074505806,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.1000000014901161,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.30000000074505806,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.3999999985098839,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.30000000074505806,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 5,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.29999999701976776,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 5,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.8999999985098839,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 6,
+      "variant": "baseline",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 1.0999999977648258,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.19999999925494194,
+          "events": 1
+        }
+      ]
+    },
+    {
+      "sample": 6,
+      "variant": "candidate",
+      "records": [
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.9000000022351742,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.20000000298023224,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 1000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "first",
+          "ms": 0.30000000074505806,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterMount",
+          "update": "second",
+          "ms": 0.09999999776482582,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "first",
+          "ms": 0.19999999925494194,
+          "events": 1
+        },
+        {
+          "size": 10000,
+          "phase": "afterReplacement",
+          "update": "second",
+          "ms": 0.10000000149011612,
+          "events": 1
+        }
+      ]
+    }
+  ],
+  "completedAt": "2026-11-04T15:21:03.510Z"
+}

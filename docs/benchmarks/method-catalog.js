@@ -19,6 +19,8 @@ export const METHODS = {
     title: "For · operaciones sobre listas",
     goal: "Comparar la directiva de lista y su equivalente: actualizar, añadir, quitar, invertir y reemplazar, con el resultado completo validado.",
     primary: [
+      "editOneMs",
+      "editTenthMs",
       "updateMs",
       "appendMs",
       "removeMs",
@@ -88,6 +90,8 @@ const m = (key, title, unit, direction, note, kind = "time") => ({
   kind,
 });
 export const methodMetrics = [
+  m("editOneMs", "Editar una fila", "ms", "lower", "Edición local de texto y valor; conserva el resto de filas. DOM y layout confirmados."),
+  m("editTenthMs", "Editar el 10 %", "ms", "lower", "Ediciones repartidas por la lista; conserva las filas sin cambios. DOM y layout confirmados."),
   m(
     "definitionBytes",
     "Definiciones, sin vista",
@@ -184,7 +188,7 @@ export const methodMetrics = [
     "Añadir un 25 %",
     "ms",
     "lower",
-    "Añadir elementos al final de una lista existente.",
+    "Añadir un 25 % y renovar los objetos existentes, conservando sus valores.",
   ),
   m(
     "removeMs",
@@ -252,6 +256,10 @@ export function methodKey(method, cases = 32) {
 
 // Resolve display metadata at read time so completed results can switch language.
 const translations = {
+  "Editar una fila": "Edit one row",
+  "Editar el 10 %": "Edit 10% of rows",
+  "Edición local de texto y valor; conserva el resto de filas. DOM y layout confirmados.": "Local text and value edit; retains the other rows. DOM and layout confirmed.",
+  "Ediciones repartidas por la lista; conserva las filas sin cambios. DOM y layout confirmados.": "Edits spread across the list; retains unchanged rows. DOM and layout confirmed.",
   "Switch · memoria de ramas grandes": "Switch · large-branch memory",
   "Memoria como objetivo principal. Muchas ramas declaradas, ninguna visitada y una única vista activa. El recorrido por otras ramas es opcional.": "Memory is the main objective. Many declared branches, none visited and a single active view. Visiting other branches is optional.",
   "For · operaciones sobre listas": "For · list operations",
@@ -295,7 +303,7 @@ const translations = {
   "Actualizar valores": "Update values",
   "Mediana de actualizaciones equivalentes con DOM y layout confirmados.": "Median of equivalent updates with confirmed DOM and layout.",
   "Añadir un 25 %": "Append 25%",
-  "Añadir elementos al final de una lista existente.": "Append elements to an existing list.",
+  "Añadir un 25 % y renovar los objetos existentes, conservando sus valores.": "Append 25% and recreate existing row objects, preserving their values.",
   "Quitar la mitad": "Remove half",
   "Retirar la mitad de una lista existente.": "Remove half of an existing list.",
   "Invertir el orden": "Reverse the order",

@@ -313,6 +313,29 @@ export async function runMethod(
         await record("retirada tras visitas");
       }
     } else if (method === "for") {
+      // Local edits retain the list and unchanged row objects. Each adapter
+      // applies its native state update; React keeps immutable rows + memo.
+      // Reset before every sample to include the first edit after replacement.
+      for (const [metric, count] of [["editOneMs", Math.min(1, size)], ["editTenthMs", Math.ceil(size / 10)]]) {
+        for (let tick = 1; tick <= 9; tick++) {
+          const base = rows(size);
+          await adapter.set({ rows: base });
+          await waitFor(host, () => listValid(host, base));
+          void host.offsetHeight;
+          const edits = Array.from({ length: count }, (_, i) => ({
+            index: (Math.floor(i * size / count) + tick * 17) % size,
+            label: `Edited ${tick} / ${i}`,
+            value: tick,
+          }));
+          const expected = base.map(row => ({ ...row }));
+          for (const { index, label, value } of edits) Object.assign(expected[index], { label, value });
+          const nodes = [...host.querySelectorAll(".method-row")];
+          await timed(metric, () => adapter.editRows(edits),
+            () => edits.every(({ index, label, value }) => nodes[index].querySelector("b").textContent === label && nodes[index].querySelector("i").textContent === String(value)),
+            () => verifyList(host, expected));
+        }
+        metrics[metric] = median(operations[metric]);
+      }
       for (const [metric, make] of [
         ["updateMs", (i) => rows(size, i + 1)],
         [

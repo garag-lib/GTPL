@@ -128,6 +128,8 @@ export function reactHeavy(branch) {
   return `[${Array.from({ length: BLOCKS }, (_, i) => `h('article',{className:'bench-block','data-block':${i},key:${i}},h('h4',null,${JSON.stringify(branchTitle(branch, i))}),h('p',null,${JSON.stringify(branchText(branch, i))}),h('div',null,h('strong',null,'Dato reactivo'),h('span',{className:'bench-value'},s.tick)),h('ul',null,h('li',null,'Opción A'),h('li',null,'Opción B')))`).join(",")}]`;
 }
 export function reactView(key) {
+  if (key === "for")
+    return `const Row=memo(function Row({row}){return h('article',{className:'method-row','data-key':row.id},h('b',null,row.label),h('i',null,row.value));});function View(s){return h('div',null,s.rows.map(row=>h(Row,{row,key:row.id})));}`;
   if (key.startsWith("switch-"))
     return `function Panel(s){switch(s.active){${Array.from({ length: Number(key.split("-")[1]) }, (_, i) => `case ${i}:return h('section',{className:'bench-branch','data-branch':${i},key:${i}},${reactHeavy(i)});`).join("")}default:return null;}} function View(s){return h('div',null,Panel(s));}`;
   if (key === "if")
