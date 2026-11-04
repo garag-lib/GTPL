@@ -14,6 +14,10 @@ interface ReactiveDescriptor {
 }
 const reactiveDescriptors = new WeakMap<IBindDef, ReactiveDescriptor>();
 const reactiveGetters = new WeakMap<() => any, ReactiveDescriptor>();
+// BindMap remains the public single-context map. Only bindings spanning more
+// than one inherited context need additional cleanup metadata.
+const additionalBindContexts = new WeakMap<IGtplObject, Map<IBindObject, Set<IGtplObject>>>();
+const initialBindings = new WeakSet<IBindObject>();
 
 // g-is content can be destroyed independently of its rendering owner.
 // Keep its insertion point outside that content, including combined g-if binds.
@@ -52,6 +56,7 @@ function cancelBindingChange(bind: IBindObject) {
   currentBindingChanges.get(bind)?.resolve?.();
   pendingBindingChanges.delete(bind);
   currentBindingChanges.delete(bind);
+  initialBindings.delete(bind);
 }
 
 function observeBindingErrors(job: PendingBindingChange) {
@@ -70,7 +75,10 @@ function bindingChangePromise(job: PendingBindingChange): Promise<void> {
 
 function finishBindingChange(bind: IBindObject, job: PendingBindingChange, error?: { error: unknown }) {
   const current = currentBindingChanges.get(bind) === job;
-  if (current) currentBindingChanges.delete(bind);
+  if (current) {
+    currentBindingChanges.delete(bind);
+    initialBindings.delete(bind);
+  }
   if (error && current && !job.context.isDestroyed && !bind.gtpl?.isDestroyed) {
     if (job.reject) job.reject(error.error);
     else if (job.reportErrors) console.error('[GTPL] Binding update failed:', error.error);
@@ -557,6 +565,15 @@ function addBind2Object(gtpl: IGtplObject, va: TplVar, bind: IBindObject) {
         bind.gtpl = gtpl;
         // almacenamos en el contexto original una referencia al contexto donde se almacena el bind
         if (!gtpl.BindMap) gtpl.BindMap = new Map();
+        const previous = gtpl.BindMap.get(bind);
+        if (previous && previous !== ctx) {
+          let bindings = additionalBindContexts.get(gtpl);
+          if (!bindings) additionalBindContexts.set(gtpl, bindings = new Map());
+          let contexts = bindings.get(bind);
+          if (!contexts) bindings.set(bind, contexts = new Set());
+          contexts.add(previous);
+          contexts.add(ctx);
+        }
         gtpl.BindMap.set(bind, ctx);
         addBind2Object(ctx, va, bind);
         return;
@@ -875,6 +892,7 @@ function collectBindsFromTree(tree: any, out: Set<IBindObject>) {
 //---
 
 function removeElements(elements: any) {
+  if (elements == null) return;
   if (Array.isArray(elements)) {
     fragmentNodes(elements).forEach((element) => {
       removeElements(element);
@@ -1271,6 +1289,10 @@ function updateIFbind(
   return gtpl;
 }
 
+function isDirectList(bind: IBindObject): boolean {
+  return !!bind.link.vorc?.va && !bind.link.formula?.fnc && !bind.link.functions?.length;
+}
+
 function updateFORbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
@@ -1298,7 +1320,7 @@ function updateFORbind(
   const render_arr: any = [];
   const delete_arr: any = [];
   //---
-  const index: any = (Array.isArray(path) && path.length) ? path[0] : undefined;
+  const index: any = (isDirectList(bind) && Array.isArray(path) && path.length) ? path[0] : undefined;
   //---
   // Iterator subscriptions carry Symbol.iterator, which cannot be coerced to
   // a number. Reconcile the full collection for such non-index paths.
@@ -1708,6 +1730,7 @@ export class GTpl implements IGtplObject {
   }
 
   loadOptions(options?: any) {
+    try {
     if (options) {
       this.Root = options.root;
       if (options.parent) {
@@ -1723,6 +1746,13 @@ export class GTpl implements IGtplObject {
       privateProperties.setProperty(this, "GenerationFinish", true);
       if (options.refresh === undefined || options.refresh === true)
         this.refresh();
+    }
+    } catch (error) {
+      // The caller cannot dispose an instance whose construction never returned.
+      // Cleanup failures must not replace the original directive/generator error.
+      try { this.destroy(); }
+      catch (cleanupError) { console.error('[GTPL] Error cleaning failed construction:', cleanupError); }
+      throw error;
     }
   }
 
@@ -1759,6 +1789,7 @@ export class GTpl implements IGtplObject {
 
   addBind(bind: IBindObject) {
     if (this.checkDestroyed('addBind')) return;
+    initialBindings.add(bind);
     if (bind.type === BindTypes.IS && bind.mark) persistentMarks.add(bind.mark);
     if (!checkBindElements(this, bind)) {
       if (!checkBindEvent(this, bind)) {
@@ -1873,9 +1904,13 @@ export class GTpl implements IGtplObject {
       for (const [bind, ctxgtpl] of this.BindMap) {
         rememberRenderedRoot(bind);
         delBind(ctxgtpl, bind);
+        additionalBindContexts.get(this)?.get(bind)?.forEach(context => {
+          if (context !== ctxgtpl) delBind(context, bind);
+        });
       }
       this.BindMap.clear();
     }
+    additionalBindContexts.delete(this);
 
     if (elements) {
       removeElements(this.Elements);
@@ -1969,10 +2004,8 @@ export class GTpl implements IGtplObject {
   }
 
   private trackInitialUpdate(update: Promise<void>, owner: GTpl) {
-    if (this.getGtplRoot().initialRenderSettled && owner.getGtplRoot().initialRenderSettled) return;
     const contexts = new Set<GTpl>();
     const collect = (context: GTpl) => {
-      if (context.getGtplRoot().initialRenderSettled) return;
       while (context) {
         if (!context.initialRenderSettled) contexts.add(context);
         context = context.Parent as GTpl;
@@ -2147,7 +2180,8 @@ export class GTpl implements IGtplObject {
     }
     const owner = (bind.gtpl || this) as GTpl;
     const initial = !this.getGtplRoot().initialRenderSettled ||
-      (owner !== this && !owner.getGtplRoot().initialRenderSettled);
+      (owner !== this && !owner.getGtplRoot().initialRenderSettled) ||
+      (!owner.initialRenderSettled && initialBindings.has(bind));
     if (!automatic || initial) bindingChangePromise(job);
     if (initial) {
       if (!job.callers) job.callers = new Set();

@@ -16,7 +16,15 @@ function applyDirective(ele: HTMLElement, name: string, value: string, objRoot: 
     const DirectiveClass = Directives.get(name);
     if (!DirectiveClass)
         return false;
-    const instance = new DirectiveClass(ele, value, objRoot, argument);
+    let instance;
+    try {
+        instance = new DirectiveClass(ele, value, objRoot, argument);
+    } catch (error) {
+        // A directive may connect its element before throwing, before the
+        // generator has returned that element to the owning component.
+        ele.parentNode?.removeChild(ele);
+        throw error;
+    }
     let instances = ElementDirectives.get(ele);
     if (!instances) {
         instances = [];
