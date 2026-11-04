@@ -13,6 +13,25 @@ La base de trabajo es GTPL 3.0.0, `main` en
 No depender de esa rama, de sus archivos temporales ni de sus artefactos para
 retomar el trabajo: reproducir cada caso sobre la versión principal vigente.
 
+## Estado tras la implementación del 4 de noviembre de 2026
+
+Los puntos **1–7** y las **nueve oportunidades adicionales** se han abordado en
+`codex/gtpl-correcciones-mejoras`. El punto **8 (`g-key`) queda descartado** por
+petición expresa del usuario. La implementación del runtime y paquete está en
+`3e80129`, precedida por las correcciones independientes de ciclo de vida en
+`dac72f2`. Estos cambios siguen fuera de `main`.
+
+El [informe de implementación y mediciones](docs/benchmarks/runtime-improvements.md)
+detalla las decisiones, 421 pruebas, validación de GTPLWeb/Sanmateo, reducción
+de memoria y resultados de rendimiento, incluidas las regresiones medidas.
+La creación bajo demanda se aplica a estructuras privadas; las colecciones
+públicas conservan su contrato. La reutilización JIT se documenta sobre la API
+existente, sin añadir una caché global de plantillas.
+
+El resto de este fichero conserva el diagnóstico y las recomendaciones
+históricas de la rama descartada; sus cifras no son los resultados del trabajo
+nuevo. Para el estado actual debe consultarse el informe enlazado.
+
 ## Decisiones para la próxima sesión
 
 - Elegir una tarea de este documento y hacerla en una rama independiente.
@@ -203,7 +222,10 @@ Este cambio exige que los medidores de distribución recorran todos los chunks
 transitivos. Medir solo `gtpl.esm.js` dejaría de representar la biblioteca
 completa. Esa actualización de herramientas debe acompañar al empaquetado.
 
-### 8 Listas con claves opcionales
+### 8 Listas con claves opcionales — descartado
+
+Descartado expresamente en esta implementación. Se conserva la descripción
+histórica siguiente como referencia; no se incorpora al código.
 
 Función nueva, separada de las correcciones anteriores. La sintaxis ensayada
 fue `g-for="rows;i;row" g-key="row.id"`, con rutas anidadas o `g-key="row"`

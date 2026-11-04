@@ -1,0 +1,2342 @@
+{
+  "browser": "156.0.8078.79",
+  "node": "v24.22.1",
+  "cpu": "Intel(R) Core(TM) i5-2400S CPU @ 2.50GHz",
+  "samples": 9,
+  "manifests": {
+    "reference": {
+      "sourceSha256": "c84636f3d735187df459efa066cd74fdd8ec58087cc2ffa4a9ff37e975c6d9c7",
+      "bundleSha256": "f9e186a219b0cc23c0e5b087d427a778682c9c62a9565c62db552d91f28843c8",
+      "compiler": {
+        "generator": "GCodeOptimized",
+        "methodAliases": true
+      },
+      "distribution": {
+        "bytes": 51931,
+        "gzip": 16726,
+        "files": [
+          {
+            "file": "gtpl.esm.js",
+            "bytes": 51931,
+            "gzip": 16726,
+            "sha256": "9a72dc864badf976074c28ee31e35a726110bfbdd920df2be84335a7a140060d"
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "sourceSha256": "1b89726dd7eff513eff2eaa38db45e9b02247ebcf244adfa822d844d87c8ecd1",
+      "bundleSha256": "5ee87ba6420161505d9935cece0d619e385cbada70c1d69f6b820f7030d856fc",
+      "compiler": {
+        "generator": "GCodeOptimized",
+        "methodAliases": true
+      },
+      "distribution": {
+        "bytes": 54020,
+        "gzip": 17948,
+        "files": [
+          {
+            "file": "gtpl.esm.js",
+            "bytes": 17242,
+            "gzip": 5919,
+            "sha256": "65847f067b4d51f971b3f26a21b6fbb4c71a6bde42780a3fd28cb96ca8168c33"
+          },
+          {
+            "file": "shared/runtime.esm.js",
+            "bytes": 36778,
+            "gzip": 12029,
+            "sha256": "5758318bf1681c0bd3fefc13c5b75eb38d4e0ed59181ae7fc87dfde7c45442b8"
+          }
+        ]
+      }
+    }
+  },
+  "results": [
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 67.30000000074506
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 2.400000002235174,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 23.900000002235174,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 59.599999997764826
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 72.10000000149012
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 31.100000001490116
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 305.20000000298023
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 2.099999997764826,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 138.30000000074506,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 142.39999999850988
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 233.60000000149012
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 128.90000000223517
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 44.80000000074506
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.04000000022351742
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.4099999999627471
+    },
+    {
+      "sample": 0,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.400000002235174
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 67.09999999776483
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.1000000014901161,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 3.699999999254942,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 52.19999999925494
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 69.10000000149012
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 27.099999997764826
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 263.19999999925494
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.5,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 28.600000001490116,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 35.600000001490116
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 237.09999999776483
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 137.30000000074506
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 28.299999997019768
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.015000000037252903
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.0700000001117587
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.24499999973922967
+    },
+    {
+      "sample": 0,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.399999998509884
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 66.29999999701977
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.4000000022351742,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 3.699999999254942,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 50.899999998509884
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 69
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 29.600000001490116
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 289.80000000074506
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.19999999925494194,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 15.199999999254942,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 38.399999998509884
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 249.29999999701977
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 127.30000000074506
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 36.69999999925494
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.015000000223517418
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.034999999962747094
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.23999999985098838
+    },
+    {
+      "sample": 1,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 14.800000000745058
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 60.5
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.2999999970197678,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 24.300000000745058,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 50.80000000074506
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 75.30000000074506
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 28.900000002235174
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 289.69999999925494
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 2.400000002235174,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 146.10000000149012,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 134.79999999701977
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 232.39999999850988
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 126.60000000149012
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 46.29999999701977
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.004999999888241291
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.044999999739229676
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.39499999992549417
+    },
+    {
+      "sample": 1,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.100000001490116
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 62.600000001490116
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.1000000014901161,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 24.800000000745058,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 60
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 73.10000000149012
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 29.199999999254942
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 289.8999999985099
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 2.600000001490116,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 145.69999999925494,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 133.80000000074506
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 239
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 131.30000000074506
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 47.899999998509884
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.044999999739229676
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.4599999999627471
+    },
+    {
+      "sample": 2,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 16.899999998509884
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 59.400000002235174
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 3.899999998509884,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 53.19999999925494
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 83.39999999850988
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 34
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 305.1000000014901
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.29999999701976776,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 53.399999998509884,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 40.69999999925494
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 249.5
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 137.89999999850988
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 27.099999997764826
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.014999999850988387
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.059999999962747096
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.24999999962747096
+    },
+    {
+      "sample": 2,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.599999997764826
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 62.19999999925494
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.1000000014901161,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 4.300000000745058,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 51.80000000074506
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 68.19999999925494
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 29.800000000745058
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 264.1000000014901
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.30000000074505806,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 28.599999997764826,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 37.100000001490116
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 231.30000000074506
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 137.19999999925494
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 26.700000002980232
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.009999999962747096
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.0650000000372529
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.6499999998137355
+    },
+    {
+      "sample": 3,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.100000001490116
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 80.30000000074506
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 2.100000001490116,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 29.599999997764826,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 60.599999997764826
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 89.69999999925494
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 31.600000001490116
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 397.80000000074506
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 2.199999999254942,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 153,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 151.40000000223517
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 236.79999999701977
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 128.19999999925494
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 45.19999999925494
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.024999999813735484
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.5699999999254942
+    },
+    {
+      "sample": 3,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.200000002980232
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 62.80000000074506
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.2000000029802322,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 24.199999999254942,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 50.5
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 72.59999999776483
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 29.800000000745058
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 294.0999999977648
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 4.899999998509884,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 144.59999999776483,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 133.30000000074506
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 235.19999999925494
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 126.69999999925494
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 43.79999999701977
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.009999999962747096
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.030000000074505807
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.4000000001862645
+    },
+    {
+      "sample": 4,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 82.79999999701977
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 0.8999999985098839,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 5.199999999254942,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 69.69999999925494
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 89.10000000149012
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 35.5
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 293.0999999977648
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.30000000074505806,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 32,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 37.600000001490116
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 254.80000000074506
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 169.10000000149012
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 29.800000000745058
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.009999999776482582
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.07500000018626451
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.39999999962747096
+    },
+    {
+      "sample": 4,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 16.699999999254942
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 65
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 3.900000002235174,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 49.30000000074506
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 66.69999999925494
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 30
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 265.20000000298023
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.29999999701976776,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 28.400000002235174,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 38.19999999925494
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 257.5
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 152.30000000074506
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 27.299999997019768
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.009999999776482582
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.07999999988824129
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.6299999998882413
+    },
+    {
+      "sample": 5,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 15.5
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 94.80000000074506
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.800000000745058,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 33.80000000074506,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 71.5
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 87.89999999850988
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 40.19999999925494
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 319.80000000074506
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 7.199999999254942,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 176.90000000223517,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 162.5
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 283.5
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 148
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 50.599999997764826
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.004999999888241291
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.050000000186264514
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.4749999998137355
+    },
+    {
+      "sample": 5,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 16
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 65.09999999776483
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.300000000745058,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 32.600000001490116,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 59.30000000074506
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 85.19999999925494
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 33.30000000074506
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 321.5
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 2.400000002235174,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 154.79999999701977,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 203.90000000223517
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 313.29999999701977
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 132.30000000074506
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 46.69999999925494
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.015000000037252903
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.029999999701976775
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.43999999947845936
+    },
+    {
+      "sample": 6,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 18.300000000745058
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 60.20000000298023
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.1000000014901161,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 4.5,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 50.5
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 69.80000000074506
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 30.899999998509884
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 267.8999999985099
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.30000000074505806,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 28.5,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 37.70000000298023
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 236.5
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 134.5
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 28.100000001490116
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.009999999962747096
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.03500000033527613
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.2650000000372529
+    },
+    {
+      "sample": 6,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 14.199999999254942
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 56.69999999925494
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 4.899999998509884,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 53.599999997764826
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 68.39999999850988
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 27.900000002235174
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 263
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.30000000074505806,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 17.800000000745058,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 53
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 247.19999999925494
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 131.80000000074506
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 28
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.009999999962747096
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.044999999925494194
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.5250000001862645
+    },
+    {
+      "sample": 7,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 14.5
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 69.79999999701977
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.199999999254942,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 24.5,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 51.399999998509884
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 74.80000000074506
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 28.400000002235174
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 293.5
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 2.699999999254942,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 147,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 137.79999999701977
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 237.39999999850988
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 123.69999999925494
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 44.5
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.015000000037252903
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.5599999999627471
+    },
+    {
+      "sample": 7,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 14.899999998509884
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "mount",
+      "size": 1000,
+      "ms": 61.400000002235174
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1.2000000029802322,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "nested",
+      "size": 1000,
+      "ms": 22.300000000745058,
+      "calculations": 1000,
+      "events": 100
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 53.599999997764826
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 71.10000000149012
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 30.400000002235174
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "mount",
+      "size": 10000,
+      "ms": 288.1000000014901
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 3.300000000745058,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "nested",
+      "size": 10000,
+      "ms": 148.30000000074506,
+      "calculations": 10000,
+      "events": 1000
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 134.69999999925494
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 280.30000000074506
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 127.5
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 44
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.034999999776482583
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.38500000052154065
+    },
+    {
+      "sample": 8,
+      "revision": "reference",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 14.800000000745058
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 1000,
+      "ms": 57.100000001490116
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 1000,
+      "ms": 1,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 1000,
+      "ms": 3.600000001490116,
+      "calculations": 100,
+      "events": 100
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 1000,
+      "ms": 49.30000000074506
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 1000,
+      "ms": 75.20000000298023
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 1000,
+      "ms": 38
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "mount",
+      "size": 10000,
+      "ms": 269.69999999925494
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "singleNested",
+      "size": 10000,
+      "ms": 0.30000000074505806,
+      "calculations": 1,
+      "events": 1
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "nested",
+      "size": 10000,
+      "ms": 18.699999999254942,
+      "calculations": 1000,
+      "events": 1000
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "append1000",
+      "size": 10000,
+      "ms": 53.79999999701977
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "splice100",
+      "size": 10000,
+      "ms": 252.20000000298023
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "destroy",
+      "size": 10000,
+      "ms": 128.39999999850988
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "proxyReads50000",
+      "size": 0,
+      "ms": 26.199999999254942
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 10,
+      "ms": 0.010000000149011612
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 100,
+      "ms": 0.04000000022351742
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "unsubscribe",
+      "size": 1000,
+      "ms": 0.6150000000372529
+    },
+    {
+      "sample": 8,
+      "revision": "candidate",
+      "name": "staticInstances1000",
+      "size": 1000,
+      "ms": 14.300000000745058
+    }
+  ]
+}

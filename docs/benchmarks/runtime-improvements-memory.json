@@ -1,0 +1,281 @@
+{
+  "browser": "156.0.8078.79",
+  "manifests": {
+    "reference": {
+      "sourceSha256": "c84636f3d735187df459efa066cd74fdd8ec58087cc2ffa4a9ff37e975c6d9c7",
+      "bundleSha256": "f9e186a219b0cc23c0e5b087d427a778682c9c62a9565c62db552d91f28843c8",
+      "compiler": {
+        "generator": "GCodeOptimized",
+        "methodAliases": true
+      },
+      "distribution": {
+        "bytes": 51931,
+        "gzip": 16726,
+        "files": [
+          {
+            "file": "gtpl.esm.js",
+            "bytes": 51931,
+            "gzip": 16726,
+            "sha256": "9a72dc864badf976074c28ee31e35a726110bfbdd920df2be84335a7a140060d"
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "sourceSha256": "1b89726dd7eff513eff2eaa38db45e9b02247ebcf244adfa822d844d87c8ecd1",
+      "bundleSha256": "5ee87ba6420161505d9935cece0d619e385cbada70c1d69f6b820f7030d856fc",
+      "compiler": {
+        "generator": "GCodeOptimized",
+        "methodAliases": true
+      },
+      "distribution": {
+        "bytes": 54020,
+        "gzip": 17948,
+        "files": [
+          {
+            "file": "gtpl.esm.js",
+            "bytes": 17242,
+            "gzip": 5919,
+            "sha256": "65847f067b4d51f971b3f26a21b6fbb4c71a6bde42780a3fd28cb96ca8168c33"
+          },
+          {
+            "file": "shared/runtime.esm.js",
+            "bytes": 36778,
+            "gzip": 12029,
+            "sha256": "5758318bf1681c0bd3fefc13c5b75eb38d4e0ed59181ae7fc87dfde7c45442b8"
+          }
+        ]
+      }
+    }
+  },
+  "results": [
+    {
+      "revision": "reference",
+      "sample": 0,
+      "size": 1000,
+      "watchers": false,
+      "active": 1760356,
+      "residual": 231776,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "size": 1000,
+      "watchers": false,
+      "active": 1579344,
+      "residual": 244800,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "size": 1000,
+      "watchers": true,
+      "active": 1930184,
+      "residual": 236080,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "size": 1000,
+      "watchers": true,
+      "active": 1748860,
+      "residual": 248744,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "size": 10000,
+      "watchers": false,
+      "active": 15749768,
+      "residual": 469756,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "size": 10000,
+      "watchers": false,
+      "active": 13910864,
+      "residual": 481924,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "size": 10000,
+      "watchers": true,
+      "active": 17394508,
+      "residual": 473448,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "size": 10000,
+      "watchers": true,
+      "active": 15556696,
+      "residual": 486048,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "size": 1000,
+      "watchers": false,
+      "active": 1578336,
+      "residual": 244044,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "size": 1000,
+      "watchers": false,
+      "active": 1760596,
+      "residual": 232052,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "size": 1000,
+      "watchers": true,
+      "active": 1749064,
+      "residual": 248852,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "size": 1000,
+      "watchers": true,
+      "active": 1930856,
+      "residual": 236644,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "size": 10000,
+      "watchers": false,
+      "active": 13909616,
+      "residual": 481276,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "size": 10000,
+      "watchers": false,
+      "active": 15751420,
+      "residual": 469172,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "size": 10000,
+      "watchers": true,
+      "active": 15555532,
+      "residual": 486048,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "size": 10000,
+      "watchers": true,
+      "active": 17394512,
+      "residual": 473476,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "size": 1000,
+      "watchers": false,
+      "active": 1760572,
+      "residual": 232052,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "size": 1000,
+      "watchers": false,
+      "active": 1579056,
+      "residual": 244440,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "size": 1000,
+      "watchers": true,
+      "active": 1930832,
+      "residual": 236800,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "size": 1000,
+      "watchers": true,
+      "active": 1749544,
+      "residual": 249500,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "size": 10000,
+      "watchers": false,
+      "active": 15749696,
+      "residual": 469708,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "size": 10000,
+      "watchers": false,
+      "active": 13910124,
+      "residual": 481888,
+      "retained": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "size": 10000,
+      "watchers": true,
+      "active": 17395952,
+      "residual": 474124,
+      "retained": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "size": 10000,
+      "watchers": true,
+      "active": 15556672,
+      "residual": 485916,
+      "retained": 0
+    }
+  ],
+  "inheritance": [
+    {
+      "revision": "reference",
+      "residualBindings": 10,
+      "retained": 10
+    },
+    {
+      "revision": "candidate",
+      "residualBindings": 0,
+      "retained": 0
+    }
+  ]
+}

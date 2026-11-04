@@ -1,0 +1,50 @@
+{
+  "gtpl": {
+    "bundled": {
+      "bytes": 53432,
+      "gzip": 18249
+    },
+    "distribution": {
+      "bytes": 54020,
+      "gzip": 17948,
+      "files": [
+        {
+          "file": "gtpl.esm.js",
+          "bytes": 17242,
+          "gzip": 5919,
+          "sha256": "65847f067b4d51f971b3f26a21b6fbb4c71a6bde42780a3fd28cb96ca8168c33"
+        },
+        {
+          "file": "shared/runtime.esm.js",
+          "bytes": 36778,
+          "gzip": 12029,
+          "sha256": "5758318bf1681c0bd3fefc13c5b75eb38d4e0ed59181ae7fc87dfde7c45442b8"
+        }
+      ]
+    }
+  },
+  "runtime": {
+    "bundled": {
+      "bytes": 36532,
+      "gzip": 12588
+    },
+    "distribution": {
+      "bytes": 36974,
+      "gzip": 12205,
+      "files": [
+        {
+          "file": "runtime.esm.js",
+          "bytes": 196,
+          "gzip": 176,
+          "sha256": "68391efd01ba8af19a741ce8de7fd499f78aa3fdefcbdfef5afdde75a3ac9ea0"
+        },
+        {
+          "file": "shared/runtime.esm.js",
+          "bytes": 36778,
+          "gzip": 12029,
+          "sha256": "5758318bf1681c0bd3fefc13c5b75eb38d4e0ed59181ae7fc87dfde7c45442b8"
+        }
+      ]
+    }
+  }
+}

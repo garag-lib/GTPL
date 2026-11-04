@@ -1,0 +1,1050 @@
+{
+  "browser": "156.0.8078.79",
+  "samples": 9,
+  "compiler": {
+    "generator": "GCodeOptimized",
+    "options": {
+      "methodAliases": true
+    }
+  },
+  "sizes": {
+    "reference": {
+      "bytes": 52021,
+      "gzipBytes": 17352,
+      "sha256": "0ade7593eb1528751bc83f881efb08962eeac76781e35b43b56cbb7320ca4d7e"
+    },
+    "candidate": {
+      "bytes": 53886,
+      "gzipBytes": 18109,
+      "sha256": "d28982da70d856892b5745946978964a297b0b49096de97a4d40e770afcc3bd4"
+    }
+  },
+  "results": [
+    {
+      "revision": "reference",
+      "sample": 0,
+      "name": "burst1",
+      "duration": 0.3999999985098839,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "name": "burst10",
+      "duration": 0.8999999985098839,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "name": "burst1000",
+      "duration": 9.600000001490116,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "name": "unchanged",
+      "duration": 7.800000000745058,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "name": "rowBurst1000",
+      "duration": 30.700000002980232,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 0,
+      "name": "separateTasks200",
+      "duration": 0.054500000141561034,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "name": "burst1",
+      "duration": 0.6000000014901161,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "name": "burst1000",
+      "duration": 18,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "name": "unchanged",
+      "duration": 10.199999999254942,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "name": "rowBurst1000",
+      "duration": 23.700000002980232,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 0,
+      "name": "separateTasks200",
+      "duration": 0.0989999999664724,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "name": "burst1",
+      "duration": 0.6000000014901161,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "name": "burst10",
+      "duration": 1.6000000014901161,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "name": "burst1000",
+      "duration": 9.799999997019768,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "name": "unchanged",
+      "duration": 15,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "name": "rowBurst1000",
+      "duration": 27.199999999254942,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 1,
+      "name": "separateTasks200",
+      "duration": 0.09699999995529651,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "name": "burst1",
+      "duration": 0.4000000022351742,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "name": "burst1000",
+      "duration": 4.600000001490116,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "name": "unchanged",
+      "duration": 4.399999998509884,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "name": "rowBurst1000",
+      "duration": 16,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 1,
+      "name": "separateTasks200",
+      "duration": 0.03900000000372529,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "name": "burst1",
+      "duration": 0.6999999992549419,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "name": "burst10",
+      "duration": 1,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "name": "burst1000",
+      "duration": 8.5,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "name": "unchanged",
+      "duration": 6.5,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "name": "rowBurst1000",
+      "duration": 23.800000000745058,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 2,
+      "name": "separateTasks200",
+      "duration": 0.07600000003352761,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "name": "burst1",
+      "duration": 0.7000000029802322,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "name": "burst10",
+      "duration": 1.7000000029802322,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "name": "burst1000",
+      "duration": 15.199999999254942,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "name": "unchanged",
+      "duration": 4.700000002980232,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "name": "rowBurst1000",
+      "duration": 17.599999997764826,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 2,
+      "name": "separateTasks200",
+      "duration": 0.06049999998882413,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 3,
+      "name": "burst1",
+      "duration": 0.6000000014901161,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 3,
+      "name": "burst10",
+      "duration": 0.9000000022351742,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 3,
+      "name": "burst1000",
+      "duration": 8.200000002980232,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 3,
+      "name": "unchanged",
+      "duration": 4.199999999254942,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 3,
+      "name": "rowBurst1000",
+      "duration": 16.5,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 3,
+      "name": "separateTasks200",
+      "duration": 0.0400000000372529,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 3,
+      "name": "burst1",
+      "duration": 0.4000000022351742,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 3,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 3,
+      "name": "burst1000",
+      "duration": 5.300000000745058,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 3,
+      "name": "unchanged",
+      "duration": 6.800000000745058,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 3,
+      "name": "rowBurst1000",
+      "duration": 16.399999998509884,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 3,
+      "name": "separateTasks200",
+      "duration": 0.04900000005960464,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 4,
+      "name": "burst1",
+      "duration": 0.5,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 4,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 4,
+      "name": "burst1000",
+      "duration": 4.800000000745058,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 4,
+      "name": "unchanged",
+      "duration": 9.299999997019768,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 4,
+      "name": "rowBurst1000",
+      "duration": 16.800000000745058,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 4,
+      "name": "separateTasks200",
+      "duration": 0.04250000005587935,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 4,
+      "name": "burst1",
+      "duration": 0.5999999977648258,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 4,
+      "name": "burst10",
+      "duration": 1,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 4,
+      "name": "burst1000",
+      "duration": 5.800000000745058,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 4,
+      "name": "unchanged",
+      "duration": 3.800000000745058,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 4,
+      "name": "rowBurst1000",
+      "duration": 15.199999999254942,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 4,
+      "name": "separateTasks200",
+      "duration": 0.04149999998509884,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 5,
+      "name": "burst1",
+      "duration": 0.5999999977648258,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 5,
+      "name": "burst10",
+      "duration": 0.4000000022351742,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 5,
+      "name": "burst1000",
+      "duration": 6.800000000745058,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 5,
+      "name": "unchanged",
+      "duration": 4.100000001490116,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 5,
+      "name": "rowBurst1000",
+      "duration": 14.899999998509884,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 5,
+      "name": "separateTasks200",
+      "duration": 0.029500000048428773,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 5,
+      "name": "burst1",
+      "duration": 0.5,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 5,
+      "name": "burst10",
+      "duration": 0.5,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 5,
+      "name": "burst1000",
+      "duration": 7.899999998509884,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 5,
+      "name": "unchanged",
+      "duration": 3.900000002235174,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 5,
+      "name": "rowBurst1000",
+      "duration": 18.399999998509884,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 5,
+      "name": "separateTasks200",
+      "duration": 0.03699999997392297,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 6,
+      "name": "burst1",
+      "duration": 0.6000000014901161,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 6,
+      "name": "burst10",
+      "duration": 0.29999999701976776,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 6,
+      "name": "burst1000",
+      "duration": 4.300000000745058,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 6,
+      "name": "unchanged",
+      "duration": 3.599999997764826,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 6,
+      "name": "rowBurst1000",
+      "duration": 19,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 6,
+      "name": "separateTasks200",
+      "duration": 0.03950000001117587,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 6,
+      "name": "burst1",
+      "duration": 0.5999999977648258,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 6,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 6,
+      "name": "burst1000",
+      "duration": 7.5,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 6,
+      "name": "unchanged",
+      "duration": 6.899999998509884,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 6,
+      "name": "rowBurst1000",
+      "duration": 14.5,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 6,
+      "name": "separateTasks200",
+      "duration": 0.03200000001117587,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 7,
+      "name": "burst1",
+      "duration": 0.5999999977648258,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 7,
+      "name": "burst10",
+      "duration": 0.6000000014901161,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 7,
+      "name": "burst1000",
+      "duration": 7.899999998509884,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 7,
+      "name": "unchanged",
+      "duration": 4.300000000745058,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 7,
+      "name": "rowBurst1000",
+      "duration": 17,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 7,
+      "name": "separateTasks200",
+      "duration": 0.032500000074505805,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 7,
+      "name": "burst1",
+      "duration": 0.5,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 7,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 7,
+      "name": "burst1000",
+      "duration": 4.099999997764826,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 7,
+      "name": "unchanged",
+      "duration": 7.799999997019768,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 7,
+      "name": "rowBurst1000",
+      "duration": 23.900000002235174,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 7,
+      "name": "separateTasks200",
+      "duration": 0.04200000010430813,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "reference",
+      "sample": 8,
+      "name": "burst1",
+      "duration": 0.5,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 8,
+      "name": "burst10",
+      "duration": 2.800000000745058,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 8,
+      "name": "burst1000",
+      "duration": 4.199999999254942,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 8,
+      "name": "unchanged",
+      "duration": 4,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "reference",
+      "sample": 8,
+      "name": "rowBurst1000",
+      "duration": 16,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "reference",
+      "sample": 8,
+      "name": "separateTasks200",
+      "duration": 0.03450000004842877,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    },
+    {
+      "revision": "candidate",
+      "sample": 8,
+      "name": "burst1",
+      "duration": 0.5999999977648258,
+      "synchronousCalculations": 0,
+      "events": 1,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 8,
+      "name": "burst10",
+      "duration": 0.30000000074505806,
+      "synchronousCalculations": 0,
+      "events": 10,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 8,
+      "name": "burst1000",
+      "duration": 8.199999999254942,
+      "synchronousCalculations": 0,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 8,
+      "name": "unchanged",
+      "duration": 3.5,
+      "events": 1001,
+      "calculations": 1,
+      "writes": 0
+    },
+    {
+      "revision": "candidate",
+      "sample": 8,
+      "name": "rowBurst1000",
+      "duration": 13.399999998509884,
+      "events": 1000,
+      "calculations": 1,
+      "writes": 1
+    },
+    {
+      "revision": "candidate",
+      "sample": 8,
+      "name": "separateTasks200",
+      "duration": 0.030999999959021807,
+      "events": 200,
+      "calculations": 200,
+      "writes": 200
+    }
+  ]
+}

@@ -204,6 +204,27 @@ are marked unstable. Cadence is not a GPU counter or universal throughput score.
 
 ## Check a change
 
+For runtime changes, `runtime-improvements.mjs` extends the lab with nested row
+writes, `push`, `splice`, teardown, proxy reads, alias removal and static mounts.
+It keeps full-array replacement in the existing For benchmark. Prepare a clean
+reference and candidate separately with identical dependencies, then run without
+concurrent tests, builds or browsers:
+
+```sh
+# Run in each checkout, sharing an absolute output directory:
+OUTPUT=/tmp/gtpl-comparison node scripts/benchmarks/runtime-improvements.mjs prepare reference
+OUTPUT=/tmp/gtpl-comparison node scripts/benchmarks/runtime-improvements.mjs prepare candidate
+OUTPUT=/tmp/gtpl-comparison PLAYWRIGHT_MODULE=/absolute/path/playwright/index.mjs \
+  SAMPLES=9 node scripts/benchmarks/runtime-improvements.mjs run
+```
+
+Samples alternate revisions, use fresh pages, validate all list rows and exclude
+compilation/data preparation. Times end at the confirmed DOM update, without
+forced layout or paint. JSON includes source and bundle hashes, runtime metadata,
+watcher/calculation counts and individual samples. Distribution size follows
+every transitive shared chunk; an entry facade alone is not the library size.
+These targeted cases do not replace the broader methods/AOT/grid tests.
+
 1. Build and run library and benchmark tests.
 2. Exercise all engines/patterns, each switch variant, a nonzero chosen branch,
    and optional retention. All samples must validate.
