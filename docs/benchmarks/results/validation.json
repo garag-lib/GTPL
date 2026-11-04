@@ -1,11 +1,11 @@
 {
-  "benchmarkSamples": 570,
+  "benchmarkSamples": 500,
   "benchmarkErrors": 0,
   "timingSamplesPerEngine": 5,
   "heapSamplesPerEngine": 3,
-  "toolTestsPassed": 133,
+  "toolTestsPassed": 136,
   "toolTestsFailed": 0,
-  "browserUI": "PASS: desktop/mobile, 24 comparisons, 8/9 engines, ES/EN, 6 live validated samples, higher-is-better bars, isolated lab, stale result rejection, no console errors",
+  "browserUI": "PASS: desktop/mobile, 24 comparisons, 7/8 engines, ES/EN, 6 live validated samples, higher-is-better bars, isolated lab, stale result rejection, no console errors",
   "flutterUnchanged": {
     "verifiedFiles": 25,
     "sha256": {
@@ -38,8 +38,8 @@
   },
   "gtplSourceHash": "d2ae00a0ce5a34e1a1c18e0abb3d79691c5857d45b12f6b7719af1a6da429d46",
   "uiScreenshots": [
-    "artifacts/benchmark-refresh/page-desktop.png",
-    "artifacts/benchmark-refresh/page-mobile.png"
+    "artifacts/no-vanilla/page-desktop.png",
+    "artifacts/no-vanilla/page-mobile.png"
   ],
   "releaseValidation": {
     "gtpl": "3.1.0",
@@ -53,5 +53,21 @@
     "sanmateoPublished": false,
     "benchmarkEquivalence": "Same measured source/compiler/runner/assets; GTPL version labels only",
     "ui": "desktop/mobile, 24 comparisons, six validated live samples, ES/EN and stale results guard"
+  },
+  "originalBenchmarkSamples": 570,
+  "catalogValidation": {
+    "checkedAt": "2026-11-04T17:33:50.113587+00:00",
+    "excludedEngines": [
+      "vanilla"
+    ],
+    "domModes": 7,
+    "gridModes": 8,
+    "comparisons": 24,
+    "unchangedStatisticalRows": 170,
+    "unchangedPublishedAssets": 101,
+    "build": "passed",
+    "defaultRunnerValidatedSamples": 7,
+    "defaultRunnerErrors": 0,
+    "rawArchivesUnchanged": true
   }
 }

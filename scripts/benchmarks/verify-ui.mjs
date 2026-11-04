@@ -13,13 +13,20 @@ try {
  const context=await browser.newContext({viewport:{width:1440,height:1000}});page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/benchmarks.html');
  await page.waitForSelector('.ranking-row.gtpl');
- assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),8);
+ assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),7);
  assert.equal(await page.locator('#overview-metric option').count(),24);
+ assert.equal(await page.locator('option[value=vanilla]').count(),0);
+ for (const id of await page.locator('#overview-metric option').evaluateAll(options=>options.map(option=>option.value))) {
+  await page.selectOption('#overview-metric',id);
+  assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),id.startsWith('grid-')?8:7);
+  assert.doesNotMatch(await page.locator('#overview-ranking').innerText(),/vanilla|javascript directo|direct javascript/i);
+ }
+ await page.selectOption('#overview-metric','heap-switch-64');
  const normal=await page.locator('#overview-ranking').innerText();
  await page.screenshot({path:out+'/page-desktop.png',fullPage:false});
  await page.selectOption('#language','en');assert.match(await page.locator('#overview h2').innerText(),/Where GTPL shines/);
- await page.selectOption('#overview-metric','edit-one');assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),8);
- await page.selectOption('#overview-metric','grid-full');assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),9);
+ await page.selectOption('#overview-metric','edit-one');assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),7);
+ await page.selectOption('#overview-metric','grid-full');assert.equal(await page.locator('#overview-ranking .ranking-row:not(.ranking-head)').count(),8);
  assert.match(await page.locator('#overview-note').innerText(),/Flutter/);
  await page.selectOption('#language','es');await page.selectOption('#overview-metric','heap-switch-64');
  assert.equal(await page.locator('#overview-ranking').innerText(),normal);
@@ -44,5 +51,5 @@ try {
  await page.reload();await page.waitForFunction(()=>document.querySelector('#overview-meta').textContent.includes('unavailable'));
  assert.equal(await page.locator('.ranking-row.gtpl').count(),0,'stale results must not be displayed');
  assert.equal(errors.length,0,errors.join('\n'));
- console.log('PASS: desktop/mobile, 24 comparisons, 8/9 engines, ES/EN, 6 live validated samples, higher-is-better bars, isolated lab, stale result rejection, no console errors');
+ console.log('PASS: desktop/mobile, 24 comparisons, 7/8 engines, ES/EN, 6 live validated samples, higher-is-better bars, isolated lab, stale result rejection, no console errors');
 } finally {await browser.close();}

@@ -82,7 +82,7 @@ export function renderOverview() {
   const list = el('ul');
   for (const line of [
     t('Score: 100 × best time / measured time; for FPS, 100 × measured FPS / best FPS. Each test has its own scale. No overall score.', 'Índice: 100 × mejor tiempo / tiempo medido; para FPS, 100 × FPS medidos / mejores FPS. Cada prueba tiene su escala. Sin nota global.'),
-    t('Card positions compare GTPL AOT, React, Svelte, Vue, Angular and Alpine. JIT and Vanilla remain visible in every chart. Positions are descriptive, not statistical significance.', 'Los puestos de las tarjetas comparan GTPL AOT, React, Svelte, Vue, Angular y Alpine. JIT y Vanilla siguen visibles en todas las gráficas. Los puestos son descriptivos, no significancia estadística.'),
+    t('Card positions compare GTPL AOT, React, Svelte, Vue, Angular and Alpine. JIT remains visible in every chart. Positions are descriptive, not statistical significance.', 'Los puestos de las tarjetas comparan GTPL AOT, React, Svelte, Vue, Angular y Alpine. JIT sigue visible en todas las gráficas. Los puestos son descriptivos, no significancia estadística.'),
     t('Local list edits: native reactive state; React uses immutable rows + memo. Full replacements: new row objects, native list reconciliation. All rows are validated after every operation.', 'Ediciones locales: estado reactivo nativo; React usa filas inmutables + memo. Reemplazos completos: objetos nuevos y reconciliación nativa. Se validan todas las filas tras cada operación.'),
     `${data.environment.cpu} · ${data.environment.cores} ${t('cores', 'núcleos')} · ${data.environment.viewport.width} × ${data.environment.viewport.height} · Node ${data.environment.node}`,
     Object.entries(data.versions).map(([id, version]) => `${engineNames[id]} ${version}`).join(' · '),
@@ -90,8 +90,11 @@ export function renderOverview() {
   ]) list.append(el('li', line));
   details.append(list);
   if (data.equivalence === 'gtpl-version-only') details.append(el('p', t(
-    `GTPL was labeled ${data.measuredVersions.gtpl} when measured. Release ${data.versions.gtpl} has identical measured source, compiler settings, runners and bundle bytes (SHA-256 verified). Original samples are unchanged.`,
-    `GTPL figuraba como ${data.measuredVersions.gtpl} al medir. La versión ${data.versions.gtpl} conserva las mismas fuentes, opciones, ejecutores y bytes medidos (SHA-256 verificados). Las muestras originales no se modifican.`)));
+    `GTPL was labeled ${data.measuredVersions.gtpl} when measured. Release ${data.versions.gtpl} has identical measured source, compiler settings and bundle bytes (SHA-256 verified). Original samples are unchanged.`,
+    `GTPL figuraba como ${data.measuredVersions.gtpl} al medir. La versión ${data.versions.gtpl} conserva las mismas fuentes, opciones y bytes medidos (SHA-256 verificados). Las muestras originales no se modifican.`)));
+  if (data.selection) details.append(el('p', t(
+    `${data.selection.includedSamples} of ${data.selection.originalSamples} original samples are included, covering the current engine catalog. Raw downloads preserve the original run. Only the runner engine allow-list changed; measurement code is identical (SHA-256 verified).`,
+    `Se incluyen ${data.selection.includedSamples} de ${data.selection.originalSamples} muestras originales, correspondientes al catálogo actual. Los archivos descargables conservan la tanda original. Solo cambia la lista de motores permitidos; el código de medición es idéntico (SHA-256 verificado).`)));
   const table = el('table'), body = el('tbody');
   const header = el('tr'); for (const text of [t('Engine', 'Motor'), t('Median', 'Mediana'), t('Range', 'Rango'), 'n']) header.append(el('th', text)); body.append(header);
   for (const row of rows) {

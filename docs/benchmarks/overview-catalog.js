@@ -25,4 +25,4 @@ export const overviewMetrics = [
   metric('grid-tenth', 'grid', 'Fluidez · grid 64 × 64 · cambia el 10 %', 'Smoothness · 64 × 64 grid · 10% changed', 'grid', 'fps', 'FPS', { direction: 'higher', percent: 10 }),
 ];
 export const productionEngines = ['gtpl', 'react', 'svelte', 'vue', 'angular', 'alpine'];
-export const engineNames = { gtpl: 'GTPL AOT', 'gtpl-jit': 'GTPL JIT', react: 'React', svelte: 'Svelte', vue: 'Vue', angular: 'Angular', alpine: 'Alpine', vanilla: 'Vanilla JS', flutter: 'Flutter Web' };
+export const engineNames = { gtpl: 'GTPL AOT', 'gtpl-jit': 'GTPL JIT', react: 'React', svelte: 'Svelte', vue: 'Vue', angular: 'Angular', alpine: 'Alpine', flutter: 'Flutter Web' };

@@ -12,7 +12,6 @@ const allowed = [
   "react",
   "angular",
   "alpine",
-  "vanilla",
   "flutter",
 ];
 const host = document.querySelector("#app");

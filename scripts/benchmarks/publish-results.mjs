@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { overviewMetrics, engineNames, productionEngines } from '../../docs/benchmarks/overview-catalog.js';
 import { summarize } from '../../docs/benchmarks/stats.js';
-import { compareManifests } from './manifest-equivalence.mjs';
+import { compareManifests, compareRunner } from './manifest-equivalence.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const [mainFile, flutterFile] = process.argv.slice(2);
@@ -14,23 +14,27 @@ const main = JSON.parse(await readFile(mainFile, 'utf8'));
 const flutter = JSON.parse(await readFile(flutterFile, 'utf8'));
 const manifest = JSON.parse(await readFile(path.join(root, 'docs/benchmarks/manifest.json'), 'utf8'));
 const allowVersionChange = process.argv.includes('--allow-gtpl-version-change');
+const excludedEngines = process.argv.includes('--omit-vanilla') ? ['vanilla'] : [];
 let equivalence = 'exact';
 for (const run of [main, flutter]) {
   if (!run.completedAt || run.errors.length) throw Error('Incomplete or failed measurement; do not publish');
-  const match = compareManifests(run.manifest, manifest, allowVersionChange);
+  const match = compareManifests(run.manifest, manifest, allowVersionChange, excludedEngines);
   if (match !== 'exact') equivalence = match;
   if (run.results.some(s => !s.result.validated)) throw Error('Unvalidated output');
 }
 if (JSON.stringify(main.runnerHashes) !== JSON.stringify(flutter.runnerHashes)) throw Error('Runner changed between passes');
+const runnerEquivalence = {};
 for (const [file, expected] of Object.entries(main.runnerHashes)) {
-  const actual = createHash('sha256').update(await readFile(path.join(root, 'docs/benchmarks', file))).digest('hex');
-  if (actual !== expected) throw Error(`Measured runner changed: ${file}`);
+  const source = await readFile(path.join(root, 'docs/benchmarks', file), 'utf8');
+  runnerEquivalence[file] = compareRunner(file, source, expected, excludedEngines);
 }
 for (const config of flutter.protocol.configs) {
   const matching = main.protocol.configs.find(c => c.id === config.id);
   if (JSON.stringify(config) !== JSON.stringify(matching)) throw Error('Flutter and DOM workloads differ');
 }
-const all = [...main.results, ...flutter.results];
+const originalSamples = [...main.results, ...flutter.results];
+const all = originalSamples.filter(s => !excludedEngines.includes(s.engine));
+if (all.some(s => !(s.engine in engineNames))) throw Error('Unknown engine in published samples');
 const metrics = overviewMetrics.map(def => {
   const values = Object.keys(engineNames).map(engine => {
     if (def.phase === 'bundle') {
@@ -50,7 +54,7 @@ const metrics = overviewMetrics.map(def => {
 });
 for (const {id, values} of metrics) {
   if (!values.length || values.some(v => !Number.isFinite(v.median))) throw Error(`Missing values: ${id}`);
-  const expected = id.startsWith('grid-') ? 9 : 8;
+  const expected = Object.keys(engineNames).length - (id.startsWith('grid-') ? 0 : 1);
   if (values.length !== expected) throw Error(`${id}: expected ${expected} engines, got ${values.length}`);
   const def = overviewMetrics.find(m => m.id === id);
   for (const row of values) {
@@ -63,6 +67,8 @@ const result = {
   schema: 1, measuredAt: main.completedAt, environment: main.environment,
   sourceHash: manifest.gtplSourceHash,
   equivalence,
+  runnerEquivalence,
+  ...(excludedEngines.length ? { selection: { excludedEngines, originalSamples: originalSamples.length, includedSamples: all.length } } : {}),
   measuredVersions: Object.fromEntries(Object.keys(engineNames).map(id => [id, (main.manifest.gridFrameworks[id] ?? main.manifest.frameworks[id]).version])),
   manifestSHA256: createHash('sha256').update(JSON.stringify(manifest)).digest('hex'),
   versions: Object.fromEntries(Object.keys(engineNames).map(id => [id, (manifest.gridFrameworks[id] ?? manifest.frameworks[id]).version])),
@@ -74,15 +80,15 @@ const result = {
 };
 const out = path.join(root, 'docs/benchmarks/results');
 await mkdir(out, { recursive: true });
-await copyFile(mainFile, path.join(out, 'raw.json'));
-await copyFile(flutterFile, path.join(out, 'flutter-raw.json'));
+if (path.resolve(mainFile) !== path.join(out, 'raw.json')) await copyFile(mainFile, path.join(out, 'raw.json'));
+if (path.resolve(flutterFile) !== path.join(out, 'flutter-raw.json')) await copyFile(flutterFile, path.join(out, 'flutter-raw.json'));
 await writeFile(path.join(out, 'latest.json'), JSON.stringify(result, null, 2) + '\n');
 const num = value => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2 }).format(value);
 const report = [
   '# Comparación por aspectos', '',
   `Medición: ${result.measuredAt}. Chrome ${result.environment.browser} headless; ${result.environment.cpu}.`, '',
   `${result.validSamples} muestras validadas, ${result.failedSamples} errores. ${result.samples} muestras de tiempo y ${result.heapSamples} de memoria por motor/caso. Medianas; las diferencias con rangos solapados no demuestran una ventaja estable.`, '',
-  'Puesto entre GTPL AOT, React, Svelte, Vue, Angular y Alpine. Vanilla y GTPL JIT aparecen en la tabla completa. Flutter se mide solo en grid, con su build original.', '',
+  'Puesto entre GTPL AOT, React, Svelte, Vue, Angular y Alpine. GTPL JIT aparece en la tabla completa. Flutter se mide solo en grid, con su build original.', '',
   '| Aspecto | GTPL AOT | Puesto / 6 | Mejor mediana entre los seis | Rangos solapados con GTPL |',
   '| --- | ---: | ---: | --- | --- |',
 ];
@@ -115,8 +121,9 @@ for (const [id, name] of Object.entries(engineNames)) {
   report.push(`| ${name} | ${counts.map(n => n < 12 ? `${n} (cadencia poco estable)` : n).join(' | ')} |`);
 }
 report.push('', `GTPL source SHA256: \`${result.sourceHash}\`.`, '',
-  ...(equivalence === 'gtpl-version-only' ? [`GTPL figuraba como ${result.measuredVersions.gtpl} al medir. La versión ${result.versions.gtpl} conserva exactamente las mismas fuentes, opciones, ejecutores y bytes de los bundles medidos (SHA-256 verificados). Las muestras originales no se modifican.`, ''] : []),
+  ...(equivalence === 'gtpl-version-only' ? [`GTPL figuraba como ${result.measuredVersions.gtpl} al medir. La versión ${result.versions.gtpl} conserva exactamente las mismas fuentes, opciones y bytes de los bundles medidos (SHA-256 verificados). Las muestras originales no se modifican.`, ''] : []),
+  ...(result.selection ? [`Se incluyen ${all.length} de las ${originalSamples.length} muestras originales: solo los motores del catálogo actual. Los archivos originales se conservan íntegros para auditar la medición. El único cambio del ejecutor es retirar el motor excluido de la lista de permitidos; el código de medición permanece idéntico (SHA-256 verificado).`, ''] : []),
   `Versiones: ${Object.entries(result.versions).map(([id, version]) => `${engineNames[id]} ${version}`).join('; ')}.`, '',
-  '[Resumen y rangos](latest.json) · [Todas las muestras DOM](raw.json) · [Muestras Flutter](flutter-raw.json) · [Reproducir](../README.md)', '');
+  '[Resumen y rangos](latest.json) · [Archivo original DOM](raw.json) · [Archivo original Flutter](flutter-raw.json) · [Reproducir](../README.md)', '');
 await writeFile(path.join(out, 'README.md'), report.join('\n'));
 console.log(`Published ${metrics.length} comparisons, ${all.length} validated samples.`);

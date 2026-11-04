@@ -51,10 +51,6 @@ const engines = {
     get note() { return t("HTML directives · interpreted during mounting", "Directivas HTML · interpretación al montar"); },
   },
   angular: { name: "Angular", get note() { return t("AOT · without Zone.js", "AOT · sin Zone.js"); } },
-  vanilla: {
-    get name() { return t("Direct JavaScript", "JavaScript directo"); },
-    get note() { return t("Manual reference · no framework runtime", "Referencia manual · sin runtime de framework"); },
-  },
   flutter: {
     name: "Flutter Web",
     get note() { return t("Grid only · Dart release · CanvasKit · waits for Flutter frame", "Solo grid · Dart release · CanvasKit · espera al frame de Flutter"); },

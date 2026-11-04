@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { engineNames, productionEngines } from '../../docs/benchmarks/overview-catalog.js';
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const input = path.resolve(root, process.argv[2] || 'artifacts/general-ranking/results.json');
 const destination = path.resolve(root, process.argv[3] || 'docs/benchmarks');
@@ -10,8 +11,8 @@ if (!record.completedAt || record.errors.length) throw Error('A complete, valida
 const confirmation = process.argv[4] ? JSON.parse(await readFile(path.resolve(root, process.argv[4]), 'utf8')) : record.gridConfirmation ?? null;
 if (confirmation && (!confirmation.completedAt || confirmation.errors.length || confirmation.manifest.gtplSourceHash !== record.manifest.gtplSourceHash || JSON.stringify(confirmation.runnerHashes)!==JSON.stringify(record.runnerHashes)))
   throw Error('Grid confirmation is incomplete or uses different measured sources');
-const engines = record.protocol.engines;
-const labels = { gtpl: 'GTPL AOT', 'gtpl-jit': 'GTPL JIT', react: 'React', svelte: 'Svelte', vue: 'Vue', angular: 'Angular', alpine: 'Alpine', vanilla: 'JavaScript directo' };
+const engines = record.protocol.engines.filter(id => id in engineNames && id !== 'flutter');
+const labels = { gtpl: 'GTPL AOT', 'gtpl-jit': 'GTPL JIT', react: 'React', svelte: 'Svelte', vue: 'Vue', angular: 'Angular', alpine: 'Alpine' };
 const families = {
   'for-500': { title: 'Lista de 500 filas', operations: ['updateMs', 'appendMs', 'removeMs', 'reverseMs', 'replaceMs'] },
   if: { title: 'Condicional, 128 bloques', operations: ['showMs', 'hideMs', 'revisitMs'] },
@@ -45,7 +46,7 @@ const metric = (name, engine, key, indices) => {
 function indexes(engine, draws = {}) {
   const mounts = [], updates = [], cases = {};
   for (const [name, spec] of Object.entries(families)) {
-    const ratio = key => metric(name, engine, key, draws[name]) / metric(name, 'vanilla', key, draws[name]);
+    const ratio = key => metric(name, engine, key, draws[name]) / metric(name, 'gtpl', key, draws[name]);
     const mount = ratio('mountMs'), update = geo(spec.operations.map(ratio));
     mounts.push(mount); updates.push(update);
     cases[name] = { mount, update, combined: Math.sqrt(mount * update) };
@@ -65,7 +66,7 @@ for (let repeat=0;repeat<repetitions;repeat++) {
 }
 const percentile = (values, p) => [...values].sort((a,b)=>a-b)[Math.floor((values.length-1)*p)];
 const order = [...engines].sort((a,b)=>scores[a].combined-scores[b].combined);
-const production = order.filter(engine => !['vanilla','gtpl-jit'].includes(engine));
+const production = order.filter(engine => productionEngines.includes(engine));
 for (const engine of engines) scores[engine].interval95 = [percentile(distributions[engine], .025), percentile(distributions[engine], .975)];
 const timing = Object.fromEntries(record.protocol.configs.filter(config => config.method!=='grid').map(config => [config.id, Object.fromEntries(engines.map(engine => [engine, Object.fromEntries(Object.keys(rows('timing',config.id,engine)[0].result.metrics).filter(key=>Number.isFinite(rows('timing',config.id,engine)[0].result.metrics[key])).map(key=>[key,stats(rows('timing',config.id,engine).map(row=>row.result.metrics[key]))]))]))]));
 const heap = Object.fromEntries(record.protocol.configs.filter(config => ['switch','for','if'].includes(config.method)).map(config => [config.id, Object.fromEntries(engines.map(engine => {
@@ -96,7 +97,7 @@ for (const config of dataset.protocol.configs.filter(config=>config.method==='gr
 return grid;
 }
 const grid=gridSummary(record), confirmedGrid=confirmation?gridSummary(confirmation):null;
-const summary = { definition:record.protocol.latencyIndex, baseline:'vanilla = 1', order, productionOrder:production, scores, timing, grid, confirmedGrid, heap, bootstrap:{ repetitions, seed:20261028, method:'paired by round within each case; percentile 95%; exploratory with only five observations per engine/case' } };
+const summary = { definition:'Six equally weighted DOM cases; mount and operations have weight 1/2 each; geometric ratio of medians against GTPL AOT.', baseline:'GTPL AOT = 1', order, productionOrder:production, scores, timing, grid, confirmedGrid, heap, bootstrap:{ repetitions, seed:20261028, method:'paired by round within each case; percentile 95%; exploratory with only five observations per engine/case' } };
 const n=(value,digits=2)=>Number.isFinite(value)?value.toFixed(digits):'N/D';
 const mib=value=>Number.isFinite(value)?n(value/1024**2,3):'N/D';
 const span=value=>`${n(value.median,3)} [${n(value.min,3)}–${n(value.max,3)}]`;
@@ -105,25 +106,26 @@ const lines=[
 '# GTPL frente a los demás: medición general',
 '',
 `Tanda: ${record.startedAt} → ${record.completedAt}. Revisión medida: \`${record.revision}\`.`,
-`Chrome ${record.environment.browser}, ${record.environment.cpu}, ${record.environment.cores} cores; viewport 960×190, DPR 1. ${record.results.length} muestras válidas, ${record.errors.length} fallos.`,
+`Chrome ${record.environment.browser}, ${record.environment.cpu}, ${record.environment.cores} cores; viewport 960×190, DPR 1. ${record.results.length} muestras originales válidas, ${record.errors.length} fallos.`,
+`Las tablas incluyen ${engines.length} motores del catálogo actual y ${record.results.filter(row => engines.includes(row.engine)).length} muestras. El archivo de datos conserva la tanda original íntegra.`,
 ...(confirmation ? [`Confirmación independiente del grid: ${confirmation.results.length} muestras válidas, ${confirmation.errors.length} fallos. Total: ${record.results.length + confirmation.results.length}.`] : []),
 '',
 '## Puesto de latencia',
 '',
-'Índice descriptivo de estos seis casos DOM, no una clasificación universal de bibliotecas. JavaScript directo = 1; menor es mejor. Cada caso pesa 1/6. Dentro de cada caso, montaje y operaciones pesan 1/2 cada uno; las operaciones de lista y condicional se reparten su mitad por igual. Se usa la media geométrica de cocientes entre medianas. Descarga/importación no se cronometran; la compilación JIT durante mount sí. Memoria, FPS y switch no se mezclan en este índice.',
+'Índice descriptivo de estos seis casos DOM, no una clasificación universal de bibliotecas. GTPL AOT = 1; menor es mejor. Cada caso pesa 1/6. Dentro de cada caso, montaje y operaciones pesan 1/2 cada uno; las operaciones de lista y condicional se reparten su mitad por igual. Se usa la media geométrica de cocientes entre medianas. Descarga/importación no se cronometran; la compilación JIT durante mount sí. Memoria, FPS y switch no se mezclan en este índice.',
 '',
-table(['Puesto entre 8 modos','Motor/modo','Índice latencia','Montaje','Operaciones','IC bootstrap 95%'],order.map((engine,index)=>[index+1,labels[engine],n(scores[engine].combined),n(scores[engine].mount),n(scores[engine].update),scores[engine].interval95.map(value=>n(value)).join('–')])),
-`Entre los seis frameworks en su modo de producción, excluyendo JavaScript directo y la variante GTPL JIT, GTPL AOT queda **${production.indexOf('gtpl')+1}.º de ${production.length}**.`,
+table([`Puesto entre ${engines.length} modos`,'Motor/modo','Índice latencia','Montaje','Operaciones','IC bootstrap 95%'],order.map((engine,index)=>[index+1,labels[engine],n(scores[engine].combined),n(scores[engine].mount),n(scores[engine].update),scores[engine].interval95.map(value=>n(value)).join('–')])),
+`Entre los seis frameworks en su modo de producción, excluyendo la variante GTPL JIT, GTPL AOT queda **${production.indexOf('gtpl')+1}.º de ${production.length}**.`,
 '',
 'Los intervalos son exploratorios (2.000 remuestreos emparejados por ronda, n=5); intervalos superpuestos y diferencias pequeñas no justifican un ganador estadístico. No se eliminan muestras lentas. Todas deben pasar validación completa de salida y limpieza.',
 '',
 '## Por caso',
 '',
-'Posiciones por índice combinado del caso; operaciones = media geométrica de las operaciones declaradas, normalizadas frente a JavaScript directo. Valores relativos, no milisegundos.',
+'Posiciones por índice combinado del caso; operaciones = media geométrica de las operaciones declaradas, normalizadas frente a GTPL AOT. Valores relativos, no milisegundos.',
 '',
-table(['Caso','GTPL AOT: puesto/8','GTPL JIT: puesto/8','Mejor framework de producción','GTPL AOT montaje','GTPL AOT operaciones'],Object.entries(families).map(([name,spec])=>{
+table(['Caso',`GTPL AOT: puesto/${engines.length}`,`GTPL JIT: puesto/${engines.length}`,'Mejor framework de producción','GTPL AOT montaje','GTPL AOT operaciones'],Object.entries(families).map(([name,spec])=>{
  const ordered=[...engines].sort((a,b)=>scores[a].cases[name].combined-scores[b].cases[name].combined);
- return [spec.title,ordered.indexOf('gtpl')+1,ordered.indexOf('gtpl-jit')+1,labels[ordered.find(engine=>!['vanilla','gtpl-jit'].includes(engine))],n(scores.gtpl.cases[name].mount),n(scores.gtpl.cases[name].update)];
+ return [spec.title,ordered.indexOf('gtpl')+1,ordered.indexOf('gtpl-jit')+1,labels[ordered.find(engine=>productionEngines.includes(engine))],n(scores.gtpl.cases[name].mount),n(scores.gtpl.cases[name].update)];
 })),
 '',
 '### Medianas absolutas de operaciones (ms)',
@@ -134,7 +136,7 @@ table(['Caso / operación',...engines.map(engine=>labels[engine])],Object.entrie
 '',
 'Misma granularidad que los adaptadores publicados. Cada muestra empieza con calentamiento de 4×4, usa semilla 42 y mide todas las celdas modificadas, más layout. Animación solicitada de 1,5 s por nivel; una operación larga puede excederla. Los FPS están limitados por rAF/pantalla. Menos de 12 frames en una muestra implica una cadencia insuficientemente estable; la cifra sigue registrada, no se convierte en un ganador de FPS.',
 '',
-table(['Grid / %','GTPL AOT update (ms)','Puesto GTPL AOT /8','Mejor update','GTPL AOT FPS','Mín. frames GTPL AOT'],Object.entries(grid).map(([key,values])=>{
+table(['Grid / %','GTPL AOT update (ms)',`Puesto GTPL AOT /${engines.length}`,'Mejor update','GTPL AOT FPS','Mín. frames GTPL AOT'],Object.entries(grid).map(([key,values])=>{
  const ordered=[...engines].sort((a,b)=>values[a].updateMs.median-values[b].updateMs.median);
  return [key,n(values.gtpl.updateMs.median,3),ordered.indexOf('gtpl')+1,labels[ordered[0]],n(values.gtpl.fps.median),values.gtpl.minimumFrames];
 })),

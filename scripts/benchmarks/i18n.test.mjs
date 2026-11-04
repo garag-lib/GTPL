@@ -119,7 +119,7 @@ test('English and Spanish runners validate the same workload and preserve record
     const runs = [];
     for (const language of ['en', 'es']) {
       setLanguage(language);
-      const result = await runMethod({ method: 'for', size: 3, memory: false, cases: 32 }, 'vanilla', host, status);
+      const result = await runMethod({ method: 'for', size: 3, memory: false, cases: 32 }, 'gtpl', host, status);
       assert.equal(result.validated, true);
       assert.equal(host.childNodes.length, 0, 'runner cleanup removes its measured view');
       assert.match(status.textContent, language === 'en' ? /list after operations/ : /lista tras operaciones/);

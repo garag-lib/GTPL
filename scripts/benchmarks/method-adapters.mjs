@@ -15,7 +15,6 @@ import {
   methodKeys,
   methodTemplate,
   reactView,
-  heavyHtml,
   BLOCKS,
 } from "./method-definitions.mjs";
 export async function prepareMethods({ root, work, GCode }) {
@@ -38,7 +37,6 @@ export function input(host,value){const el=host.querySelector('input');Object.ge
       "vue",
       "svelte",
       "alpine",
-      "vanilla",
     ]) {
       let source;
       if (id.startsWith("gtpl"))
@@ -63,7 +61,6 @@ export function createAdapter({size}){let app,host,state=reactiveState(createSta
       if (id === "alpine")
         source = `${stateImport} import Alpine from 'alpinejs';window.Alpine=Alpine;let state;Alpine.data('benchMethod',()=>state);let started=false;
 export function createAdapter({size}){let host,element;state=createState(size);return {mount(target){host=target;Alpine.mutateDom(()=>{host.innerHTML=${JSON.stringify(methodTemplate(key, "alpine"))};});element=host.firstElementChild;if(!started){Alpine.start();started=true;}else Alpine.initTree(element);state=Alpine.$data(element);},set(patch){Object.assign(state,patch);},editRows(edits){editRows(state,edits);},input(value){input(host,value);},destroy(){if(element){Alpine.destroyTree(element);Alpine.mutateDom(()=>element.remove());}element=host=state=null;}};}`;
-      if (id === "vanilla") source = vanillaSource(key, stateImport);
       const file = path.join(work, `method-${key}-${id}.js`);
       await writeFile(file, source);
       entries[`${key}-${id}`] = file;
@@ -84,31 +81,6 @@ export function createAdapter({size}:any){let app:any,ref:any,host:HTMLElement;c
     );
   }
   return { entries, angularFiles };
-}
-function vanillaSource(key, stateImport) {
-  const count = key.startsWith("switch-") ? Number(key.split("-")[1]) : 1;
-  const branches =
-    key.startsWith("switch-") || key === "if"
-      ? Array.from(
-          { length: count },
-          (_, i) =>
-            `<section class="bench-branch" data-branch="${i}">${heavyHtml(i).replaceAll("{{tick}}", "__TICK__")}</section>`,
-        )
-      : [];
-  return `${stateImport}
-const branches=${JSON.stringify(branches)};
-export function createAdapter({size}){let host,state=createState(size),active=null,nodes=[],byId=new Map();
-function render(){
-  ${
-    key.startsWith("switch-") || key === "if"
-      ? `const next=${key === "if" ? "state.visible?0:null" : "state.active"};if(next!==active){host.innerHTML=next===null?'':branches[next].replaceAll('__TICK__',state.tick);active=next;}else for(const el of host.querySelectorAll('.bench-value'))el.textContent=state.tick;`
-      : key === "for"
-        ? `const order=[];for(const row of state.rows){let el=byId.get(row.id);if(!el){el=document.createElement('article');el.className='method-row';el.dataset.key=row.id;el.innerHTML='<b></b><i></i>';byId.set(row.id,el);}el.children[0].textContent=row.label;el.children[1].textContent=row.value;order.push(el);}const ids=new Set(state.rows.map(r=>r.id));for(const [id,el]of byId)if(!ids.has(id)){el.remove();byId.delete(id);}for(const el of order)host.append(el);`
-        : `if(!nodes.length){for(let i=0;i<size;i++){const el=document.createElement(${JSON.stringify(key === "forms" ? "input" : key === "attributes" ? "button" : "div")});el.className=${JSON.stringify(key === "forms" ? "bench-input" : key === "attributes" ? "bench-attr" : "bench-box")};if(${JSON.stringify(key)}==='forms'){el.type='text';el.addEventListener('input',()=>{state.text=el.value;render();});}else el.textContent='Caja';host.append(el);nodes.push(el);}if(${JSON.stringify(key)}==='forms'){const out=document.createElement('output');out.className='form-output';host.append(out);}}
-for(const el of nodes){${key === "forms" ? `el.value=state.text;` : key === "styles" ? `Object.assign(el.style,state.theme);` : key === "classes" ? `el.className='bench-box '+state.className;` : `for(const [name,value]of Object.entries(state.attrs))el.setAttribute(name,value);el.textContent=state.tick;`}}${key === "forms" ? `host.querySelector('output').textContent=state.text;` : ""}`
-  }
-}
-return {mount(target){host=target;render();},set(patch){Object.assign(state,patch);render();},editRows(edits){editRows(state,edits);for(const {index,label,value}of edits){const el=byId.get(state.rows[index].id);el.children[0].textContent=label;el.children[1].textContent=value;}},input(value){input(host,value);},destroy(){host?.replaceChildren();byId.clear();nodes=[];host=state=null;}};}`;
 }
 export async function bundleMethods({ prepared, root, work, versions }) {
   const outdir = path.join(root, "docs/benchmarks/methods");

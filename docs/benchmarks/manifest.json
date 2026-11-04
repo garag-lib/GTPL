@@ -51,13 +51,6 @@
       "gzipBytes": 20164,
       "sha256": "0c4b7e14a87e006fc92b229efb373a7afa0f2f4f9eafee94e503544ce3e01273"
     },
-    "vanilla": {
-      "version": "DOM API",
-      "file": "benchmarks/vendor/vanilla.js",
-      "bytes": 704,
-      "gzipBytes": 361,
-      "sha256": "7d5a7715e931199d65c06b337d7289daaa65b63cbfe689a0b4e8edaa0e9f864e"
-    },
     "angular": {
       "version": "22.2.3",
       "file": "benchmarks/vendor/angular.js",
@@ -108,13 +101,6 @@
       "bytes": 56054,
       "gzipBytes": 20027,
       "sha256": "6d2dcf65a2c9124e97e4254132f1556cb42a15beb50853c27dd90f091d460f9b"
-    },
-    "vanilla": {
-      "version": "DOM API",
-      "file": "benchmarks/vendor/grid-vanilla.js",
-      "bytes": 465,
-      "gzipBytes": 305,
-      "sha256": "8dcf42880705c3e2e0b3155dfa737a48263f00ff6d64e34d75f0a2848e795472"
     },
     "angular": {
       "version": "22.2.3",
@@ -441,34 +427,6 @@
         "bytes": 454754,
         "gzipBytes": 31778
       },
-      "vanilla": {
-        "file": "benchmarks/methods/switch-8-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": 8,
-        "assets": [
-          {
-            "file": "benchmarks/methods/switch-8-vanilla.js",
-            "bytes": 391681,
-            "gzipBytes": 10787,
-            "sha256": "2d682ef87f963cc0e80183ba2cdb4d06a160fcf8f5fb5fb1237e7ea62ec820a1"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 392910,
-        "gzipBytes": 11580
-      },
       "angular": {
         "file": "benchmarks/methods/switch-8-angular.js",
         "version": "22.2.3",
@@ -708,34 +666,6 @@
         ],
         "bytes": 1652918,
         "gzipBytes": 62670
-      },
-      "vanilla": {
-        "file": "benchmarks/methods/switch-32-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": 32,
-        "assets": [
-          {
-            "file": "benchmarks/methods/switch-32-vanilla.js",
-            "bytes": 1570479,
-            "gzipBytes": 40495,
-            "sha256": "16ee3fad0f5bf11101bdda39a75f3c814508ac3e9bec6d11e68672feaeea9e5a"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 1571708,
-        "gzipBytes": 41288
       },
       "angular": {
         "file": "benchmarks/methods/switch-32-angular.js",
@@ -977,34 +907,6 @@
         "bytes": 3251158,
         "gzipBytes": 103671
       },
-      "vanilla": {
-        "file": "benchmarks/methods/switch-64-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": 64,
-        "assets": [
-          {
-            "file": "benchmarks/methods/switch-64-vanilla.js",
-            "bytes": 3142895,
-            "gzipBytes": 79864,
-            "sha256": "0266d957f33483806a5b2ff70a5f2a64d217fe1b6c42629db20dbedcea8c37a6"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 3144124,
-        "gzipBytes": 80657
-      },
       "angular": {
         "file": "benchmarks/methods/switch-64-angular.js",
         "version": "22.2.3",
@@ -1244,34 +1146,6 @@
         ],
         "bytes": 57427,
         "gzipBytes": 21012
-      },
-      "vanilla": {
-        "file": "benchmarks/methods/for-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": null,
-        "assets": [
-          {
-            "file": "benchmarks/methods/for-vanilla.js",
-            "bytes": 832,
-            "gzipBytes": 512,
-            "sha256": "2fea1b51fa6d2a28530802effb4bca18a22f50dec3a627d577101278d584ad2b"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 2061,
-        "gzipBytes": 1305
       },
       "angular": {
         "file": "benchmarks/methods/for-angular.js",
@@ -1513,34 +1387,6 @@
         "bytes": 106940,
         "gzipBytes": 22561
       },
-      "vanilla": {
-        "file": "benchmarks/methods/if-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": null,
-        "assets": [
-          {
-            "file": "benchmarks/methods/if-vanilla.js",
-            "bytes": 49522,
-            "gzipBytes": 1996,
-            "sha256": "d1d1eed65c24c58101ab2ca8209066108b76e5067b1b9f08bb570c12d3ed2db4"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 50751,
-        "gzipBytes": 2789
-      },
       "angular": {
         "file": "benchmarks/methods/if-angular.js",
         "version": "22.2.3",
@@ -1780,34 +1626,6 @@
         ],
         "bytes": 57372,
         "gzipBytes": 20989
-      },
-      "vanilla": {
-        "file": "benchmarks/methods/styles-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": null,
-        "assets": [
-          {
-            "file": "benchmarks/methods/styles-vanilla.js",
-            "bytes": 647,
-            "gzipBytes": 432,
-            "sha256": "2135b272ab067cda70a386f2b6d81a6f05c4278bc817b218e4b9a41ed59cf465"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 1876,
-        "gzipBytes": 1225
       },
       "angular": {
         "file": "benchmarks/methods/styles-angular.js",
@@ -2049,34 +1867,6 @@
         "bytes": 57376,
         "gzipBytes": 20988
       },
-      "vanilla": {
-        "file": "benchmarks/methods/classes-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": null,
-        "assets": [
-          {
-            "file": "benchmarks/methods/classes-vanilla.js",
-            "bytes": 653,
-            "gzipBytes": 428,
-            "sha256": "59599ab936e090ae6a4caec83a92d178e916557c345e6d7cc366838d5ff20028"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 1882,
-        "gzipBytes": 1221
-      },
       "angular": {
         "file": "benchmarks/methods/classes-angular.js",
         "version": "22.2.3",
@@ -2317,34 +2107,6 @@
         "bytes": 57463,
         "gzipBytes": 21033
       },
-      "vanilla": {
-        "file": "benchmarks/methods/attributes-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": null,
-        "assets": [
-          {
-            "file": "benchmarks/methods/attributes-vanilla.js",
-            "bytes": 702,
-            "gzipBytes": 460,
-            "sha256": "32cb947b67a65c27e3094a08630fb606c4d657ee198ad473a2e37edaab77a3ce"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 1931,
-        "gzipBytes": 1253
-      },
       "angular": {
         "file": "benchmarks/methods/attributes-angular.js",
         "version": "22.2.3",
@@ -2584,34 +2346,6 @@
         ],
         "bytes": 57429,
         "gzipBytes": 21008
-      },
-      "vanilla": {
-        "file": "benchmarks/methods/forms-vanilla.js",
-        "version": "DOM API",
-        "blocksPerBranch": 128,
-        "declaredCases": null,
-        "assets": [
-          {
-            "file": "benchmarks/methods/forms-vanilla.js",
-            "bytes": 806,
-            "gzipBytes": 490,
-            "sha256": "1f5ced8d10cf616bc453d1123250c43383045383d9eaf850fedc1991fd796fc9"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-FQSKU2WK.js",
-            "bytes": 652,
-            "gzipBytes": 432,
-            "sha256": "b119d471875b876fdd1a6d1a111c2781411c57f0b1fc0a078234260991ddf2fd"
-          },
-          {
-            "file": "benchmarks/methods/chunks/chunk-6DHFEWGX.js",
-            "bytes": 577,
-            "gzipBytes": 361,
-            "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331"
-          }
-        ],
-        "bytes": 2035,
-        "gzipBytes": 1283
       },
       "angular": {
         "file": "benchmarks/methods/forms-angular.js",

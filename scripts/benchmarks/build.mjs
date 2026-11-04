@@ -104,15 +104,6 @@ export function createAdapter() { let element; return {
   update(tick, active) { state.tick = tick; state.active = active; },
   destroy() { if(element) { Alpine.destroyTree(element); Alpine.mutateDom(() => element.remove()); } element = state = null; }
 }; }`,
-  vanilla: `export function createAdapter() { let host, state, branch, cells; return {
-  mount(target,data) {host=target;state=data;this.update(data.tick,data.active);},
-  update(tick,active) { if(!branch || state.active!==active) {
-    host.replaceChildren(); const wrap=document.createElement('div');branch=document.createElement('section');branch.className='bench-branch';branch.dataset.branch=active;cells=[];
-    for(const row of state.rows) { const div=document.createElement('div');div.className='bench-row';div.dataset.row=row.id;const a=document.createElement('span'),b=document.createElement('b'),c=document.createElement('i');a.textContent=row.id;b.textContent=row.label;c.textContent=tick;div.append(a,b,c);branch.append(div);cells.push(c); }
-    wrap.append(branch);host.append(wrap);
-  } else { for(const cell of cells) cell.textContent=tick; } state.active=active;state.tick=tick; },
-  destroy() {host?.replaceChildren();host=state=branch=cells=null;}
-}; }`,
 };
 const gridSources = await createGridSources({ root, work, GCode });
 const preparedMethods = await prepareMethods({ root, work, GCode });

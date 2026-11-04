@@ -50,13 +50,24 @@ source/compiler hashes, every asset byte/hash/size and all measured runners.
 Original samples retain their original version labels; the summary discloses the
 verified release equivalence. Any code change requires new measurements.
 
-The older [measured comparison](general-performance.md) separates a six-case DOM latency
+The current catalog contains GTPL AOT/JIT, React, Svelte, Vue, Angular and Alpine,
+plus Flutter for grid only. To republish the archived run after removing the manual
+reference, add `--omit-vanilla --allow-gtpl-version-change` to the publishing command.
+It selects 500 of the original 570 samples without changing their values. The raw
+archives retain the complete original run and execution order. Publication still
+verifies all retained bundles and measurement code; the only permitted runner edit
+is removing the excluded engine from its allow-list. No benchmark is rerun or
+Flutter rebuilt for this selection change.
+
+The historical [measured comparison](https://github.com/garag-lib/GTPL/blob/v3.1.0/docs/benchmarks/general-performance.md) separates a six-case DOM latency
 index from grid stress tests and JavaScript heap measurements. Every raw sample,
 version, bundle hash and validation result is retained in
-[general-results.json](general-results.json).
+[original archived data](https://github.com/garag-lib/GTPL/blob/v3.1.0/docs/benchmarks/general-results.json).
 The descriptive latency index gives each DOM case equal weight, and splits its
 weight equally between mounting and operations. It applies only to those cases;
 memory and grid/FPS remain separate.
+New reports from `rank-report.mjs` use the current catalog and GTPL AOT = 1 as
+their reference. They are separate from the page's per-aspect comparisons.
 
 ```sh
 PLAYWRIGHT_MODULE=/absolute/path/playwright/index.mjs SAMPLES=5 HEAP_SAMPLES=3 \
@@ -140,7 +151,7 @@ entries: choosing 8 does not import definitions for 64.
 
 GTPL uses `g-switch`/`g-case`, React a JavaScript switch with render instructions
 inside each selected case, Vue a `v-if`/`v-else-if` chain, Angular `@switch`,
-Alpine `x-if` templates, and vanilla DOM parses only the chosen HTML. All use
+and Alpine `x-if` templates. All use
 conditional construction. Definitions, source literals and compiled instructions
 still reside in memory when their branch is inactive.
 
@@ -168,8 +179,8 @@ scheduling latency. Incorrect output rejects the sample.
 Local For edits change both text and value in one row or 10% of rows, at spread
 indices. Unchanged objects retain identity. GTPL/Vue/Svelte/Alpine mutate reactive
 rows; Angular mutates rows and detects changes; React replaces affected rows
-immutably and uses memoized row components; vanilla updates just the addressed
-DOM nodes. The median includes nine iterations, each after a full list reset.
+immutably and uses memoized row components. The median includes nine iterations,
+each after a full list reset.
 The stopwatch includes native update completion and layout; full verification
 checks every row, including unchanged ones, outside it.
 
@@ -238,9 +249,9 @@ seeded generator gives each engine the same sequence prefix. Selected values
 change on each update and determine CSS color.
 
 Each cell has independent state: a GTPL instance, React local state, Vue reactive
-model, Angular OnPush component with a signal, or Alpine x-data scope. Vanilla
-DOM is a manual reference. This measures granular state; For measures list
-reconciliation separately. Readable adapters: `scripts/benchmarks/grid-adapters.mjs`.
+model, Angular OnPush component with a signal, or Alpine x-data scope. This measures
+granular state; For measures list reconciliation separately.
+Readable adapters: `scripts/benchmarks/grid-adapters.mjs`.
 
 Each level uses a fresh tree after a discarded 4-by-4 warm-up. The complete grid
 fits in the same visible executor without virtualization. The rAF loop includes

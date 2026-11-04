@@ -55,11 +55,6 @@ export function createAdapter(){let grid,models=[];return {
   update({indices,values}){for(let i=0;i<indices.length;i++)models[indices[i]].value=values[i];},
   destroy(){if(grid){Alpine.destroyTree(grid);Alpine.mutateDom(()=>grid.remove());}grid=null;models=[];}
 };}`,
-    "grid-vanilla": `export function createAdapter(){let grid,nodes=[];return {
-  mount(host,{columns,rows}){grid=document.createElement('div');grid.className='bench-grid';for(let id=0;id<columns*rows;id++){const cell=document.createElement('span');cell.className='grid-cell';cell.dataset.cell=id;cell.dataset.value=0;cell.textContent='0';grid.append(cell);nodes.push(cell);}host.append(grid);},
-  update({indices,values}){for(let i=0;i<indices.length;i++){const cell=nodes[indices[i]];cell.dataset.value=values[i];cell.textContent=values[i];}},
-  destroy(){grid?.remove();grid=null;nodes=[];}
-};}`,
   };
   await writeFile(
     path.join(work, "grid-angular.ts"),

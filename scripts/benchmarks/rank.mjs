@@ -10,7 +10,7 @@ import path from 'node:path';
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const docs = path.join(root, 'docs');
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const engines = (process.env.ENGINES || 'gtpl,gtpl-jit,react,svelte,vue,angular,alpine,vanilla').split(',');
+const engines = (process.env.ENGINES || 'gtpl,gtpl-jit,react,svelte,vue,angular,alpine').split(',');
 const samples = Number(process.env.SAMPLES || 5);
 const heapSamples = Number(process.env.HEAP_SAMPLES ?? 3);
 const durationMs = Number(process.env.GRID_DURATION_MS || 1500);
@@ -74,7 +74,7 @@ const record = {
     heap: 'Separate pass. The sole readMemory call is replaced in a virtual module with CDP HeapProfiler.collectGarbage + Runtime.getHeapUsage. usedSize covers V8 JavaScript heap, not native DOM/RSS. Timings from the heap pass are not ranked. Published files are unchanged.',
     heapHook: { originalSHA256: sha(source), instrumentedSHA256: sha(heapSource), replacement: hook + ' -> memory = await globalThis.__benchmarkHeapRead();' },
     fixtures: `500 rows/elements; list local edits: 1 and 50 rows, 9 iterations, fresh replacement before each edit, native reactive state (React immutable rows + memo). Full-array operations retained separately. if and each switch branch have 128 blocks; switch variants 8/32/64; grid from ${gridStart}, ${gridLevels} levels, step 16 at 100%, base seed ${gridSeed} + level; 64 at 10%, seed 42.`,
-    latencyIndex: 'Six equally weighted DOM cases: for-500, if, styles, classes, attributes, forms. Within each case, mount and operations each have weight 1/2. List operations (update/append/remove/reverse/replace) and conditional operations (show/hide/revisit) are equally weighted within their half. Geometric mean of each median divided by the corresponding vanilla median. Switch memory and grid stress/FPS are reported separately, never mixed into this latency index.',
+    latencyIndex: 'Six equally weighted DOM cases: for-500, if, styles, classes, attributes, forms. Within each case, mount and operations each have weight 1/2. List operations (update/append/remove/reverse/replace) and conditional operations (show/hide/revisit) are equally weighted within their half. Geometric mean of each median divided by the corresponding GTPL AOT median (GTPL AOT = 1; legacy descriptive index only). Switch memory and grid stress/FPS are reported separately, never mixed into this latency index.',
   },
   scriptSHA256: sha(measurementScriptSource), measurementScriptSource,
   manifest, runnerHashes, results: [], errors: [],
