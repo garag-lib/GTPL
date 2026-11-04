@@ -84,9 +84,45 @@ the initial refresh explicitly before calling `ready()`.
 | Mode | When to use | Flow |
 |---|---|---|
 | JIT | Dynamic templates generated at runtime | `template -> GCode -> GCompile -> GTpl` |
-| AOT | Stable templates compiled during build | `precompiled code -> GCompile -> GTpl` |
+| AOT | Stable templates compiled during build | `precompiled function -> GTpl` |
 
 AOT is recommended for production when templates are known in advance.
+
+### AOT runtime entry
+
+`@mpeliz/gtpl/runtime` exports the same runtime object as the main entry, without
+`jit`. It contains no parser or dynamic compilation. Pass the precompiled
+function directly; the generated module should use this entry's `GGenerator`.
+
+```ts
+import runtime from '@mpeliz/gtpl/runtime';
+import { generator } from './view.generated.js';
+
+const app = new runtime.GTpl({ root: { name: 'Ana' }, generator });
+app.addTo(document.body);
+await app.ready();
+```
+
+CommonJS uses `const runtime = require('@mpeliz/gtpl/runtime')`. Within each
+format, both entries share the same classes, proxy cache, directive registry
+and types. The main entry retains all JIT APIs and accepts existing generators.
+When copying distribution files manually, include `dist/shared/`: ESM and CJS
+entries now import shared chunks. `gtpl.global.js` remains a standalone bundle.
+
+### Reuse prepared JIT generators
+
+Compile once when the template is reused, then create independent instances:
+
+```ts
+const { GTpl, jit } = gtpl;
+const generator = jit.GCompile(jit.GCodeOptimized('<p>{{name}}</p>'));
+const views = ['Ana', 'Luis'].map(name => new GTpl({ root: { name }, generator }));
+```
+
+Each instance owns its nodes, bindings and cleanup. Choose the lifetime of the
+generator explicitly: compilation of `g-tpl` can read the active document, so
+GTPL does not cache generators globally by HTML. Benchmarks should distinguish
+cold JIT (including compilation), prepared JIT and AOT.
 
 ## Template Syntax
 

@@ -16,6 +16,11 @@
       "types": "./dist/gtpl.d.ts",
       "import": "./dist/gtpl.esm.js",
       "require": "./dist/gtpl.cjs"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.esm.js",
+      "require": "./dist/runtime.cjs"
     }
   },
   "files": [

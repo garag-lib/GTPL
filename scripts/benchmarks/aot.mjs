@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
+import { distributionFiles, distributionSize } from './distribution.mjs';
 const dir = path.resolve('artifacts/aot');
 const [mode, label] = process.argv.slice(2);
 const reference = process.env.REFERENCE || 'reference';
@@ -44,7 +45,19 @@ if (mode === 'prepare') {
         const result = await build({ stdin: { contents: source, resolveDir: process.cwd() }, bundle: true, minify: true, format: 'iife', globalName: 'lib', write: false });
         await save(name + '.js', result.outputFiles[0].text);
     }
-    await save('distribution.esm.js', await readFile('dist/gtpl.esm.js', 'utf8'));
+    for (const entry of ['gtpl', 'runtime']) {
+        // Older references have only the full entry.
+        const file = path.resolve(`dist/${entry}.esm.js`);
+        let files;
+        try { files = await distributionFiles(file); }
+        catch (error) { if (entry === 'runtime' && error.code === 'ENOENT') continue; throw error; }
+        for (const [source, bytes] of files) {
+            const output = path.join(target, 'distribution', path.relative(path.resolve('dist'), source));
+            await mkdir(path.dirname(output), { recursive: true });
+            await writeFile(output, bytes);
+        }
+        sizes[`distribution.${entry}`] = await distributionSize(file);
+    }
     await writeFile(path.join(target, 'sizes.json'), JSON.stringify(sizes, null, 2));
     console.log(sizes);
 }

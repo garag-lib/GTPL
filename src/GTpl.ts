@@ -1,6 +1,6 @@
 import { BindTypes, TypeEventProxyHandler } from "./GEnums";
 import { GProxy, unGProxy, toRaw } from "./GProxy";
-import { GAddArributes, GAddTo, GInsertAfterTo, GInsertBeforeTo } from "./GGenerator";
+import { GAddArributes, GAddTo, GInsertAfterTo, GInsertBeforeTo } from "./GGeneratorRuntime";
 import { IFunction, IVarOrConst, IBindDef, TplVar, PathProxyHandler, EventFunctionProxyHandler, IGtplObject, IBindObject, IIndex } from './GEnums';
 import { globalObject, passiveSupported } from "./global";
 import { STACK, isStaticType, log } from "./GUtils";
@@ -18,10 +18,35 @@ const reactiveGetters = new WeakMap<() => any, ReactiveDescriptor>();
 // than one inherited context need additional cleanup metadata.
 const additionalBindContexts = new WeakMap<IGtplObject, Map<IBindObject, Set<IGtplObject>>>();
 const initialBindings = new WeakSet<IBindObject>();
+const directListStates = new WeakMap<IBindObject, { rows: any[]; ordinary: boolean }>();
 
 // g-is content can be destroyed independently of its rendering owner.
 // Keep its insertion point outside that content, including combined g-if binds.
 const persistentMarks = new WeakSet<Node>();
+
+interface InitialRenderState {
+  pending: number;
+  settled: boolean;
+  failure?: { error: unknown };
+  reject?: (error: unknown) => void;
+  idle?: Promise<void>;
+  resolveIdle?: () => void;
+}
+
+function finishInitialUpdate(job: PendingBindingChange | undefined, error?: { error: unknown }) {
+  job?.initialStates?.forEach(state => {
+    if (error) {
+      if (!state.failure) state.failure = error;
+      state.reject?.(error.error);
+    }
+    if (--state.pending === 0) {
+      state.resolveIdle?.();
+      state.idle = undefined;
+      state.resolveIdle = undefined;
+    }
+  });
+  job?.initialStates?.clear();
+}
 
 interface PendingBindingChange {
   context: GTpl;
@@ -31,7 +56,12 @@ interface PendingBindingChange {
   promise?: Promise<void>;
   resolve?: () => void;
   reject?: (error: unknown) => void;
-  callers?: Set<GTpl>;
+  initialStates?: Set<InitialRenderState>;
+  listUpdate?: boolean;
+  listIndices?: Set<number>;
+  listTouched?: Set<number>;
+  listNestedOnly?: boolean;
+  checkedCaller?: GTpl;
   reportErrors: boolean;
   observingErrors?: boolean;
 }
@@ -53,9 +83,13 @@ function isPromiseLike(value: any): value is PromiseLike<any> {
 }
 
 function cancelBindingChange(bind: IBindObject) {
-  currentBindingChanges.get(bind)?.resolve?.();
-  pendingBindingChanges.delete(bind);
-  currentBindingChanges.delete(bind);
+  const job = currentBindingChanges.get(bind);
+  if (job) {
+    if (job.initialStates?.size) finishInitialUpdate(job);
+    job.resolve?.();
+    pendingBindingChanges.delete(bind);
+    currentBindingChanges.delete(bind);
+  }
   initialBindings.delete(bind);
 }
 
@@ -77,11 +111,13 @@ function finishBindingChange(bind: IBindObject, job: PendingBindingChange, error
   const current = currentBindingChanges.get(bind) === job;
   if (current) {
     currentBindingChanges.delete(bind);
-    initialBindings.delete(bind);
+    if (job.initialStates?.size) initialBindings.delete(bind);
   }
-  if (error && current && !job.context.isDestroyed && !bind.gtpl?.isDestroyed) {
-    if (job.reject) job.reject(error.error);
-    else if (job.reportErrors) console.error('[GTPL] Binding update failed:', error.error);
+  const failed = error && current && !job.context.isDestroyed && !bind.gtpl?.isDestroyed;
+  if (job.initialStates?.size) finishInitialUpdate(job, failed ? error : undefined);
+  if (failed) {
+    if (job.reject) job.reject(error!.error);
+    else if (job.reportErrors) console.error('[GTPL] Binding update failed:', error!.error);
   } else {
     job.resolve?.();
   }
@@ -102,17 +138,18 @@ class privateProperties {
     if (!privateProperties.globalVar.has(gtpl)) {
       privateProperties.globalVar.set(gtpl, {
         GenerationFinish: false,
-        MarkEle: new WeakMap(),
-        memValues: new WeakMap(),
-        renderElements: new Set(),
       });
     }
   }
 
-  static getProperty(gtpl: IGtplObject, key: string) {
-    privateProperties.init(gtpl);
-    const obj = privateProperties.globalVar.get(gtpl);
-    return obj[key];
+  static getProperty(gtpl: IGtplObject, key: string, create = true) {
+    const existing = privateProperties.globalVar.get(gtpl);
+    if (existing?.[key] !== undefined) return existing[key];
+    if (!create || key === 'GenerationFinish')
+      return undefined;
+    const obj = existing || {};
+    if (!existing) privateProperties.globalVar.set(gtpl, obj);
+    return obj[key] = key === 'renderElements' ? new Set() : new WeakMap();
   }
 
   static setProperty(gtpl: IGtplObject, key: string, value: any) {
@@ -310,9 +347,9 @@ function addCheckRenderElement(gtpl: IGtplObject, bind: IBindObject) {
 function checkRenderElements(gtpl: IGtplObject, originalbind: IBindObject) {
   const re: Set<IBindObject> = privateProperties.getProperty(
     gtpl,
-    "renderElements"
+    "renderElements", false
   );
-  if (!re.has(originalbind)) {
+  if (!re?.has(originalbind)) {
     return;
   }
   const arr = Array.isArray(gtpl.Elements) ? gtpl.Elements : [gtpl.Elements];
@@ -640,6 +677,7 @@ function getBind2Object(
 
 function delBind(gtpl: IGtplObject, bind: IBindObject) {
   cancelBindingChange(bind);
+  if (bind.type === BindTypes.FOR) directListStates.delete(bind);
   if (bind.link.vorc && bind.link.vorc.va) {
     getBind2Object(gtpl, bind.link.vorc.va, bind)?.delete(bind);
   }
@@ -695,9 +733,9 @@ function searchBind(gtpl: IGtplObject, bind: IBindObject): boolean {
   if (!encontrado) {
     const re: Set<IBindObject> = privateProperties.getProperty(
       gtpl,
-      "renderElements"
+      "renderElements", false
     );
-    if (re.has(bind)) re.delete(bind);
+    re?.delete(bind);
   }
   return encontrado;
 }
@@ -1293,12 +1331,32 @@ function isDirectList(bind: IBindObject): boolean {
   return !!bind.link.vorc?.va && !bind.link.formula?.fnc && !bind.link.functions?.length;
 }
 
+// Accessors may depend on unrelated paths. Inspect descriptors, never execute
+// getters to decide whether a list can use the incremental reconciliation path.
+// Raw mutations are reclassified by refresh()/explicit assignments. Between
+// those, proxy notifications identify the rows whose descriptors can change.
+function isOrdinaryData(value: any, seen = new Set<object>()): boolean {
+  value = toRaw(value);
+  if (value === null || typeof value !== 'object') return typeof value !== 'function';
+  if (seen.has(value)) return true;
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== Array.prototype && prototype !== null) return false;
+  seen.add(value);
+  for (const key of Reflect.ownKeys(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key)!;
+    if (!('value' in descriptor) || !isOrdinaryData(descriptor.value, seen)) return false;
+  }
+  return true;
+}
+
 function updateFORbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
   result?: any,
-  path?: string[]
+  path?: string[],
+  incremental = false,
+  assignedIndices?: Set<number>
 ) {
   //console.log('FOR', type, bind, result, path);
   //---
@@ -1320,88 +1378,23 @@ function updateFORbind(
   const render_arr: any = [];
   const delete_arr: any = [];
   //---
-  const index: any = (isDirectList(bind) && Array.isArray(path) && path.length) ? path[0] : undefined;
-  //---
-  // Iterator subscriptions carry Symbol.iterator, which cannot be coerced to
-  // a number. Reconcile the full collection for such non-index paths.
-  if (typeof index !== 'symbol' && !isNaN(index)) {
-    const ppath: any = path;
-    if (type == TypeEventProxyHandler.SET) {
-      let update = false;
-      if (ppath.length > 1) {
-        update = true;
-      } else if (ppath.length == 1 && elementos.length == result.length) {
-        const newgtpl = elementos[index];
-        newgtpl.Root[objindex.target] = result[index];
-        return gtpl;
-      }
-      if (update) {
-        const newgtpl = elementos[index];
-        if (toRaw(newgtpl.Root[objindex.target]) === result[index]) return gtpl;
-        ppath.shift();
-        updateVar(
-          ppath,
-          <any>{ Root: newgtpl.Root[objindex.target] },
-          reduceVar(gtpl, ppath, result[index]),
-          true
-        );
-      } else {
-        const newgtpl = createGTpl(
-          gtpl,
-          bind,
-          objindex,
-          elementos,
-          result[index],
-          false
-        );
-        elementos.push(newgtpl);
-        render_arr.push([newgtpl, index]);
-      }
+  const length = result?.length || 0;
+  for (let index = 0; index < length; index++) {
+    const row = toRaw(result[index]);
+    if (index >= elementos.length) {
+      const child = createGTpl(gtpl, bind, objindex, elementos, row, false);
+      elementos.push(child);
+      render_arr.push([child, index]);
+    } else {
+      const root = elementos[index].Root;
+      // Explicit refreshes and same-reference assignments must observe raw
+      // mutations. Only ordinary proxy notifications can skip unchanged rows.
+      if (!incremental || assignedIndices?.has(index) || !Object.is(toRaw(root[objindex.target]), row))
+        root[objindex.target] = row;
     }
-    if (type == TypeEventProxyHandler.UNSET) {
-      if (ppath.length > 1) {
-        const newgtpl = elementos[index];
-        if (toRaw(newgtpl.Root[objindex.target]) === result[index]) return gtpl;
-        newgtpl.Root[objindex.target] = result[index];
-      } else {
-        const newgtpl: IGtplObject = elementos.splice(index, 1)[0];
-        delete_arr.push([newgtpl, index]);
-      }
-    }
-  } else if (result && result.length) {
-    if (index == 'length' && elementos.length == result.length)
-      return gtpl;
-    result.forEach((row: any, index: number) => {
-      if (index >= elementos.length) {
-        const newgtpl = createGTpl(
-          gtpl,
-          bind,
-          objindex,
-          elementos,
-          row,
-          false /*, result*/
-        );
-        elementos.push(newgtpl);
-        render_arr.push([newgtpl, index]);
-      } else {
-        const obj: any = elementos[index].Root;
-        obj[objindex.target] = row;
-      }
-    });
-    if (elementos.length > result.length) {
-      const gtpls = elementos.splice(
-        result.length,
-        elementos.length - result.length
-      );
-      gtpls.forEach((newgtpl, index: number) => {
-        delete_arr.push([newgtpl, index]);
-      });
-    }
-  } else if (elementos.length) {
-    elementos.forEach((newgtpl, index: number) => {
-      delete_arr.push([newgtpl, index]);
-    });
-    elementos.length = 0;
+  }
+  if (elementos.length > length) {
+    elementos.splice(length).forEach((child, index) => delete_arr.push([child, index]));
   }
   //---
   if (delete_arr.length) {
@@ -1453,7 +1446,7 @@ function updateFORbind(
   return gtpl;
 }
 
-async function updateSWITCHbind(
+function updateSWITCHbind(
   type: TypeEventProxyHandler,
   gtpl: IGtplObject,
   bind: IBindObject,
@@ -1519,47 +1512,62 @@ async function updateSWITCHbind(
         //---
       }
       //---
-      for (let i = 0, n = bind.case.length; i < n; i++) {
-        const ca = bind.case[i];
-        const calculated = calculateBind(gtpl, ca);
-        const valca = isPromiseLike(calculated) ? await calculated : calculated;
-        if (gtpl.isDestroyed || bind.gtpl?.isDestroyed || currentBindingChanges.get(bind) !== job) return gtpl;
-        if (valca == result) {
-          const gtplcase = createGTpl(
-            gtpl,
-            ca,
-            undefined,
-            undefined,
-            undefined,
-            false
-          );
-          ca.ele = gtplcase.Elements;
-          ca.eles = [gtplcase];
-          (<any>gtplcase).refCase = ca;
-          owner.GtplChilds.add(gtplcase);
-          //console.error('GtplChilds', gtpl.GtplChilds.size);
-          bind.eles = ca.eles;
-          break;
-        }
-      }
+      return selectCase(0);
       //---
     }
     //---
   }
   //---
-  const rendered = renderBind(gtpl, bind, bresult);
-  if (bresult && bind.eles?.length) {
-    const child = (<any>bind.eles)[0];
-    // A combined g-if can detach the wrapper while its selection changes.
-    // Populate the case in that detached range before the wrapper is shown.
-    if (rendered || child.refCase.mark.parentNode) {
-      child.refresh();
-      show(child.refCase);
-    }
+  return commit();
+
+  function valid() {
+    return !gtpl.isDestroyed && !owner.isDestroyed && currentBindingChanges.get(bind) === job;
   }
-  //---
-  memValues.set(bind, result);
-  return gtpl;
+
+  function selectCase(start: number): IGtplObject | Promise<IGtplObject> {
+    for (let i = start; i < bind.case!.length; i++) {
+      if (!valid()) return gtpl;
+      const ca = bind.case![i];
+      const calculated = calculateBind(gtpl, ca);
+      if (isPromiseLike(calculated)) {
+        return Promise.resolve(calculated).then(value => {
+          if (!valid()) return gtpl;
+          return value == result ? mountCase(ca) : selectCase(i + 1);
+        });
+      }
+      if (!valid()) return gtpl;
+      if (calculated == result) return mountCase(ca);
+    }
+    return commit();
+  }
+
+  function mountCase(ca: IBindObject): IGtplObject {
+    const child = createGTpl(gtpl, ca, undefined, undefined, undefined, false);
+    if (!valid()) { child.destroy(); return gtpl; }
+    ca.ele = child.Elements;
+    ca.eles = [child];
+    (child as any).refCase = ca;
+    owner.GtplChilds.add(child);
+    bind.eles = ca.eles;
+    return commit();
+  }
+
+  function commit(): IGtplObject {
+    if (!valid()) return gtpl;
+    const rendered = renderBind(gtpl, bind, bresult);
+    if (bresult && bind.eles?.length) {
+      const child = (<any>bind.eles)[0];
+      // A combined g-if can detach the wrapper while its selection changes.
+      // Populate the case in that detached range before the wrapper is shown.
+      if (rendered || child.refCase.mark.parentNode) {
+        child.refresh();
+        show(child.refCase);
+      }
+    }
+    //---
+    memValues.set(bind, result);
+    return gtpl;
+  }
 }
 
 function updateISbind(
@@ -1709,11 +1717,8 @@ export class GTpl implements IGtplObject {
 
   isDestroyed: boolean = false;
 
-  private initialUpdates = new Set<Promise<void>>();
-  private initialFailure?: { error: unknown };
+  private initialState: InitialRenderState = { pending: 0, settled: false };
   private initialReady?: Promise<void>;
-  private initialReject?: (error: unknown) => void;
-  private initialRenderSettled = false;
   private bindingDepth = 0;
 
   constructor(options?: any) {
@@ -1731,22 +1736,22 @@ export class GTpl implements IGtplObject {
 
   loadOptions(options?: any) {
     try {
-    if (options) {
-      this.Root = options.root;
-      if (options.parent) {
-        this.Parent = options.parent;
-        this.bindingDepth = (options.parent.bindingDepth || 0) + 1;
+      if (options) {
+        this.Root = options.root;
+        if (options.parent) {
+          this.Parent = options.parent;
+          this.bindingDepth = (options.parent.bindingDepth || 0) + 1;
+        }
+        if (options.context) this.Context = new Set(options.context);
+        if (options.generator) {
+          this.FncElements = options.generator;
+          this.Elements = [];
+          GAddTo(this.Elements, this.FncElements, this);
+        }
+        privateProperties.setProperty(this, "GenerationFinish", true);
+        if (options.refresh === undefined || options.refresh === true)
+          this.refresh();
       }
-      if (options.context) this.Context = new Set(options.context);
-      if (options.generator) {
-        this.FncElements = options.generator;
-        this.Elements = [];
-        GAddTo(this.Elements, this.FncElements, this);
-      }
-      privateProperties.setProperty(this, "GenerationFinish", true);
-      if (options.refresh === undefined || options.refresh === true)
-        this.refresh();
-    }
     } catch (error) {
       // The caller cannot dispose an instance whose construction never returned.
       // Cleanup failures must not replace the original directive/generator error.
@@ -1960,7 +1965,8 @@ export class GTpl implements IGtplObject {
     }
     if (this.BindMap) {
       for (let [bind, gtpl] of this.BindMap) {
-        gtpl.launchChange(TypeEventProxyHandler.FORCE_REFRESH_MAP, bind);
+        if (gtpl instanceof GTpl) gtpl.queueChange(TypeEventProxyHandler.FORCE_REFRESH_MAP, bind, undefined, undefined, true);
+        else gtpl.launchChange(TypeEventProxyHandler.FORCE_REFRESH_MAP, bind);
       }
     }
     if (this.BindConst) {
@@ -1975,15 +1981,15 @@ export class GTpl implements IGtplObject {
     if (!this.initialReady) {
       this.initialReady = new Promise<void>((resolve, reject) => {
         const finish = (error?: { error: unknown }) => {
-          if (this.initialRenderSettled) return;
-          this.initialRenderSettled = true;
-          this.initialReject = undefined;
+          if (this.initialState.settled) return;
+          this.initialState.settled = true;
+          this.initialState.reject = undefined;
           this.cleanupCallbacks.delete(cancel);
           if (error) reject(error.error);
           else resolve();
         };
         const cancel = () => finish({ error: new Error('[GTPL] Component destroyed before ready') });
-        this.initialReject = error => finish({ error });
+        this.initialState.reject = error => finish({ error });
         this.onCleanup(cancel);
         this.waitInitialRender().then(() => finish(), error => finish({ error }));
       });
@@ -1995,36 +2001,30 @@ export class GTpl implements IGtplObject {
     do {
       if (this.isDestroyed)
         throw new Error('[GTPL] Component destroyed before ready');
-      if (this.initialFailure)
-        throw this.initialFailure.error;
-      if (!this.initialUpdates.size) return;
-      await Promise.all(this.initialUpdates);
+      if (this.initialState.failure)
+        throw this.initialState.failure.error;
+      const state = this.initialState;
+      if (!state.pending) return;
+      if (!state.idle) state.idle = new Promise<void>(resolve => { state.resolveIdle = resolve; });
+      await state.idle;
       // Updates can create children or register more bindings while rendering.
     } while (true);
   }
 
-  private trackInitialUpdate(update: Promise<void>, owner: GTpl) {
-    const contexts = new Set<GTpl>();
+  private trackInitialUpdate(job: PendingBindingChange, owner: GTpl) {
+    const states = job.initialStates || (job.initialStates = new Set());
     const collect = (context: GTpl) => {
       while (context) {
-        if (!context.initialRenderSettled) contexts.add(context);
+        const state = context.initialState;
+        if (!state.settled && !states.has(state)) {
+          states.add(state);
+          state.pending++;
+        }
         context = context.Parent as GTpl;
       }
     };
     collect(this);
-    collect(owner);
-    if (!contexts.size) return;
-    // Observe failures immediately, including failures before ready() is called.
-    const observed = update.then(() => {
-      contexts.forEach(context => context.initialUpdates.delete(observed));
-    }, error => {
-      contexts.forEach(context => {
-        if (!context.initialFailure) context.initialFailure = { error };
-        context.initialUpdates.delete(observed);
-        context.initialReject?.(error);
-      });
-    });
-    contexts.forEach(context => context.initialUpdates.add(observed));
+    if (owner !== this) collect(owner);
   }
 
   private processRenderAndApply(ele: Node | any[], applyFn: (ele: Node | any[], arr: any, ctx: any) => void) {
@@ -2104,13 +2104,14 @@ export class GTpl implements IGtplObject {
       }
     };
     callKey(full);
-    const parts = full.split(".");
-    for (let i = parts.length - 1; i >= 1; i--) {
-      callKey(parts.slice(0, i).join("."));
+    const prefixes: string[] = [];
+    for (let end = full.lastIndexOf('.'); end >= 0; end = full.lastIndexOf('.', end - 1)) {
+      const prefix = full.slice(0, end);
+      prefixes.push(prefix);
+      callKey(prefix);
+      if (end === 0) break;
     }
-    for (let i = parts.length - 1; i >= 1; i--) {
-      callKey(parts.slice(0, i).join(".") + ".*");
-    }
+    for (const prefix of prefixes) callKey(prefix + '.*');
     callKey("*");
   }
 
@@ -2128,9 +2129,12 @@ export class GTpl implements IGtplObject {
       for (const bind of tree.me) context.queueChange(type, bind, path, undefined, true, depth);
     if (tree.tree) {
       const changed = path[depth];
-      for (const key in tree.tree)
-        if (changed === undefined || changed === key)
+      if (changed !== undefined) {
+        GTpl.queueBindings(context, tree.tree[changed], type, path, depth + 1);
+      } else {
+        for (const key in tree.tree)
           GTpl.queueBindings(context, tree.tree[key], type, path, depth + 1);
+      }
     }
   }
 
@@ -2155,41 +2159,51 @@ export class GTpl implements IGtplObject {
       return automatic ? undefined : Promise.resolve();
     let job = pendingBindingChanges.get(bind);
     const relativeLength = path ? path.length - pathOffset : 0;
+    const listUpdate = automatic && bind.type === BindTypes.FOR && isDirectList(bind) &&
+      (type === TypeEventProxyHandler.SET || type === TypeEventProxyHandler.UNSET) && relativeLength > 0;
+    const rowIndex = listUpdate && typeof path![pathOffset] !== 'symbol' &&
+      /^(0|[1-9]\d*)$/.test(String(path![pathOffset])) ? Number(path![pathOffset]) : undefined;
+    const listNestedOnly = rowIndex !== undefined && relativeLength > 1;
+
     if (job) {
-      // A merged list notification must reconcile final rows, not replay a stale
-      // splice/index hint. A single event retains its incremental path.
-      const sameRow = bind.type === BindTypes.FOR && type === TypeEventProxyHandler.SET &&
-        job.type === TypeEventProxyHandler.SET && relativeLength > 0 && job.path?.length &&
-        path![pathOffset] === job.path[0] && /^(0|[1-9]\d*)$/.test(String(path![pathOffset]));
-      if (sameRow) {
-        // Keep the nested hint when every notification concerns row properties:
-        // the row's own proxy subscription already invalidated its bindings.
-        if (job.path!.length === 1 || relativeLength === 1) job.path = [path![pathOffset]];
-      } else {
-        job.type = TypeEventProxyHandler.FORCE_REFRESH_ROOT;
-        job.path = undefined;
+      if (bind.type === BindTypes.FOR) {
+        job.listUpdate = job.listUpdate && listUpdate;
+        job.listNestedOnly = job.listNestedOnly && listNestedOnly;
       }
+      // Reconcile the final state once. Explicit index assignments are kept
+      // separately because assigning the same row can expose raw mutations.
+      job.type = TypeEventProxyHandler.FORCE_REFRESH_ROOT;
+      job.path = undefined;
       job.value = undefined;
     } else {
       // Reuse pending jobs, but a request superseding running work gets a new
       // identity. No numeric revision can be reused after the binding is idle.
-      currentBindingChanges.get(bind)?.resolve?.();
+      const previous = currentBindingChanges.get(bind);
+      if (previous) {
+        if (previous.initialStates?.size) finishInitialUpdate(previous);
+        previous.resolve?.();
+      }
       job = { context: this, type, path: relativeLength > 0 ? path!.slice(pathOffset) : undefined, value, reportErrors: false };
+      if (bind.type === BindTypes.FOR) { job.listUpdate = listUpdate; job.listNestedOnly = listNestedOnly; }
       pendingBindingChanges.set(bind, job);
       currentBindingChanges.set(bind, job);
     }
     const owner = (bind.gtpl || this) as GTpl;
-    const initial = !this.getGtplRoot().initialRenderSettled ||
-      (owner !== this && !owner.getGtplRoot().initialRenderSettled) ||
-      (!owner.initialRenderSettled && initialBindings.has(bind));
-    if (!automatic || initial) bindingChangePromise(job);
-    if (initial) {
-      if (!job.callers) job.callers = new Set();
-      if (!job.callers.has(this)) {
-        job.callers.add(this);
-        this.trackInitialUpdate(job.promise!, owner);
-      }
+    if (rowIndex !== undefined) {
+      (job.listTouched || (job.listTouched = new Set())).add(rowIndex);
+      if (type === TypeEventProxyHandler.SET && relativeLength === 1)
+        (job.listIndices || (job.listIndices = new Set())).add(rowIndex);
     }
+    // A merged job already tracks this caller's ancestors; avoid locating the
+    // root again on every notification in a synchronous burst.
+    const tracked = job.initialStates?.has(this.initialState);
+    const initial = job.checkedCaller === this ? !!job.initialStates?.size :
+      tracked || !this.getGtplRoot().initialState.settled ||
+      (owner !== this && !owner.getGtplRoot().initialState.settled) ||
+      (!owner.initialState.settled && initialBindings.has(bind));
+    job.checkedCaller = this;
+    if (!automatic) bindingChangePromise(job);
+    if (initial && !tracked) this.trackInitialUpdate(job, owner);
     if (automatic && !initial) {
       job.reportErrors = true;
       observeBindingErrors(job);
@@ -2273,10 +2287,30 @@ export class GTpl implements IGtplObject {
     job: PendingBindingChange
   ): void | Promise<void> {
     if (this.isDestroyed || bind.gtpl?.isDestroyed || currentBindingChanges.get(bind) !== job) return;
+    let incremental = false;
+    let nestedListHandled = false;
     if (bind.type === BindTypes.FOR) {
-      // Snapshot raw rows before child cleanup can revoke their old proxies.
       const rows = toRaw(result);
-      if (Array.isArray(rows)) result = Array.from(rows, row => toRaw(row));
+      const previous = directListStates.get(bind);
+      if (isDirectList(bind) && Array.isArray(rows)) {
+        let ordinary = false;
+        if (job.listUpdate && previous?.rows === rows && previous.ordinary && job.listTouched) {
+          ordinary = true;
+          for (const index of job.listTouched) {
+            const descriptor = Object.getOwnPropertyDescriptor(rows, index);
+            if (descriptor && (!('value' in descriptor) || !isOrdinaryData(descriptor.value))) {
+              ordinary = false;
+              break;
+            }
+          }
+        } else ordinary = isOrdinaryData(rows);
+        directListStates.set(bind, { rows, ordinary });
+        incremental = !!job.listUpdate && ordinary;
+        nestedListHandled = incremental && !!job.listNestedOnly && previous?.rows === rows && bind.eles?.length === rows.length;
+      } else directListStates.delete(bind);
+      // Full reconciliation may invoke arbitrary getters and cleanup callbacks;
+      // snapshot those rows before revocation. Ordinary data can be read directly.
+      if (Array.isArray(rows)) result = incremental ? rows : Array.from(rows, row => toRaw(row));
     }
     let gtpl: IGtplObject | Promise<IGtplObject> = this;
     switch (bind.type) {
@@ -2286,7 +2320,9 @@ export class GTpl implements IGtplObject {
       case BindTypes.STYLE: gtpl = updateSTYLEbind(type, this, bind, result, path); break;
       case BindTypes.IF:
       case BindTypes.NOTIF: gtpl = updateIFbind(type, this, bind, result, path); break;
-      case BindTypes.FOR: gtpl = updateFORbind(type, this, bind, result, path); break;
+      case BindTypes.FOR:
+        if (!nestedListHandled) gtpl = updateFORbind(type, this, bind, result, path, incremental, job.listIndices);
+        break;
       case BindTypes.SWITCH: gtpl = updateSWITCHbind(type, this, bind, result, path, job); break;
       case BindTypes.IS: gtpl = updateISbind(type, this, bind, result, path); break;
     }

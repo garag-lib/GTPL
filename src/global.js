@@ -12,8 +12,7 @@ try {
         check(typeof window === 'object' && window) ||
         check(typeof self === 'object' && self) ||
         check(typeof global === 'object' && global) ||
-        (function () { return this; })() ||
-        Function('return this')();
+        (function () { return this; })();
 } catch (ex) {
 
 }

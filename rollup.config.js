@@ -19,9 +19,11 @@ export default [
   // 🌍 ESM moderno (para browsers y Node >=14)
   // -----------------------------------------------------------
   {
-    input: 'src/lib/gtpl.ts',
+    input: { gtpl: 'src/lib/gtpl.ts', runtime: 'src/lib/runtime.ts' },
     output: {
-      file: 'dist/gtpl.esm.js',
+      dir: 'dist',
+      entryFileNames: '[name].esm.js',
+      chunkFileNames: 'shared/[name].esm.js',
       format: 'es',
       sourcemap: true,
       banner,
@@ -43,9 +45,11 @@ export default [
   // 🖥️ Compatibilidad con Node (CommonJS)
   // -----------------------------------------------------------
   {
-    input: 'src/lib/gtpl.ts',
+    input: { gtpl: 'src/lib/gtpl.ts', runtime: 'src/lib/runtime.ts' },
     output: {
-      file: 'dist/gtpl.cjs',
+      dir: 'dist',
+      entryFileNames: '[name].cjs',
+      chunkFileNames: 'shared/[name].cjs',
       format: 'cjs',
       sourcemap: true,
       banner,
@@ -93,9 +97,11 @@ export default [
   // 📘 Declaraciones de tipos (.d.ts)
   // -----------------------------------------------------------
   {
-    input: 'src/lib/gtpl.ts',
+    input: { gtpl: 'src/lib/gtpl.ts', runtime: 'src/lib/runtime.ts' },
     output: {
-      file: 'dist/gtpl.d.ts',
+      dir: 'dist',
+      entryFileNames: '[name].d.ts',
+      chunkFileNames: 'shared/[name].d.ts',
       format: 'es',
       banner
     },

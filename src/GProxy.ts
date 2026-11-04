@@ -81,6 +81,7 @@ interface ProxySubscription {
   event: EventFunctionProxyHandler;
   objRef: any;
   parentPath: PathProxyHandler;
+  node?: SubscriptionPath;
 }
 
 const subscriptionsMap = new WeakMap<object, ProxySubscription[]>();
@@ -95,18 +96,17 @@ function newSubscriptionPath(): SubscriptionPath {
   return { children: new Map(), targets: new Set() };
 }
 
-function indexSubscription(target: object, subscription: ProxySubscription): void {
-  if (!isWeakMapKey(subscription.objRef)) return;
-  let events = subscriptionPaths.get(subscription.objRef);
-  if (!events) subscriptionPaths.set(subscription.objRef, events = new Map());
-  let node: SubscriptionPath = events.get(subscription.event) || newSubscriptionPath();
-  events.set(subscription.event, node);
-  for (const part of subscription.parentPath) {
+function subscriptionNode(objRef: object, event: EventFunctionProxyHandler, path: PathProxyHandler): SubscriptionPath {
+  let events = subscriptionPaths.get(objRef);
+  if (!events) subscriptionPaths.set(objRef, events = new Map());
+  let node = events.get(event);
+  if (!node) events.set(event, node = newSubscriptionPath());
+  for (const part of path) {
     let child: SubscriptionPath | undefined = node.children.get(part);
     if (!child) node.children.set(part, child = newSubscriptionPath());
     node = child;
   }
-  node.targets.add(target);
+  return node;
 }
 
 function unindexSubscription(target: object, subscription: ProxySubscription): void {
@@ -143,22 +143,27 @@ function addProxySubscription(
   target: object,
   event: EventFunctionProxyHandler,
   objRef: any,
-  parentPath: PathProxyHandler
+  parentPath: PathProxyHandler,
+  node?: SubscriptionPath
 ): void {
+  const indexed = isWeakMapKey(objRef);
+  if (indexed) {
+    node = node || subscriptionNode(objRef, event, parentPath);
+    if (node.targets.has(target)) return;
+  }
   let subscriptions = subscriptionsMap.get(target);
   if (!subscriptions) {
     subscriptions = [];
     subscriptionsMap.set(target, subscriptions);
   }
-  const path = Array.isArray(parentPath) ? parentPath.slice() : [];
-  if (!subscriptions.some(subscription =>
+  if (indexed || !subscriptions.some(subscription =>
     subscription.event === event &&
     subscription.objRef === objRef &&
-    pathsEqual(subscription.parentPath, path)
+    pathsEqual(subscription.parentPath, parentPath)
   )) {
-    const subscription = { event, objRef, parentPath: path };
+    const subscription = { event, objRef, parentPath: parentPath.slice(), node };
     subscriptions.push(subscription);
-    indexSubscription(target, subscription);
+    node?.targets.add(target);
   }
   if (isWeakMapKey(objRef)) {
     let targets = subscriptionTargets.get(objRef);
@@ -176,12 +181,15 @@ function proxyChild(target: object, value: any, prop: PropertyKey): any {
   let proxy = value;
   const subscriptions = subscriptionsMap.get(target)?.slice() ?? [];
   subscriptions.forEach(subscription => {
-    proxy = GProxy(
-      value,
-      subscription.event,
-      subscription.objRef,
-      [...subscription.parentPath, prop]
-    );
+    if (subscription.node) {
+      let child = subscription.node.children.get(prop);
+      if (!child) subscription.node.children.set(prop, child = newSubscriptionPath());
+      if (!child.targets.has(value))
+        addProxySubscription(value, subscription.event, subscription.objRef, [...subscription.parentPath, prop], child);
+      proxy = getOrCreateProxy(value);
+    } else {
+      proxy = GProxy(value, subscription.event, subscription.objRef, [...subscription.parentPath, prop]);
+    }
   });
   return proxy;
 }
@@ -298,24 +306,33 @@ function removeSubscriptionsFromTarget(
   if (!subscriptions) {
     return;
   }
-  const removed = subscriptions.filter(subscription =>
-    subscription.event === event && (objRef === undefined || subscription.objRef === objRef) &&
-    (!pathPrefix || (subscription.parentPath.length >= pathPrefix.length &&
-      pathPrefix.every((part: any, index: number) => subscription.parentPath[index] === part)))
-  );
-  if (!removed.length) return;
-  const remaining = subscriptions.filter(subscription => !removed.includes(subscription));
-  removed.forEach(subscription => {
-    unindexSubscription(target, subscription);
-    if (!isWeakMapKey(subscription.objRef))
-      return;
-    if (remaining.some(item => item.objRef === subscription.objRef))
-      return;
-    const targets = subscriptionTargets.get(subscription.objRef);
+  const remaining: ProxySubscription[] = [];
+  let removed = false, ownerSurvives = false;
+  let removedOwners: Set<object> | undefined;
+  for (const subscription of subscriptions) {
+    if (subscription.event === event && (objRef === undefined || subscription.objRef === objRef) &&
+      (!pathPrefix || (subscription.parentPath.length >= pathPrefix.length &&
+        pathPrefix.every((part: any, index: number) => subscription.parentPath[index] === part)))) {
+      removed = true;
+      unindexSubscription(target, subscription);
+      if (objRef === undefined && isWeakMapKey(subscription.objRef))
+        (removedOwners || (removedOwners = new Set())).add(subscription.objRef);
+    } else {
+      remaining.push(subscription);
+      if (subscription.objRef === objRef) ownerSurvives = true;
+    }
+  }
+  if (!removed) return;
+  const removeOwnerTarget = (owner: object) => {
+    const targets = subscriptionTargets.get(owner);
     targets?.delete(target);
-    if (targets?.size === 0)
-      subscriptionTargets.delete(subscription.objRef);
-  });
+    if (targets?.size === 0) subscriptionTargets.delete(owner);
+  };
+  if (isWeakMapKey(objRef) && !ownerSurvives) removeOwnerTarget(objRef);
+  if (removedOwners) {
+    for (const subscription of remaining) removedOwners.delete(subscription.objRef);
+    removedOwners.forEach(removeOwnerTarget);
+  }
   if (remaining.length > 0) {
     subscriptionsMap.set(target, remaining);
   } else {
@@ -393,7 +410,11 @@ export function GProxy<T extends object>(
 ): T {
   if (isStaticType(target) || isNonProxyableObject(target))
     return target;
-  addProxySubscription(target, event, objRef, parentPath);
+  addProxySubscription(target, event, objRef, Array.isArray(parentPath) ? parentPath : []);
+  return getOrCreateProxy(target);
+}
+
+function getOrCreateProxy<T extends object>(target: T): T {
   const existing = proxyCache.get(target);
   if (existing) {
     return existing.proxy;
